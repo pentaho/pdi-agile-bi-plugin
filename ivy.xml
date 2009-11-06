@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+    <info organisation="pentaho" module="${ivy.artifact.id}" revision="${project.revision}" />
+    
+    <configurations>
+    	<conf name="default"/>
+    	<conf name="test" visibility="private"/>
+    	<conf name="source"/>
+    </configurations>
+    
+    <dependencies defaultconf="default->default">
+
+        <!--  Special Note:  This ivy file only resolves internal dependencies -->
+
+        <dependency org="pentaho"        name="pentaho-metadata"         rev="${dependency.pentaho-metadata.revision}" conf="default->default" changing="true"/>
+        <dependency org="pentaho.kettle" name="kettle-engine"            rev="${dependency.kettle.revision}" conf="default->default"/>
+        <dependency org="pentaho.kettle" name="kettle-core"              rev="${dependency.kettle.revision}" conf="default->default"/>
+        <dependency org="pentaho.kettle" name="kettle-db"                rev="${dependency.kettle.revision}" conf="default->default"/>
+        <dependency org="pentaho.kettle" name="kettle-ui-swt"            rev="${dependency.kettle.revision}" conf="default->default"/>
+
+        <!-- pentaho-database and pentaho-xul-framework must match JARs required by kettle-ui-swt -->
+        <!-- this manual sync should go away once this project is propertly ivy-ized -->
+        <dependency org="pentaho"        name="pentaho-database"         rev="${dependency.pentaho-database.revision}" conf="default->default" changing="true" />
+        
+        <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default" changing="true"/>
+        <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default" changing="true"/>
+
+	<!-- test dependencies -->
+        <dependency org="junit"              name="junit"              rev="4.4" conf="test->default"/>
+       
+    </dependencies>
+</ivy-module>
