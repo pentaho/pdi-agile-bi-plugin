@@ -26,6 +26,14 @@
 	            value="${bin.dir}/platform-unzip"
 	            description="Location of platform assembly zip" />
 	
+	<property name="kettle.dist.dir"
+				value="../Kettle 3.2.3 Agile BI"
+    			description="Location of kettle spoon zip" />
+	
+	<property name="pdiwithagilebi"
+				value="pdi-ce-agile-bi" 
+				description="Name of the pdi distribution with agile bi"/>
+	
 	<target name="dist" depends="resolve,jar,package" description="Builds and packages the application" />
 	
 	<target name="clean-dist">
@@ -80,4 +88,20 @@
 		<!-- Step 3: Overlay any specific files (web.xml, etc) -->
 	</target>
 	
+	<!-- this target builds a kettle release that includes the agile bi plugin -->
+	<target name="kettle-w-plugin-dist">
+		<unzip dest="${bin.dir}/kettle-dist">
+			<fileset dir="${kettle.dist.dir}">
+				<include name="pdi-ce-*.zip"/>
+			</fileset>
+		</unzip>
+		<unzip dest="${bin.dir}/kettle-dist/plugins/spoon/agile-bi">
+			<fileset dir="${dist.dir}">
+				<include name="${package.basename}.zip"/>
+			</fileset>
+		</unzip>
+		<zip destfile="${dist}" name="${pdiwithagilebi}.zip">
+			<zipfileset dir="${bin.dir}/kettle-dist" />
+		</zip>
+	</target>
 </project>
