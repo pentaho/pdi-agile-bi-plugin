@@ -22,7 +22,7 @@ public class XulUI {
     try{
       SwtXulLoader loader = new SwtXulLoader();
       loader.setOuterContext(shell);
-      container = loader.loadXul("org/pentaho/spike/panel.xul");
+      container = loader.loadXul("org/pentaho/agilebi/pdi/modeler/panel.xul");
       bf = new DefaultBindingFactory();
       bf.setDocument(container.getDocumentRoot());
   
