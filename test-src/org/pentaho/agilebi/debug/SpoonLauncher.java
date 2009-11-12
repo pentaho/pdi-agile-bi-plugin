@@ -1,4 +1,4 @@
-package org.pentaho.agilebi.pdi.modeler.debug;
+package org.pentaho.agilebi.debug;
 
 import org.pentaho.di.ui.spoon.Spoon;
 

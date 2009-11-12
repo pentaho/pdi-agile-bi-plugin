@@ -29,6 +29,7 @@ import org.pentaho.metadata.model.LogicalTable;
 import org.pentaho.metadata.model.SqlPhysicalColumn;
 import org.pentaho.metadata.model.SqlPhysicalTable;
 import org.pentaho.metadata.model.concept.security.SecurityOwner;
+import org.pentaho.metadata.model.concept.types.AggregationType;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.model.olap.OlapCube;
 import org.pentaho.metadata.model.olap.OlapDimension;
@@ -146,6 +147,7 @@ public class ModelerWorkspaceUtil {
     LogicalTable logicalTable = model.getDomain().getLogicalModels().get(0).getLogicalTables().get(0);
     
     Category cat;
+    // Find existing category or create new one
     if(cats.size() > 0){
       cat = cats.get(0);
       cat.setId(model.getModelName());
@@ -156,6 +158,20 @@ public class ModelerWorkspaceUtil {
     }
     cat.getLogicalColumns().clear();
     
+    // Add all measures
+    for(FieldMetaData f : model.getFields()){
+      LogicalColumn lCol = f.getLogicalColumn();
+      if( f.getFormat() != null ) {
+        // TODO: set mask
+        //lCol.setFormat( f.getFormat());
+      }
+      lCol.setName(new LocalizedString(Locale.getDefault().toString(), f.getDisplayName()));
+      lCol.setAggregationType(AggregationType.valueOf(f.getAggTypeDesc()));
+      cat.addLogicalColumn(lCol);
+    }
+    
+    
+    // Add levels
     for (DimensionMetaData dim : model.getDimensions()) {
       for (HierarchyMetaData hier : dim.getChildren()) {
         for (int j = 0; j < hier.getChildren().size(); j++) {
@@ -175,6 +191,7 @@ public class ModelerWorkspaceUtil {
           }
           
           if( businessColumn != null  ) {
+            // TODO: handle custom formating
             if( format != null ) {
               businessColumn.setProperty("mask", format );
             }
@@ -186,6 +203,7 @@ public class ModelerWorkspaceUtil {
         }
       }
     }
+    
     
     // =========================== OLAP ===================================== //
 

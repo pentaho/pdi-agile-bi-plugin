@@ -2,7 +2,7 @@
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <stringAttribute key="bad_container_name" value="/agile-bi/spoonlauncher.launch"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/agile-bi/src/org/pentaho/agilebi/pdi/modeler/debug/SpoonLauncher.java"/>
+<listEntry value="/agile-bi/test-src/org/pentaho/agilebi/debug/SpoonLauncher.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -14,6 +14,6 @@
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/Kettle 3.2.3&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#10;"/>
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.pentaho.agilebi.pdi.modeler.debug.SpoonLauncher"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.pentaho.agilebi.debug.SpoonLauncher"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="agile-bi"/>
 </launchConfiguration>
