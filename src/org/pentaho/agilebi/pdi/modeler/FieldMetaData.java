@@ -113,4 +113,16 @@ public class FieldMetaData extends XulEventSourceAdapter {
     this.logicalColumn = col;
   }
   
+  @Override
+  public boolean equals(Object o){
+    if(o == null || o instanceof FieldMetaData == false){
+      return false;
+    }
+    FieldMetaData f = (FieldMetaData) o;
+    if(f.getLogicalColumn().getId().equals(this.getLogicalColumn().getId())){
+      return true;
+    }
+    return false;
+  }
+  
 }

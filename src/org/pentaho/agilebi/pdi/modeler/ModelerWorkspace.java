@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +44,7 @@ import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
 import org.pentaho.metadata.model.olap.OlapMeasure;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.metadata.util.XmiParser;
+import org.pentaho.pms.core.exception.PentahoMetadataException;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
 import org.pentaho.ui.xul.util.AbstractModelList;
 
@@ -314,36 +316,77 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
 
   public void refresh(){
-    // get the current row meta
-
-    List<String> newFields = source.getFieldNames();
-    Boolean usedFields[] = new Boolean[inPlayFields.size()];
-    for (int i=0; i<usedFields.length; i++) {
-      usedFields[i] = Boolean.FALSE;
-    }
-    for( int fieldIdx=0; fieldIdx < newFields.size(); fieldIdx++ ) {
-      for( int rowIdx=0; rowIdx < inPlayFields.size(); rowIdx++ ) {
-        if ((!usedFields[rowIdx]) || newFields.get(fieldIdx).equals( inPlayFields.get(rowIdx).getFieldName())) {
-          usedFields[rowIdx] = Boolean.TRUE;
-          break;
+    try {
+      Domain newDomain = source.generateDomain();
+      //ModelerWorkspaceUtil.updateDomain(domain, newDomain);
+      
+      // Add in new logicalColumns
+      outer:
+      for(LogicalColumn lc : newDomain.getLogicalModels().get(0).getLogicalTables().get(0).getLogicalColumns()){
+        boolean exists = false;
+        inner:
+        for(FieldMetaData fmd : this.availableFields){
+          if(fmd.getLogicalColumn().getId().equals(lc.getId())){
+            fmd.setLogicalColumn(lc);
+            exists = true;
+            break inner;
+          }
+        }
+        if(!exists){
+          FieldMetaData fm = new FieldMetaData();
+          fm.setLogicalColumn(lc);
+          fm.setFieldName(lc.getName(Locale.getDefault().toString()));
+          availableFields.add(fm);
+          Collections.sort(availableFields, new Comparator<FieldMetaData>(){
+            public int compare(FieldMetaData arg0, FieldMetaData arg1) {
+              return arg0.getLogicalColumn().getId().compareTo(arg1.getLogicalColumn().getId());
+            }
+          });
         }
       }
-    }
-
-    // see if we have any fields to remove
-    for( int rowIdx=usedFields.length-1; rowIdx >=0; rowIdx-- ) {
-      if( !usedFields[rowIdx] ) {
-        // we need to remove this
-        removeFieldFromPlay(inPlayFields.get(rowIdx));
+      
+      // Remove logicalColumns that no longer exist.
+      List<FieldMetaData> toRemove = new ArrayList<FieldMetaData>();
+      for(FieldMetaData fm : availableFields){
+        boolean exists = false;
+        LogicalColumn fmlc = fm.getLogicalColumn();
+        inner:
+        for(LogicalColumn lc : newDomain.getLogicalModels().get(0).getLogicalTables().get(0).getLogicalColumns()){
+          if(lc.getId().equals(fmlc.getId())){
+            exists = true;
+            break inner;
+          }
+        }
+        if(!exists){
+          toRemove.add(fm);
+        }
       }
+      availableFields.removeAll(toRemove);
+      fireFieldsChanged();
+      
+      for(DimensionMetaData dm : dimensions){
+        for(HierarchyMetaData hm : dm.getChildren()){
+          for(LevelMetaData lm : hm.getChildren()){
+            String existingLmId = lm.getLogicalColumn().getId();
+            boolean found = false;
+            inner:
+            for(FieldMetaData fm : availableFields){
+              if(fm.getLogicalColumn().getId().equals(existingLmId)){
+                found = true;
+                break inner;
+              }
+            }
+            if(!found){
+              lm.getParent().remove(lm);
+            }
+          }
+        }
+      }
+      //fireDimensionsChanged();
+      
+    } catch (PentahoMetadataException e) {
+      e.printStackTrace();
     }
-    
-    // now make the table item #s tidy
-    for( int rowIdx=0; rowIdx < inPlayFields.size(); rowIdx++ ) {
-     inPlayFields.get(rowIdx).setRowNum(Integer.toString(rowIdx+1));
-    }
-     
-    this.firePropertyChange("fields", null, source.getFieldNames());
   }
 
   public DimensionMetaDataCollection getDimensions(){
