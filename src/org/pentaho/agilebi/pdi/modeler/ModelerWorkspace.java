@@ -218,7 +218,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   //}
   
   public void addFieldIntoPlay(Object selectedField){
-    FieldMetaData meta = new FieldMetaData(Integer.toString(inPlayFields.size()+1), selectedField.toString(), "", selectedField.toString(), "---", "---", "---");
+    FieldMetaData meta = new FieldMetaData(Integer.toString(inPlayFields.size()+1), selectedField.toString(), "", selectedField.toString());
     
     // TODO: replace this terrible resolution with better model code.
     LogicalColumn col = findLogicalColumn(selectedField.toString());

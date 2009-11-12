@@ -23,6 +23,7 @@ public class FieldMetaData extends XulEventSourceAdapter {
   LogicalColumn logicalColumn;
   private List<String> aggTypes = new ArrayList<String>();
   {
+    aggTypes.add("NONE");
     aggTypes.add("SUM");
     aggTypes.add("AVERAGE");
     aggTypes.add("MINIMUM");
@@ -33,15 +34,12 @@ public class FieldMetaData extends XulEventSourceAdapter {
     
   }
   
-  public FieldMetaData(String rowNum, String fieldName, String format, String displayName, String fieldTypeDesc, String levelTypeDesc, String aggTypeDesc) {
+  public FieldMetaData(String rowNum, String fieldName, String format, String displayName) {
     super();
     this.rowNum = rowNum;
     this.fieldName = fieldName;
     this.format = format;
     this.displayName = displayName;
-    this.fieldTypeDesc = fieldTypeDesc;
-    this.levelTypeDesc = levelTypeDesc;
-    this.aggTypeDesc = aggTypeDesc;
   }
 
   public String getRowNum() {

@@ -50,6 +50,14 @@ import org.pentaho.pms.core.exception.PentahoMetadataException;
 public class ModelerWorkspaceUtil {
   public static final String DEFAULT_USER_NAME = "joe";
   private static ModelGenerator generator = new ModelGenerator();
+  private static final List<AggregationType> DEFAULT_AGGREGATION_LIST = new ArrayList<AggregationType>();
+  static{
+    DEFAULT_AGGREGATION_LIST.add(AggregationType.NONE);
+    DEFAULT_AGGREGATION_LIST.add(AggregationType.SUM);
+    DEFAULT_AGGREGATION_LIST.add(AggregationType.AVERAGE);
+    DEFAULT_AGGREGATION_LIST.add(AggregationType.MINIMUM);
+    DEFAULT_AGGREGATION_LIST.add(AggregationType.MAXIMUM);
+  }
   
   public static ModelerWorkspace createModelFromOutputStep() throws PentahoMetadataException{
     
@@ -148,6 +156,7 @@ public class ModelerWorkspaceUtil {
     
     Category cat;
     // Find existing category or create new one
+
     if(cats.size() > 0){
       cat = cats.get(0);
       cat.setId(model.getModelName());
@@ -167,6 +176,7 @@ public class ModelerWorkspaceUtil {
       }
       lCol.setName(new LocalizedString(Locale.getDefault().toString(), f.getDisplayName()));
       lCol.setAggregationType(AggregationType.valueOf(f.getAggTypeDesc()));
+      lCol.setAggregationList(DEFAULT_AGGREGATION_LIST);
       cat.addLogicalColumn(lCol);
     }
     
