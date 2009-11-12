@@ -31,6 +31,11 @@
         
         <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default" changing="true"/>
         <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default" changing="true"/>
+        
+        <dependency org="pentaho" name="pentaho-bi-platform-engine-core" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default"/>
+        
+        <dependency org="pentaho" name="pentaho-bi-platform-util" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default"/>
+   
 
 	<!-- test dependencies -->
         <dependency org="junit"              name="junit"              rev="4.4" conf="test->default"/>
