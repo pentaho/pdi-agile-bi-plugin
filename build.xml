@@ -53,7 +53,7 @@
   </target>
 	
   <target name="assemble.copy-libs" depends="assemble-embedded-server">
-    <copy todir="${stage.dir}/libext/agile-bi">
+    <copy todir="${approot.stage.dir}">
       <!-- <fileset dir="${lib.dir}" /> -->
       <fileset file="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar" />
     </copy>
@@ -90,17 +90,19 @@
 	
 	<!-- this target builds a kettle release that includes the agile bi plugin -->
 	<target name="kettle-w-plugin-dist">
+		<!--
 		<unzip dest="${bin.dir}/kettle-dist">
 			<fileset dir="${kettle.dist.dir}">
 				<include name="pdi-ce-*.zip"/>
 			</fileset>
 		</unzip>
-		<unzip dest="${bin.dir}/kettle-dist/plugins/spoon/agile-bi">
+		<unzip dest="${bin.dir}/kettle-dist/plugins/spoon">
 			<fileset dir="${dist.dir}">
 				<include name="${package.basename}.zip"/>
 			</fileset>
 		</unzip>
-		<zip destfile="${dist}" name="${pdiwithagilebi}.zip">
+		-->
+		<zip destfile="${dist.dir}/${pdiwithagilebi}.zip">
 			<zipfileset dir="${bin.dir}/kettle-dist" />
 		</zip>
 	</target>

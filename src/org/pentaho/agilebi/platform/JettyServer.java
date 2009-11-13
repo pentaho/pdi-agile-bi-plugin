@@ -37,7 +37,7 @@ public class JettyServer {
 
     WebAppContext pentahoContext = new WebAppContext();
     pentahoContext.setContextPath("/pentaho"); //$NON-NLS-1$
-    pentahoContext.setWar("agile-bi/platform/webapps/pentaho"); //$NON-NLS-1$
+    pentahoContext.setWar("plugins/spoon/agile-bi/platform/webapps/pentaho"); //$NON-NLS-1$
     
     pentahoContext.setParentLoaderPriority(true);
     
