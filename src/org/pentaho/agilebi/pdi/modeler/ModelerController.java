@@ -2,8 +2,11 @@ package org.pentaho.agilebi.pdi.modeler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.pentaho.agilebi.pdi.visualizations.IVisualization;
+import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.core.PropsUI;
 import org.pentaho.di.ui.spoon.Spoon;
@@ -20,7 +23,6 @@ import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.containers.XulTabbox;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
-import org.pentaho.ui.xul.stereotype.Bindable;
 
 /**
  * XUL Event Handler for the modeling interface. This class interacts with a ModelerModel to store state.
@@ -66,9 +68,12 @@ public class ModelerController extends AbstractXulEventHandler{
   private XulLabel detailsLabel2;
   private XulLabel detailsLabel3;
   private XulMenuList serverList;
+  private XulMenuList visualizationList;
+  
   private BindingFactory bf = new DefaultBindingFactory();
  
   private List<String> serverNames;
+  private List<String> visualizationNames;
   private List<String> serverIds;
   
   public ModelerController(ModelerWorkspace model){
@@ -90,6 +95,7 @@ public class ModelerController extends AbstractXulEventHandler{
     detailsLabel2 = (XulLabel)document.getElementById("details2");
     detailsLabel3 = (XulLabel)document.getElementById("details3");
     serverList = (XulMenuList)document.getElementById("serverlist");
+    visualizationList = (XulMenuList)document.getElementById("visualizationlist");
 
     XulLabel sourceLabel = (XulLabel) document.getElementById(SOURCE_NAME_LABEL_ID);
     
@@ -102,7 +108,9 @@ public class ModelerController extends AbstractXulEventHandler{
 
     bf.createBinding(model, "selectedServer", serverList, "selectedItem");    
     Binding serversBinding = bf.createBinding(this, "serverNames", serverList, "elements");
-
+    
+    bf.createBinding(model, "selectedVisualization", visualizationList, "selectedItem");    
+    Binding visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements");
     
     // Bind the available categories from  the selected model to the category/column tree.
     Binding dimensionTreeBinding = bf.createBinding(model, "dimensions", dimensionTree, "elements");
@@ -118,6 +126,7 @@ public class ModelerController extends AbstractXulEventHandler{
       inPlayTableBinding.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
       serversBinding.fireSourceChanged();
+      visualizationsBinding.fireSourceChanged();
     } catch (IllegalArgumentException e1) {
       // TODO Auto-generated catch block
       e1.printStackTrace();
@@ -290,6 +299,14 @@ public class ModelerController extends AbstractXulEventHandler{
     return serverNames;
   }
   
+  public List<String> getVisualizationNames() {
+  	if(this.visualizationNames == null) {
+  		VisualizationManager theManager = VisualizationManager.getInstance();
+  		this.visualizationNames = theManager.getVisualizationNames();
+  	}
+  	return this.visualizationNames;
+  }
+  
   private void createServerList() {
     serverNames.clear();
     serverIds.clear();
@@ -320,6 +337,10 @@ public class ModelerController extends AbstractXulEventHandler{
   
 
   public void openVisualizer() {
-    VisualizeCanvas.openVisualizer(model.getModelName(), model.getDatabaseName());
+  	VisualizationManager theManager = VisualizationManager.getInstance();
+  	IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
+  	if(theVisualization != null) {
+  		theVisualization.openVisualizer(model.getModelName(), model.getDatabaseName());
+  	}
   }
 }

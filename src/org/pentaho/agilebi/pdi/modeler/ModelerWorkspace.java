@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
+import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
@@ -72,6 +73,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   private IModelerSource source;
 
   private String selectedServer;
+  
+  private String selectedVisualization;
   
   private String schemaName;
   
@@ -133,6 +136,16 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public String getSelectedServer(){
     return selectedServer;
   }
+  
+
+  public void setSelectedVisualization(String aVisualization) {
+  	this.selectedVisualization = aVisualization;
+  }  
+  
+  public String getSelectedVisualization() {
+  	return this.selectedVisualization;
+  }
+
 
   
   public void publishToServer() throws Exception {
@@ -315,7 +328,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     
   }
 
-  public void refresh(){
+ public void refresh(){
     try {
       Domain newDomain = source.generateDomain();
       //ModelerWorkspaceUtil.updateDomain(domain, newDomain);

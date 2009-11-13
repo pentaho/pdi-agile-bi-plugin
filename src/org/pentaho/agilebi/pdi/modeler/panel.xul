@@ -138,13 +138,21 @@
 			</hbox>
 			<hbox>
 				<spacer flex="1"/>
+				
+				<menulist id="visualizationlist" label="">
+				  <menupopup>
+				    <menuitem label="Dummy Visualization"/>
+				  </menupopup>
+				</menulist>
+				
 				<button label="Visualize" id="exploreButton" onclick="modeler.visualize()"/>
 				<button label="Publish" id="publishButton" onclick="modeler.publish()"/>
-<menulist id="serverlist" label="">
-  <menupopup>
-    <menuitem label="Default BI Server"/>
-  </menupopup>
-</menulist>
+				
+				<menulist id="serverlist" label="">
+				  <menupopup>
+				    <menuitem label="Default BI Server"/>
+				  </menupopup>
+				</menulist>
 			</hbox>
 		</vbox>
 	</vbox>
