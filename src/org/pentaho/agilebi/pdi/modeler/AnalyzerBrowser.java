@@ -23,15 +23,16 @@ public class AnalyzerBrowser extends SpoonBrowser {
   public static final String XUL_FILE_ANALYZER_TOOLBAR_PROPERTIES = "ui/analyzer-toolbar.properties";
 
   private String modelId = null;
-  
   private String databaseName;
+  private String url;
   
-  public AnalyzerBrowser(Composite parent, final Spoon spoon, final String stringUrl,boolean isURL) throws SWTError {
-    this( parent, spoon, stringUrl, isURL, true );
-}
+  public AnalyzerBrowser(Composite parent, final Spoon spoon, final String stringUrl,boolean isURL, String aUrl) throws SWTError {
+    this( parent, spoon, stringUrl, isURL, true, aUrl );
+  }
 
-  public AnalyzerBrowser(Composite parent, final Spoon spoon, final String stringUrl,boolean isURL, boolean showControls) throws SWTError {
+  public AnalyzerBrowser(Composite parent, final Spoon spoon, final String stringUrl,boolean isURL, boolean showControls, String aUrl) throws SWTError {
     super(parent, spoon, stringUrl, isURL, showControls);
+    this.url = aUrl;
   }
   
   protected Browser createBrowser() {
@@ -109,7 +110,7 @@ public class AnalyzerBrowser extends SpoonBrowser {
     }
     
     // now reload it
-    browser.setUrl("http://localhost:8080/pentaho/content/analyzer/editor?command=open&solution=tmp&path=&action="+modelId+".xanalyzer&showFieldList=true");
+    browser.setUrl(this.url + "?command=open&solution=tmp&path=&action="+modelId+".xanalyzer&showFieldList=true");
     
   }
 

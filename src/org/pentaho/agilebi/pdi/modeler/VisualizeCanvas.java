@@ -37,10 +37,13 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
   
   private AnalyzerBrowser browser;
   
-  public static void openVisualizer( String modelName, String databaseName ) {
+  private String url;
+  
+  public static void openVisualizer( String modelName, String databaseName, String url) {
     
     VisualizeCanvas canvas = new VisualizeCanvas();
     
+    canvas.setUrl(url);
     canvas.setModelName( modelName );
     canvas.setDatabaseName(databaseName);
     
@@ -70,7 +73,7 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
     tabfolder.setSelected(idx);
 */
     String encodedModelName = URLEncoder.encode( modelName);
-    String urlString = "http://localhost:8080/pentaho/content/analyzer/editor?command=new&catalog="+encodedModelName+"%20Model&cube="+encodedModelName+"%20Cube&userid=joe&password=password";
+    String urlString = this.url + "?command=new&catalog="+encodedModelName+"%20Model&cube="+encodedModelName+"%20Cube&userid=joe&password=password";
 
     String tabName = modelName+" ";
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
@@ -95,7 +98,7 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
       if (tabItem == null)
       {
         CTabFolder cTabFolder = tabfolder.getSwtTabset();
-        browser = new AnalyzerBrowser(cTabFolder, spoon, urlString,isURL, true);
+        browser = new AnalyzerBrowser(cTabFolder, spoon, urlString,isURL, true, url);
         browser.setModelId(modelName);
         browser.setDatabaseName(databaseName);
         tabItem = new TabItem(tabfolder, tabName, tabName);
@@ -191,7 +194,7 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
         // visualize
         ModelServerPublish publisher = new ModelServerPublish();
         publisher.publishToServer( modelName+".mondrian.xml", databaseMeta.getDatabaseName(), modelName, false );
-        VisualizeCanvas.openVisualizer(modelName, databaseMeta.getDatabaseName());
+        VisualizeCanvas.openVisualizer(modelName, databaseMeta.getDatabaseName(), null);
         
       } catch (Exception e) {
         e.printStackTrace();
@@ -242,7 +245,7 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
       // visualize
       ModelServerPublish publisher = new ModelServerPublish();
       publisher.publishToServer( modelName+".mondrian.xml", databaseMeta.getDatabaseName(), modelName, false );
-      VisualizeCanvas.openVisualizer(modelName, databaseMeta.getDatabaseName()) ;
+      VisualizeCanvas.openVisualizer(modelName, databaseMeta.getDatabaseName(), null) ;
       
     } catch (Exception e) {
       e.printStackTrace();
@@ -274,6 +277,8 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
     this.databaseName = databaseName;
   }
   
-  
+  public void setUrl(String aUrl) {
+  	this.url = aUrl;
+  }
   
 }

@@ -15,12 +15,14 @@ public class VisualizationMetaData {
 
 	private String implementation;
 	private String title;
+	private String url;
 
 	public static final String TITLE = "title";
 	public static final String PROPERTY_TAG = "property";
 	public static final String NAME_ATTRIBUTE = "name";
 	public static final String IMPLEMENTATION = "implementation";
-
+	public static final String URL = "url";
+	
 	public VisualizationMetaData(File aFile) {
 		loadMetaData(aFile);
 	}
@@ -46,6 +48,9 @@ public class VisualizationMetaData {
 						if (theAttribute.getNodeValue().equals(TITLE)) {
 							title = theNode.getFirstChild().getNodeValue();
 						}
+						if (theAttribute.getNodeValue().equals(URL)) {
+							url = theNode.getFirstChild().getNodeValue();
+						}
 
 					}
 				}
@@ -66,5 +71,9 @@ public class VisualizationMetaData {
 
 	public boolean isDefaultVisualization() {
 		return implementation.equals(WebVisualization.class.getName());
+	}
+	
+	public String getUrl() {
+		return url;
 	}
 }

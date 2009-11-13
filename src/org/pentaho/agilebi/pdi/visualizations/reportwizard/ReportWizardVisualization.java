@@ -13,6 +13,13 @@ public class ReportWizardVisualization implements IVisualization {
 	public void setTitle(String aDescription) {
 		description = aDescription;
 	}
+	
+	public String getUrl() {
+		return null;
+	}
+	
+	public void setUrl(String aUrl) {
+	}
 
 	public void openVisualizer(String aModelName, String aDatabaseName) {
 	}

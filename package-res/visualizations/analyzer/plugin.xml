@@ -2,4 +2,5 @@
 <visualization>
  <property name="title">Analyzer</property>
  <property name="implementation">org.pentaho.agilebi.pdi.visualizations.web.WebVisualization</property>
+ <property name="url">http://localhost:8080/pentaho/content/analyzer/editor</property>
 </visualization>

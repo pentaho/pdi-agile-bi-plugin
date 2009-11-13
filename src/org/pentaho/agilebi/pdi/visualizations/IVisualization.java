@@ -6,6 +6,10 @@ public interface IVisualization {
 
 	public void setTitle(String aDescription);
 
+	public void setUrl(String aUrl);
+
+	public String getUrl();
+
 	public void openVisualizer(String aModelName, String aDatabaseName);
 
 }

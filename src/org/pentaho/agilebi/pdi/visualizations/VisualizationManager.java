@@ -92,6 +92,7 @@ public class VisualizationManager {
 			if (theInterfaces[i].isAssignableFrom(IVisualization.class)) {
 				theVisualization = (IVisualization) aClass.newInstance();
 				theVisualization.setTitle(aMetaData.getTitle());
+				theVisualization.setUrl(aMetaData.getUrl());
 				this.visualizations.add(theVisualization);
 			}
 		}
