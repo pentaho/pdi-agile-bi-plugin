@@ -90,7 +90,6 @@
 	
 	<!-- this target builds a kettle release that includes the agile bi plugin -->
 	<target name="kettle-w-plugin-dist">
-		<!--
 		<unzip dest="${bin.dir}/kettle-dist">
 			<fileset dir="${kettle.dist.dir}">
 				<include name="pdi-ce-*.zip"/>
@@ -101,7 +100,6 @@
 				<include name="${package.basename}.zip"/>
 			</fileset>
 		</unzip>
-		-->
 		<zip destfile="${dist.dir}/${pdiwithagilebi}.zip">
 			<zipfileset dir="${bin.dir}/kettle-dist" />
 		</zip>
