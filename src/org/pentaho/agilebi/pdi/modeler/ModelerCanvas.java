@@ -11,6 +11,7 @@ import java.util.Vector;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
@@ -135,9 +136,14 @@ public class ModelerCanvas implements TabItemInterface {
     
     ModelerController controller = new ModelerController(model);
     
-    xul = new XulUI(spoon.getShell(), controller);
+    try{
+      xul = new XulUI(spoon.getShell(), controller);
+    } catch(ModelerException e){
+      Spoon.getInstance().getLog().logError("AGILE BI Modeler", "unknown error generating UI", e);
+    }
     Composite comp = xul.getMainPanel();
     comp.setParent(cTabFolder);
+    spoon.getShell().setMenuBar(xul.getMenuBar());
     tabItem.setControl(comp);
     
     TabMapEntry entry = new TabMapEntry(tabItem, MODELER_NAME, this, TabMapEntry.OBJECT_TYPE_BROWSER);

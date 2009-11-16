@@ -3,12 +3,15 @@ package org.pentaho.agilebi.pdi.modeler;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.pentaho.di.core.Const;
@@ -50,6 +53,9 @@ import org.pentaho.pms.core.exception.PentahoMetadataException;
 public class ModelerWorkspaceUtil {
 
   private static final List<AggregationType> DEFAULT_AGGREGATION_LIST = new ArrayList<AggregationType>();
+  
+  private static Log logger = LogFactory.getLog(ModelerWorkspaceUtil.class);
+  
   static {
     DEFAULT_AGGREGATION_LIST.add(AggregationType.NONE);
     DEFAULT_AGGREGATION_LIST.add(AggregationType.SUM);
@@ -110,7 +116,7 @@ public class ModelerWorkspaceUtil {
     return model;
   }
   
-  public static void populateDomain(ModelerWorkspace model) {
+  public static void populateDomain(ModelerWorkspace model) throws ModelerException {
     List<Category> cats = model.getDomain().getLogicalModels().get(0).getCategories();
     LogicalTable logicalTable = model.getDomain().getLogicalModels().get(0).getLogicalTables().get(0);
 
@@ -140,6 +146,13 @@ public class ModelerWorkspaceUtil {
         lCol.setAggregationType(type);
       }
       lCol.setAggregationList(DEFAULT_AGGREGATION_LIST);
+      AggregationType selectedAgg = AggregationType.NONE; 
+      try{
+        selectedAgg = AggregationType.valueOf(f.getAggTypeDesc());
+      } catch(IllegalArgumentException e){
+        logger.info("Could not parse Aggregation string to type: "+f.getAggTypeDesc(), e);
+      }
+      lCol.setAggregationType(selectedAgg);
       cat.addLogicalColumn(lCol);
     }
 
@@ -149,7 +162,7 @@ public class ModelerWorkspaceUtil {
         for (int j = 0; j < hier.getChildren().size(); j++) {
           LevelMetaData level = hier.getChildren().get(j);
           String format = "#";
-
+          
           LogicalColumn lCol = level.getLogicalColumn();
 
           // TODO: handle custom formating
@@ -162,28 +175,30 @@ public class ModelerWorkspaceUtil {
           }
         }
       }
-
     }
 
     String domainName = model.getDomain().getId();
     XmiParser parser = new XmiParser();
     String xmi = parser.generateXmi(model.getDomain());
-    try {
-      // write the XMI to a tmp file
-      // models was created earlier.
+  
+    // write the XMI to a tmp file
+    // models was created earlier.
+    try{
       File dir = new File("models/" + model.getModelName());
       dir.mkdirs();
       File file = new File("models/" + model.getModelName() + "/metadata.xmi");
       PrintWriter pw = new PrintWriter(new FileWriter(file));
       pw.print(xmi);
       pw.close();
-    } catch (Throwable e) {
-      e.printStackTrace();
+    } catch(IOException e){
+      logger.info("Error writing metadata model",e);
+      throw new ModelerException("Error writing metadata model",e);
     }
+  
 
     // =========================== OLAP ===================================== //
 
-    try {
+    
       List<OlapDimensionUsage> usages = new ArrayList<OlapDimensionUsage>();
       List<OlapDimension> olapDimensions = new ArrayList<OlapDimension>();
       List<OlapMeasure> measures = new ArrayList<OlapMeasure>();
@@ -254,20 +269,25 @@ public class ModelerWorkspaceUtil {
       cubes.add(cube);
       lModel.setProperty("olap_cubes", cubes);
 
-      MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
-      String mondrianSchema = exporter.createMondrianModelXML();
-      System.out.println(mondrianSchema);
-
-      // run it thru the parser to be safe and get a doc type node
-      Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
-      byte schemaBytes[] = schemaDoc.asXML().getBytes();
-      String schemaFileName = model.getModelName() + ".mondrian.xml"; //$NON-NLS-1$
-      // write out the file
-      File file = new File("models");
-      file.mkdirs();
-      file = new File("models/" + model.getModelName() + ".mondrian.xml");
-      OutputStream out = new FileOutputStream(file);
-      out.write(schemaBytes);
+      try{
+        MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
+        String mondrianSchema = exporter.createMondrianModelXML();
+  
+        logger.info(mondrianSchema);
+  
+        // run it thru the parser to be safe and get a doc type node
+        Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
+        byte schemaBytes[] = schemaDoc.asXML().getBytes();
+        String schemaFileName = model.getModelName() + ".mondrian.xml"; //$NON-NLS-1$
+        // write out the file
+        File modelFile = new File("models");
+        modelFile.mkdirs();
+        modelFile = new File("models/" + model.getModelName() + ".mondrian.xml");
+        OutputStream out = new FileOutputStream(modelFile);
+        out.write(schemaBytes);
+      } catch(Exception e){
+        throw new ModelerException("Could not generate Mondrian model",e);
+      }
       // now add to the schema catalog
       /*
        * String baseUrl = PentahoSystem.getApplicationContext().getBaseUrl(); boolean enableXmla = true; String
@@ -275,16 +295,7 @@ public class ModelerWorkspaceUtil {
        * enableXmla, schemaSolutionPath, session, jndi, true);
        * AggregationManager.instance().getCacheControl(null).flushSchemaCache();
        */
-    } catch (Throwable e) {
-      // TODO log this
-      e.printStackTrace();
-    }
 
-  }
-  
-  
-  public static Domain updateDomain(Domain original, Domain newDomain){
-    return original;
   }
   
   

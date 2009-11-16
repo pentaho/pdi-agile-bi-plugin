@@ -1,16 +1,14 @@
 package org.pentaho.agilebi.pdi.modeler;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.core.PropsUI;
 import org.pentaho.di.ui.spoon.Spoon;
-import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
@@ -55,6 +53,7 @@ public class ModelerController extends AbstractXulEventHandler{
 
   private static final String FIELD_NAMES_PROPERTY = "fieldNames"; //$NON-NLS-1$
 
+  private static Log logger = LogFactory.getLog(ModelerController.class);
   
   private ModelerWorkspace model;
   
@@ -84,7 +83,7 @@ public class ModelerController extends AbstractXulEventHandler{
     return "modeler";
   }
   
-  public void init(){
+  public void init() throws ModelerException{
 
     bf.setDocument(document);
     
@@ -127,16 +126,11 @@ public class ModelerController extends AbstractXulEventHandler{
       modelNameBinding.fireSourceChanged();
       serversBinding.fireSourceChanged();
       visualizationsBinding.fireSourceChanged();
-    } catch (IllegalArgumentException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
-    } catch (XulException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
-    } catch (InvocationTargetException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
+    } catch (Exception e) {
+      logger.info("Error firing off initial bindings", e);
+      throw new ModelerException(e);
     }
+    
   }
   
   public void setSelectedDims(List<Object> selectedDims) {
@@ -186,22 +180,27 @@ public class ModelerController extends AbstractXulEventHandler{
     }
   }
   
-  public void visualize() {
-    ModelerWorkspaceUtil.populateDomain(model);
-    openVisualizer();
+  public void visualize() throws ModelerException{
+    try{
+      ModelerWorkspaceUtil.populateDomain(model);
+      openVisualizer();
+    } catch(Exception e){
+      logger.info(e);
+      throw new ModelerException(e);
+    }
   }
   
-  public void publish() {
-    ModelerWorkspaceUtil.populateDomain(model);
-
-    // publish to the server
-    try {
+  public void publish() throws ModelerException{
+    try{
+      ModelerWorkspaceUtil.populateDomain(model);
+    
       ModelServerPublish publisher = new ModelServerPublish();
 
       publisher.setBiServerId(model.getSelectedServer());
       publisher.publishToServer( model.getModelName() + ".mondrian.xml", model.getDatabaseName(), model.getModelName(), true );
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch(Exception e){
+      logger.info(e);
+      throw new ModelerException(e);
     }
 
   }
@@ -343,4 +342,5 @@ public class ModelerController extends AbstractXulEventHandler{
   		theVisualization.openVisualizer(model.getModelName(), model.getDatabaseName());
   	}
   }
+  
 }

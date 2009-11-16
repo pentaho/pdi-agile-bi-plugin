@@ -1,6 +1,9 @@
 package org.pentaho.agilebi.pdi.modeler;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
@@ -17,8 +20,10 @@ public class XulUI {
 
   XulRunner runner;
   BindingFactory bf;
+
+  private static Log logger = LogFactory.getLog(XulUI.class);
   
-  public XulUI( Shell shell, XulEventHandler... handlers ){
+  public XulUI( Shell shell, XulEventHandler... handlers ) throws ModelerException{
     try{
       SwtXulLoader loader = new SwtXulLoader();
       loader.setOuterContext(shell);
@@ -36,8 +41,8 @@ public class XulUI {
       runner.addContainer(container);
       runner.initialize();
     } catch(Exception e){
-      System.out.println(e.getMessage());
-      e.printStackTrace();
+      logger.info(e);
+      throw new ModelerException(e);
     }
   }
   
@@ -61,9 +66,8 @@ public class XulUI {
     return container;
   }
   
-  public static void main(String[] args){
-    new XulUI(null, null).startDebugWindow();
-    
+  public Menu getMenuBar(){
+    return (Menu) container.getDocumentRoot().getRootElement().getElementById("mainMenu").getManagedObject();
   }
   
 }
