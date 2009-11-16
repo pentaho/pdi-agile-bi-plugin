@@ -39,5 +39,8 @@
 
 	<!-- test dependencies -->
         <dependency org="junit"              name="junit"              rev="4.4" conf="test->default"/>
+        
+        <exclude org="xerces" module="xerces"/>
+        <exclude org="xml-apis" module="xml-apis"/>
     </dependencies>
 </ivy-module>
