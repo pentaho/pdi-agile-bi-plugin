@@ -150,7 +150,7 @@
                     <hbox>
                         <label value="Available:"/>
                         <spacer flex="1"/>                   
-                        <button onclick="modeler.refreshFields()"  image="images/refresh.png" context="testpopup"/>
+                        <button onclick="modeler.refreshFields()"  image="images/refresh.png"/>
                     </hbox>
 					<listbox id="fieldList" flex="1" seltype="multi" pen:binding="fieldName">
 						<listitem label="field"/>
@@ -271,8 +271,4 @@
 		</vbox>
 	</vbox>
 	
-	<menupopup id="testpopup">
-		<menuitem value="file-new-trans" acceltext="CTRL-N"  accesskey="ctrl-n" label="%Spoon.Menu.Transformation"/>
-		<menuitem value="file-new-job" acceltext="CTRL-ALT-N"  accesskey="ctrl-alt-n" label="%Spoon.Menu.Job"/>
-	</menupopup>
 </window>
