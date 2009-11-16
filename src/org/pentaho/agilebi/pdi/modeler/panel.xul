@@ -138,14 +138,14 @@
 			</hbox>
 			<hbox>
 				<spacer flex="1"/>
-				
+				<label value="New:"/>
 				<menulist id="visualizationlist" label="">
 				  <menupopup>
 				    <menuitem label="Dummy Visualization"/>
 				  </menupopup>
 				</menulist>
 				
-				<button label="Visualize" id="exploreButton" onclick="modeler.visualize()"/>
+				<button label="Go" id="exploreButton" onclick="modeler.visualize()"/>
 				<button label="Publish" id="publishButton" onclick="modeler.publish()"/>
 				
 				<menulist id="serverlist" label="">
