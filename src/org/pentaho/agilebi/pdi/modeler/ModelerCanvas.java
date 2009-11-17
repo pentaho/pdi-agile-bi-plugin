@@ -1,50 +1,16 @@
 package org.pentaho.agilebi.pdi.modeler;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Vector;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
-import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
-import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
-import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.di.core.row.ValueMetaInterface;
-import org.pentaho.di.trans.TransMeta;
-import org.pentaho.di.trans.step.StepMeta;
-import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
-import org.pentaho.di.ui.core.PropsUI;
-import org.pentaho.di.ui.core.gui.GUIResource;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.TabItemInterface;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.di.ui.util.ImageUtil;
-import org.pentaho.pms.core.exception.PentahoMetadataException;
-import org.pentaho.ui.xul.XulEventSourceAdapter;
-import org.pentaho.ui.xul.XulException;
-import org.pentaho.ui.xul.binding.Binding;
-import org.pentaho.ui.xul.binding.BindingConvertor;
-import org.pentaho.ui.xul.binding.BindingFactory;
-import org.pentaho.ui.xul.binding.Binding.Type;
-import org.pentaho.ui.xul.components.XulLabel;
-import org.pentaho.ui.xul.components.XulMenuList;
-import org.pentaho.ui.xul.components.XulTextbox;
-import org.pentaho.ui.xul.containers.XulDialog;
-import org.pentaho.ui.xul.containers.XulListbox;
-import org.pentaho.ui.xul.containers.XulTabbox;
-import org.pentaho.ui.xul.containers.XulTree;
-import org.pentaho.ui.xul.containers.XulMenu;
-import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
-import org.pentaho.ui.xul.stereotype.Bindable;
 import org.pentaho.xul.swt.tab.TabItem;
 import org.pentaho.xul.swt.tab.TabSet;
 
@@ -83,6 +49,8 @@ public class ModelerCanvas implements TabItemInterface {
   private String tableName;
   
   private XulUI xul;
+  
+  private static Log logger = LogFactory.getLog(ModelerCanvas.class);
   /**
    * returns the name identifier for this event handler that's used by the xul framework
    */
@@ -103,7 +71,7 @@ public class ModelerCanvas implements TabItemInterface {
     return instance;
   }
   
-  public static void openModeler() {
+  public static void openModeler() throws ModelerException {
     // find the source step...
    
     
@@ -113,7 +81,7 @@ public class ModelerCanvas implements TabItemInterface {
   }
   
   
-  public void createModelerTab() {
+  public void createModelerTab() throws ModelerException {
 
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     TabSet tabSet = spoon.getTabSet();
@@ -126,20 +94,14 @@ public class ModelerCanvas implements TabItemInterface {
 
     tabItem.setImage(modelTabImage);
 
-    ModelerWorkspace model = null;
-    try{
-      model = ModelerWorkspaceUtil.createModelFromOutputStep();
-    } catch (PentahoMetadataException e){
-      e.printStackTrace();
-      return;
-    }
+    ModelerWorkspace  model = ModelerWorkspaceUtil.createModelFromOutputStep();
     
     ModelerController controller = new ModelerController(model);
     
     try{
       xul = new XulUI(spoon.getShell(), controller);
     } catch(ModelerException e){
-      Spoon.getInstance().getLog().logError("AGILE BI Modeler", "unknown error generating UI", e);
+      Spoon.getInstance().getLog().logError("AGILE BI Modeler", e.getLocalizedMessage(), e);
     }
     Composite comp = xul.getMainPanel();
     comp.setParent(cTabFolder);
@@ -154,12 +116,7 @@ public class ModelerCanvas implements TabItemInterface {
     int idx = tabfolder.indexOf(tabItem);
     // keep the focus on the graph
     tabfolder.setSelected(idx);
-    
-
   }
-  
-  
-  
   
   public boolean canBeClosed() {
     // TODO Auto-generated method stub

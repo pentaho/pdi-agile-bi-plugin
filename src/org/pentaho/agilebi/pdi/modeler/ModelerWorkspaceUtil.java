@@ -23,15 +23,11 @@ import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
 import org.pentaho.di.ui.spoon.Spoon;
-import org.pentaho.metadata.automodel.SchemaTable;
 import org.pentaho.metadata.model.Category;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.LogicalTable;
-import org.pentaho.metadata.model.SqlPhysicalColumn;
-import org.pentaho.metadata.model.SqlPhysicalTable;
-import org.pentaho.metadata.model.concept.security.SecurityOwner;
 import org.pentaho.metadata.model.concept.types.AggregationType;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.model.olap.OlapCube;
@@ -42,7 +38,6 @@ import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
 import org.pentaho.metadata.model.olap.OlapMeasure;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.metadata.util.XmiParser;
-import org.pentaho.pms.core.exception.PentahoMetadataException;
 
 /** 
  * Utility class for generating ModelerModels for the User Interface.
@@ -64,7 +59,7 @@ public class ModelerWorkspaceUtil {
     DEFAULT_AGGREGATION_LIST.add(AggregationType.MAXIMUM);
   }
   
-  public static ModelerWorkspace createModelFromOutputStep() throws PentahoMetadataException{
+  public static ModelerWorkspace createModelFromOutputStep() throws ModelerException {
     
     String MODELER_NAME = "OutputStepModeler"; //$NON-NLS-1$
 
@@ -95,12 +90,11 @@ public class ModelerWorkspaceUtil {
     try {
       rowMeta = transMeta.getStepFields(stepMeta);
     } catch (KettleException e) {
-      e.printStackTrace();
-      SpoonFactory.getInstance().messageBox( "Could not get transformation step metadata", MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException("Could not get transformation step metadata");
+    	logger.info(e);
+      throw new ModelerException("Could not get transformation step metadata", e);
     }
     if(rowMeta == null){
-      throw new IllegalStateException("Could not get transformation step metadata");
+   	 throw new ModelerException("Could not get transformation step metadata");
     }
     
     
@@ -151,6 +145,7 @@ public class ModelerWorkspaceUtil {
         selectedAgg = AggregationType.valueOf(f.getAggTypeDesc());
       } catch(IllegalArgumentException e){
         logger.info("Could not parse Aggregation string to type: "+f.getAggTypeDesc(), e);
+        throw new ModelerException(e);
       }
       lCol.setAggregationType(selectedAgg);
       cat.addLogicalColumn(lCol);
@@ -297,6 +292,4 @@ public class ModelerWorkspaceUtil {
        */
 
   }
-  
-  
 }

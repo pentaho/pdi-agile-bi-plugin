@@ -2,50 +2,17 @@ package org.pentaho.agilebi.pdi.modeler;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
-import org.pentaho.di.core.Const;
-import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.core.gui.SpoonFactory;
-import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.di.core.row.ValueMetaInterface;
-import org.pentaho.di.trans.TransMeta;
-import org.pentaho.di.trans.step.StepMeta;
-import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
-import org.pentaho.di.ui.spoon.Spoon;
-import org.pentaho.metadata.model.Category;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
-import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.LogicalTable;
-import org.pentaho.metadata.model.SqlPhysicalColumn;
-import org.pentaho.metadata.model.SqlPhysicalTable;
-import org.pentaho.metadata.model.concept.types.LocalizedString;
-import org.pentaho.metadata.model.olap.OlapCube;
-import org.pentaho.metadata.model.olap.OlapDimension;
-import org.pentaho.metadata.model.olap.OlapDimensionUsage;
-import org.pentaho.metadata.model.olap.OlapHierarchy;
-import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
-import org.pentaho.metadata.model.olap.OlapMeasure;
-import org.pentaho.metadata.util.MondrianModelExporter;
-import org.pentaho.metadata.util.XmiParser;
-import org.pentaho.pms.core.exception.PentahoMetadataException;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
 import org.pentaho.ui.xul.util.AbstractModelList;
 
@@ -58,7 +25,6 @@ import org.pentaho.ui.xul.util.AbstractModelList;
  *
  */
 public class ModelerWorkspace extends XulEventSourceAdapter{
-
 
   private FieldsCollection inPlayFields = new FieldsCollection();
   
@@ -79,6 +45,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   private String schemaName;
   
   private Domain domain;
+  
+  private static Log logger = LogFactory.getLog(ModelerWorkspace.class);
   
   public ModelerWorkspace(){
     
@@ -148,10 +116,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 
 
   
-  public void publishToServer() throws Exception {
-    publishOlapSchemaToServer( this.modelName+".mondrian.xml" );
-  }
-  
   public void addDimension(Object obj){
 
     DimensionMetaData dimension = new DimensionMetaData(obj.toString());
@@ -168,6 +132,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 
     addDimension(dimension);
   }
+  
   public void addDimension(DimensionMetaData dim){
     this.dimensions.add(dim);
   }
@@ -261,62 +226,13 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     this.firePropertyChange("fields", null, inPlayFields);
   }
   
-  public void publishOlapSchemaToServer( String schemaFilePath ) throws Exception {
-    
-    String publishPath = "models";
-    File publishFile = new File( "models/"+schemaFilePath );
-    String jndiName = source.getDatabaseName(); // assume JNDI for now
-    boolean enableXmla = false;
-    
-    ModelServerPublish publisher = new ModelServerPublish();
-    publisher.setBiServerId(selectedServer);
-    int result = publisher.publish(publishPath, publishFile, jndiName, schemaName, enableXmla);
-    String serverName = publisher.getServerName();
-    switch (result) {
-      case ModelServerPublish.PUBLISH_CATALOG_EXISTS: {
-        SpoonFactory.getInstance().messageBox( "Catalog exists already", "Publish To Server: "+serverName, false, Const.ERROR);
-        break;
-      }
-      case ModelServerPublish.PUBLISH_DATASOURCE_PROBLEM: {
-        SpoonFactory.getInstance().messageBox( "Datasource problem", "Publish To Server: "+serverName, false, Const.ERROR);
-        break;
-      }
-      case ModelServerPublish.PUBLISH_FAILED: {
-        SpoonFactory.getInstance().messageBox( "Publish failed", "Publish To Server: "+serverName, false, Const.ERROR);
-        break;
-      }
-      case ModelServerPublish.PUBLISH_FILE_EXISTS: {
-        SpoonFactory.getInstance().messageBox( "File exists already", "Publish To Server: "+serverName, false, Const.ERROR);
-        break;
-      }
-      case ModelServerPublish.PUBLISH_INVALID_PASSWORD: {
-        SpoonFactory.getInstance().messageBox( "Invalid pssword", "Publish To Server: "+serverName, false, Const.ERROR);
-        break;
-      }
-      case ModelServerPublish.PUBLISH_INVALID_USER_OR_PASSWORD: {
-        SpoonFactory.getInstance().messageBox( "Invalid user id or password", "Publish To Server: "+serverName, false, Const.ERROR);
-        break;
-      }
-      case ModelServerPublish.PUBLISH_SUCCESS: {
-        SpoonFactory.getInstance().messageBox( "Publish was successful", "Publish To Server: "+serverName, false, Const.ERROR);
-        break;
-      }
-      case ModelServerPublish.PUBLISH_UNKNOWN_PROBLEM: {
-        SpoonFactory.getInstance().messageBox( "Unknown problem encountered while publishing", "Publish To Server: "+serverName, false, Const.ERROR);
-        break;
-      }
-    }
-  }
-  
-
   public void setModelSource(IModelerSource source) {
     this.source = source;
   }
 
   public IModelerSource getModelSource() {
     return source;
-  }
-    
+  }    
 
   public List<FieldMetaData> getFields() {
     return inPlayFields;
@@ -325,11 +241,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public void setFields(List<FieldMetaData> fields){
     this.inPlayFields.clear();
     this.inPlayFields.addAll(fields);
-    
   }
 
- public void refresh(){
-    try {
+ public void refresh() throws ModelerException {
       Domain newDomain = source.generateDomain();
       //ModelerWorkspaceUtil.updateDomain(domain, newDomain);
       
@@ -396,10 +310,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
         }
       }
       //fireDimensionsChanged();
-      
-    } catch (PentahoMetadataException e) {
-      e.printStackTrace();
-    }
   }
 
   public DimensionMetaDataCollection getDimensions(){
@@ -442,12 +352,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   private Domain updateDomain(){
     // TODO: update domain with changes
     return domain;
-  }
-  
-  
+  }  
 
-  public static class FieldsCollection extends AbstractModelList<FieldMetaData>{
-    
+  public static class FieldsCollection extends AbstractModelList<FieldMetaData>{    
   }
 
   public static class DimensionMetaDataCollection extends AbstractModelList<DimensionMetaData>{

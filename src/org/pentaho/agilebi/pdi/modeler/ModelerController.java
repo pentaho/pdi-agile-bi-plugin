@@ -209,7 +209,7 @@ public class ModelerController extends AbstractXulEventHandler{
    * Goes back to the source of the metadata and see if anything has changed.
    * Updates the UI accordingly
    */
-  public void refreshFields() {
+  public void refreshFields() throws ModelerException {
 
     model.refresh();
   }

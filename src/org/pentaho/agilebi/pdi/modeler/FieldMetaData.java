@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Vector;
 
 import org.pentaho.metadata.model.LogicalColumn;
-import org.pentaho.metadata.model.concept.types.AggregationType;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
 
 /**
@@ -13,7 +12,8 @@ import org.pentaho.ui.xul.XulEventSourceAdapter;
  *
  */
 public class FieldMetaData extends XulEventSourceAdapter {
-  String rowNum;
+  
+	String rowNum;
   String fieldName;
   String format;
   String displayName;
@@ -21,6 +21,7 @@ public class FieldMetaData extends XulEventSourceAdapter {
   String levelTypeDesc = "---";
   String aggTypeDesc;
   LogicalColumn logicalColumn;
+  
   private List<String> aggTypes = new ArrayList<String>();
   {
     aggTypes.add("NONE");

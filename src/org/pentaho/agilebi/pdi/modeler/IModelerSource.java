@@ -1,9 +1,6 @@
 package org.pentaho.agilebi.pdi.modeler;
 
-import java.util.List;
-
 import org.pentaho.metadata.model.Domain;
-import org.pentaho.pms.core.exception.PentahoMetadataException;
 
 /**
  * Provides a ModelerModel with information needed to generate the UI and well as the final
@@ -13,6 +10,6 @@ import org.pentaho.pms.core.exception.PentahoMetadataException;
  * @author nbaker
  */
 public interface IModelerSource {
-  public Domain generateDomain() throws PentahoMetadataException;
+  public Domain generateDomain() throws ModelerException;
   public String getDatabaseName();
 }
