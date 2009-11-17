@@ -34,6 +34,10 @@
 				value="pdi-ce-agile-bi" 
 				description="Name of the pdi distribution with agile bi"/>
 	
+	<target name="resolve"
+	          depends="resolve-default, resolve-test, ivy.check-releasable"
+	          description="Retrieves all the dependent libraries" />
+
 	<target name="dist" depends="resolve,jar,package" description="Builds and packages the application" />
 	
 	<target name="clean-dist">
@@ -52,19 +56,35 @@
     <mkdir dir="${stage.dir}" />
   </target>
 	
-  <target name="assemble.copy-libs" depends="assemble-embedded-server">
-    <copy todir="${approot.stage.dir}">
-      <!-- <fileset dir="${lib.dir}" /> -->
-      <fileset file="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar" />
+  <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server">
+    <copy todir="${approot.stage.dir}" overwrite="true">
+      <fileset dir="${package.resdir}" />
     </copy>
+  	<delete>
+		<fileset dir="${approot.stage.dir}/lib">
+			
+			<!-- first remove duplicate jars -->
+			
+			<!-- swt jars -->
+			<include name="x86-*.jar"/>
+			<include name="runtime-*.jar"/>
+			<!-- xul jars -->
+			<include name="pentaho-xul-*.jar"/>
+			<!-- kettle jars -->
+			<include name="kettle-*.jar"/>
+			<!-- jetty jars -->
+			<include name="jetty-*.jar"/>
+			<!-- reporting libcore and libformula -->
+			<include name="libbase-*.jar"/>
+			<include name="libformula-*.jar"/>
+			<!-- spring core -->
+  			<include name="spring-core*.jar"/>
+			
+			<!-- second, remove unnecessary jars -->
+			
+		</fileset>
+  	</delete>
   </target>
-	
-	  <target name="assemble" depends="assemble.init,assemble.copy-libs">
-	    <copy todir="${approot.stage.dir}" overwrite="true">
-	      <fileset dir="${package.resdir}" />
-	    </copy>
-	    <chmod perm="a+x" dir="${stage.dir}" includes="**/*.sh" />
-	  </target>
 	
 	<target name="assemble-embedded-server">
 		<!-- Step 1: Unzip a platform zip into staging dir -->
@@ -76,16 +96,19 @@
 		</unzip>
 		<!-- Step 2: Move / Remove platform as necessary -->
 
-		<mkdir dir="${stage.dir}/agile-bi/platform/webapps"/>
-		<move file="${platform.unzip.dir}/biserver-ce/tomcat/webapps/pentaho" todir="${stage.dir}/agile-bi/platform/webapps"/>
-		<move file="${platform.unzip.dir}/biserver-ce/pentaho-solutions" todir="${stage.dir}/agile-bi/platform"/>
+		<mkdir dir="${approot.stage.dir}/platform/webapps"/>
+		<move file="${platform.unzip.dir}/biserver-ce/tomcat/webapps/pentaho" todir="${approot.stage.dir}/platform/webapps"/>
+		<move file="${platform.unzip.dir}/biserver-ce/pentaho-solutions" todir="${approot.stage.dir}/platform"/>
+		<!-- remove all the platform jar files, these are now part of the kettle classpath
+		     and are brought over via ivy -->
 		<delete>
-			<fileset dir="${stage.dir}/agile-bi/platform/webapps/pentaho/WEB-INF/lib">
-				<include name="pentaho-reporting-engine-classic-extensions-kettle-*.jar"/>
+			<fileset dir="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/lib">
+				<include name="*.jar"/>
 			</fileset>
 		</delete>
-		
-		<!-- Step 3: Overlay any specific files (web.xml, etc) -->
+
+		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/data-access-plugin"/>
+
 	</target>
 	
 	<!-- this target builds a kettle release that includes the agile bi plugin -->

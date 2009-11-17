@@ -10,7 +10,7 @@ import org.mortbay.jetty.webapp.WebAppContext;
 import org.pentaho.di.core.logging.LogWriter;
 
 public class JettyServer {
-
+  
   private static Class<?> PKG = JettyServer.class; // for i18n purposes, needed by Translator2!!   $NON-NLS-1$
 
   private static LogWriter log = LogWriter.getInstance();
@@ -22,12 +22,18 @@ public class JettyServer {
   private String hostname;
 
   private int port;
+  
+  private String webappsFolder = "plugins/spoon/agile-bi/platform/webapps"; //$NON-NLS-1$
 
   public JettyServer(String hostname, int port) throws Exception {
     this.hostname = hostname;
     this.port = port;
   }
 
+  public void setWebappsFolder(String webappsFolder) {
+    this.webappsFolder = webappsFolder;
+  }
+  
   public Server getServer() {
     return server;
   }
@@ -37,7 +43,7 @@ public class JettyServer {
 
     WebAppContext pentahoContext = new WebAppContext();
     pentahoContext.setContextPath("/pentaho"); //$NON-NLS-1$
-    pentahoContext.setWar("plugins/spoon/agile-bi/platform/webapps/pentaho"); //$NON-NLS-1$
+    pentahoContext.setWar(webappsFolder + "/pentaho"); //$NON-NLS-1$
     
     pentahoContext.setParentLoaderPriority(true);
     

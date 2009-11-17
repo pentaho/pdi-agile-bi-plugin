@@ -10,7 +10,7 @@
     
     <dependencies defaultconf="default->default">
 
-        <!--  Special Note:  This ivy file only resolves internal dependencies -->
+        <dependency org="commons-vfs"        name="commons-vfs"         rev="1.0" conf="default->default"/>
 
         <dependency org="pentaho"        name="pentaho-metadata"         rev="${dependency.pentaho-metadata.revision}" conf="default->default" changing="true"/>
         <dependency org="pentaho.kettle" name="kettle-engine"            rev="${dependency.kettle.revision}" conf="default->default" changing="true"/>
@@ -27,17 +27,24 @@
         
         <!-- pentaho-database and pentaho-xul-framework must match JARs required by kettle-ui-swt -->
         <!-- this manual sync should go away once this project is propertly ivy-ized -->
-        <dependency org="pentaho"        name="pentaho-database"         rev="${dependency.pentaho-database.revision}" conf="default->default" changing="true" />
         
+        <dependency org="pentaho" name="pentaho-database" rev="${dependency.pentaho-database.revision}" conf="default->default" changing="true" />        
         <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default" changing="true"/>
         <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default" changing="true"/>
         
         <dependency org="pentaho" name="pentaho-bi-platform-engine-core" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default"/>
-        
+        <dependency org="pentaho" name="pentaho-bi-platform-engine-services" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default"/>
+        <dependency org="pentaho" name="pentaho-bi-platform-repository" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default"/>
         <dependency org="pentaho" name="pentaho-bi-platform-util" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default"/>
-   
-
-	<!-- test dependencies -->
+        
+        <!-- Pentaho -->
+        <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="TRUNK-SNAPSHOT" changing="true" />
+        <dependency org="pentaho" name="pentaho-bi-platform-security-userroledao" rev="TRUNK-SNAPSHOT" changing="true" />
+        <dependency org="pentaho" name="pentaho-bi-platform-legacy" rev="TRUNK-SNAPSHOT" changing="true" />
+        <dependency org="pentaho" name="mantle" rev="TRUNK-SNAPSHOT" changing="true" />
+        <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-core-platform-plugin" rev="TRUNK-SNAPSHOT" changing="true"/>
+        
+        <!-- test dependencies -->
         <dependency org="junit"              name="junit"              rev="4.4" conf="test->default"/>
         
         <exclude org="xerces" module="xerces"/>

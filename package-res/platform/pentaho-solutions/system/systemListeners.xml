@@ -13,7 +13,7 @@
       <list>
         <bean id="jfreeReportSystemListener" class="org.pentaho.platform.plugin.action.jfreereport.JFreeReportSystemListener" />
         <bean id="mondrianSystemListener" class="org.pentaho.platform.plugin.action.mondrian.MondrianSystemListener" />
-        <bean id="pooledDataSourceSystemListener" class="org.pentaho.platform.engine.services.connection.datasource.dbcp.PooledDatasourceSystemListener" />
+        <!--  <bean id="pooledDataSourceSystemListener" class="org.pentaho.platform.engine.services.connection.datasource.dbcp.PooledDatasourceSystemListener" /> -->
         <!--bean id="pentahoContentRepositorySystemListener" class="org.pentaho.platform.repository.pcr.PentahoContentRepositorySystemListener"/-->
         <!--
           <bean id="nonPooledDataSourceSystemListener"

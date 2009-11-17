@@ -372,13 +372,14 @@ public class BrowserApp {
     try {
 
       // start Jetty
-      File f = new File("agile-bi/platform/pentaho-solutions/system/simple-jndi");
-      String jndiPath = f.getAbsolutePath();
-      System.setProperty("java.naming.factory.initial", "org.osjava.sj.SimpleContextFactory"); //$NON-NLS-1$ //$NON-NLS-2$
-      System.setProperty("org.osjava.sj.root", jndiPath); //$NON-NLS-1$
-      System.setProperty("org.osjava.sj.delimiter", "/"); //$NON-NLS-1$ //$NON-NLS-2$
+//      File f = new File("plugins/spoon/agile-bi/platform/pentaho-solutions/system/simple-jndi");
+//      String jndiPath = f.getAbsolutePath();
+//      System.setProperty("java.naming.factory.initial", "org.osjava.sj.SimpleContextFactory"); //$NON-NLS-1$ //$NON-NLS-2$
+//      System.setProperty("org.osjava.sj.root", jndiPath); //$NON-NLS-1$
+//      System.setProperty("org.osjava.sj.delimiter", "/"); //$NON-NLS-1$ //$NON-NLS-2$
 
       JettyServer server = new JettyServer("localhost", 9999); //$NON-NLS-1$
+      // server.setWebappsFolder("");
       server.startServer();
 
       Display display = new Display();
