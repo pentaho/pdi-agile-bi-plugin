@@ -105,7 +105,6 @@ public class ModelerCanvas implements TabItemInterface {
     }
     Composite comp = xul.getMainPanel();
     comp.setParent(cTabFolder);
-    spoon.getShell().setMenuBar(xul.getMenuBar());
     tabItem.setControl(comp);
     
     TabMapEntry entry = new TabMapEntry(tabItem, MODELER_NAME, this, TabMapEntry.OBJECT_TYPE_BROWSER);
