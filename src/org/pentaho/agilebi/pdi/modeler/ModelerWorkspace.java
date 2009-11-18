@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -12,7 +13,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
+import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.LogicalTable;
+import org.pentaho.metadata.model.olap.OlapCube;
+import org.pentaho.metadata.model.olap.OlapDimension;
+import org.pentaho.metadata.model.olap.OlapHierarchy;
+import org.pentaho.metadata.model.olap.OlapMeasure;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
 import org.pentaho.ui.xul.util.AbstractModelList;
 
@@ -343,6 +349,56 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     }
     
     firePropertyChange("availableFields", null, getAvailableFields());
+    
+    
+    LogicalModel lModel = domain.getLogicalModels().get(0);
+    
+    
+    List<OlapDimension> theDimensions = (List) lModel.getProperty("olap_dimensions");
+    if(theDimensions != null) {
+	    Iterator<OlapDimension> theDimensionItr = theDimensions.iterator();
+	    while(theDimensionItr.hasNext()) {
+	    	OlapDimension theDimension = theDimensionItr.next();
+	    	
+	    	DimensionMetaData theDimensionMD = new DimensionMetaData(theDimension.getName());
+	    	//TODO set dimension properties.
+	    	
+	    	
+	    	List<OlapHierarchy> theHierarchies = (List) theDimension.getHierarchies();
+	    	Iterator<OlapHierarchy> theHierarchiesItr = theHierarchies.iterator();
+	    	while(theHierarchiesItr.hasNext()) {
+	    		OlapHierarchy theHierarchy =  theHierarchiesItr.next();
+	    		HierarchyMetaData theHierarchyMD = new HierarchyMetaData(theHierarchy.getName());
+	      	//TODO set hierarchy properties.
+	    		theDimensionMD.add(theHierarchyMD);
+	    		
+	    	}
+	    	this.dimensions.add(theDimensionMD);
+	    }
+    }
+    
+    List<OlapCube> theCubes = (List) lModel.getProperty("olap_cubes");
+    if(theCubes != null) {
+	    Iterator<OlapCube> theCubeItr = theCubes.iterator();
+	    while(theCubeItr.hasNext()) {
+	    	OlapCube theCube = theCubeItr.next();
+	    	
+	    	List<OlapMeasure> theMeasures = theCube.getOlapMeasures();
+	    	Iterator<OlapMeasure> theMeasuresItr = theMeasures.iterator();
+	    	while(theMeasuresItr.hasNext()) {
+	    		OlapMeasure theMeasure = theMeasuresItr.next();
+	    		
+	    		FieldMetaData theMeasureMD = new FieldMetaData();
+	    		
+	    		theMeasureMD.setFieldName(theMeasure.getName());
+	    		theMeasureMD.setLogicalColumn(theMeasure.getLogicalColumn());
+	    		//TODO set measure properties.
+	    		this.inPlayFields.add(theMeasureMD);
+	    		
+	    	}
+	    }
+    }
+    
   }
   
   public Domain getDomain(){
@@ -360,6 +416,4 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public static class DimensionMetaDataCollection extends AbstractModelList<DimensionMetaData>{
     
   }
-  
-  
 }

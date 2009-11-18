@@ -129,6 +129,9 @@
 			</hbox>
 			<hbox>
 				<spacer flex="1"/>
+				<button label="Save" id="saveModelButton" onclick="modeler.saveWorkspace()"/>
+				<button label="Load" id="loadModelButton" onclick="modeler.loadWorkspace()"/>
+				
 				<label value="New:"/>
 				<menulist id="visualizationlist" label="">
 				  <menupopup>

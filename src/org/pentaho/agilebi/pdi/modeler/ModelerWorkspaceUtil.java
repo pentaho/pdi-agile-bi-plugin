@@ -19,6 +19,7 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.core.row.RowMetaInterface;
+import org.pentaho.di.repository.Repository;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
@@ -37,7 +38,11 @@ import org.pentaho.metadata.model.olap.OlapHierarchy;
 import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
 import org.pentaho.metadata.model.olap.OlapMeasure;
 import org.pentaho.metadata.util.MondrianModelExporter;
+import org.pentaho.metadata.util.SerializationService;
 import org.pentaho.metadata.util.XmiParser;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /** 
  * Utility class for generating ModelerModels for the User Interface.
@@ -99,6 +104,11 @@ public class ModelerWorkspaceUtil {
     
     
     OutputStepModelerSource source = new OutputStepModelerSource(tableOutputMeta, databaseMeta, rowMeta);
+    source.setFileName(transMeta.getFilename());
+    Repository repository = transMeta.getRepository();
+    if(repository != null) {
+    	source.setRepositoryName(repository.getName());	
+    }    
     Domain d = source.generateDomain();
     
     
@@ -292,4 +302,42 @@ public class ModelerWorkspaceUtil {
        */
 
   }
+  
+  public static void saveWorkspace(ModelerWorkspace aModel) throws ModelerException {
+  	try {
+		  	SerializableModelWrapper theModelWrapper = new SerializableModelWrapper();
+		  	
+		    IModelerSource theSource = aModel.getModelSource();
+		  	theModelWrapper.setSource(theSource);
+		    
+		  	SerializationService theSerializer = new SerializationService();
+		  	populateDomain(aModel);
+		  	String theDomain = theSerializer.serializeDomain(aModel.getDomain());
+		  	theModelWrapper.setDomain(theDomain);
+		  	
+		  	File theFile = new File("my_metadata.xml");
+		  	theFile.createNewFile();
+		  	FileOutputStream out = new FileOutputStream(theFile);
+		  	
+		  	XStream xstream = new XStream(new DomDriver());
+		    xstream.toXML(theModelWrapper, out);
+  	} catch (Exception e) {
+  		logger.info(e.getLocalizedMessage());
+  		new ModelerException(e);
+  	}
+  }
+  
+  public static void loadWorkspace(String aXml, ModelerWorkspace aModel) throws ModelerException {
+ 	  XStream xstream = new XStream(new DomDriver());
+  	SerializableModelWrapper theModelWrapper = (SerializableModelWrapper) xstream.fromXML(aXml);
+  	String theDomainXML = theModelWrapper.getDomain();
+  	
+  	IModelerSource theSource = theModelWrapper.getSource();
+  	theSource.initialize();  	
+  	SerializationService theSerializer = new SerializationService();
+  	Domain theDomain = theSerializer.deserializeDomain(theDomainXML);
+  	aModel.setDomain(theDomain);
+
+  	aModel.setModelSource(theSource);
+  }  
 }

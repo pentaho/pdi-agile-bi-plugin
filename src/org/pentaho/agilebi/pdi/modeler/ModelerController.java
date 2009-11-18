@@ -1,5 +1,8 @@
 package org.pentaho.agilebi.pdi.modeler;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -340,6 +343,28 @@ public class ModelerController extends AbstractXulEventHandler{
   	IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
   	if(theVisualization != null) {
   		theVisualization.openVisualizer(model.getModelName(), model.getDatabaseName());
+  	}
+  }
+  
+  public void saveWorkspace() throws ModelerException {
+  	ModelerWorkspaceUtil.saveWorkspace(model);
+  }
+  
+  public void loadWorkspace() throws ModelerException {
+  	
+  	try {
+	  	StringBuffer theStringBuffer = new StringBuffer();
+	  	FileReader theReader = new FileReader(new File("my_metadata.xml"));
+	  	BufferedReader theBuffer = new BufferedReader(theReader);
+	  	String theLine = null;
+	  	while((theLine = theBuffer.readLine()) != null) {
+	  		theStringBuffer.append(theLine);
+	  	}
+	  	ModelerWorkspaceUtil.loadWorkspace(theStringBuffer.toString(), getModel());
+	  	
+  	} catch(Exception e) {
+  		logger.info(e.getLocalizedMessage());
+  		new ModelerException(e);
   	}
   }
   
