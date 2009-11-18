@@ -48,7 +48,7 @@ public class AnalyzerBrowser extends SpoonBrowser {
       // Add a few default key listeners
       //
       ToolBar toolBar = (ToolBar) toolbar.getNativeObject();
-      toolBar.addKeyListener(spoon.defKeys);
+//      toolBar.addKeyListener(spoon.defKeys);
       
       addToolBarListeners();
     } catch (Throwable t ) {
