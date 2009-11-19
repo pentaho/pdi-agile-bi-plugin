@@ -88,6 +88,15 @@
 			
 			<!-- second, remove unnecessary jars -->
 			
+			<!-- pentaho reporting -->
+			<include name="pentaho-reporting-*.jar"/>
+			<include name="lib*.jar"/>
+			<!-- batik -->
+			<include name="batik-*.jar"/>
+			<!-- jackrabbit -->
+  			<include name="jackrabbit-*.jar"/>
+			<!-- jasperreports -->
+  			<include name="jasperreports-*.jar"/>			
 		</fileset>
   	</delete>
   </target>
@@ -114,6 +123,8 @@
 		</delete>
 
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/data-access-plugin"/>
+		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/BIRT"/>
+		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/reporting"/>
 
 	</target>
 	
