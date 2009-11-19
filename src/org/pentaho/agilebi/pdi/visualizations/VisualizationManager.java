@@ -1,11 +1,17 @@
 package org.pentaho.agilebi.pdi.visualizations;
 
 import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class VisualizationManager {
 
@@ -13,89 +19,73 @@ public class VisualizationManager {
 	private List<IVisualization> visualizations;
 	private static VisualizationManager instance;
 
-	public static final String PLUGIN_FILE = "plugin.xml";
+	public static final String PLUGIN_FILE = "plugin.xml"; //$NON-NLS-1$
 
+	public static VisualizationManager getInstance() {
+	  if (instance == null) {
+	    instance = new VisualizationManager("plugins/spoon/agile-bi/visualizations"); //$NON-NLS-1$
+	  }
+	  return instance;
+	}
+	
+	protected VisualizationManager() {
+	  visualizations = new ArrayList<IVisualization>();
+	}
+	
 	public VisualizationManager(String aLocation) {
 		visualizations = new ArrayList<IVisualization>();
 		pluginsLocation = new File(aLocation);
 		loadVisualizations(pluginsLocation);
 	}
 
-	public static VisualizationManager getInstance() {
-		if (instance == null) {
-			instance = new VisualizationManager("plugins/spoon/agile-bi/visualizations");
-		}
-		return instance;
-	}
-
-	private void loadVisualizations(File aFile) {
-		try {
-			VisualizationMetaData theMetaData = null;
-			File[] theFiles = aFile.listFiles();
-			for (int i = 0; i < theFiles.length; i++) {
-				File theFile = theFiles[i];
-				if (theFile.isFile()) {
-					if (theFile.getName().equals(PLUGIN_FILE)) {
-						theMetaData = new VisualizationMetaData(theFile);
-						if (theMetaData.isDefaultVisualization()) {
-
-							// Default visualization. It can be loaded from
-							// the classpath.
-							Class theClass = Class.forName(theMetaData.getImplementation());
-							createVisualization(theMetaData, theClass);
-
-						} else {
-							// Custom visualization. It would be loaded from
-							// a jar file inside the lib folder.
-							loadCustomVisualization(theMetaData, theFile.getParentFile());
-						}
-					}
-
-				} else {
-					loadVisualizations(theFile);
-				}
-			}
-		} catch (Exception e) {
-		}
-	}
-
-	private void loadCustomVisualization(VisualizationMetaData aMetaData, File aFile) throws Exception {
-		File[] theFiles = aFile.listFiles();
+	@SuppressWarnings("unchecked")
+  private void loadVisualizations(File aDir) {
+		File[] theFiles = aDir.listFiles();
 		for (int i = 0; i < theFiles.length; i++) {
 			File theFile = theFiles[i];
-			if (theFile.isFile()) {
-				if (theFile.getName().endsWith(".jar")) {
-
-					ClassLoader theClassLoader = createClassLoader(theFile);
-					Class theClass = theClassLoader.loadClass(aMetaData.getImplementation());
-					if (theClass != null) {
-						createVisualization(aMetaData, theClass);
-					}
-
-				}
-			} else {
-				loadCustomVisualization(aMetaData, theFile);
+			if (theFile.isDirectory()) {
+			  File[] dirFiles = theFile.listFiles();
+			  for (int j = 0; j < dirFiles.length; j++) {
+			    File pluginFile = dirFiles[j];
+			    if (pluginFile.getName().equals(PLUGIN_FILE)) {
+			      loadVisualizationFile(pluginFile);
+			    }
+			  }
 			}
 		}
-
+		
+		// sort the list based on order and alpha
+		Collections.sort(visualizations, new Comparator() {
+      public int compare(Object o1, Object o2) {
+        IVisualization v1 = (IVisualization)o1;
+        IVisualization v2 = (IVisualization)o2;
+        if (v1.getOrder() > v2.getOrder()) {
+          return -1;
+        } else if (v1.getOrder() < v2.getOrder()) {
+          return 1;
+        } else {
+          return v1.getTitle().compareTo(v2.getTitle());
+        }
+      }
+		  
+		});
 	}
-
-	private ClassLoader createClassLoader(File aFile) throws Exception {
-		URL theJarLocation = new URL("file", "", aFile.getAbsolutePath());
-		return URLClassLoader.newInstance(new URL[] { theJarLocation });
-	}
-
-	private void createVisualization(VisualizationMetaData aMetaData, Class aClass) throws Exception {
-		IVisualization theVisualization = null;
-		Class[] theInterfaces = aClass.getInterfaces();
-		for (int i = 0; i < theInterfaces.length; i++) {
-			if (theInterfaces[i].isAssignableFrom(IVisualization.class)) {
-				theVisualization = (IVisualization) aClass.newInstance();
-				theVisualization.setTitle(aMetaData.getTitle());
-				theVisualization.setUrl(aMetaData.getUrl());
-				this.visualizations.add(theVisualization);
-			}
-		}
+	
+	@SuppressWarnings("unchecked")
+  protected void loadVisualizationFile(File file) {
+    try {
+      ApplicationContext context = new FileSystemXmlApplicationContext(file.getPath());
+      Map beans = context.getBeansOfType(IVisualization.class);
+      for (Object key : beans.keySet()) {
+        IVisualization vis = (IVisualization)beans.get(key);
+        if (vis.getOrder() >= 0) {
+          visualizations.add(vis);
+        }
+      }
+    } catch (XmlBeanDefinitionStoreException e) {
+      // TODO: introduce logging
+      e.printStackTrace();
+    }
 	}
 
 	public List<IVisualization> getVisualizations() {

@@ -7,6 +7,8 @@ import org.pentaho.agilebi.pdi.visualizations.VisualizeCanvas;
 
 public class WebVisualization implements IVisualization {
 
+  private int order;
+  
 	private String url;
 	private String refreshDataJavascript;
 	private String refreshModelJavascript;
@@ -18,6 +20,14 @@ public class WebVisualization implements IVisualization {
 
 	public void setTitle(String aDescription) {
 		title = aDescription;
+	}
+	
+	public void setOrder(int order) {
+	  this.order = order;
+	}
+	
+	public int getOrder() {
+	  return order;
 	}
 	
 	public String getUrl() {
@@ -34,8 +44,8 @@ public class WebVisualization implements IVisualization {
 	    fl = fileLocation;
 	    mid = modelId;
 	  }
-    String newstr = str.replaceAll("\\$\\{fileLocation\\}", fl);
-    newstr = newstr.replaceAll("\\$\\{modelId\\}", mid);
+    String newstr = str.replaceAll("\\$\\{fileLocation\\}", fl); //$NON-NLS-1$
+    newstr = newstr.replaceAll("\\$\\{modelId\\}", mid); //$NON-NLS-1$
     return newstr;
 	  
 	}

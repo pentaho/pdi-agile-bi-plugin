@@ -5,7 +5,8 @@ import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 public class ReportWizardVisualization implements IVisualization {
 
 	private String description;
-
+	private int order;
+	
 	public String getTitle() {
 		return description;
 	}
@@ -14,12 +15,13 @@ public class ReportWizardVisualization implements IVisualization {
 		description = aDescription;
 	}
 	
-	public String getUrl() {
-		return null;
-	}
-	
-	public void setUrl(String aUrl) {
-	}
+  public void setOrder(int order) {
+    this.order = order;
+  }
+  
+  public int getOrder() {
+    return order;
+  }
 
 	public void openVisualizer(String aModelName, String aDatabaseName) {
 	}

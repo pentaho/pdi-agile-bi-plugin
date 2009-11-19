@@ -5,10 +5,15 @@ public interface IVisualization {
 	public String getTitle();
 
 	public void setTitle(String aDescription);
-
-	public void setUrl(String aUrl);
-
-	public String getUrl();
+	
+	/**
+	 * The order is used to determine the order of visualizations in the GUI.
+	 * @param order
+	 */
+	public void setOrder(int order);
+	
+	public int getOrder();
+	
 
 	public void openVisualizer(String fileLocation, String modelId);
 
