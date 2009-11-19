@@ -13,6 +13,7 @@ import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.Domain;
+import org.pentaho.metadata.model.LogicalModel;
 
 /**
  * Provides information to the ModelerModel to support the User Interface. This
@@ -29,8 +30,14 @@ public class OutputStepModelerSource implements IModelerSource {
 	private String schemaName;
 	private String fileName;
 	private String repositoryName;
+	private String stepId;
+	public static final String SOURCE_TYPE = OutputStepModelerSource.class.getSimpleName();
 	
   private static Log logger = LogFactory.getLog(OutputStepModelerSource.class);
+  
+  public OutputStepModelerSource(){
+    
+  }
 	
 	public OutputStepModelerSource(TableOutputMeta tableOutputMeta, DatabaseMeta databaseMeta, RowMetaInterface rowMeta) {
 
@@ -48,7 +55,14 @@ public class OutputStepModelerSource implements IModelerSource {
 		return ModelerSourceUtil.generateDomain(databaseMeta, schemaName, tableOutputMeta.getTablename());
 	}
 
-	public void initialize() throws ModelerException {
+	public void initialize(Domain domain) throws ModelerException {
+	  LogicalModel lm = domain.getLogicalModels().get(0);
+	  if(lm.getProperty("trans_file") != null){
+	    setFileName(lm.getProperty("trans_file").toString());
+	    setRepositoryName(lm.getProperty("trans_repo").toString());
+      setStepId(lm.getProperty("trans_step").toString());
+	  }
+    
 		try {
 		 Spoon spoon = ((Spoon)SpoonFactory.getInstance());
 		 spoon.openFile(fileName, true);
@@ -57,7 +71,21 @@ public class OutputStepModelerSource implements IModelerSource {
 		 if(transMeta != null) {
 			
 		    StepMeta steps[] = transMeta.getSelectedSteps();
-		    StepMeta stepMeta = steps[0];
+		    StepMeta stepMeta = null;
+		    if(steps != null && steps.length > 0){
+		      stepMeta = steps[0];
+		      setStepId(stepMeta.getStepID());
+		    } else if(this.stepId != null){
+		      for(StepMeta meta : transMeta.getSteps()){
+		        if(meta.getStepID().equals(this.stepId)){
+		          stepMeta = meta;
+		          break;
+		        }
+		      }
+		    }
+		    if(stepMeta == null){
+		      throw new ModelerException("Could not find step to generate source with");
+		    }
 		    
 		    TableOutputMeta tableOutputMeta = (TableOutputMeta) stepMeta.getStepMetaInterface();
 		    DatabaseMeta databaseMeta = tableOutputMeta.getDatabaseMeta();
@@ -88,7 +116,28 @@ public class OutputStepModelerSource implements IModelerSource {
 	}
 
 	public void setRepositoryName(String repositoryName) {
-		this.repositoryName = repositoryName;
+	  if(repositoryName != null && repositoryName.equals("")){
+	    this.repositoryName = null;
+	  }
+	  this.repositoryName = repositoryName;
 	}
+	
+	
 
+  public String getStepId() {
+    return stepId;
+  }
+
+  public void setStepId(String stepId) {
+    this.stepId = stepId;
+  }
+
+  public void serializeIntoDomain(Domain d) {
+    LogicalModel lm = d.getLogicalModels().get(0);
+    lm.setProperty("trans_file", this.fileName);
+    lm.setProperty("trans_repo", this.repositoryName != null ? this.repositoryName : "");
+    lm.setProperty("source_type", this.SOURCE_TYPE);
+    lm.setProperty("trans_step", this.stepId);
+  }
+	
 }

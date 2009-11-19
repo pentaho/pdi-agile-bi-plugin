@@ -339,7 +339,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     this.dimensions.clear();
     this.inPlayFields.clear();
     this.availableFields.clear();
-    
+        
     LogicalTable table = domain.getLogicalModels().get(0).getLogicalTables().get(0);
     for(LogicalColumn c : table.getLogicalColumns()){
       FieldMetaData fm = new FieldMetaData();

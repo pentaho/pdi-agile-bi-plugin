@@ -1,5 +1,6 @@
 package org.pentaho.agilebi.pdi.modeler;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -7,8 +8,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,9 +43,6 @@ import org.pentaho.metadata.model.olap.OlapMeasure;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.metadata.util.SerializationService;
 import org.pentaho.metadata.util.XmiParser;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /** 
  * Utility class for generating ModelerModels for the User Interface.
@@ -105,6 +105,7 @@ public class ModelerWorkspaceUtil {
     
     OutputStepModelerSource source = new OutputStepModelerSource(tableOutputMeta, databaseMeta, rowMeta);
     source.setFileName(transMeta.getFilename());
+    source.setStepId(stepMeta.getStepID());
     Repository repository = transMeta.getRepository();
     if(repository != null) {
     	source.setRepositoryName(repository.getName());	
@@ -124,6 +125,8 @@ public class ModelerWorkspaceUtil {
     List<Category> cats = model.getDomain().getLogicalModels().get(0).getCategories();
     LogicalTable logicalTable = model.getDomain().getLogicalModels().get(0).getLogicalTables().get(0);
 
+    model.getModelSource().serializeIntoDomain(model.getDomain());
+    
     Category cat;
     // Find existing category or create new one
 
@@ -305,22 +308,26 @@ public class ModelerWorkspaceUtil {
   
   public static void saveWorkspace(ModelerWorkspace aModel) throws ModelerException {
   	try {
-		  	SerializableModelWrapper theModelWrapper = new SerializableModelWrapper();
-		  	
-		    IModelerSource theSource = aModel.getModelSource();
-		  	theModelWrapper.setSource(theSource);
-		    
-		  	SerializationService theSerializer = new SerializationService();
-		  	populateDomain(aModel);
-		  	String theDomain = theSerializer.serializeDomain(aModel.getDomain());
-		  	theModelWrapper.setDomain(theDomain);
-		  	
-		  	File theFile = new File("my_metadata.xml");
-		  	theFile.createNewFile();
-		  	FileOutputStream out = new FileOutputStream(theFile);
-		  	
-		  	XStream xstream = new XStream(new DomDriver());
-		    xstream.toXML(theModelWrapper, out);
+  	  
+	  	populateDomain(aModel);
+	  			  	
+	  	XmiParser parser = new XmiParser();
+	    String xmi = parser.generateXmi(aModel.getDomain());
+	  
+	    // write the XMI to a tmp file
+	    // models was created earlier.
+	    try{
+
+	      File file = new File("my_metadata.xml");
+	      PrintWriter pw = new PrintWriter(new FileWriter(file));
+	      pw.print(xmi);
+	      pw.close();
+	      
+	    } catch(IOException e){
+	      logger.info("Error writing metadata model",e);
+	      throw new ModelerException("Error writing metadata model",e);
+	    }
+
   	} catch (Exception e) {
   		logger.info(e.getLocalizedMessage());
   		new ModelerException(e);
@@ -328,16 +335,22 @@ public class ModelerWorkspaceUtil {
   }
   
   public static void loadWorkspace(String aXml, ModelerWorkspace aModel) throws ModelerException {
- 	  XStream xstream = new XStream(new DomDriver());
-  	SerializableModelWrapper theModelWrapper = (SerializableModelWrapper) xstream.fromXML(aXml);
-  	String theDomainXML = theModelWrapper.getDomain();
-  	
-  	IModelerSource theSource = theModelWrapper.getSource();
-  	theSource.initialize();  	
-  	SerializationService theSerializer = new SerializationService();
-  	Domain theDomain = theSerializer.deserializeDomain(theDomainXML);
-  	aModel.setDomain(theDomain);
 
-  	aModel.setModelSource(theSource);
+    try{
+      XmiParser parser = new XmiParser();
+      Domain domain = parser.parseXmi(new ByteArrayInputStream(aXml.getBytes()));
+        	
+    	IModelerSource theSource = ModelerSourceFactory.generateSource(domain.getLogicalModels().get(0).getProperty("source_type").toString());
+    	
+    	theSource.initialize(domain);  	
+  
+    	aModel.setDomain(domain);
+
+    	aModel.setModelSource(theSource);
+    } catch (Exception e){
+      logger.info(e);
+      e.printStackTrace();
+      throw new ModelerException("Error loading workspace",e);
+    }
   }  
 }
