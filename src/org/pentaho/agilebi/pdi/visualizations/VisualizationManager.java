@@ -23,7 +23,7 @@ public class VisualizationManager {
 
 	public static VisualizationManager getInstance() {
 		if (instance == null) {
-			instance = new VisualizationManager("package-res/visualizations");
+			instance = new VisualizationManager("plugins/spoon/agile-bi/visualizations");
 		}
 		return instance;
 	}

@@ -38,6 +38,7 @@
 	          depends="resolve-default, resolve-test, ivy.check-releasable"
 	          description="Retrieves all the dependent libraries" />
 
+	<target name="dist-noresolve" depends="jar,package" description="Builds and packages the application" />
 	<target name="dist" depends="resolve,jar,package" description="Builds and packages the application" />
 	
 	<target name="clean-dist">
@@ -79,6 +80,11 @@
 			<include name="libformula-*.jar"/>
 			<!-- spring core -->
   			<include name="spring-core*.jar"/>
+			<!-- mondrian -->
+			<include name="mondrian-*.jar"/>
+			<include name="eigenbase-*.jar"/>
+			<include name="commons-math-*.jar"/>
+			<include name="javacup-*.jar"/>
 			
 			<!-- second, remove unnecessary jars -->
 			

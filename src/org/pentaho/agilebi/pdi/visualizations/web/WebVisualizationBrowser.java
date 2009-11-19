@@ -1,4 +1,4 @@
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.visualizations.web;
 
 import java.io.IOException;
 import java.net.URL;
@@ -8,7 +8,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolBar;
+import org.pentaho.agilebi.pdi.modeler.ModelServerPublish;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.core.gui.XulHelper;
@@ -17,65 +17,58 @@ import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonBrowser;
 import org.pentaho.di.ui.spoon.XulMessages;
 
-public class AnalyzerBrowser extends SpoonBrowser {
+public class WebVisualizationBrowser extends SpoonBrowser {
 
   private static final String XUL_FILE_ANALYZER_BROWSER_TOOLBAR = "ui/analyzer-toolbar.xul";
   public static final String XUL_FILE_ANALYZER_TOOLBAR_PROPERTIES = "ui/analyzer-toolbar.properties";
 
+  private String fileLocation = null;
   private String modelId = null;
-  private String databaseName;
+  // private String databaseName;
   private String url;
+  private WebVisualization visualization;
   
-  public AnalyzerBrowser(Composite parent, final Spoon spoon, final String stringUrl,boolean isURL, String aUrl) throws SWTError {
-    this( parent, spoon, stringUrl, isURL, true, aUrl );
-  }
-
-  public AnalyzerBrowser(Composite parent, final Spoon spoon, final String stringUrl,boolean isURL, boolean showControls, String aUrl) throws SWTError {
-    super(parent, spoon, stringUrl, isURL, showControls);
-    this.url = aUrl;
+  public WebVisualizationBrowser(Composite parent, final Spoon spoon, final WebVisualization visualization, String fileLocation, String modelId) throws SWTError {
+    super(parent, spoon, visualization.getUrl(fileLocation, modelId), true, true );
+    this.visualization = visualization;
+    this.fileLocation = fileLocation;
+    this.modelId = modelId;
   }
   
   protected Browser createBrowser() {
     return new Browser(composite, SWT.MOZILLA);
   }
   
-  protected void addToolBar()
-  {
-
+  protected void addToolBar_TODO() {
     try {
+      // TODO: won't this all go away with the new xul?
       toolbar = XulHelper.createToolbar(XUL_FILE_ANALYZER_BROWSER_TOOLBAR, composite, this, new XulMessages());
       
       // Add a few default key listeners
       //
-      ToolBar toolBar = (ToolBar) toolbar.getNativeObject();
+//      ToolBar toolBar = (ToolBar) toolbar.getNativeObject();
 //      toolBar.addKeyListener(spoon.defKeys);
       
-      addToolBarListeners();
+      addToolBarListeners_TODO();
     } catch (Throwable t ) {
       log.logError(toString(), Const.getStackTracker(t));
       new ErrorDialog(shell, Messages.getString("Spoon.Exception.ErrorReadingXULFile.Title"), Messages.getString("Spoon.Exception.ErrorReadingXULFile.Message", XUL_FILE_ANALYZER_BROWSER_TOOLBAR), new Exception(t));
     }
   }
 
-  public void addToolBarListeners()
-  {
-    try
-    {
+  public void addToolBarListeners_TODO() {
+    try {
       // first get the XML document
       URL url = XulHelper.getAndValidate(XUL_FILE_ANALYZER_TOOLBAR_PROPERTIES);
       Properties props = new Properties();
       props.load(url.openStream());
       String ids[] = toolbar.getMenuItemIds();
-      for (int i = 0; i < ids.length; i++)
-      {
+      for (int i = 0; i < ids.length; i++) {
         String methodName = (String) props.get(ids[i]);
-        if (methodName != null)
-        {
+        if (methodName != null) {
           toolbar.addMenuListener(ids[i], this, methodName);
-
         }
       }
-
     } catch (Throwable t ) {
       t.printStackTrace();
       new ErrorDialog(shell, Messages.getString("Spoon.Exception.ErrorReadingXULFile.Title"), 
@@ -84,33 +77,30 @@ public class AnalyzerBrowser extends SpoonBrowser {
   }
 
   public void refreshData() {
-    // first clear the server caches
+    // first clear the server cache
+    
+    // TODO: bring ModelServerPublish code over
+    if (true) throw new UnsupportedOperationException();
+    
     ModelServerPublish modelServerPublish = new ModelServerPublish();
     try {
       modelServerPublish.refreshOlapCaches(modelId);
-      browser.execute( "cv.getActiveReport().refreshReport()" );
+      browser.execute(visualization.getRefreshDataJavascript());
+      //  "cv.getActiveReport().refreshReport()" )
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
   
   public void refreshModel() {
-    System.out.println("refreshModel");
-
     // first save the view
-    executeJavascript( "gCtrlr.repositoryBrowserController.remoteSave('"+modelId+"','tmp', '', 'xanalyzer', true)" );
-    
-    // republish the model
-    try {
-      ModelServerPublish publisher = new ModelServerPublish();
-      publisher.publishToServer( modelId+".mondrian.xml", databaseName, modelId, false );
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    
+    if (true) throw new UnsupportedOperationException();
+    // TODO: can we do this without requiring a "remote save"? 
+    browser.execute( visualization.getRefreshModelJavascript());
+    // "gCtrlr.repositoryBrowserController.remoteSave('"+modelId+"','tmp', '', 'xanalyzer', true)" 
+        
     // now reload it
-    browser.setUrl(this.url + "?command=open&solution=tmp&path=&action="+modelId+".xanalyzer&showFieldList=true");
+    browser.setUrl(visualization.getUrl());
     
   }
 
@@ -121,17 +111,4 @@ public class AnalyzerBrowser extends SpoonBrowser {
   public void setModelId(String modelId) {
     this.modelId = modelId;
   }
-  
-  public void executeJavascript( String script ) {
-    browser.execute( script );
-  }
-  
-  public String getDatabaseName() {
-    return databaseName;
-  }
-
-  public void setDatabaseName(String databaseName) {
-    this.databaseName = databaseName;
-  }
-
 }

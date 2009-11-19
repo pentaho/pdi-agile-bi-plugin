@@ -10,6 +10,6 @@ public interface IVisualization {
 
 	public String getUrl();
 
-	public void openVisualizer(String aModelName, String aDatabaseName);
+	public void openVisualizer(String fileLocation, String modelId);
 
 }

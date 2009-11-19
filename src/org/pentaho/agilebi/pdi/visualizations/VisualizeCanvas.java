@@ -1,12 +1,11 @@
-package org.pentaho.agilebi.pdi.modeler;
-
-import java.net.URLEncoder;
-import java.util.Locale;
+package org.pentaho.agilebi.pdi.visualizations;
 
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
+import org.pentaho.agilebi.pdi.visualizations.web.WebVisualization;
+import org.pentaho.agilebi.pdi.visualizations.web.WebVisualizationBrowser;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.database.Database;
@@ -25,86 +24,52 @@ import org.pentaho.xul.swt.tab.TabItem;
 import org.pentaho.xul.swt.tab.TabListener;
 import org.pentaho.xul.swt.tab.TabSet;
 
+/**
+ * TODO: Move this into a base class, and have WebVisBrowser, etc extend it
+ */
 public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabListener {
 
-  private String modelName;
-  
-  private String databaseName;
-  
   private TabItem tabItem = null;
-  
   boolean isTabSelected = false;
-  
-  private AnalyzerBrowser browser;
-  
-  private String url;
-  
-  public static void openVisualizer( String modelName, String databaseName, String url) {
+  private WebVisualizationBrowser browser;
+  private IVisualization visualization;
+  private String fileLocation;
+  private String modelId;
     
-    VisualizeCanvas canvas = new VisualizeCanvas();
-    
-    canvas.setUrl(url);
-    canvas.setModelName( modelName );
-    canvas.setDatabaseName(databaseName);
-    
-    canvas.createTab();
-    
+  public VisualizeCanvas(IVisualization visualization, String fileLocation, String modelId) {
+    this.visualization = visualization;
+    this.fileLocation = fileLocation;
+    this.modelId = modelId;
   }
   
-  public void createTab() {
-    /*
-    Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-    TabSet tabSet = spoon.getTabSet();
-    TabSet tabfolder = spoon.tabfolder;
-    String name = "Visualize "+modelName;
-    CTabFolder cTabFolder = tabfolder.getSwtTabset();
-    TabItem tabItem = new TabItem(tabfolder, name, name);
-    tabItem.setImage(GUIResource.getInstance().getImageLogoSmall());
-    final Canvas canvas = new Canvas(cTabFolder, SWT.NO_BACKGROUND);
-    tabItem.setControl( canvas );
-
-    TabMapEntry entry = new TabMapEntry(tabItem, name, this, TabMapEntry.OBJECT_TYPE_BROWSER);
-    
-    spoon.delegates.tabs.addTab(entry);
-    tabSet.addTab(tabItem);
-
-    int idx = tabfolder.indexOf(tabItem);
-    // keep the focus on the graph
-    tabfolder.setSelected(idx);
-*/
-    String encodedModelName = URLEncoder.encode( modelName);
-    String urlString = this.url + "?command=new&catalog="+encodedModelName+"%20Model&cube="+encodedModelName+"%20Cube&userid=joe&password=password";
-
-    String tabName = modelName+" ";
-    Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-    addAnalyzerBrowser(tabName, modelName, urlString, true);
-    
+  public void openVisualization() {
+    if (visualization instanceof WebVisualization) {
+      addVisualizationBrowser();
+    }
   }
   
-  public boolean addAnalyzerBrowser(String tabName, String modelName, String urlString,boolean isURL)
-  {
+  private void addVisualizationBrowser() {
+    WebVisualization webVis = (WebVisualization)visualization;
+    
+    // TODO: We'll need a better approach for tab name
+    String tabName = modelId;
+    
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     TabSet tabfolder = spoon.tabfolder;
-
-    try
-    {
-      // OK, now we have the HTML, create a new browset tab.
+    
+    try {
+      // OK, now we have the HTML, create a new browse tab.
 
       // See if there already is a tab for this browser
       // If no, add it
       // If yes, select that tab
       //
       tabItem = spoon.delegates.tabs.findTabItem(tabName, TabMapEntry.OBJECT_TYPE_BROWSER);
-      if (tabItem == null)
-      {
+      if (tabItem == null) {
         CTabFolder cTabFolder = tabfolder.getSwtTabset();
-        browser = new AnalyzerBrowser(cTabFolder, spoon, urlString,isURL, true, url);
-        browser.setModelId(modelName);
-        browser.setDatabaseName(databaseName);
+        browser = new WebVisualizationBrowser(cTabFolder, spoon, webVis, fileLocation, modelId);
         tabItem = new TabItem(tabfolder, tabName, tabName);
-        Image visualizeTabImage = 
-          ImageUtil.getImageAsResource(spoon.getDisplay(),
-              "ui/images/visualizer.png"); // , "ui/images/kettle_logo_small.png"
+        Image visualizeTabImage = ImageUtil.getImageAsResource(spoon.getDisplay(), "plugins/spoon/agile-bi/ui/images/visualizer.png");
         tabItem.setImage(visualizeTabImage);
         tabItem.setControl(browser.getComposite());
         tabItem.addListener( this );
@@ -116,13 +81,9 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
 
       // keep the focus on the graph
       tabfolder.setSelected(idx);
-      return true;
-    } 
-    catch (Throwable e)
-    {
-      e.printStackTrace();
+    } catch (Throwable e) {
+      throw new RuntimeException(e);
     }
-    return false;
   }
   public boolean canBeClosed() {
     // TODO Auto-generated method stub
@@ -159,12 +120,8 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
     return false;
   }
 
-  public String getModelName() {
-    return modelName;
-  }
-
-  public void setModelName(String modelName) {
-    this.modelName = modelName;
+  public void setVisualization(IVisualization visualization) {
+    this.visualization = visualization;
   }
 
   public void modifyText(ModifyEvent arg0) {
@@ -173,6 +130,8 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
   }
 
   public static void quickVisualize( DatabaseMeta databaseMeta, String modelName, String tableName, String sql ) {
+    
+    if (true) throw new UnsupportedOperationException();
     
     Database db = new Database( databaseMeta );
     RowMetaInterface rowMeta = null;
@@ -187,24 +146,19 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
     }
     if( rowMeta != null ) {
       try {
-        // create a flat model
-        ModelGenerator modelGenerator = new ModelGenerator();
-        //modelGenerator.generateFlatModel(modelName, rowMeta, databaseMeta, "en_US", "joe", tableName);
-        
-        // visualize
-        ModelServerPublish publisher = new ModelServerPublish();
-        publisher.publishToServer( modelName+".mondrian.xml", databaseMeta.getDatabaseName(), modelName, false );
-        VisualizeCanvas.openVisualizer(modelName, databaseMeta.getDatabaseName(), null);
-        
+        // TODO: incorporate into IVisualization API
+        // VisualizeCanvas.openVisualizer(modelName, databaseMeta.getDatabaseName(), null);
       } catch (Exception e) {
         e.printStackTrace();
       }
-      
     }
-    
   }
   
   public static void quickVisualize( TransMeta transMeta, StepMeta stepMeta ) {
+    
+    if (true) throw new UnsupportedOperationException();
+
+    
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
 //    TransMeta transMeta = spoon.getActiveTransformation();
     if( transMeta == null ) {
@@ -238,14 +192,9 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
     String modelName = stepMeta.getName();
 
     try {
-      // create a flat model
-      ModelGenerator modelGenerator = new ModelGenerator();
-//      modelGenerator.generateFlatModel(modelName, rowMeta, databaseMeta, "en_US", "joe", tableName);
       
-      // visualize
-      ModelServerPublish publisher = new ModelServerPublish();
-      publisher.publishToServer( modelName+".mondrian.xml", databaseMeta.getDatabaseName(), modelName, false );
-      VisualizeCanvas.openVisualizer(modelName, databaseMeta.getDatabaseName(), null) ;
+      // TODO: Incorporate into IVisualization API
+      // VisualizeCanvas.openVisualizer(modelName, databaseMeta.getDatabaseName(), null) ;
       
     } catch (Exception e) {
       e.printStackTrace();
@@ -267,18 +216,6 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
 
   public void tabSelected(TabItem item) {
     // TODO Auto-generated method stub
-  }
-
-  public String getDatabaseName() {
-    return databaseName;
-  }
-
-  public void setDatabaseName(String databaseName) {
-    this.databaseName = databaseName;
-  }
-  
-  public void setUrl(String aUrl) {
-  	this.url = aUrl;
   }
   
 }

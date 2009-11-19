@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 
 import org.pentaho.di.core.database.Database;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.SqlPhysicalModel;
 import org.pentaho.metadata.util.ThinModelConverter;
@@ -46,7 +47,7 @@ public class AgileBIDatasourceService implements IDatasourceService {
     }
 
     if (domain.getPhysicalModels().size() == 0 || 
-        (domain.getPhysicalModels().get(0) instanceof SqlPhysicalModel)) {
+        !(domain.getPhysicalModels().get(0) instanceof SqlPhysicalModel)) {
       throw new DatasourceServiceException("No SQL Physical Model Available");
       
     }
@@ -67,6 +68,12 @@ public class AgileBIDatasourceService implements IDatasourceService {
     
     public Connection getConnection() throws SQLException {
       Database database = new Database(databaseMeta);
+      try {
+        database.connect();
+      } catch (KettleException e) {
+        e.printStackTrace();
+        throw new SQLException(e.getMessage());
+      }
       return database.getConnection();
     }
 
