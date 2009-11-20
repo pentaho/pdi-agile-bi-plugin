@@ -9,8 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
@@ -18,6 +16,7 @@ import org.pentaho.metadata.model.LogicalTable;
 import org.pentaho.metadata.model.olap.OlapCube;
 import org.pentaho.metadata.model.olap.OlapDimension;
 import org.pentaho.metadata.model.olap.OlapHierarchy;
+import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
 import org.pentaho.metadata.model.olap.OlapMeasure;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
 import org.pentaho.ui.xul.util.AbstractModelList;
@@ -30,6 +29,7 @@ import org.pentaho.ui.xul.util.AbstractModelList;
  * @author nbaker
  *
  */
+@SuppressWarnings("unchecked")
 public class ModelerWorkspace extends XulEventSourceAdapter{
 
   private FieldsCollection inPlayFields = new FieldsCollection();
@@ -51,8 +51,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   private String schemaName;
   
   private Domain domain;
-  
-  private static Log logger = LogFactory.getLog(ModelerWorkspace.class);
   
   public ModelerWorkspace(){
     
@@ -350,9 +348,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     
     firePropertyChange("availableFields", null, getAvailableFields());
     
-    
     LogicalModel lModel = domain.getLogicalModels().get(0);
-    
     
     List<OlapDimension> theDimensions = (List) lModel.getProperty("olap_dimensions");
     if(theDimensions != null) {
@@ -361,17 +357,22 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    	OlapDimension theDimension = theDimensionItr.next();
 	    	
 	    	DimensionMetaData theDimensionMD = new DimensionMetaData(theDimension.getName());
-	    	//TODO set dimension properties.
-	    	
 	    	
 	    	List<OlapHierarchy> theHierarchies = (List) theDimension.getHierarchies();
 	    	Iterator<OlapHierarchy> theHierarchiesItr = theHierarchies.iterator();
 	    	while(theHierarchiesItr.hasNext()) {
 	    		OlapHierarchy theHierarchy =  theHierarchiesItr.next();
 	    		HierarchyMetaData theHierarchyMD = new HierarchyMetaData(theHierarchy.getName());
-	      	//TODO set hierarchy properties.
-	    		theDimensionMD.add(theHierarchyMD);
 	    		
+	    		List<OlapHierarchyLevel> theLevels = theHierarchy.getHierarchyLevels();
+	    		Iterator<OlapHierarchyLevel> theLevelsItr = theLevels.iterator();
+	    		while(theLevelsItr.hasNext()) {
+	    			OlapHierarchyLevel theLevel = theLevelsItr.next();
+	    			LevelMetaData theLevelMD = new LevelMetaData(theHierarchyMD, theLevel.getName());
+	    			theHierarchyMD.add(theLevelMD);
+	    		}
+	    		
+	    		theDimensionMD.add(theHierarchyMD);
 	    	}
 	    	this.dimensions.add(theDimensionMD);
 	    }
@@ -389,12 +390,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    		OlapMeasure theMeasure = theMeasuresItr.next();
 	    		
 	    		FieldMetaData theMeasureMD = new FieldMetaData();
-	    		
 	    		theMeasureMD.setFieldName(theMeasure.getName());
 	    		theMeasureMD.setLogicalColumn(theMeasure.getLogicalColumn());
-	    		//TODO set measure properties.
 	    		this.inPlayFields.add(theMeasureMD);
-	    		
 	    	}
 	    }
     }

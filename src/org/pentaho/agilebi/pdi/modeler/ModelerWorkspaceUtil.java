@@ -8,10 +8,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,7 +39,6 @@ import org.pentaho.metadata.model.olap.OlapHierarchy;
 import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
 import org.pentaho.metadata.model.olap.OlapMeasure;
 import org.pentaho.metadata.util.MondrianModelExporter;
-import org.pentaho.metadata.util.SerializationService;
 import org.pentaho.metadata.util.XmiParser;
 
 /** 
@@ -221,13 +218,9 @@ public class ModelerWorkspaceUtil {
 
         List<OlapHierarchy> hierarchies = new ArrayList<OlapHierarchy>();
 
-        // create a default hierarchy
-        OlapHierarchy defaultHierarchy = new OlapHierarchy(dimension);
-        defaultHierarchy.setLogicalTable(logicalTable);
-        hierarchies.add(defaultHierarchy);
-
         for (HierarchyMetaData hier : dim.getChildren()) {
           OlapHierarchy hierarchy = new OlapHierarchy(dimension);
+          hierarchy.setName(hier.getName());
           hierarchy.setLogicalTable(logicalTable);
           List<OlapHierarchyLevel> levels = new ArrayList<OlapHierarchyLevel>();
 
@@ -242,6 +235,13 @@ public class ModelerWorkspaceUtil {
 
           hierarchy.setHierarchyLevels(levels);
           hierarchies.add(hierarchy);
+        }
+        
+        if(hierarchies.isEmpty()) {
+          // create a default hierarchy
+          OlapHierarchy defaultHierarchy = new OlapHierarchy(dimension);
+          defaultHierarchy.setLogicalTable(logicalTable);
+          hierarchies.add(defaultHierarchy);	
         }
 
         dimension.setHierarchies(hierarchies);
