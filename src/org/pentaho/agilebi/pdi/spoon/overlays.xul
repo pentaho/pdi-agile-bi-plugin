@@ -5,10 +5,9 @@
 	xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" height="600" width="800" onload="modeler.init()"
     xmlns:pen="http://www.pentaho.org/2008/xul" >
 
-
 	<menupopup id="trans-graph-entry">
-      <menuitem id="trans-graph-entry-model" label="Model" command="transgraph.openModeler()" />
-      <menuitem id="trans-graph-entry-visualize" label="Quick Visualize" command="transgraph.quickVisualize()" />
+      <menuitem id="trans-graph-entry-model" label="Model" command="agileBi.openModeler()" />
+      <menuitem id="trans-graph-entry-visualize" label="Quick Visualize" command="agileBi.quickVisualize()" />
     </menupopup>
 	
 </overlay>

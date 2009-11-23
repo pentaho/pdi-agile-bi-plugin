@@ -15,8 +15,8 @@ public class AgileBISpoonPlugin implements SpoonPlugin{
     return Collections.singletonList(new SpoonUIEventHandler());
   }
 
-  public List<URL> getOverlays() {
-    return Collections.singletonList(getClass().getResource("org/pentaho/agilebi/pdi/spoon/overlays.xul"));
+  public List<String> getOverlays() {
+    return Collections.singletonList("org/pentaho/agilebi/pdi/spoon/overlays.xul");
   }
 
 }

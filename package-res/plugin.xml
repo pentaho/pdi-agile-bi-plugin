@@ -4,9 +4,5 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <bean id="spoonPlugin" class="org.pentaho.agilebi.pdi.spoon.AgileBISpoonPlugin">
-    <property name="title" value="Analyzer"/>
-    <property name="url" value="http://localhost:9999/pentaho/content/analyzer/editor?catalog=${fileLocation}&amp;cube=${modelId}"/>
-    <property name="order" value="0"/>
-  </bean>
+  <bean id="spoonPlugin" class="org.pentaho.agilebi.pdi.spoon.AgileBISpoonPlugin"></bean>
 </beans>
