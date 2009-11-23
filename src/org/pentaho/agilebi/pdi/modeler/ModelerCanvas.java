@@ -1,21 +1,33 @@
 package org.pentaho.agilebi.pdi.modeler;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.TabItemInterface;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.di.ui.util.ImageUtil;
+import org.pentaho.ui.xul.components.XulFileDialog.RETURN_CODE;
+import org.pentaho.ui.xul.components.XulFileDialog.SEL_TYPE;
 import org.pentaho.xul.swt.tab.TabItem;
 import org.pentaho.xul.swt.tab.TabSet;
+import org.w3c.dom.Node;
 
 
-public class ModelerCanvas implements TabItemInterface {
+public class ModelerCanvas implements TabItemInterface, FileListener {
 
   private static final String NEW_DIMENSION_NAME = "newDimensionName"; //$NON-NLS-1$
 
@@ -45,10 +57,15 @@ public class ModelerCanvas implements TabItemInterface {
 
   private static ModelerCanvas instance = null;
   
+  private ModelerEngineMeta meta;
   
   private String tableName;
   
   private XulUI xul;
+
+  private String fileName;
+  
+  private ModelerController controller ;
   
   private static Log logger = LogFactory.getLog(ModelerCanvas.class);
   /**
@@ -62,6 +79,9 @@ public class ModelerCanvas implements TabItemInterface {
    * Called when the Xul Panel is loaded. grab references to xul elements here.
    */
   public void init(){
+  }
+  
+  private ModelerCanvas(){
   }
   
   public static ModelerCanvas getInstance() {
@@ -80,10 +100,19 @@ public class ModelerCanvas implements TabItemInterface {
     modelerCanvas.createModelerTab();
   }
   
+  public void createModelerTabFromOutputStep() throws ModelerException {
+
+    controller = new ModelerController();
+    ModelerWorkspace  model = ModelerWorkspaceUtil.createModelFromOutputStep(controller.getModel());
+    createModelerTab();
+    meta = new ModelerEngineMeta(controller);
+  }
   
   public void createModelerTab() throws ModelerException {
 
+    
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
+    
     TabSet tabSet = spoon.getTabSet();
     TabSet tabfolder = spoon.tabfolder;
     CTabFolder cTabFolder = tabfolder.getSwtTabset();
@@ -94,9 +123,10 @@ public class ModelerCanvas implements TabItemInterface {
 
     tabItem.setImage(modelTabImage);
 
-    ModelerWorkspace  model = ModelerWorkspaceUtil.createModelFromOutputStep();
-    
-    ModelerController controller = new ModelerController(model);
+    if(controller == null){
+
+      controller = new ModelerController();
+    }
     
     try{
       xul = new XulUI(spoon.getShell(), controller);
@@ -121,6 +151,51 @@ public class ModelerCanvas implements TabItemInterface {
     // TODO Auto-generated method stub
     return true;
   }
+  
+
+  public boolean canHandleSave() {
+    return true;
+  }
+  
+  public String getFileName(){
+    return fileName;
+  }
+  
+  public void setFileName(String name){
+    this.fileName = name;
+  }
+    
+
+  public boolean open(Node transNode, String fname, boolean importfile) {
+    try{
+      createModelerTab();
+      String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8");
+      ModelerWorkspaceUtil.loadWorkspace(xml, controller.getModel());
+    } catch(ModelerException e){
+      e.printStackTrace();
+    } catch(IOException e){
+      e.printStackTrace();
+    }
+    
+    return true;
+  }
+
+  public boolean save(EngineMetaInterface meta, String fname, boolean isExport) {
+    setFileName(fname);
+    try {
+      controller.saveWorkspace(fname);
+      return true;
+    } catch (ModelerException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } 
+    return false;
+  }
+
+  public void syncMetaName(EngineMetaInterface meta, String name) {
+    // TODO Auto-generated method stub
+    
+  }
 
   public Object getManagedObject() {
     // TODO Auto-generated method stub
@@ -128,13 +203,11 @@ public class ModelerCanvas implements TabItemInterface {
   }
 
   public EngineMetaInterface getMeta() {
-    // TODO Auto-generated method stub
-    return null;
+    return meta;
   }
 
   public boolean hasContentChanged() {
-    // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
   public void setControlStates() {
@@ -150,7 +223,11 @@ public class ModelerCanvas implements TabItemInterface {
   public boolean applyChanges() {
     // TODO Auto-generated method stub
     return false;
-  }
+  }  
   
+  public boolean setFocus() {
+    // TODO Auto-generated method stub
+    return false;
+  }
   
 }

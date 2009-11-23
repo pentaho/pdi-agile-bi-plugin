@@ -217,5 +217,21 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
   public void tabSelected(TabItem item) {
     // TODO Auto-generated method stub
   }
+
+  public boolean canHandleSave() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  public void save() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public boolean setFocus() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+  
   
 }

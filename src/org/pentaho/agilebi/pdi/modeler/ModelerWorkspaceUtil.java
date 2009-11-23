@@ -62,6 +62,11 @@ public class ModelerWorkspaceUtil {
   }
   
   public static ModelerWorkspace createModelFromOutputStep() throws ModelerException {
+
+    return createModelFromOutputStep(new ModelerWorkspace());
+  }
+  
+  public static ModelerWorkspace createModelFromOutputStep(ModelerWorkspace model) throws ModelerException {
     
     String MODELER_NAME = "OutputStepModeler"; //$NON-NLS-1$
 
@@ -110,7 +115,6 @@ public class ModelerWorkspaceUtil {
     Domain d = source.generateDomain();
     
     
-    ModelerWorkspace model = new ModelerWorkspace();
     model.setModelSource(source);
     model.setModelName(tableOutputMeta.getTablename());
     model.setDomain(d);
@@ -306,19 +310,16 @@ public class ModelerWorkspaceUtil {
 
   }
   
-  public static void saveWorkspace(ModelerWorkspace aModel) throws ModelerException {
+  public static void saveWorkspace(ModelerWorkspace aModel, String fileName) throws ModelerException {
   	try {
   	  
-	  	populateDomain(aModel);
-	  			  	
-	  	XmiParser parser = new XmiParser();
-	    String xmi = parser.generateXmi(aModel.getDomain());
+	    String xmi = getMetadataXML(aModel);
 	  
 	    // write the XMI to a tmp file
 	    // models was created earlier.
 	    try{
 
-	      File file = new File("my_metadata.xml");
+	      File file = new File(fileName);
 	      PrintWriter pw = new PrintWriter(new FileWriter(file));
 	      pw.print(xmi);
 	      pw.close();
@@ -332,6 +333,13 @@ public class ModelerWorkspaceUtil {
   		logger.info(e.getLocalizedMessage());
   		new ModelerException(e);
   	}
+  }
+  
+  public static String getMetadataXML(ModelerWorkspace aModel) throws ModelerException {
+    populateDomain(aModel);
+    XmiParser parser = new XmiParser();
+    return parser.generateXmi(aModel.getDomain());
+  
   }
   
   public static void loadWorkspace(String aXml, ModelerWorkspace aModel) throws ModelerException {

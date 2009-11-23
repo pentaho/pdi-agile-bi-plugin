@@ -78,6 +78,10 @@ public class ModelerController extends AbstractXulEventHandler{
   private List<String> visualizationNames;
   private List<String> serverIds;
   
+  public ModelerController(){
+    model = new ModelerWorkspace();
+  }
+  
   public ModelerController(ModelerWorkspace model){
     this.model = model;
   }
@@ -104,24 +108,27 @@ public class ModelerController extends AbstractXulEventHandler{
     bf.createBinding(model, "sourceName", sourceLabel, "value");
 
     bf.setBindingType(Type.ONE_WAY);
-    Binding fieldListBinding = bf.createBinding(model, "availableFields", FIELD_LIST_ID, ELEMENTS_PROPERTY);
+    fieldListBinding = bf.createBinding(model, "availableFields", FIELD_LIST_ID, ELEMENTS_PROPERTY);
     
     // dimensionTable
 
     bf.createBinding(model, "selectedServer", serverList, "selectedItem");    
-    Binding serversBinding = bf.createBinding(this, "serverNames", serverList, "elements");
+    serversBinding = bf.createBinding(this, "serverNames", serverList, "elements");
     
     bf.createBinding(model, "selectedVisualization", visualizationList, "selectedItem");    
-    Binding visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements");
+    visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements");
     
-    // Bind the available categories from  the selected model to the category/column tree.
-    Binding dimensionTreeBinding = bf.createBinding(model, "dimensions", dimensionTree, "elements");
+    dimensionTreeBinding = bf.createBinding(model, "dimensions", dimensionTree, "elements");
     bf.createBinding(dimensionTree, "selectedItem", this, "dimTreeSelectionChanged");
     
     bf.setBindingType(Type.BI_DIRECTIONAL);
-    Binding inPlayTableBinding = bf.createBinding(model, "fields" , "fieldTable", "elements");
-    Binding modelNameBinding = bf.createBinding(model, MODEL_NAME_PROPERTY, MODEL_NAME_FIELD_ID, VALUE_PROPERTY);
+    inPlayTableBinding = bf.createBinding(model, "fields" , "fieldTable", "elements");
+    modelNameBinding = bf.createBinding(model, MODEL_NAME_PROPERTY, MODEL_NAME_FIELD_ID, VALUE_PROPERTY);
     
+    fireBindings();
+  }
+  
+  private void fireBindings() throws ModelerException{
     try {
       fieldListBinding.fireSourceChanged();
       dimensionTreeBinding.fireSourceChanged();
@@ -133,7 +140,6 @@ public class ModelerController extends AbstractXulEventHandler{
       logger.info("Error firing off initial bindings", e);
       throw new ModelerException(e);
     }
-    
   }
   
   public void setSelectedDims(List<Object> selectedDims) {
@@ -267,6 +273,18 @@ public class ModelerController extends AbstractXulEventHandler{
   }
 
   Object selectedTreeItem;
+
+  private Binding fieldListBinding;
+
+  private Binding serversBinding;
+
+  private Binding visualizationsBinding;
+
+  private Binding dimensionTreeBinding;
+
+  private Binding modelNameBinding;
+
+  private Binding inPlayTableBinding;
   
   public void setDimTreeSelectionChanged(Object selection){
     selectedTreeItem = selection;
@@ -333,8 +351,9 @@ public class ModelerController extends AbstractXulEventHandler{
     return model;
   }
 
-  public void setModel(ModelerWorkspace model) {
+  public void setModel(ModelerWorkspace model) throws ModelerException{
     this.model = model;
+    fireBindings();
   }
   
 
@@ -346,8 +365,8 @@ public class ModelerController extends AbstractXulEventHandler{
   	}
   }
   
-  public void saveWorkspace() throws ModelerException {
-  	ModelerWorkspaceUtil.saveWorkspace(model);
+  public void saveWorkspace(String fileName) throws ModelerException {
+  	ModelerWorkspaceUtil.saveWorkspace(model, fileName);
   }
   
   public void loadWorkspace() throws ModelerException {

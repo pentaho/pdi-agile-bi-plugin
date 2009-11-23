@@ -63,44 +63,44 @@ public class OutputStepModelerSource implements IModelerSource {
       setStepId(lm.getProperty("trans_step").toString());
 	  }
     
-		try {
-		 Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-		 spoon.openFile(fileName, true);
-		 TransMeta transMeta = spoon.getActiveTransformation();
-		
-		 if(transMeta != null) {
-			
-		    StepMeta steps[] = transMeta.getSelectedSteps();
-		    StepMeta stepMeta = null;
-		    if(steps != null && steps.length > 0){
-		      stepMeta = steps[0];
-		      setStepId(stepMeta.getStepID());
-		    } else if(this.stepId != null){
-		      for(StepMeta meta : transMeta.getSteps()){
-		        if(meta.getStepID().equals(this.stepId)){
-		          stepMeta = meta;
-		          break;
-		        }
-		      }
-		    }
-		    if(stepMeta == null){
-		      throw new ModelerException("Could not find step to generate source with");
-		    }
-		    
-		    TableOutputMeta tableOutputMeta = (TableOutputMeta) stepMeta.getStepMetaInterface();
-		    DatabaseMeta databaseMeta = tableOutputMeta.getDatabaseMeta();
-
-		    RowMetaInterface rowMeta = null;
-	      rowMeta = transMeta.getStepFields(stepMeta);
-		    
-		    this.tableOutputMeta = tableOutputMeta;
-		    this.databaseMeta = databaseMeta;
-		    this.rowMeta = rowMeta;
-		 }
-		} catch(KettleStepException e) {
-			logger.info(e.getLocalizedMessage());
-			new ModelerException(e);
-		}
+//		try {
+//		 Spoon spoon = ((Spoon)SpoonFactory.getInstance());
+//		 spoon.openFile(fileName, true);
+//		 TransMeta transMeta = spoon.getActiveTransformation();
+//		
+//		 if(transMeta != null) {
+//			
+//		    StepMeta steps[] = transMeta.getSelectedSteps();
+//		    StepMeta stepMeta = null;
+//		    if(steps != null && steps.length > 0){
+//		      stepMeta = steps[0];
+//		      setStepId(stepMeta.getStepID());
+//		    } else if(this.stepId != null){
+//		      for(StepMeta meta : transMeta.getSteps()){
+//		        if(meta.getStepID().equals(this.stepId)){
+//		          stepMeta = meta;
+//		          break;
+//		        }
+//		      }
+//		    }
+//		    if(stepMeta == null){
+//		      throw new ModelerException("Could not find step to generate source with");
+//		    }
+//		    
+//		    TableOutputMeta tableOutputMeta = (TableOutputMeta) stepMeta.getStepMetaInterface();
+//		    DatabaseMeta databaseMeta = tableOutputMeta.getDatabaseMeta();
+//
+//		    RowMetaInterface rowMeta = null;
+//	      rowMeta = transMeta.getStepFields(stepMeta);
+//		    
+//		    this.tableOutputMeta = tableOutputMeta;
+//		    this.databaseMeta = databaseMeta;
+//		    this.rowMeta = rowMeta;
+//		 }
+//		} catch(KettleStepException e) {
+//			logger.info(e.getLocalizedMessage());
+//			new ModelerException(e);
+//		}
 	}
 	
 	public String getFileName() {
