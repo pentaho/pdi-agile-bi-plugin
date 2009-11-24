@@ -1,6 +1,8 @@
 package org.pentaho.agilebi.pdi.visualizations;
 
-public interface IVisualization {
+import org.pentaho.di.ui.spoon.FileListener;
+
+public interface IVisualization extends FileListener {
 
 	public String getTitle();
 
@@ -13,8 +15,10 @@ public interface IVisualization {
 	public void setOrder(int order);
 	
 	public int getOrder();
+
+	// should change this to "new"
+	public void openVisualizer(String modelFileLocation, String modelId);
+
+	public String getExtension();
 	
-
-	public void openVisualizer(String fileLocation, String modelId);
-
 }

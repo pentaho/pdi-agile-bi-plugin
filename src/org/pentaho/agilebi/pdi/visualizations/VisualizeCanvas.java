@@ -33,12 +33,18 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
   boolean isTabSelected = false;
   private WebVisualizationBrowser browser;
   private IVisualization visualization;
-  private String fileLocation;
+  private String modelLocation;
   private String modelId;
+  private String visLocation;
     
+  public VisualizeCanvas(IVisualization visualization, String visLocation) {
+    this.visualization = visualization;
+    this.visLocation = visLocation;
+  }
+  
   public VisualizeCanvas(IVisualization visualization, String fileLocation, String modelId) {
     this.visualization = visualization;
-    this.fileLocation = fileLocation;
+    this.modelLocation = fileLocation;
     this.modelId = modelId;
   }
   
@@ -48,33 +54,34 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
     }
   }
   
-  private void addVisualizationBrowser() {
+  public void openExistingVisualization() {
+    if (visualization instanceof WebVisualization) {
+      openVisualizationBrowser();
+    }    
+  }
+
+  private void openVisualizationBrowser() {
     WebVisualization webVis = (WebVisualization)visualization;
-    
     // TODO: We'll need a better approach for tab name
-    String tabName = modelId;
-    
+    String tabName = webVis.getTitle();
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     TabSet tabfolder = spoon.tabfolder;
-    
     try {
       // OK, now we have the HTML, create a new browse tab.
-
       // See if there already is a tab for this browser
       // If no, add it
       // If yes, select that tab
       //
       tabItem = spoon.delegates.tabs.findTabItem(tabName, TabMapEntry.OBJECT_TYPE_BROWSER);
       if (tabItem == null) {
-        CTabFolder cTabFolder = tabfolder.getSwtTabset();
-        browser = new WebVisualizationBrowser(cTabFolder, spoon, webVis, fileLocation, modelId);
+        CTabFolder cTabFolder = spoon.tabfolder.getSwtTabset();
+        browser = new WebVisualizationBrowser(cTabFolder, spoon, webVis, visLocation);
         tabItem = new TabItem(tabfolder, tabName, tabName);
         Image visualizeTabImage = ImageUtil.getImageAsResource(spoon.getDisplay(), "plugins/spoon/agile-bi/ui/images/visualizer.png");
         tabItem.setImage(visualizeTabImage);
         tabItem.setControl(browser.getComposite());
         tabItem.addListener( this );
         tabfolder.addListener(this);
-
         spoon.delegates.tabs.addTab(new TabMapEntry(tabItem, tabName, browser, TabMapEntry.OBJECT_TYPE_BROWSER));
       }
       int idx = tabfolder.indexOf(tabItem);
@@ -85,6 +92,41 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
       throw new RuntimeException(e);
     }
   }
+
+  
+  private void addVisualizationBrowser() {
+    WebVisualization webVis = (WebVisualization)visualization;
+    // TODO: We'll need a better approach for tab name
+    String tabName = modelId;
+    Spoon spoon = ((Spoon)SpoonFactory.getInstance());
+    TabSet tabfolder = spoon.tabfolder;
+    try {
+      // OK, now we have the HTML, create a new browse tab.
+      // See if there already is a tab for this browser
+      // If no, add it
+      // If yes, select that tab
+      //
+      tabItem = spoon.delegates.tabs.findTabItem(tabName, TabMapEntry.OBJECT_TYPE_BROWSER);
+      if (tabItem == null) {
+        CTabFolder cTabFolder = spoon.tabfolder.getSwtTabset();
+        browser = new WebVisualizationBrowser(cTabFolder, spoon, webVis, modelLocation, modelId);
+        tabItem = new TabItem(tabfolder, tabName, tabName);
+        Image visualizeTabImage = ImageUtil.getImageAsResource(spoon.getDisplay(), "plugins/spoon/agile-bi/ui/images/visualizer.png");
+        tabItem.setImage(visualizeTabImage);
+        tabItem.setControl(browser.getComposite());
+        tabItem.addListener( this );
+        tabfolder.addListener(this);
+        spoon.delegates.tabs.addTab(new TabMapEntry(tabItem, tabName, browser, TabMapEntry.OBJECT_TYPE_BROWSER));
+      }
+      int idx = tabfolder.indexOf(tabItem);
+
+      // keep the focus on the graph
+      tabfolder.setSelected(idx);
+    } catch (Throwable e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
   public boolean canBeClosed() {
     // TODO Auto-generated method stub
     return true;

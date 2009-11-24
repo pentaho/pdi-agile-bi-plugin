@@ -1,6 +1,8 @@
 package org.pentaho.di.core.lifecycle.pdi;
 
 import org.pentaho.agilebi.pdi.modeler.ModelerCanvas;
+import org.pentaho.agilebi.pdi.visualizations.IVisualization;
+import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.agilebi.platform.JettyServer;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.core.lifecycle.LifeEventHandler;
@@ -20,6 +22,11 @@ public class AgileBILifecycleListener implements LifecycleListener {
     }
 
     ((Spoon) SpoonFactory.getInstance()).addFileListener(ModelerCanvas.getInstance(), "xmi", "Models");
+    
+    for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {
+      ((Spoon) SpoonFactory.getInstance()).addFileListener(viz, viz.getExtension(), viz.getTitle());
+    }
+    
   }
   
   public void onExit(LifeEventHandler arg0) throws LifecycleException {
