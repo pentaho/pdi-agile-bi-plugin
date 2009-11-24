@@ -96,7 +96,9 @@
 			<!-- jackrabbit -->
   			<include name="jackrabbit-*.jar"/>
 			<!-- jasperreports -->
-  			<include name="jasperreports-*.jar"/>			
+  			<include name="jasperreports-*.jar"/>
+			<!-- chartbeans -->
+  			<include name="pentaho-chartbeans-*.jar"/>	
 		</fileset>
   	</delete>
   </target>
