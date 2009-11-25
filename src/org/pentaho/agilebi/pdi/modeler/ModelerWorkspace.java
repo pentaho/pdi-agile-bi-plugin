@@ -52,6 +52,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   private Domain domain;
   
+  // full path to file
+  private String fileName;
+  
   public ModelerWorkspace(){
     
     inPlayFields.addPropertyChangeListener(new PropertyChangeListener(){
@@ -64,6 +67,14 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
         fireDimensionsChanged();
       }
     });
+  }
+  
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
+  }
+  
+  public String getFileName() {
+    return fileName;
   }
   
   //transMeta.getFilename()
@@ -349,6 +360,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     firePropertyChange("availableFields", null, getAvailableFields());
     
     LogicalModel lModel = domain.getLogicalModels().get(0);
+    
+    modelName = lModel.getCategories().get(0).getId();
     
     List<OlapDimension> theDimensions = (List) lModel.getProperty("olap_dimensions");
     if(theDimensions != null) {

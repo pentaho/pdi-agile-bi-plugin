@@ -342,7 +342,7 @@ public class ModelerWorkspaceUtil {
   
   }
   
-  public static void loadWorkspace(String aXml, ModelerWorkspace aModel) throws ModelerException {
+  public static void loadWorkspace(String fileName, String aXml, ModelerWorkspace aModel) throws ModelerException {
 
     try{
       XmiParser parser = new XmiParser();
@@ -353,8 +353,8 @@ public class ModelerWorkspaceUtil {
     	theSource.initialize(domain);  	
   
     	aModel.setDomain(domain);
-
     	aModel.setModelSource(theSource);
+    	aModel.setFileName(fileName);
     } catch (Exception e){
       logger.info(e);
       e.printStackTrace();

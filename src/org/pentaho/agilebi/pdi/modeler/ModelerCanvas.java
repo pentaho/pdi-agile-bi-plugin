@@ -170,7 +170,7 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
     try{
       createModelerTab();
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8");
-      ModelerWorkspaceUtil.loadWorkspace(xml, controller.getModel());
+      ModelerWorkspaceUtil.loadWorkspace(fname, xml, controller.getModel());
     } catch(ModelerException e){
       e.printStackTrace();
     } catch(IOException e){

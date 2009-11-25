@@ -191,7 +191,6 @@ public class ModelerController extends AbstractXulEventHandler{
   
   public void visualize() throws ModelerException{
     try{
-      ModelerWorkspaceUtil.populateDomain(model);
       openVisualizer();
     } catch(Exception e){
       logger.info(e);
@@ -361,12 +360,18 @@ public class ModelerController extends AbstractXulEventHandler{
   	VisualizationManager theManager = VisualizationManager.getInstance();
   	IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
   	if(theVisualization != null) {
-  		theVisualization.openVisualizer(model.getModelName(), model.getDatabaseName());
+  	  if (model.getFileName() != null) {
+  	    // TODO: Find a better name for the cube, maybe just model name?
+  	    theVisualization.openVisualizer(model.getFileName(), model.getModelName() + " Cube");
+  	  } else {
+  	    throw new UnsupportedOperationException("TODO: prompt to save model before visualization");
+  	  }
   	}
   }
   
   public void saveWorkspace(String fileName) throws ModelerException {
   	ModelerWorkspaceUtil.saveWorkspace(model, fileName);
+    model.setFileName(fileName);
   }
   
   public void loadWorkspace() throws ModelerException {
@@ -379,7 +384,7 @@ public class ModelerController extends AbstractXulEventHandler{
 	  	while((theLine = theBuffer.readLine()) != null) {
 	  		theStringBuffer.append(theLine);
 	  	}
-	  	ModelerWorkspaceUtil.loadWorkspace(theStringBuffer.toString(), getModel());
+	  	ModelerWorkspaceUtil.loadWorkspace("my_metadata.xml", theStringBuffer.toString(), getModel());
 	  	
   	} catch(Exception e) {
   		logger.info(e.getLocalizedMessage());
