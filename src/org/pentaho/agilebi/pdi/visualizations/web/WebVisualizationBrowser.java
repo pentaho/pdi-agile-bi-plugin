@@ -52,8 +52,14 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
     return visualization;
   }
   
+
   protected Browser createBrowser() {
-    return new Browser(composite, SWT.MOZILLA);
+    System.out.println("OS: " + System.getProperty("os.name"));
+    if (System.getProperty("os.name") != null && System.getProperty("os.name").indexOf("Mac") >= 0) {
+      return new Browser(composite, SWT.MOZILLA);
+    } else {
+      return super.createBrowser();
+    }
   }
   
   protected void addToolBar() {
