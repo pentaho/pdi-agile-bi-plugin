@@ -362,7 +362,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     LogicalModel lModel = domain.getLogicalModels().get(0);
     
     // TODO: ask WG why he wanted to get the model name this way
-    //modelName = lModel.getCategories().get(0).getId();
+    if(lModel.getCategories().size() > 0){
+      modelName = lModel.getCategories().get(0).getId();
+    }
     
     List<OlapDimension> theDimensions = (List) lModel.getProperty("olap_dimensions");
     if(theDimensions != null) {

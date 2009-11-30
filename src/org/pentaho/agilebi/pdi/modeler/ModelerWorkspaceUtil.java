@@ -133,12 +133,11 @@ public class ModelerWorkspaceUtil {
 
     if (cats.size() > 0) {
       cat = cats.get(0);
-      cat.setId(model.getModelName());
     } else {
       cat = new Category();
-      cat.setId(model.getModelName());
       model.getDomain().getLogicalModels().get(0).addCategory(cat);
     }
+    cat.setId(model.getModelName());
     cat.getLogicalColumns().clear();
 
     // Add all measures

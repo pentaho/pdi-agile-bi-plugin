@@ -105,7 +105,6 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
     controller = new ModelerController();
     ModelerWorkspace  model = ModelerWorkspaceUtil.createModelFromOutputStep(controller.getModel());
     createModelerTab();
-    meta = new ModelerEngineMeta(controller);
   }
   
   public void createModelerTab() throws ModelerException {
@@ -143,6 +142,7 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
     tabSet.addTab(tabItem);
 
     int idx = tabfolder.indexOf(tabItem);
+    meta = new ModelerEngineMeta(controller);
     // keep the focus on the graph
     tabfolder.setSelected(idx);
   }
