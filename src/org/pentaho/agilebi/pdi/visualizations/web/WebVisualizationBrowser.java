@@ -100,35 +100,21 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
     }
   }
 
+  public String getVisFileLocation() {
+    return visFileLocation;
+  }
+  
   public void save(String filename) {
     visFileLocation = filename;
     browser.execute(visualization.getSaveJavascript(filename));
   }
   
   public void save() {
-    if (visFileLocation == null) {
-      saveAs();
-    } else {
-      save(visFileLocation);
-    }
+    spoon.saveToFile(meta);
   }
   
   public void saveAs() {
-    //
-    System.out.println("SAVE AS CALLED");
-
-    String path = "/home/gorman/";
-    String filename = "analyzer_report";
-    
-    // TODO: encode strings
-    
-    browser.execute("gCtrlr.repositoryBrowserController.remoteSave('" + filename + "', '', '"+path+"', null, true);");
-
-    
-    //
-    System.out.println("SAVE AS CALLED");
-
-    // present a dialog, then call save JS
+    spoon.saveFileAs(meta);
   }
   
   public void refreshData() {

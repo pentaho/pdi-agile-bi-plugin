@@ -67,23 +67,15 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     TabSet tabfolder = spoon.tabfolder;
     try {
-      // OK, now we have the HTML, create a new browse tab.
-      // See if there already is a tab for this browser
-      // If no, add it
-      // If yes, select that tab
-      //
-      tabItem = spoon.delegates.tabs.findTabItem(tabName, TabMapEntry.OBJECT_TYPE_BROWSER);
-      if (tabItem == null) {
-        CTabFolder cTabFolder = spoon.tabfolder.getSwtTabset();
-        browser = new WebVisualizationBrowser(cTabFolder, spoon, webVis, visLocation);
-        tabItem = new TabItem(tabfolder, tabName, tabName);
-        Image visualizeTabImage = ImageUtil.getImageAsResource(spoon.getDisplay(), "plugins/spoon/agile-bi/ui/images/visualizer.png");
-        tabItem.setImage(visualizeTabImage);
-        tabItem.setControl(browser.getComposite());
-        tabItem.addListener( this );
-        tabfolder.addListener(this);
-        spoon.delegates.tabs.addTab(new TabMapEntry(tabItem, tabName, browser, TabMapEntry.OBJECT_TYPE_BROWSER));
-      }
+      CTabFolder cTabFolder = spoon.tabfolder.getSwtTabset();
+      browser = new WebVisualizationBrowser(cTabFolder, spoon, webVis, visLocation);
+      tabItem = new TabItem(tabfolder, tabName, tabName);
+      Image visualizeTabImage = ImageUtil.getImageAsResource(spoon.getDisplay(), "plugins/spoon/agile-bi/ui/images/visualizer.png");
+      tabItem.setImage(visualizeTabImage);
+      tabItem.setControl(browser.getComposite());
+      tabItem.addListener( this );
+      tabfolder.addListener(this);
+      spoon.delegates.tabs.addTab(new TabMapEntry(tabItem, tabName, browser, TabMapEntry.OBJECT_TYPE_BROWSER));
       int idx = tabfolder.indexOf(tabItem);
 
       // keep the focus on the graph
@@ -107,17 +99,17 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
       // If yes, select that tab
       //
       tabItem = spoon.delegates.tabs.findTabItem(tabName, TabMapEntry.OBJECT_TYPE_BROWSER);
-      if (tabItem == null) {
-        CTabFolder cTabFolder = spoon.tabfolder.getSwtTabset();
-        browser = new WebVisualizationBrowser(cTabFolder, spoon, webVis, modelLocation, modelId);
-        tabItem = new TabItem(tabfolder, tabName, tabName);
-        Image visualizeTabImage = ImageUtil.getImageAsResource(spoon.getDisplay(), "plugins/spoon/agile-bi/ui/images/visualizer.png");
-        tabItem.setImage(visualizeTabImage);
-        tabItem.setControl(browser.getComposite());
-        tabItem.addListener( this );
-        tabfolder.addListener(this);
-        spoon.delegates.tabs.addTab(new TabMapEntry(tabItem, tabName, browser, TabMapEntry.OBJECT_TYPE_BROWSER));
-      }
+
+      CTabFolder cTabFolder = spoon.tabfolder.getSwtTabset();
+      browser = new WebVisualizationBrowser(cTabFolder, spoon, webVis, modelLocation, modelId);
+      tabItem = new TabItem(tabfolder, tabName, tabName);
+      Image visualizeTabImage = ImageUtil.getImageAsResource(spoon.getDisplay(), "plugins/spoon/agile-bi/ui/images/visualizer.png");
+      tabItem.setImage(visualizeTabImage);
+      tabItem.setControl(browser.getComposite());
+      tabItem.addListener( this );
+      tabfolder.addListener(this);
+      spoon.delegates.tabs.addTab(new TabMapEntry(tabItem, tabName, browser, TabMapEntry.OBJECT_TYPE_BROWSER));
+
       int idx = tabfolder.indexOf(tabItem);
 
       // keep the focus on the graph

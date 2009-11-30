@@ -45,13 +45,11 @@ public class WebVisualizationMeta implements EngineMetaInterface {
   }
 
   public String getFileType() {
-    // TODO Auto-generated method stub
-    return null;
+    return getDefaultExtension();
   }
 
   public String getFilename() {
-    // TODO Auto-generated method stub
-    return null;
+    return browser.getVisFileLocation();
   }
 
   public String[] getFilterExtensions() {

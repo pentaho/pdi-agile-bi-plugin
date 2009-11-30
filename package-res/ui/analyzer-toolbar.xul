@@ -4,9 +4,11 @@
 		<toolbar id="nav-toolbar" mode="icons">
             <toolbarbutton value="analyzer-file-save" label="Save Current Analyzer Report" image="ui/images/save.png" tooltiptext="Save Current Analyzer Report" />
             <toolbarbutton value="analyzer-file-save-as" label="Save Analyzer Report with different name" image="ui/images/saveas.png" tooltiptext="Save Analyzer Report with different name" />
+            <!-- TODO: Add support for refresh data and model
             <toolbarseparator />
 			<toolbarbutton value="analyzer-reload-data" label="Refresh Data" image="plugins/spoon/agile-bi/ui/images/refresh_data.png" tooltiptext="Refresh the data in the current view"/>
 			<toolbarbutton value="analyzer-reload-model" label="Refresh Model" image="plugins/spoon/agile-bi/ui/images/refresh_model.png" tooltiptext="Reload the current model"/>
+			-->
 		</toolbar>
 	</toolbox>
 
