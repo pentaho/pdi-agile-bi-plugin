@@ -372,6 +372,7 @@ public class ModelerWorkspaceUtil {
     	aModel.setDomain(domain);
     	aModel.setModelSource(theSource);
     	aModel.setFileName(fileName);
+    	aModel.setDirty(false);
     } catch (Exception e){
       logger.info(e);
       e.printStackTrace();
