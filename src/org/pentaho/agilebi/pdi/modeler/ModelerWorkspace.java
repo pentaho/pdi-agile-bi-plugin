@@ -387,7 +387,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     for(LogicalColumn c : table.getLogicalColumns()){
       FieldMetaData fm = new FieldMetaData();
       fm.setLogicalColumn(c);
-      fm.setFieldName(c.getName(Locale.getDefault().toString()));
+      fm.setFieldName(c.getPhysicalColumn().getName(Locale.getDefault().toString()));
+      fm.setDisplayName(c.getName(Locale.getDefault().toString()));
+      fm.setAggTypeDesc(c.getAggregationType().toString());
       availableFields.add(fm);
     }
     
@@ -420,6 +422,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    			LevelMetaData theLevelMD = new LevelMetaData(theHierarchyMD, theLevel.getName());
 
 	    			theLevelMD.setParent(theHierarchyMD);
+	    			theLevelMD.setLogicalColumn(theLevel.getReferenceColumn());
 	    			theHierarchyMD.add(theLevelMD);
 	    		}
 	    		
@@ -443,6 +446,11 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    		
 	    		FieldMetaData theMeasureMD = new FieldMetaData();
 	    		theMeasureMD.setFieldName(theMeasure.getName());
+
+	    		theMeasureMD.setFieldName(theMeasure.getLogicalColumn().getPhysicalColumn().getName(Locale.getDefault().toString()));
+	    		theMeasureMD.setDisplayName(theMeasure.getLogicalColumn().getName(Locale.getDefault().toString()));
+          theMeasureMD.setAggTypeDesc(theMeasure.getLogicalColumn().getAggregationType().toString());
+	        
 	    		theMeasureMD.setLogicalColumn(theMeasure.getLogicalColumn());
 	    		this.inPlayFields.add(theMeasureMD);
 	    	}

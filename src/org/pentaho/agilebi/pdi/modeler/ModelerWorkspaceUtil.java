@@ -280,7 +280,9 @@ public class ModelerWorkspaceUtil {
       for (FieldMetaData f : model.getFields()) {
 
         OlapMeasure measure = new OlapMeasure();
-        measure.setName(f.getFieldName());
+        String n = f.getDisplayName() != null ? f.getDisplayName() : f.getFieldName();
+        measure.setName(n);
+        f.getLogicalColumn().setAggregationType(AggregationType.valueOf(f.getAggTypeDesc()));
         measure.setLogicalColumn(f.getLogicalColumn());
         measures.add(measure);
       }
