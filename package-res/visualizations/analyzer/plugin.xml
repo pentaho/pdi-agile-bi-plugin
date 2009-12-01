@@ -7,8 +7,8 @@
   <bean id="visualizationBean" class="org.pentaho.agilebi.pdi.visualizations.web.WebVisualization">
     <property name="title" value="Analyzer"/>
     <property name="extension" value="xanalyzer"/>
-    <property name="newUrl" value="http://localhost:9999/pentaho/content/analyzer/editor?catalog=${modelLocation}&amp;cube=${modelId}"/>
-    <property name="openUrl" value="http://localhost:9999/pentaho/content/analyzer/editor?command=open&amp;solution=&amp;path=${path}&amp;action=${filename}"/>
+    <property name="newUrl" value="http://localhost:9999/pentaho/content/analyzer/editor?catalog=${modelLocation}&amp;cube=${modelId}&amp;showFieldList=true&amp;fieldListView=cmdViewType"/>
+    <property name="openUrl" value="http://localhost:9999/pentaho/content/analyzer/editor?command=open&amp;showFieldList=true&amp;fieldListView=cmdViewType&amp;solution=&amp;path=${path}&amp;action=${filename}"/>
     <property name="saveJavascript" value="gCtrlr.repositoryBrowserController.remoteSave('${filename}', '', '${path}', null, true);"/>
     <property name="order" value="0"/>
   </bean>
