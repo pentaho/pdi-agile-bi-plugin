@@ -44,6 +44,7 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
   
   private static String cleanUpPath(String path) {
     // TODO: this is a hack until we figure out encoding issues with paths
+    path = path.replaceAll("\\+"," ");
     path = path.replaceAll("%3A",":");
     path = path.replaceAll("%5C","\\\\");
     return path;
@@ -54,8 +55,8 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
     path = cleanUpPath(path);
 
     
-    // Analyzer puts a "/" at the beginning of the path, remove it.
-    if (path.startsWith("/")) { //$NON-NLS-1$
+    // Analyzer puts a "/" at the beginning of the path on windows, remove it.
+    if (path.startsWith("/") && path.contains(":")) { //$NON-NLS-1$ //$NON-NLS-2$
       path = path.substring(1);
     }
     
