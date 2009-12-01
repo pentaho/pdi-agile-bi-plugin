@@ -166,7 +166,7 @@ public class ModelerWorkspaceUtil {
 
     // Add levels
     for (DimensionMetaData dim : model.getDimensions()) {
-      for (HierarchyMetaData hier : dim.getChildren()) {
+      for (HierarchyMetaData hier : dim) {
         for (int j = 0; j < hier.getChildren().size(); j++) {
           LevelMetaData level = hier.getChildren().get(j);
           String format = "#";
@@ -221,7 +221,7 @@ public class ModelerWorkspaceUtil {
 
         List<OlapHierarchy> hierarchies = new ArrayList<OlapHierarchy>();
 
-        for (HierarchyMetaData hier : dim.getChildren()) {
+        for (HierarchyMetaData hier : dim) {
           OlapHierarchy hierarchy = new OlapHierarchy(dimension);
           hierarchy.setName(hier.getName());
           hierarchy.setLogicalTable(logicalTable);

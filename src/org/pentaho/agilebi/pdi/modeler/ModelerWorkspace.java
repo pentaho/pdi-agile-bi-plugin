@@ -100,7 +100,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public int getNumberLevels() {
     int v = 0;
     for (DimensionMetaData dim : dimensions) {
-      for (HierarchyMetaData hier : dim.getChildren()) {
+      for (HierarchyMetaData hier : dim) {
         for (LevelMetaData lvl : hier.getChildren()) {
           v++;
         }
@@ -145,8 +145,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     LogicalColumn col = findLogicalColumn(obj.toString());
     level.setLogicalColumn(col);
     
-    dimension.getChildren().add(hierarchy);
-    hierarchy.getChildren().add(level);
+    dimension.add(hierarchy);
+    hierarchy.add(level);
 
     addDimension(dimension);
   }
@@ -164,7 +164,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       LogicalColumn col = findLogicalColumn(newItem.toString());
       level.setLogicalColumn(col);
       
-      sib.getParent().getChildren().add(level);
+      sib.getParent().add(level);
       this.firePropertyChange("dimensions", null , dimensions);
     } else if (selectedItem instanceof HierarchyMetaData) {
       HierarchyMetaData hier = (HierarchyMetaData) selectedItem;
@@ -174,21 +174,21 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       LogicalColumn col = findLogicalColumn(newItem.toString());
       level.setLogicalColumn(col);
       
-      hier.getChildren().add(level);
+      hier.add(level);
       this.firePropertyChange("dimensions", null , dimensions);
     } else if (selectedItem instanceof DimensionMetaData) {
       DimensionMetaData dim = (DimensionMetaData)selectedItem;
       HierarchyMetaData hier = null;
 
-      if (dim.getChildren().size() > 0) {
-        hier = dim.getChildren().get(0);
+      if (dim.size() > 0) {
+        hier = dim.get(0);
       } else {
         hier = new HierarchyMetaData(newItem.toString());
         hier.setParent(dim);
-        dim.getChildren().add(hier);
+        dim.add(hier);
       }
       LevelMetaData level = new LevelMetaData(hier, newItem.toString());
-      hier.getChildren().add(level);
+      hier.add(level);
       // TODO: remove lookup
       LogicalColumn col = findLogicalColumn(newItem.toString());
       level.setLogicalColumn(col);
@@ -310,7 +310,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       fireFieldsChanged();
       
       for(DimensionMetaData dm : dimensions){
-        for(HierarchyMetaData hm : dm.getChildren()){
+        for(HierarchyMetaData hm : dm){
           for(LevelMetaData lm : hm.getChildren()){
             String existingLmId = lm.getLogicalColumn().getId();
             boolean found = false;

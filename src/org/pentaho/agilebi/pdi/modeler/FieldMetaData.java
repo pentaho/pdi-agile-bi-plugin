@@ -24,7 +24,6 @@ public class FieldMetaData extends XulEventSourceAdapter {
   
   private List<String> aggTypes = new ArrayList<String>();
   {
-    aggTypes.add("NONE");
     aggTypes.add("SUM");
     aggTypes.add("AVERAGE");
     aggTypes.add("MINIMUM");

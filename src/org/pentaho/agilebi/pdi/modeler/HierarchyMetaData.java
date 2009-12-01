@@ -21,7 +21,6 @@ public class HierarchyMetaData extends AbstractModelNode<LevelMetaData>{
   String name;
 
   public HierarchyMetaData(String name) {
-    this.parent = parent;
     this.name = name;
   }
   

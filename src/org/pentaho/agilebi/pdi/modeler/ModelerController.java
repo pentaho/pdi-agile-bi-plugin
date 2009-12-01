@@ -241,7 +241,7 @@ public class ModelerController extends AbstractXulEventHandler{
     DimensionMetaData dimension = new DimensionMetaData(dimName);
     HierarchyMetaData hierarchy = new HierarchyMetaData(dimName);
     hierarchy.setParent(dimension);
-    dimension.getChildren().add(hierarchy);
+    dimension.add(hierarchy);
     model.addDimension(dimension);
     
     hideNewDimensionDialog();
@@ -278,7 +278,7 @@ public class ModelerController extends AbstractXulEventHandler{
       }
     } else if (selectedTreeItem instanceof HierarchyMetaData) {
       DimensionMetaData dim = (DimensionMetaData) ((HierarchyMetaData)selectedTreeItem).getParent();
-      if(dim.getChildren().size() > dim.getChildren().indexOf(selectedTreeItem) +1){
+      if(dim.size() > dim.indexOf(selectedTreeItem) +1){
         dim.moveChildDown((HierarchyMetaData)selectedTreeItem);
         setDimTreeSelectionChanged(null);
       }
@@ -327,7 +327,7 @@ public class ModelerController extends AbstractXulEventHandler{
     if (selectedTreeItem instanceof DimensionMetaData) {
       model.getDimensions().remove(selectedTreeItem);
     } else if (selectedTreeItem instanceof HierarchyMetaData) {
-      ((HierarchyMetaData)selectedTreeItem).getParent().getChildren().remove(selectedTreeItem);
+      ((HierarchyMetaData)selectedTreeItem).getParent().remove(selectedTreeItem);
     } else if (selectedTreeItem instanceof LevelMetaData) {
       ((LevelMetaData)selectedTreeItem).getParent().getChildren().remove(selectedTreeItem);
     }
