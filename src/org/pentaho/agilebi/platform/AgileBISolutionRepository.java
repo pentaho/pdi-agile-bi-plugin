@@ -25,11 +25,11 @@ import org.pentaho.platform.repository.solution.SolutionRepositoryBase;
 public class AgileBISolutionRepository extends SolutionRepositoryBase {
 
   private static final long serialVersionUID = -1174699308144524442L;
-
-  private String cleanUpPath(String path) {
+  
+  private static String cleanUpPath(String path) {
     // TODO: this is a hack until we figure out encoding issues with paths
     path = path.replaceAll("%3A",":");
-    path = path.replaceAll("%5C","\\");
+    path = path.replaceAll("%5C","\\\\");
     return path;
   }
   
