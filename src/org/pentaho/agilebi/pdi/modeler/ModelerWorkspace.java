@@ -69,6 +69,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   private Domain domain;
   
+  private boolean dirty;
+  
   // full path to file
   private String fileName;
   
@@ -111,6 +113,16 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     String prevVal = this.modelName;
     this.modelName = modelName;
     this.firePropertyChange("modelName", prevVal, this.modelName);
+  }
+  
+  public boolean isDirty(){
+    return dirty;
+  }
+ 
+  public void setDirty(boolean dirty){
+    boolean prevVal = this.dirty;
+    this.dirty = dirty;
+    this.firePropertyChange("dirty", prevVal, this.dirty);
   }
 
   public int getNumberLevels() {
@@ -214,10 +226,12 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 
   private void fireFieldsChanged(){
     firePropertyChange("fields", null, inPlayFields);
+    setDirty(true);
   }
   
   private void fireDimensionsChanged(){
     firePropertyChange("dimensions", null, dimensions);
+    setDirty(true);
   }
   
   // Restore once SetListBox is returning bound objects instead of Strings

@@ -28,12 +28,14 @@ import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.core.PropsUI;
 import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.binding.Binding.Type;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMenuList;
+import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.containers.XulListbox;
@@ -393,6 +395,18 @@ public class ModelerController extends AbstractXulEventHandler{
   
 
   public void openVisualizer() {
+    if(model.isDirty()){
+      try{
+        XulMessageBox box = (XulMessageBox) document.createElement("messagebox");
+        box.setTitle("Warning");
+        box.setMessage("You must save your model before visualizing.");
+        box.open();
+      } catch(XulException e){
+        e.printStackTrace();
+        logger.error(e);
+      }
+      return;
+    }
   	VisualizationManager theManager = VisualizationManager.getInstance();
   	IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
   	if(theVisualization != null) {
@@ -408,6 +422,7 @@ public class ModelerController extends AbstractXulEventHandler{
   public void saveWorkspace(String fileName) throws ModelerException {
   	ModelerWorkspaceUtil.saveWorkspace(model, fileName);
     model.setFileName(fileName);
+    model.setDirty(false);
   }
   
   public void loadWorkspace() throws ModelerException {
