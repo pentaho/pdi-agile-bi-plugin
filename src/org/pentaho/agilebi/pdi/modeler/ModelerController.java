@@ -329,7 +329,7 @@ public class ModelerController extends AbstractXulEventHandler{
     } else if (selectedTreeItem instanceof HierarchyMetaData) {
       ((HierarchyMetaData)selectedTreeItem).getParent().remove(selectedTreeItem);
     } else if (selectedTreeItem instanceof LevelMetaData) {
-      ((LevelMetaData)selectedTreeItem).getParent().getChildren().remove(selectedTreeItem);
+      ((LevelMetaData)selectedTreeItem).getParent().remove(selectedTreeItem);
     }
     setDimTreeSelectionChanged(null);
   }
