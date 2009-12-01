@@ -1,23 +1,16 @@
 package org.pentaho.agilebi.platform;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
-import org.dom4j.Node;
-import org.pentaho.commons.connection.IPentahoStreamSource;
 import org.pentaho.platform.api.engine.IActionSequence;
-import org.pentaho.platform.api.engine.IActionSequenceResource;
-import org.pentaho.platform.api.engine.IDocumentResourceLoader;
 import org.pentaho.platform.api.engine.IFileFilter;
 import org.pentaho.platform.api.engine.IPentahoSession;
 import org.pentaho.platform.api.engine.IPermissionMask;
@@ -27,18 +20,19 @@ import org.pentaho.platform.api.engine.ISolutionFilter;
 import org.pentaho.platform.api.engine.PentahoAccessControlException;
 import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
-import org.pentaho.platform.engine.services.SolutionURIResolver;
-import org.pentaho.platform.engine.services.actionsequence.ActionSequenceResource;
-import org.pentaho.platform.repository.messages.Messages;
 import org.pentaho.platform.repository.solution.SolutionRepositoryBase;
-import org.pentaho.platform.repository.solution.filebased.FileSolutionFile;
-import org.pentaho.platform.util.messages.LocaleHelper;
-import org.pentaho.platform.util.xml.XmlHelper;
-import org.pentaho.platform.util.xml.dom4j.XmlDom4JHelper;
 
 public class AgileBISolutionRepository extends SolutionRepositoryBase {
 
+  private static final long serialVersionUID = -1174699308144524442L;
+
   public int publish(String baseUrl, String path, String fileName, byte[] data, boolean overwrite) throws PentahoAccessControlException {
+    
+    // Analyzer puts a "/" at the beginning of the path, remove it.
+    if (path.startsWith("/")) { //$NON-NLS-1$
+      path = path.substring(1);
+    }
+    
     File f = new File(path, fileName);
     FileOutputStream fos = null;
     try {
