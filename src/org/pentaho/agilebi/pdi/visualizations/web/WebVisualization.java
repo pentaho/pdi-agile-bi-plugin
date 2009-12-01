@@ -71,7 +71,7 @@ public class WebVisualization implements IVisualization {
     return saveJavascript;
   }
 
-  public String getSaveJavascript(String filename) {
+  public String generateSaveJavascript(String filename) {
     // path, filename
     String pathAndFilename[] = getPathAndFilename(filename);
     String str = replaceField(saveJavascript, "path", pathAndFilename[0], true);
@@ -80,7 +80,7 @@ public class WebVisualization implements IVisualization {
   }
 
   
-	public String getOpenUrl(String filename) {
+	public String generateOpenUrl(String filename) {
 	  // path, filename
 	  String pathAndFilename[] = getPathAndFilename(filename);
 	  String str = replaceField(openUrl, "path", pathAndFilename[0], true);
@@ -95,7 +95,7 @@ public class WebVisualization implements IVisualization {
 	  return str.replaceAll("\\$\\{"+fieldName+"\\}", value); //$NON-NLS-1$
 	}
 	
-	public String getNewUrl(String fileLocation, String modelId) {
+	public String generateNewUrl(String fileLocation, String modelId) {
     String str = replaceField(newUrl, "modelLocation", fileLocation, true);
     str = replaceField(str, "modelId", modelId, true);
     return str;
@@ -114,7 +114,7 @@ public class WebVisualization implements IVisualization {
 	  return refreshDataJavascript;
 	}
 	
-	public String getRefreshDataJavascript(String fileLocation, String modelId) { 
+	public String generateRefreshDataJavascript(String fileLocation, String modelId) { 
     String str = replaceField(refreshDataJavascript, "modelLocation", fileLocation, true);
     str = replaceField(str, "modelId", modelId, true);
     return str;

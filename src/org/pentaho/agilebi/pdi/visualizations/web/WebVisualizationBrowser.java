@@ -34,14 +34,14 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   private String visFileLocation = null;
   
   public WebVisualizationBrowser(Composite parent, final Spoon spoon, final WebVisualization visualization, String visFileLocation) throws SWTError {
-    super(parent, spoon, visualization.getOpenUrl(visFileLocation), true, true);
+    super(parent, spoon, visualization.generateOpenUrl(visFileLocation), true, true);
     this.visualization = visualization;
     this.visFileLocation = visFileLocation;
     this.meta = new WebVisualizationMeta(this);
   }
   
   public WebVisualizationBrowser(Composite parent, final Spoon spoon, final WebVisualization visualization, String xmiFileLocation, String modelId) throws SWTError {
-    super(parent, spoon, visualization.getNewUrl(xmiFileLocation, modelId), true, true );
+    super(parent, spoon, visualization.generateNewUrl(xmiFileLocation, modelId), true, true );
     this.visualization = visualization;
     this.xmiFileLocation = xmiFileLocation;
     this.modelId = modelId;
@@ -106,7 +106,7 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   
   public void save(String filename) {
     visFileLocation = filename;
-    browser.execute(visualization.getSaveJavascript(filename));
+    browser.execute(visualization.generateSaveJavascript(filename));
   }
   
   public void save() {
