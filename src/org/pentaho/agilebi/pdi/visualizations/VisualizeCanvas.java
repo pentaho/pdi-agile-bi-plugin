@@ -62,13 +62,12 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
 
   private void openVisualizationBrowser() {
     WebVisualization webVis = (WebVisualization)visualization;
-    // TODO: We'll need a better approach for tab name
-    String tabName = webVis.getTitle();
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     TabSet tabfolder = spoon.tabfolder;
     try {
       CTabFolder cTabFolder = spoon.tabfolder.getSwtTabset();
       browser = new WebVisualizationBrowser(cTabFolder, spoon, webVis, visLocation);
+      String tabName = browser.getMeta().getName();
       tabItem = new TabItem(tabfolder, tabName, tabName);
       Image visualizeTabImage = ImageUtil.getImageAsResource(spoon.getDisplay(), "plugins/spoon/agile-bi/ui/images/visualizer.png");
       tabItem.setImage(visualizeTabImage);
@@ -88,17 +87,18 @@ public class VisualizeCanvas implements TabItemInterface, ModifyListener, TabLis
   
   private void addVisualizationBrowser() {
     WebVisualization webVis = (WebVisualization)visualization;
-    // TODO: We'll need a better approach for tab name
-    String tabName = modelId;
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     TabSet tabfolder = spoon.tabfolder;
     try {
-      // OK, now we have the HTML, create a new browse tab.
-      // See if there already is a tab for this browser
-      // If no, add it
-      // If yes, select that tab
-      //
+			// generate Analyzer N for the name
+      int num = 1;
+      String tabName = webVis.getTitle() + " " + num;
+      
       tabItem = spoon.delegates.tabs.findTabItem(tabName, TabMapEntry.OBJECT_TYPE_BROWSER);
+      while (tabItem != null) {
+        tabName = webVis.getTitle() + " " + (++num);
+        tabItem = spoon.delegates.tabs.findTabItem(tabName, TabMapEntry.OBJECT_TYPE_BROWSER);
+      }
 
       CTabFolder cTabFolder = spoon.tabfolder.getSwtTabset();
       browser = new WebVisualizationBrowser(cTabFolder, spoon, webVis, modelLocation, modelId);

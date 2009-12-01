@@ -1,5 +1,6 @@
 package org.pentaho.agilebi.pdi.visualizations.web;
 
+import java.io.File;
 import java.util.Date;
 
 import org.pentaho.di.core.EngineMetaInterface;
@@ -71,9 +72,18 @@ public class WebVisualizationMeta implements EngineMetaInterface {
   }
 
   public String getName() {
-    // TODO: reach into webapp to get name?
-    throw new UnsupportedOperationException();
-    // return browser.getVisualization().getTitle();
+    // this uses the file name to determine the tab name
+    if (browser.getVisFileLocation() == null) {
+      return "Untitled";
+    } else {
+      File f = new File(browser.getVisFileLocation());
+      String n = f.getName();
+      // strip the file name of its extension
+      if (n.length() > getDefaultExtension().length() + 1) {
+        n = n.substring(0, n.length() - (getDefaultExtension().length() + 1));
+      }
+      return n;
+    }
   }
 
   public String getXML() throws KettleException {
