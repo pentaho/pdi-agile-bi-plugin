@@ -26,7 +26,17 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
 
   private static final long serialVersionUID = -1174699308144524442L;
 
+  private String cleanUpPath(String path) {
+    // TODO: this is a hack until we figure out encoding issues with paths
+    path = path.replaceAll("%3A",":");
+    path = path.replaceAll("%5C","\\");
+    return path;
+  }
+  
   public int publish(String baseUrl, String path, String fileName, byte[] data, boolean overwrite) throws PentahoAccessControlException {
+    
+    path = cleanUpPath(path);
+
     
     // Analyzer puts a "/" at the beginning of the path, remove it.
     if (path.startsWith("/")) { //$NON-NLS-1$
@@ -47,6 +57,9 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
   }
   
   private File getFile(String solutionPath) {
+    
+    solutionPath = cleanUpPath(solutionPath);
+    
     if (solutionPath.startsWith("system/")) {
       String filePath = PentahoSystem.getApplicationContext().getSolutionPath(solutionPath);
       File file = new File(filePath);
@@ -58,6 +71,7 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
   }
   
   public boolean resourceExists(String solutionPath, int actionOperation) {
+    solutionPath = cleanUpPath(solutionPath);
     return getFile(solutionPath).exists();
   }
 
