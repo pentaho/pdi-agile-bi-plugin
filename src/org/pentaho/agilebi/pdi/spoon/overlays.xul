@@ -7,7 +7,7 @@
 
 	<menupopup id="trans-graph-entry">
       <menuitem id="trans-graph-entry-model" label="Model" command="agileBi.openModeler()" />
-      <menuitem id="trans-graph-entry-visualize" label="Quick Visualize" command="agileBi.quickVisualize()" />
+      <!-- <menuitem id="trans-graph-entry-visualize" label="Quick Visualize" command="agileBi.quickVisualize()" /> -->
     </menupopup>
 	
 </overlay>
