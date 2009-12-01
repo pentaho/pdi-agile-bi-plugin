@@ -112,6 +112,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public void setModelName(String modelName) {
     String prevVal = this.modelName;
     this.modelName = modelName;
+    setDirty(true);
     this.firePropertyChange("modelName", prevVal, this.modelName);
   }
   
