@@ -129,8 +129,6 @@
 			</hbox>
 			<hbox>
 				<spacer flex="1"/>
-				<button label="Save" id="saveModelButton" onclick="modeler.saveWorkspace()"/>
-				<button label="Load" id="loadModelButton" onclick="modeler.loadWorkspace()"/>
 				
 				<label value="New:"/>
 				<menulist id="visualizationlist" label="">
@@ -140,13 +138,13 @@
 				</menulist>
 				
 				<button label="Go" id="exploreButton" onclick="modeler.visualize()"/>
-				<button label="Publish" id="publishButton" onclick="modeler.publish()"/>
+				<!--<button label="Publish" id="publishButton" onclick="modeler.publish()"/>
 				
 				<menulist id="serverlist" label="">
 				  <menupopup>
 				    <menuitem label="Default BI Server"/>
 				  </menupopup>
-				</menulist>
+				</menulist>-->
 			</hbox>
 		</vbox>
 	</vbox>

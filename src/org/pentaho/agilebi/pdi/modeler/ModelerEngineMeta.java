@@ -56,7 +56,7 @@ public class ModelerEngineMeta implements EngineMetaInterface{
   }
 
   public String[] getFilterNames() {
-    return new String[]{"Metadata"};
+    return new String[]{"Model"};
   }
 
   public Date getModifiedDate() {

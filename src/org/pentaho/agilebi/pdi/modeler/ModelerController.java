@@ -112,8 +112,8 @@ public class ModelerController extends AbstractXulEventHandler{
     
     // dimensionTable
 
-    bf.createBinding(model, "selectedServer", serverList, "selectedItem");    
-    serversBinding = bf.createBinding(this, "serverNames", serverList, "elements");
+    //bf.createBinding(model, "selectedServer", serverList, "selectedItem");    
+    //serversBinding = bf.createBinding(this, "serverNames", serverList, "elements");
     
     bf.createBinding(model, "selectedVisualization", visualizationList, "selectedItem");    
     visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements");
@@ -134,7 +134,7 @@ public class ModelerController extends AbstractXulEventHandler{
       dimensionTreeBinding.fireSourceChanged();
       inPlayTableBinding.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
-      serversBinding.fireSourceChanged();
+      //serversBinding.fireSourceChanged();
       visualizationsBinding.fireSourceChanged();
     } catch (Exception e) {
       logger.info("Error firing off initial bindings", e);
