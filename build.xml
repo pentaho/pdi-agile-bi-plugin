@@ -30,6 +30,10 @@
 				value="../Kettle 3.2.3 Agile BI"
     			description="Location of kettle spoon zip" />
 	
+	<property name="analyzer.dist.dir"
+				value="../pentaho-analyzer/dist"
+				description="Location of Analyzer Agile BI plugin" />
+	
 	<property name="pdiwithagilebi"
 				value="pdi-ce-agile-bi" 
 				description="Name of the pdi distribution with agile bi"/>
@@ -169,7 +173,7 @@
   	</delete>
   </target>
 	
-	<target name="assemble-embedded-server">
+	<target name="assemble-embedded-server" depends="install-antcontrib">
 		<!-- Step 1: Unzip a platform zip into staging dir -->
 		<mkdir dir="${platform.unzip.dir}"/>
 		<unzip dest="${platform.unzip.dir}">
@@ -205,6 +209,17 @@
 		<delete dir="${approot.stage.dir}/platform/webapps/pentaho/mantle"/>
 		<delete dir="${approot.stage.dir}/platform/webapps/pentaho/mantleLogin"/>
 
+		<!-- Step 3: Unzip the analyzer dist if available -->
+	    <if>
+	      <available file="${analyzer.dist.dir}" />
+	      <then>
+			<unzip dest="${approot.stage.dir}/platform/pentaho-solutions/system">
+				<fileset dir="${analyzer.dist.dir}">
+			        <include name="paz-agilebi-plugin-*.zip"/>
+		    	</fileset>
+			</unzip>
+      	  </then>
+	     </if>
 	</target>
 
 	<!-- this target builds a kettle release that includes the agile bi plugin -->
