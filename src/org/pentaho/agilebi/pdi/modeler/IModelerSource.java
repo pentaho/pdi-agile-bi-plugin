@@ -16,14 +16,6 @@ public interface IModelerSource {
 	public String getDatabaseName();
 
 	public void initialize(Domain domain) throws ModelerException;
-
-	public void setFileName(String aFileName);
-
-	public String getFileName();
-
-	public void setRepositoryName(String aRepositoryName);
-
-	public String getRepositoryName();
 	
 	public void serializeIntoDomain(Domain d);
 }

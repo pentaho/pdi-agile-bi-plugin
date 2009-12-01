@@ -20,6 +20,7 @@ import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
 import org.pentaho.metadata.model.olap.OlapMeasure;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
 import org.pentaho.ui.xul.util.AbstractModelList;
+import org.pentaho.ui.xul.util.AbstractModelNode;
 
 
 /**
@@ -91,7 +92,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
 
   public void setModelName(String modelName) {
+    String prevVal = this.modelName;
     this.modelName = modelName;
+    this.firePropertyChange("modelName", prevVal, this.modelName);
   }
 
   public int getNumberLevels() {
@@ -361,9 +364,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     
     LogicalModel lModel = domain.getLogicalModels().get(0);
     
-    // TODO: ask WG why he wanted to get the model name this way
     if(lModel.getCategories().size() > 0){
-      modelName = lModel.getCategories().get(0).getId();
+      setModelName(lModel.getCategories().get(0).getId());
     }
     
     List<OlapDimension> theDimensions = (List) lModel.getProperty("olap_dimensions");
@@ -385,9 +387,12 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    		while(theLevelsItr.hasNext()) {
 	    			OlapHierarchyLevel theLevel = theLevelsItr.next();
 	    			LevelMetaData theLevelMD = new LevelMetaData(theHierarchyMD, theLevel.getName());
+
+	    			theLevelMD.setParent(theHierarchyMD);
 	    			theHierarchyMD.add(theLevelMD);
 	    		}
 	    		
+	    		theHierarchyMD.setParent(theDimensionMD);
 	    		theDimensionMD.add(theHierarchyMD);
 	    	}
 	    	this.dimensions.add(theDimensionMD);
@@ -427,7 +432,27 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public static class FieldsCollection extends AbstractModelList<FieldMetaData>{    
   }
 
-  public static class DimensionMetaDataCollection extends AbstractModelList<DimensionMetaData>{
+  public static class DimensionMetaDataCollection extends AbstractModelNode<DimensionMetaData>{
+
+    private PropertyChangeListener listener = new PropertyChangeListener(){
+      public void propertyChange(PropertyChangeEvent evt) {
+        fireCollectionChanged();
+      }
+    };
+
+    protected void fireCollectionChanged() {
+      this.changeSupport.firePropertyChange("children", null, this.getChildren());
+    }
+
+    @Override
+    public void onAdd(DimensionMetaData child) {
+      child.addPropertyChangeListener("children", listener);
+    }
+
+    @Override
+    public void onRemove(DimensionMetaData child) {
+      child.removePropertyChangeListener(listener);
+    }
     
   }
 }

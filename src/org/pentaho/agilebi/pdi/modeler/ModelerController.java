@@ -222,6 +222,10 @@ public class ModelerController extends AbstractXulEventHandler{
     model.refresh();
   }
   
+  public void setFileName(String fileName){
+    model.setFileName(fileName);
+  }
+  
 
   public void showNewDimensionDialog(){
     this.newDimensionDialog.show();
@@ -246,29 +250,45 @@ public class ModelerController extends AbstractXulEventHandler{
   public void moveDimensionUp() {
 
     if (selectedTreeItem instanceof DimensionMetaData) {
-      model.getDimensions().moveChildUp((DimensionMetaData) selectedTreeItem);
+      if(model.getDimensions().indexOf(selectedTreeItem) > 0){
+        model.getDimensions().moveChildUp((DimensionMetaData) selectedTreeItem);
+        setDimTreeSelectionChanged(null);
+      }
     } else if (selectedTreeItem instanceof HierarchyMetaData) {
       DimensionMetaData dim = (DimensionMetaData) ((HierarchyMetaData)selectedTreeItem).getParent();
-      dim.moveChildUp((HierarchyMetaData)selectedTreeItem);      
+      if(dim.indexOf(selectedTreeItem) > 0){
+        dim.moveChildUp((HierarchyMetaData)selectedTreeItem);
+        setDimTreeSelectionChanged(null);
+      }
     } else if (selectedTreeItem instanceof LevelMetaData) {
       HierarchyMetaData dim = (HierarchyMetaData) ((LevelMetaData)selectedTreeItem).getParent();
-      dim.moveChildUp((LevelMetaData)selectedTreeItem);
+      if(dim.indexOf(selectedTreeItem) > 0){
+        dim.moveChildUp((LevelMetaData)selectedTreeItem);
+        setDimTreeSelectionChanged(null);
+      }
     }
-    setDimTreeSelectionChanged(null);
   }
   
   public void moveDimensionDown() {
 
     if (selectedTreeItem instanceof DimensionMetaData) {
-      model.getDimensions().moveChildDown((DimensionMetaData) selectedTreeItem);
+      if(model.getDimensions().size() > model.getDimensions().indexOf(selectedTreeItem) + 1){
+        model.getDimensions().moveChildDown((DimensionMetaData) selectedTreeItem);
+        setDimTreeSelectionChanged(null);
+      }
     } else if (selectedTreeItem instanceof HierarchyMetaData) {
       DimensionMetaData dim = (DimensionMetaData) ((HierarchyMetaData)selectedTreeItem).getParent();
-      dim.moveChildDown((HierarchyMetaData)selectedTreeItem);      
+      if(dim.getChildren().size() > dim.getChildren().indexOf(selectedTreeItem) +1){
+        dim.moveChildDown((HierarchyMetaData)selectedTreeItem);
+        setDimTreeSelectionChanged(null);
+      }
     } else if (selectedTreeItem instanceof LevelMetaData) {
       HierarchyMetaData dim = (HierarchyMetaData) ((LevelMetaData)selectedTreeItem).getParent();
-      dim.moveChildDown((LevelMetaData)selectedTreeItem);
+      if(dim.getChildren().size() > dim.getChildren().indexOf(selectedTreeItem) +1){
+        dim.moveChildDown((LevelMetaData)selectedTreeItem);
+        setDimTreeSelectionChanged(null);
+      }
     }
-    setDimTreeSelectionChanged(null);
   }
 
   Object selectedTreeItem;

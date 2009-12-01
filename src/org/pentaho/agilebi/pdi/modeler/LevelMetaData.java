@@ -41,6 +41,10 @@ public class LevelMetaData extends XulEventSourceAdapter {
     return parent;
   }
   
+  public void setParent(HierarchyMetaData md){
+    this.parent = md;
+  }
+  
   public String toString() {
     return "Level Name: " + name + "\nColumn Name: " + columnName;
   }

@@ -11,11 +11,11 @@ import org.pentaho.di.repository.RepositoryDirectory;
 public class ModelerEngineMeta implements EngineMetaInterface{
   
   private ModelerController controller;
+  private ModelerCanvas canvas;
   
-  
-  public ModelerEngineMeta(ModelerController controller){
+  public ModelerEngineMeta(ModelerController controller, ModelerCanvas canvas){
     this.controller = controller;
-    
+    this.canvas = canvas;
   }
 
   public void clearChanged() {
@@ -43,8 +43,7 @@ public class ModelerEngineMeta implements EngineMetaInterface{
   }
 
   public String getFilename() {
-    // TODO Auto-generated method stub
-    return null;
+    return controller.getModel().getFileName();
   }
 
   public String getFileType() {
@@ -71,7 +70,9 @@ public class ModelerEngineMeta implements EngineMetaInterface{
   }
 
   public String getName() {
-    return controller.getModel().getModelName();
+    return controller.getModel().getFileName() != null  
+        ? controller.getModel().getFileName()
+        : controller.getModel().getModelName();
   }
 
   public String getXML() throws KettleException {
@@ -108,8 +109,8 @@ public class ModelerEngineMeta implements EngineMetaInterface{
   }
 
   public void setFilename(String filename) {
-    // TODO Auto-generated method stub
-    
+    controller.setFileName(filename);
+    canvas.setFileName(filename);
   }
 
   public void setID(long id) {

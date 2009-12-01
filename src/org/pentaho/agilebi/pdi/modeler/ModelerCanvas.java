@@ -65,7 +65,9 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
 
   private String fileName;
   
-  private ModelerController controller ;
+  private ModelerController controller;
+  
+  private TabItem tabItem;
   
   private static Log logger = LogFactory.getLog(ModelerCanvas.class);
   /**
@@ -115,7 +117,7 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
     TabSet tabSet = spoon.getTabSet();
     TabSet tabfolder = spoon.tabfolder;
     CTabFolder cTabFolder = tabfolder.getSwtTabset();
-    TabItem tabItem = new TabItem(tabfolder, MODELER_NAME, MODELER_NAME);
+    tabItem = new TabItem(tabfolder, MODELER_NAME, MODELER_NAME);
     Image modelTabImage = 
       ImageUtil.getImageAsResource(spoon.getDisplay(),
           "ui/images/modeler.png");
@@ -142,7 +144,7 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
     tabSet.addTab(tabItem);
 
     int idx = tabfolder.indexOf(tabItem);
-    meta = new ModelerEngineMeta(controller);
+    meta = new ModelerEngineMeta(controller, this);
     // keep the focus on the graph
     tabfolder.setSelected(idx);
   }
@@ -163,6 +165,7 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
   
   public void setFileName(String name){
     this.fileName = name;
+    this.tabItem.setText(name);
   }
     
 
@@ -171,6 +174,7 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
       createModelerTab();
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8");
       ModelerWorkspaceUtil.loadWorkspace(fname, xml, controller.getModel());
+      this.tabItem.setText(fname);
     } catch(ModelerException e){
       e.printStackTrace();
     } catch(IOException e){
