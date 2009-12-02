@@ -16,28 +16,56 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
-import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.metadata.model.Domain;
+public class BiServerConnection {
 
-/**
- * Provides a ModelerModel with information needed to generate the UI and well
- * as the final Mondrian and Metadata models. All information from the context
- * in which the modeling is initiated should be contained within implementors of
- * this interface.
- * 
- * @author nbaker
- */
-public interface IModelerSource {
-	public Domain generateDomain() throws ModelerException;
+  private String url;
+  
+  private String userId;
+  
+  private String password;
+  
+  private String publishPassword;
+  
+  private String name;
 
-	public String getDatabaseName();
+  public String getUrl() {
+    return url;
+  }
 
-	public void initialize(Domain domain) throws ModelerException;
-	
-	public void serializeIntoDomain(Domain d);
-	
-	public DatabaseMeta getDatabaseMeta();
-	
-  public void setDatabaseMeta(DatabaseMeta databaseMeta);
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getPublishPassword() {
+    return publishPassword;
+  }
+
+  public void setPublishPassword(String publishPassword) {
+    this.publishPassword = publishPassword;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+  
 }

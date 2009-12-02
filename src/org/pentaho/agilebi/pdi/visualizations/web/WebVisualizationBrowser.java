@@ -8,6 +8,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
+import org.pentaho.agilebi.pdi.modeler.BiServerConnection;
 import org.pentaho.agilebi.pdi.modeler.ModelServerPublish;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
@@ -22,8 +23,8 @@ import org.w3c.dom.Node;
 
 public class WebVisualizationBrowser extends SpoonBrowser implements FileListener {
 
-  private static final String XUL_FILE_ANALYZER_BROWSER_TOOLBAR = "plugins/spoon/agile-bi/ui/analyzer-toolbar.xul";
-  public static final String XUL_FILE_ANALYZER_TOOLBAR_PROPERTIES = "plugins/spoon/agile-bi/ui/analyzer-toolbar.properties";
+  private static final String XUL_FILE_ANALYZER_BROWSER_TOOLBAR = "plugins/spoon/agile-bi/ui/analyzer-toolbar.xul"; //$NON-NLS-1$
+  public static final String XUL_FILE_ANALYZER_TOOLBAR_PROPERTIES = "plugins/spoon/agile-bi/ui/analyzer-toolbar.properties"; //$NON-NLS-1$
 
   private String xmiFileLocation = null;
   private String modelId = null;
@@ -54,8 +55,7 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   
 
   protected Browser createBrowser() {
-    System.out.println("OS: " + System.getProperty("os.name"));
-    if (System.getProperty("os.name") != null && System.getProperty("os.name").indexOf("Mac") >= 0) {
+    if (System.getProperty("os.name") != null && System.getProperty("os.name").indexOf("Mac") >= 0) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
       return new Browser(composite, SWT.MOZILLA);
     } else {
       return super.createBrowser();
@@ -76,7 +76,7 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
       addToolBarListeners();
     } catch (Throwable t ) {
       log.logError(toString(), Const.getStackTracker(t));
-      new ErrorDialog(shell, Messages.getString("Spoon.Exception.ErrorReadingXULFile.Title"), Messages.getString("Spoon.Exception.ErrorReadingXULFile.Message", XUL_FILE_ANALYZER_BROWSER_TOOLBAR), new Exception(t));
+      new ErrorDialog(shell, Messages.getString("Spoon.Exception.ErrorReadingXULFile.Title"), Messages.getString("Spoon.Exception.ErrorReadingXULFile.Message", XUL_FILE_ANALYZER_BROWSER_TOOLBAR), new Exception(t)); //$NON-NLS-1$
     }
   }
 
@@ -95,8 +95,8 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
       }
     } catch (Throwable t ) {
       t.printStackTrace();
-      new ErrorDialog(shell, Messages.getString("Spoon.Exception.ErrorReadingXULFile.Title"), 
-          Messages.getString("Spoon.Exception.ErrorReadingXULFile.Message", XUL_FILE_BROWSER_TOOLBAR_PROPERTIES), new Exception(t));
+      new ErrorDialog(shell, Messages.getString("Spoon.Exception.ErrorReadingXULFile.Title"),  //$NON-NLS-1$
+          Messages.getString("Spoon.Exception.ErrorReadingXULFile.Message", XUL_FILE_BROWSER_TOOLBAR_PROPERTIES), new Exception(t)); //$NON-NLS-1$
     }
   }
 
@@ -124,6 +124,19 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
     if (true) throw new UnsupportedOperationException();
     
     ModelServerPublish modelServerPublish = new ModelServerPublish();
+    
+    // TODO make this non-HTTP based
+    BiServerConnection biServerConnection = new BiServerConnection();
+    String password = "";
+    String publishPassword = "";
+    String userId = "";
+    biServerConnection.setName( "embedded" );
+    biServerConnection.setPassword(password);
+    biServerConnection.setPublishPassword(publishPassword);
+    biServerConnection.setUrl(url);
+    biServerConnection.setUserId(userId);
+    modelServerPublish.setBiServerConnection(biServerConnection);
+
     try {
       modelServerPublish.refreshOlapCaches(modelId);
       browser.execute(visualization.getRefreshDataJavascript());
@@ -179,4 +192,5 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
     // TODO Auto-generated method stub
     
   }
+
 }

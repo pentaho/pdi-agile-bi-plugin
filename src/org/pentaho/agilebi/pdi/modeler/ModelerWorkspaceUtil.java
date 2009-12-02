@@ -208,9 +208,9 @@ public class ModelerWorkspaceUtil {
     // write the XMI to a tmp file
     // models was created earlier.
     try{
-      File dir = new File("models/" + model.getModelName());
+      File dir = new File( "models");
       dir.mkdirs();
-      File file = new File("models/" + model.getModelName() + "/metadata.xmi");
+      File file = new File("models/" + model.getModelName() + ".xmi");
       PrintWriter pw = new PrintWriter(new FileWriter(file));
       pw.print(xmi);
       pw.close();
@@ -372,6 +372,7 @@ public class ModelerWorkspaceUtil {
     	aModel.setDomain(domain);
     	aModel.setModelSource(theSource);
     	aModel.setFileName(fileName);
+    	aModel.resolveConnectionFromDomain();
     	aModel.setDirty(false);
     } catch (Exception e){
       logger.info(e);

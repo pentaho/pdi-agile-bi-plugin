@@ -155,5 +155,13 @@ public class OutputStepModelerSource implements IModelerSource {
     lm.setProperty("source_type", this.SOURCE_TYPE);
     lm.setProperty("trans_step", this.stepId);
   }
+
+  public DatabaseMeta getDatabaseMeta() {
+    return databaseMeta;
+  }
+
+  public void setDatabaseMeta(DatabaseMeta databaseMeta) {
+    this.databaseMeta = databaseMeta;
+  }
 	
 }

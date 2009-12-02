@@ -25,9 +25,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
+import org.pentaho.di.core.Const;
+import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.core.PropsUI;
 import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.metadata.model.IPhysicalModel;
+import org.pentaho.metadata.model.IPhysicalTable;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
@@ -94,7 +98,6 @@ public class ModelerController extends AbstractXulEventHandler{
  
   private List<String> serverNames;
   private List<String> visualizationNames;
-  private List<String> serverIds;
   
   public ModelerController(){
     model = new ModelerWorkspace();
@@ -110,6 +113,8 @@ public class ModelerController extends AbstractXulEventHandler{
   
   public void init() throws ModelerException{
 
+    createServerList();
+    
     bf.setDocument(document);
     
     newDimensionDialog = (XulDialog) document.getElementById(NEW_DIMESION_DIALOG);
@@ -122,7 +127,24 @@ public class ModelerController extends AbstractXulEventHandler{
     visualizationList = (XulMenuList)document.getElementById("visualizationlist");
 
     XulLabel sourceLabel = (XulLabel) document.getElementById(SOURCE_NAME_LABEL_ID);
-    
+    String connectionName = "";
+    String tableName = "";
+    if( model.getModelSource() != null ) {
+      // for now just list the first table in the first physical model
+      DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
+      if( databaseMeta != null ) {
+        connectionName = databaseMeta.getName();
+      }
+      List<IPhysicalModel> physicalModels = model.getDomain().getPhysicalModels();
+      if( physicalModels != null && physicalModels.size() > 0 ) {
+        List<? extends IPhysicalTable> tables = physicalModels.get(0).getPhysicalTables();
+        if( tables != null && tables.size() > 0 ) {
+          // TODO where is the locale coming from? And why do we need one here?
+          tableName = tables.get(0).getName("en_US");
+        }
+      }
+    }
+    sourceLabel.setValue( "Connection : "+connectionName + ", Table : " + tableName );
     bf.createBinding(model, "sourceName", sourceLabel, "value");
 
     bf.setBindingType(Type.ONE_WAY);
@@ -130,8 +152,8 @@ public class ModelerController extends AbstractXulEventHandler{
     
     // dimensionTable
 
-    //bf.createBinding(model, "selectedServer", serverList, "selectedItem");    
-    //serversBinding = bf.createBinding(this, "serverNames", serverList, "elements");
+    bf.createBinding(model, "selectedServer", serverList, "selectedItem");    
+    serversBinding = bf.createBinding(this, "serverNames", serverList, "elements");
     
     bf.createBinding(model, "selectedVisualization", visualizationList, "selectedItem");    
     visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements");
@@ -152,7 +174,7 @@ public class ModelerController extends AbstractXulEventHandler{
       dimensionTreeBinding.fireSourceChanged();
       inPlayTableBinding.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
-      //serversBinding.fireSourceChanged();
+      serversBinding.fireSourceChanged();
       visualizationsBinding.fireSourceChanged();
     } catch (Exception e) {
       logger.info("Error firing off initial bindings", e);
@@ -221,11 +243,15 @@ public class ModelerController extends AbstractXulEventHandler{
       ModelerWorkspaceUtil.populateDomain(model);
     
       ModelServerPublish publisher = new ModelServerPublish();
+      publisher.setModel( model );
 
-      publisher.setBiServerId(model.getSelectedServer());
+      BiServerConnection biServerConnection = BiServerConfig.getInstance().getServerByName( model.getSelectedServer() );
+      publisher.setBiServerConnection(biServerConnection);
       publisher.publishToServer( model.getModelName() + ".mondrian.xml", model.getDatabaseName(), model.getModelName(), true );
     } catch(Exception e){
       logger.info(e);
+      SpoonFactory.getInstance().messageBox( "Publish Failed: "+ e.getLocalizedMessage(), "Publish To Server: "+model.getSelectedServer(), false, Const.ERROR);
+
       throw new ModelerException(e);
     }
 
@@ -365,23 +391,8 @@ public class ModelerController extends AbstractXulEventHandler{
   }
   
   private void createServerList() {
-    serverNames.clear();
-    serverIds.clear();
-    Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-    PropsUI props = spoon.getProperties();
-    int idx = 1;
-    boolean running = true;
-    while( running ) {
-      String serverId = "biserver"+Integer.toString(idx);
-      String serverName = props.getProperty(serverId+"/name");
-      if( serverName != null ) {
-        serverNames.add( serverName );
-        serverIds.add( serverId );
-        idx++;
-      } else {
-        running = false;
-      }
-    }
+    BiServerConfig biServerConfig = BiServerConfig.getInstance();
+    serverNames = biServerConfig.getServerNames();
   }
 
   public ModelerWorkspace getModel() {
@@ -443,4 +454,9 @@ public class ModelerController extends AbstractXulEventHandler{
   	}
   }
   
+  public void setSelectedServer(String server){
+    model.setSelectedServer(server);
+  }
+  
+
 }

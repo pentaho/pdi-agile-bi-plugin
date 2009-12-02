@@ -25,15 +25,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.LogicalTable;
+import org.pentaho.metadata.model.SqlPhysicalModel;
 import org.pentaho.metadata.model.olap.OlapCube;
 import org.pentaho.metadata.model.olap.OlapDimension;
 import org.pentaho.metadata.model.olap.OlapHierarchy;
 import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
 import org.pentaho.metadata.model.olap.OlapMeasure;
+import org.pentaho.metadata.util.ThinModelConverter;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
 import org.pentaho.ui.xul.util.AbstractModelList;
 import org.pentaho.ui.xul.util.AbstractModelNode;
@@ -86,6 +89,12 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
         fireDimensionsChanged();
       }
     });
+    
+    BiServerConfig biServerConfig = BiServerConfig.getInstance();
+    List<String> serverNames = biServerConfig.getServerNames();
+    if( serverNames.size() > 0 ) {
+      selectedServer = serverNames.get(0);
+    }
   }
   
   public void setFileName(String fileName) {
@@ -455,6 +464,16 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    		this.inPlayFields.add(theMeasureMD);
 	    	}
 	    }
+    }
+    
+  }
+
+  public void resolveConnectionFromDomain() {
+    // set up the datasource
+    if( domain != null && source != null ) {
+      SqlPhysicalModel physicalModel = (SqlPhysicalModel)domain.getPhysicalModels().get(0);
+      DatabaseMeta databaseMeta = ThinModelConverter.convertToLegacy(physicalModel.getId(), physicalModel.getDatasource());
+      source.setDatabaseMeta(databaseMeta);
     }
     
   }

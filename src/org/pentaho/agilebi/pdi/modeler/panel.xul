@@ -17,7 +17,7 @@
 					<label value="Name:"/>
 					<textbox id="modelname"/>
 				</vbox>
-				<vbox flex="1">
+				<vbox flex="4">
 					<label value="Source:"/>
 					<label id="source_name" value="some source"/>
 				</vbox>
@@ -138,13 +138,13 @@
 				</menulist>
 				
 				<button label="Go" id="exploreButton" onclick="modeler.visualize()"/>
-				<!--<button label="Publish" id="publishButton" onclick="modeler.publish()"/>
+				<button label="Publish" id="publishButton" onclick="modeler.publish()"/>
 				
 				<menulist id="serverlist" label="">
 				  <menupopup>
-				    <menuitem label="Default BI Server"/>
+				    <menuitem label="Dummy Server"/>
 				  </menupopup>
-				</menulist>-->
+				</menulist>
 			</hbox>
 		</vbox>
 	</vbox>

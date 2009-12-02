@@ -181,7 +181,7 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
   
   public void setFileName(String name){
     this.fileName = name;
-    this.tabItem.setText(name);
+    this.tabItem.setText(createShortName(name));
   }
     
 
@@ -190,7 +190,7 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
       createModelerTab();
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8");
       ModelerWorkspaceUtil.loadWorkspace(fname, xml, controller.getModel());
-      this.tabItem.setText(fname);
+      this.tabItem.setText(createShortName(fname));
     } catch(ModelerException e){
       e.printStackTrace();
     } catch(IOException e){
@@ -200,6 +200,23 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
     return true;
   }
 
+  private String createShortName( String filename ) {
+    if( filename == null ) {
+      return null;
+    }
+    int extensionPos = filename.lastIndexOf('.');
+    if( extensionPos == -1 ) {
+      extensionPos = filename.length();
+    }
+    int sepPos = filename.replace('\\', '/').lastIndexOf('/');
+    if( sepPos == -1 ) {
+      sepPos = 0;
+    } else {
+      sepPos++;
+    }
+    return filename.substring(sepPos, extensionPos);    
+  }
+  
   public boolean save(EngineMetaInterface meta, String fname, boolean isExport) {
     setFileName(fname);
     try {
