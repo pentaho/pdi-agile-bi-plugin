@@ -16,10 +16,10 @@
  */
 package org.pentaho.agilebi.pdi.spoon;
 
-import org.pentaho.agilebi.pdi.modeler.ModelerCanvas;
+import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
-public class SpoonUIEventHandler extends AbstractXulEventHandler{
+public class SpoonUIEventHandler extends AbstractXulEventHandler {
 
   public String getName(){
     return "agileBi";
@@ -29,7 +29,7 @@ public class SpoonUIEventHandler extends AbstractXulEventHandler{
   public void openModeler() {
     
     try{
-      ModelerCanvas.getInstance().createModelerTabFromOutputStep();
+      ModelerHelper.getInstance().createModelerTabFromOutputStep();
     } catch(Exception e){
       e.printStackTrace();
     }

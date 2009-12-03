@@ -24,16 +24,18 @@ import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.repository.RepositoryDirectory;
 
-public class ModelerEngineMeta implements EngineMetaInterface{
+public class ModelerEngineMeta implements EngineMetaInterface {
   
   private ModelerController controller;
-  private ModelerCanvas canvas;
   
-  public ModelerEngineMeta(ModelerController controller, ModelerCanvas canvas){
+  public ModelerEngineMeta(ModelerController controller) {
     this.controller = controller;
-    this.canvas = canvas;
   }
 
+  public ModelerController getController() {
+    return controller;
+  }
+  
   public void clearChanged() {
     // TODO Auto-generated method stub
     
@@ -126,7 +128,6 @@ public class ModelerEngineMeta implements EngineMetaInterface{
 
   public void setFilename(String filename) {
     controller.setFileName(filename);
-    canvas.setFileName(filename);
   }
 
   public void setID(long id) {

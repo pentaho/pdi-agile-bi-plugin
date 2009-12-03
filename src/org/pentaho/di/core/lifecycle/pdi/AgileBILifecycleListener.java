@@ -16,7 +16,7 @@
  */
 package org.pentaho.di.core.lifecycle.pdi;
 
-import org.pentaho.agilebi.pdi.modeler.ModelerCanvas;
+import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.agilebi.platform.JettyServer;
@@ -37,7 +37,7 @@ public class AgileBILifecycleListener implements LifecycleListener {
       throw new LifecycleException("error starting embedded bi server", e, true);
     }
 
-    ((Spoon) SpoonFactory.getInstance()).addFileListener(ModelerCanvas.getInstance(), "xmi", "Models");
+    ((Spoon) SpoonFactory.getInstance()).addFileListener(ModelerHelper.getInstance(), "xmi", "Models");
     
     for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {
       ((Spoon) SpoonFactory.getInstance()).addFileListener(viz, viz.getExtension(), viz.getTitle());

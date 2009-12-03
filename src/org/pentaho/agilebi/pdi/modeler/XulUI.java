@@ -21,6 +21,8 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.ui.spoon.TabItemInterface;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulRunner;
@@ -30,20 +32,22 @@ import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
 
-public class XulUI {
+public class XulUI implements TabItemInterface {
 
   private XulDomContainer container;
 
   XulRunner runner;
   BindingFactory bf;
+  EngineMetaInterface meta;
 
   private static Log logger = LogFactory.getLog(XulUI.class);
   
-  public XulUI( Shell shell, XulEventHandler... handlers ) throws ModelerException{
+  public XulUI( Shell shell, EngineMetaInterface meta, XulEventHandler... handlers ) throws ModelerException {
+    this.meta = meta;
     try{
       SwtXulLoader loader = new SwtXulLoader();
       loader.setOuterContext(shell);
-      container = loader.loadXul("org/pentaho/agilebi/pdi/modeler/panel.xul");
+      container = loader.loadXul("org/pentaho/agilebi/pdi/modeler/panel.xul"); //$NON-NLS-1$
       bf = new DefaultBindingFactory();
       bf.setDocument(container.getDocumentRoot());
   
@@ -63,7 +67,7 @@ public class XulUI {
   }
   
   public Composite getMainPanel(){
-    return (Composite) container.getDocumentRoot().getRootElement().getElementById("mainVBox").getManagedObject();
+    return (Composite) container.getDocumentRoot().getRootElement().getElementById("mainVBox").getManagedObject(); //$NON-NLS-1$
   }
   
   public BindingFactory getBindingFactory() {
@@ -84,6 +88,42 @@ public class XulUI {
   
   public Menu getMenuBar(){
     return (Menu) container.getDocumentRoot().getRootElement().getElementById("mainMenu").getManagedObject();
+  }
+
+  public boolean canBeClosed() {
+    return true;
+  }
+
+  public boolean canHandleSave() {
+    return true;
+  }
+  
+  public EngineMetaInterface getMeta() {
+    return meta;
+  }
+  
+  public boolean hasContentChanged() {
+    return true;
+  }
+  
+  public boolean applyChanges() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+  
+  public Object getManagedObject() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public boolean setFocus() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  public int showChangedWarning() {
+    // TODO Auto-generated method stub
+    return 0;
   }
   
 }
