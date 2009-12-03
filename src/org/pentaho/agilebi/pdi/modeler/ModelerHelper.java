@@ -32,10 +32,11 @@ import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.di.ui.util.ImageUtil;
+import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.xul.swt.tab.TabItem;
 import org.w3c.dom.Node;
 
-public class ModelerHelper implements FileListener {
+public class ModelerHelper extends AbstractXulEventHandler implements FileListener {
 
   private static final String MODELER_NAME = "Modeler"; //$NON-NLS-1$
 
@@ -56,10 +57,12 @@ public class ModelerHelper implements FileListener {
   
   public void createModelerTabFromOutputStep() throws ModelerException {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-    ModelerController controller = new ModelerController();
-    ModelerEngineMeta meta = new ModelerEngineMeta(controller);
-    ModelerWorkspaceUtil.createModelFromOutputStep(controller.getModel());
-    XulUI xul = new XulUI(spoon.getShell(), meta, controller);
+
+    ModelerWorkspace model = new ModelerWorkspace();
+    
+    ModelerWorkspaceUtil.populateModelFromOutputStep(model);
+    
+    XulUI xul = new XulUI(spoon.getShell(), model);
 
     // create unique name
     createModelerTab(spoon, xul, getUniqueUntitledTabName(spoon, MODELER_NAME));
@@ -69,12 +72,13 @@ public class ModelerHelper implements FileListener {
   public boolean open(Node transNode, String fname, boolean importfile) {
     try{
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-      ModelerController controller = new ModelerController();
-      ModelerEngineMeta meta = new ModelerEngineMeta(controller);
-      XulUI xul = new XulUI(spoon.getShell(), meta, controller);
+
+      ModelerWorkspace model = new ModelerWorkspace();
+      
+      XulUI xul = new XulUI(spoon.getShell(), model);
       TabItem tabItem = createModelerTab(spoon, xul, createShortName(fname));
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
-      ModelerWorkspaceUtil.loadWorkspace(fname, xml, controller.getModel());
+      ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);
       tabItem.setText(createShortName(fname));
     } catch(ModelerException e){
       e.printStackTrace();
@@ -155,5 +159,22 @@ public class ModelerHelper implements FileListener {
     
   }
 
+  public String getName(){
+    return "agileBi";
+  }
+  
+
+  public void openModeler() {
+    
+    try{
+      ModelerHelper.getInstance().createModelerTabFromOutputStep();
+    } catch(Exception e){
+      e.printStackTrace();
+    }
+  }
+  
+  public void quickVisualize() {
+    System.out.println("In 'quickVisualize()'");
+  }
     
 }

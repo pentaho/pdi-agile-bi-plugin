@@ -77,12 +77,7 @@ public class ModelerWorkspaceUtil {
     DEFAULT_AGGREGATION_LIST.add(AggregationType.MAXIMUM);
   }
   
-  public static ModelerWorkspace createModelFromOutputStep() throws ModelerException {
-
-    return createModelFromOutputStep(new ModelerWorkspace());
-  }
-  
-  public static ModelerWorkspace createModelFromOutputStep(ModelerWorkspace model) throws ModelerException {
+  public static ModelerWorkspace populateModelFromOutputStep(ModelerWorkspace model) throws ModelerException {
     
     String MODELER_NAME = "OutputStepModeler"; //$NON-NLS-1$
 

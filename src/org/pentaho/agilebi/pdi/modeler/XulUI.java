@@ -36,26 +36,22 @@ public class XulUI implements TabItemInterface {
 
   private XulDomContainer container;
 
-  XulRunner runner;
-  BindingFactory bf;
+  private XulRunner runner;
+  ModelerController controller;
   EngineMetaInterface meta;
 
   private static Log logger = LogFactory.getLog(XulUI.class);
   
-  public XulUI( Shell shell, EngineMetaInterface meta, XulEventHandler... handlers ) throws ModelerException {
-    this.meta = meta;
+  public XulUI( Shell shell,  ModelerWorkspace model) throws ModelerException{
     try{
       SwtXulLoader loader = new SwtXulLoader();
       loader.setOuterContext(shell);
       container = loader.loadXul("org/pentaho/agilebi/pdi/modeler/panel.xul"); //$NON-NLS-1$
-      bf = new DefaultBindingFactory();
-      bf.setDocument(container.getDocumentRoot());
-  
-      if(handlers != null){
-        for(XulEventHandler h : handlers){
-          container.addEventHandler(h);
-        }
-      }
+
+      controller = new ModelerController(model);
+      this.meta = new ModelerEngineMeta(controller);
+      
+      container.addEventHandler(controller);
       
       runner = new SwtXulRunner();
       runner.addContainer(container);
@@ -70,8 +66,8 @@ public class XulUI implements TabItemInterface {
     return (Composite) container.getDocumentRoot().getRootElement().getElementById("mainVBox").getManagedObject(); //$NON-NLS-1$
   }
   
-  public BindingFactory getBindingFactory() {
-    return bf;
+  public ModelerController getController(){
+    return controller;
   }
   
   public void startDebugWindow(){

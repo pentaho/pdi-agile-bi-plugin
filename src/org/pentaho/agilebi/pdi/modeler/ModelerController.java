@@ -46,6 +46,7 @@ import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.containers.XulTabbox;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
+import org.pentaho.ui.xul.swt.tags.SwtTree;
 
 /**
  * XUL Event Handler for the modeling interface. This class interacts with a ModelerModel to store state.
@@ -458,5 +459,4 @@ public class ModelerController extends AbstractXulEventHandler{
     model.setSelectedServer(server);
   }
   
-
 }

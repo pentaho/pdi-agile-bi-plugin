@@ -19,13 +19,14 @@ package org.pentaho.agilebi.pdi.spoon;
 import java.util.Collections;
 import java.util.List;
 
+import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.di.ui.spoon.SpoonPlugin;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 
 public class AgileBISpoonPlugin implements SpoonPlugin{
 
   public List<? extends XulEventHandler> getEventHandlers() {
-    return Collections.singletonList(new SpoonUIEventHandler());
+    return Collections.singletonList(ModelerHelper.getInstance());
   }
 
   public List<String> getOverlays() {
