@@ -41,9 +41,6 @@ public class ReportWizardVisualization implements IVisualization {
     return order;
   }
 
-	public void openVisualizer(String aModelName, String aDatabaseName) {
-	}
-
   public boolean open(Node arg0, String arg1, boolean arg2) {
     // TODO Auto-generated method stub
     return false;
@@ -61,5 +58,15 @@ public class ReportWizardVisualization implements IVisualization {
 
   public String getExtension() {
     return "prpt";
+  }
+
+  public String getTabIconLocation() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public void createVisualizationFromModel(String modelFileLocation, String modelId) {
+    // TODO Auto-generated method stub
+    
   }
 }

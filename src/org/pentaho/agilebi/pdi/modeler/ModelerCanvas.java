@@ -154,6 +154,7 @@ public class ModelerCanvas implements TabItemInterface, FileListener {
     comp.setParent(cTabFolder);
     tabItem.setControl(comp);
     
+    // TODO: Add new plugin object type to spoon
     TabMapEntry entry = new TabMapEntry(tabItem, MODELER_NAME, this, TabMapEntry.OBJECT_TYPE_BROWSER);
     
     spoon.delegates.tabs.addTab(entry);

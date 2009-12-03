@@ -33,8 +33,10 @@ public interface IVisualization extends FileListener {
 	public int getOrder();
 
 	// should change this to "new"
-	public void openVisualizer(String modelFileLocation, String modelId);
+	public void createVisualizationFromModel(String modelFileLocation, String modelId);
 
 	public String getExtension();
+	
+	public String getTabIconLocation();
 	
 }
