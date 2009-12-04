@@ -18,16 +18,9 @@ package org.pentaho.agilebi.pdi.modeler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.core.exception.KettleStepException;
-import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.di.trans.TransMeta;
-import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
-import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
 
@@ -38,12 +31,8 @@ import org.pentaho.metadata.model.LogicalModel;
  * @author nbaker
  * 
  */
-public class OutputStepModelerSource implements IModelerSource {
+public class OutputStepModelerSource extends TableModelerSource {
 
-	private transient TableOutputMeta tableOutputMeta;
-	private transient DatabaseMeta databaseMeta;
-	private transient RowMetaInterface rowMeta;
-	private String schemaName;
 	private String fileName;
 	private String repositoryName;
 	private String stepId;
@@ -56,19 +45,11 @@ public class OutputStepModelerSource implements IModelerSource {
   }
 	
 	public OutputStepModelerSource(TableOutputMeta tableOutputMeta, DatabaseMeta databaseMeta, RowMetaInterface rowMeta) {
-
-		this.tableOutputMeta = tableOutputMeta;
-		this.databaseMeta = databaseMeta;
-		this.rowMeta = rowMeta;
-		this.schemaName = tableOutputMeta.getSchemaName() != null ? tableOutputMeta.getSchemaName() : "";
-	}
-
-	public String getDatabaseName() {
-		return databaseMeta.getDatabaseName();
+	  super( databaseMeta, tableOutputMeta.getTablename(), tableOutputMeta.getSchemaName() );
 	}
 
 	public Domain generateDomain() throws ModelerException {
-		return ModelerSourceUtil.generateDomain(databaseMeta, schemaName, tableOutputMeta.getTablename());
+		return ModelerSourceUtil.generateDomain(getDatabaseMeta(), getSchemaName(), getTableName());
 	}
 
 	public void initialize(Domain domain) throws ModelerException {
@@ -137,8 +118,6 @@ public class OutputStepModelerSource implements IModelerSource {
 	  }
 	  this.repositoryName = repositoryName;
 	}
-	
-	
 
   public String getStepId() {
     return stepId;
@@ -156,12 +135,4 @@ public class OutputStepModelerSource implements IModelerSource {
     lm.setProperty("trans_step", this.stepId);
   }
 
-  public DatabaseMeta getDatabaseMeta() {
-    return databaseMeta;
-  }
-
-  public void setDatabaseMeta(DatabaseMeta databaseMeta) {
-    this.databaseMeta = databaseMeta;
-  }
-	
 }

@@ -1,15 +1,21 @@
 package org.pentaho.agilebi.pdi.visualizations.web;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
+
+import mondrian.rolap.agg.AggregationManager;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.LocationEvent;
+import org.eclipse.swt.browser.LocationListener;
+import org.eclipse.swt.browser.OpenWindowListener;
+import org.eclipse.swt.browser.StatusTextEvent;
+import org.eclipse.swt.browser.StatusTextListener;
+import org.eclipse.swt.browser.WindowEvent;
 import org.eclipse.swt.widgets.Composite;
-import org.pentaho.agilebi.pdi.modeler.BiServerConnection;
-import org.pentaho.agilebi.pdi.modeler.ModelServerPublish;
+import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
@@ -21,7 +27,7 @@ import org.pentaho.di.ui.spoon.SpoonBrowser;
 import org.pentaho.di.ui.spoon.XulMessages;
 import org.w3c.dom.Node;
 
-public class WebVisualizationBrowser extends SpoonBrowser implements FileListener {
+public class WebVisualizationBrowser extends SpoonBrowser implements FileListener, StatusTextListener, OpenWindowListener, LocationListener {
 
   private static final String XUL_FILE_ANALYZER_BROWSER_TOOLBAR = "plugins/spoon/agile-bi/ui/analyzer-toolbar.xul"; //$NON-NLS-1$
   public static final String XUL_FILE_ANALYZER_TOOLBAR_PROPERTIES = "plugins/spoon/agile-bi/ui/analyzer-toolbar.properties"; //$NON-NLS-1$
@@ -33,6 +39,7 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   private WebVisualization visualization;
   private WebVisualizationMeta meta;
   private String visFileLocation = null;
+  private String browserStatusString = null;
   
   public WebVisualizationBrowser(Composite parent, final Spoon spoon, final WebVisualization visualization, String visFileLocation) throws SWTError {
     super(parent, spoon, visualization.generateOpenUrl(visFileLocation), true, true);
@@ -52,14 +59,19 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   public WebVisualization getVisualization() {
     return visualization;
   }
-  
 
   protected Browser createBrowser() {
+    Browser newBrowser;
     if (System.getProperty("os.name") != null && System.getProperty("os.name").indexOf("Mac") >= 0) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-      return new Browser(composite, SWT.MOZILLA);
+      newBrowser = new Browser(composite, SWT.MOZILLA);
     } else {
-      return super.createBrowser();
+      newBrowser = super.createBrowser();
     }
+    newBrowser.addStatusTextListener(this);
+    newBrowser.addOpenWindowListener(this);
+    newBrowser.addLocationListener(this);
+    return newBrowser;
+
   }
   
   protected void addToolBar() {
@@ -117,44 +129,26 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
     spoon.saveFileAs(meta);
   }
   
+  public void editModel() {
+    ModelerHelper.getInstance().open(null, xmiFileLocation, false); 
+    
+  }
+  
   public void refreshData() {
     // first clear the server cache
     
-    // TODO: bring ModelServerPublish code over
-    if (true) throw new UnsupportedOperationException();
-    
-    ModelServerPublish modelServerPublish = new ModelServerPublish();
-    
-    // TODO make this non-HTTP based
-    BiServerConnection biServerConnection = new BiServerConnection();
-    String password = "";
-    String publishPassword = "";
-    String userId = "";
-    biServerConnection.setName( "embedded" );
-    biServerConnection.setPassword(password);
-    biServerConnection.setPublishPassword(publishPassword);
-    biServerConnection.setUrl(url);
-    biServerConnection.setUserId(userId);
-    modelServerPublish.setBiServerConnection(biServerConnection);
-
-    try {
-      modelServerPublish.refreshOlapCaches(modelId);
-      browser.execute(visualization.getRefreshDataJavascript());
-      //  "cv.getActiveReport().refreshReport()" )
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    AggregationManager.instance().getCacheControl(null).flushSchemaCache();
+    browser.execute(visualization.generateRefreshDataJavascript( xmiFileLocation, modelId ));
   }
   
   public void refreshModel() {
     // first save the view
-    if (true) throw new UnsupportedOperationException();
+//    if (true) throw new UnsupportedOperationException();
     // TODO: can we do this without requiring a "remote save"? 
-    browser.execute( visualization.getRefreshModelJavascript());
+    AggregationManager.instance().getCacheControl(null).flushSchemaCache();
+    
+    browser.execute( visualization.generateRefreshModelJavascript( xmiFileLocation, modelId ));
     // "gCtrlr.repositoryBrowserController.remoteSave('"+modelId+"','tmp', '', 'xanalyzer', true)" 
-        
-    // now reload it
-    browser.setUrl(visualization.getNewUrl());
     
   }
 
@@ -191,6 +185,33 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   public void syncMetaName(EngineMetaInterface arg0, String arg1) {
     // TODO Auto-generated method stub
     
+  }
+
+  public void setXmiFileLocation(String xmiFileLocation) {
+    this.xmiFileLocation = xmiFileLocation;
+  }
+
+  public void setVisFileLocation(String visFileLocation) {
+    this.visFileLocation = visFileLocation;
+  }
+
+  public void changed(StatusTextEvent statusTextEvent) {
+    browserStatusString = statusTextEvent.text;
+  }
+
+  public void open(WindowEvent windowEvent) {
+    
+    System.out.println( "window open" );
+    System.out.println( windowEvent.data );
+    System.out.println( windowEvent.getSource() );
+  }
+
+  public void changed(LocationEvent locationEvent) {
+    System.out.println( "changed "+locationEvent.location );
+  }
+
+  public void changing(LocationEvent locationEvent) {
+    System.out.println( "changing "+locationEvent.location );
   }
 
 }

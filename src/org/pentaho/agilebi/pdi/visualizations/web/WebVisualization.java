@@ -1,8 +1,14 @@
 package org.pentaho.agilebi.pdi.visualizations.web;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.URLEncoder;
+import java.util.HashMap;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.jaxen.SimpleNamespaceContext;
+import org.jaxen.dom4j.Dom4jXPath;
 import org.pentaho.agilebi.pdi.visualizations.AbstractVisualization;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.gui.SpoonFactory;
@@ -17,6 +23,11 @@ public class WebVisualization extends AbstractVisualization {
 	
 	private String refreshDataJavascript;
 	private String refreshModelJavascript;
+	
+  private String getStateJavascript;
+  private String setStateJavascript;
+	
+	private String modelFileName;
 	
 	public String getNewUrl() {
 		return newUrl;
@@ -88,8 +99,6 @@ public class WebVisualization extends AbstractVisualization {
     str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
     return str;
 	}
-
-
 	
 	public String generateRefreshDataJavascript(String fileLocation, String modelId) { 
     String str = replaceField(refreshDataJavascript, "modelLocation", fileLocation, true);
@@ -97,12 +106,13 @@ public class WebVisualization extends AbstractVisualization {
     return str;
 	}
 	
-	public String getRefreshModelJavascript(String fileLocation, String modelId) {
-    String str = replaceField(refreshModelJavascript, "modelLocation", fileLocation, true); //$NON-NLS-1$
+	public String generateRefreshModelJavascript(String fileLocation, String modelId) {
+	  String str = replaceField(refreshModelJavascript, "modelLocation", fileLocation, true); //$NON-NLS-1$
     str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
+    str = replaceField(str, "basedir", new File("").getAbsolutePath(), false); //$NON-NLS-1$ //$NON-NLS-2$
     return str;
 	}
-
+	
 	public void createVisualizationFromModel(String fileLocation, String modelId) {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
@@ -112,12 +122,34 @@ public class WebVisualization extends AbstractVisualization {
       throw new RuntimeException(e);
     }
   }
-		
+
   public boolean open(Node transNode, String fname, boolean importfile) {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
+      File f = new File( fname );
+      FileInputStream in = new FileInputStream( f );
+      StringBuilder sb = new StringBuilder();
+      byte b[] = new byte[2048];
+      int n = in.read(b);
+      while( n != -1 ) {
+        sb.append( new String(b, 0, n) );
+        n = in.read(b);
+      }
+      
+      Document doc = DocumentHelper.parseText(sb.toString());
+      Dom4jXPath xpath = new Dom4jXPath( "//@catalog");
+      HashMap map = new HashMap();
+      map.put( "pho", "http://www.pentaho.com");
+      xpath.setNamespaceContext( new SimpleNamespaceContext( map));
+      org.dom4j.Node node = (org.dom4j.Node) xpath.selectSingleNode( doc);
+
+      modelFileName = node.getText();
+
       WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, fname);
+      browser.setXmiFileLocation(modelFileName);
       addAndSelectTab(spoon, browser, browser.getComposite(), browser.getMeta().getName());
+      spoon.getProperties().addLastFile("Analyzer", fname, null, false, null);
+      spoon.addMenuLast();
     } catch (Throwable e) {
       throw new RuntimeException(e);
     }    return true;
@@ -144,6 +176,26 @@ public class WebVisualization extends AbstractVisualization {
       fname = filename.substring(loc + 1);
     }
     return new String[]{path, fname};
+  }
+
+  public String getModelFileName() {
+    return modelFileName;
+  }
+
+  public String getGetStateJavascript() {
+    return getStateJavascript;
+  }
+
+  public void setGetStateJavascript(String getStateJavascript) {
+    this.getStateJavascript = getStateJavascript;
+  }
+
+  public String getSetStateJavascript() {
+    return setStateJavascript;
+  }
+
+  public void setSetStateJavascript(String setStateJavascript) {
+    this.setStateJavascript = setStateJavascript;
   }
 
 

@@ -47,6 +47,7 @@ import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.LogicalTable;
 import org.pentaho.metadata.model.concept.types.AggregationType;
+import org.pentaho.metadata.model.concept.types.DataType;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.model.olap.OlapCube;
 import org.pentaho.metadata.model.olap.OlapDimension;
@@ -75,6 +76,16 @@ public class ModelerWorkspaceUtil {
     DEFAULT_AGGREGATION_LIST.add(AggregationType.AVERAGE);
     DEFAULT_AGGREGATION_LIST.add(AggregationType.MINIMUM);
     DEFAULT_AGGREGATION_LIST.add(AggregationType.MAXIMUM);
+  }
+  
+  public static ModelerWorkspace populateModelFromSource( ModelerWorkspace model, IModelerSource source ) throws ModelerException {
+    Domain d = source.generateDomain();
+    
+    model.setModelSource(source);
+    model.setModelName(source.getTableName());
+    model.setDomain(d);
+    
+    return model;  
   }
   
   public static ModelerWorkspace populateModelFromOutputStep(ModelerWorkspace model) throws ModelerException {
@@ -131,6 +142,66 @@ public class ModelerWorkspaceUtil {
     model.setDomain(d);
     
     return model;
+  }
+  
+  /**
+   * Builds an OLAP model that is attribute based.
+   * @param modelId
+   * @param rowMeta
+   * @param locale
+   * @param user
+   * @param tableName
+   */
+  public static void autoModelFlat( ModelerWorkspace model ) throws ModelerException {
+    
+    List<FieldMetaData> fields = model.getAvailableFields();
+    for( FieldMetaData field : fields ) {
+      DataType dataType = field.getLogicalColumn().getDataType();
+      if( dataType == DataType.NUMERIC) {
+        // create a measure
+        model.addFieldIntoPlay(field.getFieldName());
+      }
+      // create a dimension
+      model.addDimension(field.getDisplayName());
+    }
+    
+    populateDomain( model );
+    
+    /*
+    // 
+    List<ColumnProfile> profileList = new ArrayList<ColumnProfile>();
+    List<ValueMetaInterface> valueMetaList = rowMeta.getValueMetaList();
+    
+    for( ValueMetaInterface valueMeta : valueMetaList ) {
+      // create one or more profiles for each value meta
+      ColumnProfile profile = new ColumnProfile();
+      int dataType = valueMeta.getType();
+      if( dataType ==  ValueMetaInterface.TYPE_BIGNUMBER || 
+          dataType == ValueMetaInterface.TYPE_INTEGER ||
+          dataType == ValueMetaInterface.TYPE_NUMBER ) {
+        // create a measure
+        profile.setFieldType( ColumnProfile.FIELD_FACT );
+        profile.setType( valueMeta.getType() );
+        profile.setId( valueMeta.getName()+" (m)" );
+        profile.setColumnName( valueMeta.getName() );
+        profile.setTitle( valueMeta.getName()+"(m)" );
+        profile.setUsed(true);
+        profileList.add( profile );
+        profile.setFormat("#");
+      }
+      profile = new ColumnProfile();
+      profile.setFieldType( ColumnProfile.FIELD_DIMENSION );
+      profile.setType( valueMeta.getType() );
+      profile.setId( valueMeta.getName() );
+      profile.setColumnName( valueMeta.getName() );
+      profile.setDimensionTitle( valueMeta.getName() );
+      profile.setTitle( valueMeta.getName() );
+      profile.setUsed(true);
+      profileList.add( profile );
+    }
+    ColumnProfile profiles[] = profileList.toArray( new ColumnProfile[profileList.size()] );
+    generateModels( modelId, databaseMeta, locale, user, tableName, profiles );
+    */
   }
   
   public static void populateDomain(ModelerWorkspace model) throws ModelerException {
@@ -203,9 +274,9 @@ public class ModelerWorkspaceUtil {
     // write the XMI to a tmp file
     // models was created earlier.
     try{
-      File dir = new File( "models");
+      File dir = new File( "models"); //$NON-NLS-1$
       dir.mkdirs();
-      File file = new File("models/" + model.getModelName() + ".xmi");
+      File file = new File("models/" + model.getModelName() + ".xmi"); //$NON-NLS-1$ //$NON-NLS-2$
       PrintWriter pw = new PrintWriter(new FileWriter(file));
       pw.print(xmi);
       pw.close();
@@ -287,11 +358,11 @@ public class ModelerWorkspaceUtil {
       LogicalModel lModel = model.getDomain().getLogicalModels().get(0);
 
       if (olapDimensions.size() > 0) { // Metadata OLAP generator doesn't like empty lists.
-        lModel.setProperty("olap_dimensions", olapDimensions);
+        lModel.setProperty("olap_dimensions", olapDimensions); //$NON-NLS-1$
       }
       List<OlapCube> cubes = new ArrayList<OlapCube>();
       cubes.add(cube);
-      lModel.setProperty("olap_cubes", cubes);
+      lModel.setProperty("olap_cubes", cubes); //$NON-NLS-1$
 
       try{
         MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
@@ -304,9 +375,9 @@ public class ModelerWorkspaceUtil {
         byte schemaBytes[] = schemaDoc.asXML().getBytes();
         String schemaFileName = model.getModelName() + ".mondrian.xml"; //$NON-NLS-1$
         // write out the file
-        File modelFile = new File("models");
+        File modelFile = new File("models"); //$NON-NLS-1$
         modelFile.mkdirs();
-        modelFile = new File("models/" + model.getModelName() + ".mondrian.xml");
+        modelFile = new File("models/" + model.getModelName() + ".mondrian.xml"); //$NON-NLS-1$ //$NON-NLS-2$
         OutputStream out = new FileOutputStream(modelFile);
         out.write(schemaBytes);
       } catch(Exception e){
@@ -360,12 +431,16 @@ public class ModelerWorkspaceUtil {
       XmiParser parser = new XmiParser();
       Domain domain = parser.parseXmi(new ByteArrayInputStream(aXml.getBytes()));
         	
-    	IModelerSource theSource = ModelerSourceFactory.generateSource(domain.getLogicalModels().get(0).getProperty("source_type").toString());
-    	
-    	theSource.initialize(domain);  	
+      // re-hydrate the source
+      LogicalModel logical = domain.getLogicalModels().get(0);
+      Object property = logical.getProperty("source_type");
+      if( property != null ) {
+        IModelerSource theSource = ModelerSourceFactory.generateSource(property.toString());
+        theSource.initialize(domain);   
+        aModel.setModelSource(theSource);
+      }
   
     	aModel.setDomain(domain);
-    	aModel.setModelSource(theSource);
     	aModel.setFileName(fileName);
     	aModel.resolveConnectionFromDomain();
     	aModel.setDirty(false);

@@ -27,6 +27,7 @@ public class ModelerSourceFactory {
   private static Map<String, Class<? extends IModelerSource>> outputSources = new HashMap<String, Class<? extends IModelerSource>>();
   static{
     outputSources.put(OutputStepModelerSource.SOURCE_TYPE, OutputStepModelerSource.class);
+    outputSources.put(TableModelerSource.SOURCE_TYPE, TableModelerSource.class);
   }
   
   private static Log logger = LogFactory.getLog(ModelerSourceFactory.class);

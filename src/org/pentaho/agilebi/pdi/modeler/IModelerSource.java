@@ -39,5 +39,9 @@ public interface IModelerSource {
 	public DatabaseMeta getDatabaseMeta();
 	
   public void setDatabaseMeta(DatabaseMeta databaseMeta);
+  
+  public String getSchemaName();
+  
+  public String getTableName();
 
 }

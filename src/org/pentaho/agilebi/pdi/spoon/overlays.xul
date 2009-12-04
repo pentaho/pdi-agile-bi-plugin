@@ -7,11 +7,16 @@
 
 	<menupopup id="trans-graph-entry">
       <menuitem id="trans-graph-entry-model" label="Model" command="agileBi.openModeler()" />
-      <!-- <menuitem id="trans-graph-entry-visualize" label="Quick Visualize" command="agileBi.quickVisualize()" /> -->
+      <menuitem id="trans-graph-entry-visualize" label="Quick Visualize" command="agileBi.quickVisualizeTableOutputStep()" />
     </menupopup>
     
     <!-- menupopup id="file-new-popup">
 		<menuitem value="file-new-model" acceltext="CTRL-M"  accesskey="ctrl-m" label="Model" command="agileBi.fileNewModel()"/>
     </menupopup -->
+    
+    <menupopup id="database-inst">
+		<menuitem value="database-inst-model" label="Model" command="agileBi.databaseModelItem()"/>
+		<menuitem value="database-inst-visualize" label="Quick Visualize" command="agileBi.quickVisualizeTable()"/>
+    </menupopup>
 	
 </overlay>
