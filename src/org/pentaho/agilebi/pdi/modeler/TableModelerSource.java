@@ -51,7 +51,7 @@ public class TableModelerSource implements IModelerSource {
 		this.databaseMeta = databaseMeta;
 		this.schemaName = schemaName;
 		if( schemaName == null ) {
-		  schemaName = "";
+		  this.schemaName = "";
 		}
 	}
 
