@@ -1,7 +1,6 @@
 <window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" align="vertical" >
 	 
-	 <toolbox>
-		<toolbar id="nav-toolbar" mode="icons">
+		<toolbar id="nav-toolbar" parenttoouter="true" mode="icons">
             <toolbarbutton value="analyzer-file-save" label="Save Current Analyzer Report" image="ui/images/save.png" tooltiptext="Save Current Analyzer Report" />
             <toolbarbutton value="analyzer-file-save-as" label="Save Analyzer Report with different name" image="ui/images/saveas.png" tooltiptext="Save Analyzer Report with different name" />
             <toolbarseparator />
@@ -10,6 +9,5 @@
             <toolbarseparator />
             <toolbarbutton value="analyzer-model" label="Edit the model" image="plugins/spoon/agile-bi/ui/images/modeler.png" tooltiptext="Edit the model" />
 		</toolbar>
-	</toolbox>
 
 </window>
