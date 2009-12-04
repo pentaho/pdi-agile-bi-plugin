@@ -116,7 +116,7 @@ public class WebVisualization extends AbstractVisualization {
 	public void createVisualizationFromModel(String fileLocation, String modelId) {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
-      WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, fileLocation, modelId);
+      WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, fileLocation, modelId, null);
       addAndSelectTab(spoon, browser, browser.getComposite(), getUniqueUntitledTabName(spoon));
     } catch (Throwable e) {
       throw new RuntimeException(e);
@@ -138,14 +138,18 @@ public class WebVisualization extends AbstractVisualization {
       
       Document doc = DocumentHelper.parseText(sb.toString());
       Dom4jXPath xpath = new Dom4jXPath( "//@catalog");
+      Dom4jXPath xpath2 = new Dom4jXPath( "//@cube");
       HashMap map = new HashMap();
       map.put( "pho", "http://www.pentaho.com");
       xpath.setNamespaceContext( new SimpleNamespaceContext( map));
+      xpath2.setNamespaceContext( new SimpleNamespaceContext( map));
       org.dom4j.Node node = (org.dom4j.Node) xpath.selectSingleNode( doc);
+      org.dom4j.Node node2 = (org.dom4j.Node) xpath2.selectSingleNode( doc);
 
-      modelFileName = node.getText();
+      String modelFileName = node.getText();
+      String modelId = node2.getText();
 
-      WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, fname);
+      WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, modelFileName, modelId, fname);
       browser.setXmiFileLocation(modelFileName);
       addAndSelectTab(spoon, browser, browser.getComposite(), browser.getMeta().getName());
       String fullPath = f.getAbsolutePath();
@@ -183,10 +187,6 @@ public class WebVisualization extends AbstractVisualization {
       fname = filename.substring(loc + 1);
     }
     return new String[]{path, fname};
-  }
-
-  public String getModelFileName() {
-    return modelFileName;
   }
 
   public String getGetStateJavascript() {
