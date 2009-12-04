@@ -159,6 +159,12 @@ public class WebVisualization extends AbstractVisualization {
   public boolean save(EngineMetaInterface meta, String fname, boolean isExport) {
     WebVisualizationMeta wvmeta = (WebVisualizationMeta)meta;
     wvmeta.save(fname);
+    File f = new File(fname);
+    String fullPath = f.getAbsolutePath();
+    Spoon spoon = ((Spoon)SpoonFactory.getInstance());
+    spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
+    spoon.addMenuLast();
+
     return true;
   }
 

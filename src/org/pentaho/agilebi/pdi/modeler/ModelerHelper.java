@@ -119,7 +119,6 @@ public class ModelerHelper extends AbstractXulEventHandler implements FileListen
       String fullPath = f.getAbsolutePath();
       spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
       spoon.addMenuLast();
-
     } catch(ModelerException e){
       e.printStackTrace();
     } catch(IOException e){
@@ -187,6 +186,12 @@ public class ModelerHelper extends AbstractXulEventHandler implements FileListen
   public boolean save(EngineMetaInterface meta, String fname, boolean isExport) {
     try {
       ((ModelerEngineMeta)meta).getController().saveWorkspace(fname);
+      File f = new File(fname);
+      String fullPath = f.getAbsolutePath();
+      Spoon spoon = ((Spoon)SpoonFactory.getInstance());
+      spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
+      spoon.addMenuLast();
+
       return true;
     } catch (ModelerException e) {
       e.printStackTrace();
