@@ -36,7 +36,7 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
     super(parent, spoon, visualization.generateOpenUrl(visFileLocation), true, true);
     this.visualization = visualization;
     this.visFileLocation = visFileLocation;
-    // TODO: replace this code after M1
+    
     this.modelId = ModelerHelper.getInstance().loadDomain(visualization.getModelFileName()).getLogicalModels().get(0).getId();
     this.meta = new WebVisualizationMeta(this);
   }
@@ -45,7 +45,7 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
     super(parent, spoon, visualization.generateNewUrl(xmiFileLocation, modelId), true, true );
     this.visualization = visualization;
     this.xmiFileLocation = xmiFileLocation;
-    this.modelId = modelId;
+    this.modelId = ModelerHelper.getInstance().loadDomain(visualization.getModelFileName()).getLogicalModels().get(0).getId();
     this.meta = new WebVisualizationMeta(this);
   }
   
