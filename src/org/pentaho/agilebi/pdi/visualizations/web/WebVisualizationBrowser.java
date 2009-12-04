@@ -31,11 +31,13 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   private WebVisualization visualization;
   private WebVisualizationMeta meta;
   private String visFileLocation = null;
-  
+
   public WebVisualizationBrowser(Composite parent, final Spoon spoon, final WebVisualization visualization, String visFileLocation) throws SWTError {
     super(parent, spoon, visualization.generateOpenUrl(visFileLocation), true, true);
     this.visualization = visualization;
     this.visFileLocation = visFileLocation;
+    // TODO: replace this code after M1
+    this.modelId = ModelerHelper.getInstance().loadDomain(visualization.getModelFileName()).getLogicalModels().get(0).getId();
     this.meta = new WebVisualizationMeta(this);
   }
   
@@ -65,6 +67,7 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   protected void addToolBar() {
     try {
       XulLoader loader = new SwtXulLoader();
+      loader.setOuterContext(composite);
       XulDomContainer xulDomContainer = loader.loadXul(XUL_FILE_ANALYZER_BROWSER_TOOLBAR);
       xulDomContainer.addEventHandler(this);
       toolbar = (XulToolbar) xulDomContainer.getDocumentRoot().getElementById("nav-toolbar"); //$NON-NLS-1$

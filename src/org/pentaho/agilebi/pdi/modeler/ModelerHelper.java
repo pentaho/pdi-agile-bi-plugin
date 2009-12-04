@@ -39,6 +39,7 @@ import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.di.ui.util.ImageUtil;
+import org.pentaho.metadata.model.Domain;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.xul.swt.tab.TabItem;
 import org.w3c.dom.Node;
@@ -88,6 +89,21 @@ public class ModelerHelper extends AbstractXulEventHandler implements FileListen
     createModelerTab(spoon, xul, getUniqueUntitledTabName(spoon, MODELER_NAME));
   }
 
+  // TODO: replace this code after M1
+  public Domain loadDomain(String fname){
+    try{
+      ModelerWorkspace model = new ModelerWorkspace();
+      String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
+      ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);
+      return model.getDomain();
+    } catch(ModelerException e){
+      e.printStackTrace();
+    } catch(IOException e){
+      e.printStackTrace();
+    }
+    return null;
+  }
+  
   public boolean open(Node transNode, String fname, boolean importfile) {
     try{
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());

@@ -21,6 +21,10 @@ import org.apache.commons.logging.LogFactory;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.model.SqlDataSource;
+import org.pentaho.metadata.model.SqlPhysicalModel;
+import org.pentaho.metadata.model.SqlPhysicalTable;
+import org.pentaho.metadata.util.ThinModelConverter;
 
 /**
  * Provides information to the ModelerModel to support the User Interface. This
@@ -60,6 +64,17 @@ public class TableModelerSource implements IModelerSource {
 	}
 
 	public void initialize(Domain domain) throws ModelerException {
+	  SqlPhysicalModel model = (SqlPhysicalModel) domain.getPhysicalModels().get(0);
+	  SqlPhysicalTable table = (SqlPhysicalTable) model.getPhysicalTables().get(0);
+	  
+	  SqlDataSource dSource = model.getDatasource();
+	  this.databaseMeta = ThinModelConverter.convertToLegacy(model.getId(), model.getDatasource());
+    this.tableName = table.getTargetTable();
+	  this.schemaName = table.getTargetSchema();
+	  
+    if( schemaName == null ) {
+      schemaName = "";
+    }
 	}
 	
   public void serializeIntoDomain(Domain d) {

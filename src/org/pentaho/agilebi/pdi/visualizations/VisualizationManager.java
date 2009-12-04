@@ -57,6 +57,9 @@ public class VisualizationManager {
 	@SuppressWarnings("unchecked")
   private void loadVisualizations(File aDir) {
 		File[] theFiles = aDir.listFiles();
+		if(theFiles == null){
+		  return;
+		}
 		for (int i = 0; i < theFiles.length; i++) {
 			File theFile = theFiles[i];
 			if (theFile.isDirectory()) {
