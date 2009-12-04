@@ -169,6 +169,8 @@
 			<include name="wsdl4j-*.jar"/>
 			<include name="wstx-asl-*.jar"/>
 			<include name="xercesImpl-*.jar"/>
+			
+			<exclude name="pentaho-database-gwt-*.jar"/>
 		</fileset>
   	</delete>
   </target>
@@ -185,7 +187,15 @@
 
 		<mkdir dir="${approot.stage.dir}/platform/webapps"/>
 		<move file="${platform.unzip.dir}/biserver-ce/tomcat/webapps/pentaho" todir="${approot.stage.dir}/platform/webapps"/>
-		<move file="${platform.unzip.dir}/biserver-ce/pentaho-solutions" todir="${approot.stage.dir}/platform"/>
+		<move file="${platform.unzip.dir}/biserver-ce/pentaho-solutions" todir="${approot.stage.dir}/platform"/>		
+		<!-- copy overwrite="true" todir="${approot.stage.dir}/platform/webapps">
+			<fileset dir="${platform.unzip.dir}/biserver-ce/tomcat/webapps/pentaho">
+		    </fileset>
+		</copy>
+		<copy overwrite="true" todir="${approot.stage.dir}/platform">
+			<fileset dir="${platform.unzip.dir}/biserver-ce/pentaho-solutions">
+		    </fileset>
+		</copy -->
 		<!-- remove all the platform jar files, these are now part of the kettle classpath
 		     and are brought over via ivy -->
 		<delete>
