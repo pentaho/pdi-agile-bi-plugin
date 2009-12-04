@@ -1,33 +1,26 @@
 package org.pentaho.agilebi.pdi.visualizations.web;
 
-import java.net.URL;
-import java.util.Properties;
-
 import mondrian.rolap.agg.AggregationManager;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.browser.LocationEvent;
-import org.eclipse.swt.browser.LocationListener;
-import org.eclipse.swt.browser.OpenWindowListener;
-import org.eclipse.swt.browser.StatusTextEvent;
-import org.eclipse.swt.browser.StatusTextListener;
-import org.eclipse.swt.browser.WindowEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
-import org.pentaho.di.ui.core.gui.XulHelper;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Messages;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonBrowser;
-import org.pentaho.di.ui.spoon.XulMessages;
+import org.pentaho.ui.xul.XulDomContainer;
+import org.pentaho.ui.xul.XulLoader;
+import org.pentaho.ui.xul.containers.XulToolbar;
+import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.w3c.dom.Node;
 
-public class WebVisualizationBrowser extends SpoonBrowser implements FileListener, StatusTextListener, OpenWindowListener, LocationListener {
+public class WebVisualizationBrowser extends SpoonBrowser implements FileListener {
 
   private static final String XUL_FILE_ANALYZER_BROWSER_TOOLBAR = "plugins/spoon/agile-bi/ui/analyzer-toolbar.xul"; //$NON-NLS-1$
   public static final String XUL_FILE_ANALYZER_TOOLBAR_PROPERTIES = "plugins/spoon/agile-bi/ui/analyzer-toolbar.properties"; //$NON-NLS-1$
@@ -35,11 +28,9 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   private String xmiFileLocation = null;
   private String modelId = null;
   // private String databaseName;
-  private String url;
   private WebVisualization visualization;
   private WebVisualizationMeta meta;
   private String visFileLocation = null;
-  private String browserStatusString = null;
   
   public WebVisualizationBrowser(Composite parent, final Spoon spoon, final WebVisualization visualization, String visFileLocation) throws SWTError {
     super(parent, spoon, visualization.generateOpenUrl(visFileLocation), true, true);
@@ -67,32 +58,26 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
     } else {
       newBrowser = super.createBrowser();
     }
-    newBrowser.addStatusTextListener(this);
-    newBrowser.addOpenWindowListener(this);
-    newBrowser.addLocationListener(this);
     return newBrowser;
 
   }
   
   protected void addToolBar() {
     try {
-      // TODO: won't this all go away with the new xul?
-      toolbar = XulHelper.createToolbar(XUL_FILE_ANALYZER_BROWSER_TOOLBAR, composite, this, new XulMessages());
-      
-      // Add a few default key listeners
-      //
-      // This is currently turned off in Spoon
-//      ToolBar toolBar = (ToolBar) toolbar.getNativeObject();
-//      toolBar.addKeyListener(spoon.defKeys);
-      
+      XulLoader loader = new SwtXulLoader();
+      XulDomContainer xulDomContainer = loader.loadXul(XUL_FILE_ANALYZER_BROWSER_TOOLBAR);
+      xulDomContainer.addEventHandler(this);
+      toolbar = (XulToolbar) xulDomContainer.getDocumentRoot().getElementById("nav-toolbar"); //$NON-NLS-1$
+
       addToolBarListeners();
     } catch (Throwable t ) {
       log.logError(toString(), Const.getStackTracker(t));
-      new ErrorDialog(shell, Messages.getString("Spoon.Exception.ErrorReadingXULFile.Title"), Messages.getString("Spoon.Exception.ErrorReadingXULFile.Message", XUL_FILE_ANALYZER_BROWSER_TOOLBAR), new Exception(t)); //$NON-NLS-1$
+      new ErrorDialog(shell, Messages.getString("Spoon.Exception.ErrorReadingXULFile.Title"), Messages.getString("Spoon.Exception.ErrorReadingXULFile.Message", XUL_FILE_ANALYZER_BROWSER_TOOLBAR), new Exception(t)); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 
   public void addToolBarListeners() {
+    /*
     try {
       // first get the XML document
       URL url = XulHelper.getAndValidate(XUL_FILE_ANALYZER_TOOLBAR_PROPERTIES);
@@ -110,6 +95,7 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
       new ErrorDialog(shell, Messages.getString("Spoon.Exception.ErrorReadingXULFile.Title"),  //$NON-NLS-1$
           Messages.getString("Spoon.Exception.ErrorReadingXULFile.Message", XUL_FILE_BROWSER_TOOLBAR_PROPERTIES), new Exception(t)); //$NON-NLS-1$
     }
+    */
   }
 
   public String getVisFileLocation() {
@@ -193,25 +179,6 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
 
   public void setVisFileLocation(String visFileLocation) {
     this.visFileLocation = visFileLocation;
-  }
-
-  public void changed(StatusTextEvent statusTextEvent) {
-    browserStatusString = statusTextEvent.text;
-  }
-
-  public void open(WindowEvent windowEvent) {
-    
-    System.out.println( "window open" );
-    System.out.println( windowEvent.data );
-    System.out.println( windowEvent.getSource() );
-  }
-
-  public void changed(LocationEvent locationEvent) {
-    System.out.println( "changed "+locationEvent.location );
-  }
-
-  public void changing(LocationEvent locationEvent) {
-    System.out.println( "changing "+locationEvent.location );
   }
 
 }
