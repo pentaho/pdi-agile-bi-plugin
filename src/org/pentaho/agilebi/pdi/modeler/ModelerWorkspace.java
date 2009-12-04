@@ -347,6 +347,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
         }
       }
       availableFields.removeAll(toRemove);
+      sortFields();
+
       fireFieldsChanged();
       
       for(DimensionMetaData dm : dimensions){
@@ -386,6 +388,12 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     this.schemaName = schemaName;
   }
   
+  private void sortFields() {
+    Collections.sort(availableFields, new Comparator() { public int compare(Object o1, Object o2) { 
+      return ((FieldMetaData) o1).getDisplayName().compareToIgnoreCase(((FieldMetaData) o2).getDisplayName());
+       } });
+  }
+  
   public void setDomain(Domain d){
     this.domain = d;
     this.dimensions.clear();
@@ -402,6 +410,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       availableFields.add(fm);
     }
     
+    sortFields();
+
     firePropertyChange("availableFields", null, getAvailableFields());
     
     LogicalModel lModel = domain.getLogicalModels().get(0);
