@@ -53,6 +53,7 @@ public class OutputStepModelerSource extends TableModelerSource {
 	}
 
 	public void initialize(Domain domain) throws ModelerException {
+	  super.initialize(domain);
 	  LogicalModel lm = domain.getLogicalModels().get(0);
 	  if(lm.getProperty("trans_file") != null){
 	    setFileName(lm.getProperty("trans_file").toString());

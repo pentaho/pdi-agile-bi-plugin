@@ -109,11 +109,11 @@ public class ModelerHelper extends AbstractXulEventHandler implements FileListen
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
 
       ModelerWorkspace model = new ModelerWorkspace();
+      String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
+      ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);
       
       XulUI xul = new XulUI(spoon.getShell(), model);
       TabItem tabItem = createModelerTab(spoon, xul, createShortName(fname));
-      String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
-      ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);
       tabItem.setText(createShortName(fname));
       File f = new File(fname);
       String fullPath = f.getAbsolutePath();
