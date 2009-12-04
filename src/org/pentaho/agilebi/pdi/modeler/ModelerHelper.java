@@ -99,7 +99,9 @@ public class ModelerHelper extends AbstractXulEventHandler implements FileListen
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
       ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);
       tabItem.setText(createShortName(fname));
-      spoon.getProperties().addLastFile("Model", fname, null, false, null);
+      File f = new File(fname);
+      String fullPath = f.getAbsolutePath();
+      spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
       spoon.addMenuLast();
 
     } catch(ModelerException e){

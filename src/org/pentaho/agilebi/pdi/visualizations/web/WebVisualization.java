@@ -148,7 +148,8 @@ public class WebVisualization extends AbstractVisualization {
       WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, fname);
       browser.setXmiFileLocation(modelFileName);
       addAndSelectTab(spoon, browser, browser.getComposite(), browser.getMeta().getName());
-      spoon.getProperties().addLastFile("Analyzer", fname, null, false, null);
+      String fullPath = f.getAbsolutePath();
+      spoon.getProperties().addLastFile("Analyzer", fullPath, null, false, null);
       spoon.addMenuLast();
     } catch (Throwable e) {
       throw new RuntimeException(e);
