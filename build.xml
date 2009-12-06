@@ -170,7 +170,7 @@
 			<include name="wstx-asl-*.jar"/>
 			<include name="xercesImpl-*.jar"/>
 			
-			<exclude name="pentaho-database-gwt-*.jar"/>
+			<exclude name="pentaho-database-model-*.jar"/>
 		</fileset>
   	</delete>
   </target>

@@ -29,11 +29,7 @@
         <!-- this manual sync should go away once this project is propertly ivy-ized -->
         
         <dependency org="pentaho" name="pentaho-database" rev="${dependency.pentaho-database.revision}" conf="default->default" changing="true" />        
-        <dependency org="pentaho" name="pentaho-database-gwt" rev="${dependency.pentaho-database.revision}"
-                    conf="default->default" transitive="false"
-                    changing="true">
-            <artifact name="pentaho-database-gwt"/>
-        </dependency>
+        <dependency org="pentaho" name="pentaho-database-model" rev="${dependency.pentaho-database.revision}" conf="default->default" changing="true" />        
 
         <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default" changing="true"/>
         <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default" changing="true"/>
