@@ -56,7 +56,7 @@ public class TableModelerSource implements IModelerSource {
 	}
 
 	public String getDatabaseName() {
-		return databaseMeta.getDatabaseName();
+		return databaseMeta.getName();
 	}
 
 	public Domain generateDomain() throws ModelerException {
