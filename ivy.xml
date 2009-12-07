@@ -46,7 +46,7 @@
         <dependency org="pentaho" name="pentaho-bi-platform-legacy" rev="TRUNK-SNAPSHOT" changing="true" />
         <dependency org="pentaho" name="mantle" rev="TRUNK-SNAPSHOT" changing="true" />
         <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-core-platform-plugin" rev="TRUNK-SNAPSHOT" changing="true"/>
-        
+        <dependency org="org.json" name="json" rev="${dependency.json.revision}" changing="true"/>
         <!-- test dependencies -->
         <dependency org="junit"              name="junit"              rev="4.4" conf="test->default"/>
         
