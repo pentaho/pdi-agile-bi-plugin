@@ -321,6 +321,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
           FieldMetaData fm = new FieldMetaData();
           fm.setLogicalColumn(lc);
           fm.setFieldName(lc.getName(Locale.getDefault().toString()));
+          fm.setDisplayName(lc.getName(Locale.getDefault().toString()));
           availableFields.add(fm);
           Collections.sort(availableFields, new Comparator<FieldMetaData>(){
             public int compare(FieldMetaData arg0, FieldMetaData arg1) {
@@ -349,6 +350,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       availableFields.removeAll(toRemove);
       sortFields();
 
+      firePropertyChange("availableFields", null, getAvailableFields()); //$NON-NLS-1$
       fireFieldsChanged();
       
       for(DimensionMetaData dm : dimensions){
@@ -390,7 +392,27 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   private void sortFields() {
     Collections.sort(availableFields, new Comparator() { public int compare(Object o1, Object o2) { 
-      return ((FieldMetaData) o1).getDisplayName().compareToIgnoreCase(((FieldMetaData) o2).getDisplayName());
+      if( o1 == null && o2 == null ) {
+        return 0;
+      }
+      else if( o1 == null ) {
+        return -1;
+      }
+      else if( o2 == null ) {
+        return 1;
+      }
+      String name1 = ((FieldMetaData) o1).getDisplayName();
+      String name2 = ((FieldMetaData) o2).getDisplayName();
+      if( name1 == null && name2 == null ) {
+        return 0;
+      }
+      else if( name1 == null ) {
+        return -1;
+      }
+      else if( name2 == null ) {
+        return 1;
+      }
+      return name1.compareToIgnoreCase(name2);
        } });
   }
   
