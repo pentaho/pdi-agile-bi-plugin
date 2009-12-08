@@ -234,6 +234,11 @@ public class ModelerWorkspaceUtil {
       if (type != AggregationType.NONE) {
         lCol.setAggregationType(type);
       }
+      String formatMask = f.getFormat();
+      System.out.println(formatMask);
+      if (formatMask != null) {
+        lCol.setProperty("mask", formatMask);
+      }
       lCol.setAggregationList(DEFAULT_AGGREGATION_LIST);
       AggregationType selectedAgg = AggregationType.NONE; 
       try{
@@ -251,14 +256,7 @@ public class ModelerWorkspaceUtil {
       for (HierarchyMetaData hier : dim) {
         for (int j = 0; j < hier.getChildren().size(); j++) {
           LevelMetaData level = hier.getChildren().get(j);
-          String format = "#";
-          
           LogicalColumn lCol = level.getLogicalColumn();
-
-          // TODO: handle custom formating
-          if (format != null) {
-            lCol.setProperty("mask", format);
-          }
           lCol.setName(new LocalizedString(Locale.getDefault().toString(), level.getName()));
           if (cat.findLogicalColumn(lCol.getId()) == null) {
             cat.addLogicalColumn(lCol);
