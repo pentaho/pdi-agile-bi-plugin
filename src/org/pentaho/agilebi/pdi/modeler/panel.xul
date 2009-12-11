@@ -119,9 +119,9 @@
 				    			<label value="Details:"/>
 				    			<label id="details" value=" "/>
 				    			<label id="details2" value=" "/>
-				    			<label id="details3" value=" "/>
-				    			
-				    		</vbox>
+				    			<label id="details3" value=" "/><!--
+		                        <checkbox id="uniquecb" label="Unique" checked="false" onclick="modeler.updateUniqueMember()"/>                        
+				    		--></vbox>
 				    	</hbox>
 					</tabpanel>
 				  </tabpanels>

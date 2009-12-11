@@ -37,6 +37,7 @@ import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.binding.Binding.Type;
+import org.pentaho.ui.xul.components.XulCheckbox;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMenuList;
 import org.pentaho.ui.xul.components.XulMessageBox;
@@ -94,6 +95,7 @@ public class ModelerController extends AbstractXulEventHandler{
   private XulLabel detailsLabel3;
   private XulMenuList serverList;
   private XulMenuList visualizationList;
+  private XulCheckbox uniqueMemberCB;
   
   private BindingFactory bf = new DefaultBindingFactory();
  
@@ -124,6 +126,7 @@ public class ModelerController extends AbstractXulEventHandler{
     detailsLabel = (XulLabel)document.getElementById("details");
     detailsLabel2 = (XulLabel)document.getElementById("details2");
     detailsLabel3 = (XulLabel)document.getElementById("details3");
+//    uniqueMemberCB = (XulCheckbox)document.getElementById("uniquecb");
     serverList = (XulMenuList)document.getElementById("serverlist");
     visualizationList = (XulMenuList)document.getElementById("visualizationlist");
 
@@ -365,9 +368,19 @@ public class ModelerController extends AbstractXulEventHandler{
         }
       }
     }
+//    if (selectedTreeItem instanceof LevelMetaData) {
+//      uniqueMemberCB.setChecked(((LevelMetaData)selectedTreeItem).isUniqueMembers());
+//      uniqueMemberCB.setVisible(true);
+//    } else {
+//      uniqueMemberCB.setVisible(false);
+//    }
   }
   
-
+  public void updateUniqueMember() {
+    LevelMetaData levelMeta = (LevelMetaData)selectedTreeItem;
+    levelMeta.setUniqueMembers(uniqueMemberCB.isChecked());
+  }
+  
   public void removeDimension() {
     if (selectedTreeItem instanceof DimensionMetaData) {
       model.getDimensions().remove(selectedTreeItem);

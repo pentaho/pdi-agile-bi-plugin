@@ -26,6 +26,7 @@ public class LevelMetaData extends XulEventSourceAdapter {
   String columnName;
   HierarchyMetaData parent;
   LogicalColumn logicalColumn;
+  Boolean uniqueMembers = true;
   
   public LevelMetaData(HierarchyMetaData parent, String name) {
     this.parent = parent;
@@ -78,9 +79,12 @@ public class LevelMetaData extends XulEventSourceAdapter {
     this.logicalColumn = logicalColumn;
   }
   
-  public boolean isUniqueMembers(){
-    // TODO: make real
-    return true;
+  public void setUniqueMembers(Boolean uniqueMembers) {
+    this.uniqueMembers = uniqueMembers;
+  }
+  
+  public Boolean isUniqueMembers(){
+    return uniqueMembers;
   }
   
   
