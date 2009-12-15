@@ -222,7 +222,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public HierarchyMetaData findHierarchy(HierarchyMetaData hier) {
     for (DimensionMetaData d : dimensions) {
       if (d.equals(hier.getParent())) {
-        for (HierarchyMetaData h : d.getChildren()) {
+        for (HierarchyMetaData h : d) {
           if (h.equals(hier)) {
             return h;
           }
@@ -574,7 +574,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     };
 
     protected void fireCollectionChanged() {
-      this.changeSupport.firePropertyChange("children", null, this.getChildren());
+      this.changeSupport.firePropertyChange("children", null, this);
     }
 
     @Override
