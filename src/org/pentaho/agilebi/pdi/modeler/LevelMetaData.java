@@ -16,16 +16,17 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
 
-public class LevelMetaData extends XulEventSourceAdapter {
+public class LevelMetaData extends XulEventSourceAdapter implements Serializable {
   String name;
   String columnName;
   HierarchyMetaData parent;
-  LogicalColumn logicalColumn;
+  transient LogicalColumn logicalColumn;
   Boolean uniqueMembers = true;
   
   public LevelMetaData(HierarchyMetaData parent, String name) {

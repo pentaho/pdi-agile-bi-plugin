@@ -16,6 +16,7 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -27,7 +28,7 @@ import org.pentaho.ui.xul.XulEventSourceAdapter;
  * @author wseyler
  *
  */
-public class FieldMetaData extends XulEventSourceAdapter {
+public class FieldMetaData extends XulEventSourceAdapter implements Serializable {
   
 	String rowNum;
   String fieldName;
@@ -36,7 +37,7 @@ public class FieldMetaData extends XulEventSourceAdapter {
   String fieldTypeDesc = "---";
   String levelTypeDesc = "---";
   String aggTypeDesc;
-  LogicalColumn logicalColumn;
+  transient LogicalColumn logicalColumn;
   
   private List<String> aggTypes = new ArrayList<String>();
   {
@@ -66,6 +67,10 @@ public class FieldMetaData extends XulEventSourceAdapter {
     this.rowNum = rowNum;
   }
 
+  public String toString() {
+    return fieldName;
+  }
+  
   public String getFieldName() {
     return fieldName;
   }

@@ -19,6 +19,7 @@ package org.pentaho.agilebi.pdi.modeler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -28,10 +29,9 @@ import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
-import org.pentaho.di.ui.core.PropsUI;
-import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
+import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
@@ -46,8 +46,8 @@ import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.containers.XulTabbox;
 import org.pentaho.ui.xul.containers.XulTree;
+import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
-import org.pentaho.ui.xul.swt.tags.SwtTree;
 
 /**
  * XUL Event Handler for the modeling interface. This class interacts with a ModelerModel to store state.
@@ -114,6 +114,84 @@ public class ModelerController extends AbstractXulEventHandler{
     return "modeler";
   }
   
+  public void onFieldListDrag(DropEvent event) {
+    // nothing to do here
+  }
+
+  public void onDimensionTreeDrag(DropEvent event) {
+    // todo, disable dragging of Root elements once we've updated the tree UI
+  }
+  
+  public void onDimensionTreeDrop(DropEvent event) {
+    List<Object> data = event.getDataTransfer().getData();
+    List<Object> newdata = new ArrayList<Object>();
+    for (Object obj : data) {
+      if (obj instanceof FieldMetaData) {
+        // depending on the parent
+        if (event.getDropParent() == null) {
+          // null - add as a dimension
+          newdata.add(model.createDimension(obj));
+        } else if (event.getDropParent() instanceof DimensionMetaData) {
+          // dimension - add as a hierarchy
+          newdata.add(model.createHierarchy(model.findDimension((DimensionMetaData)event.getDropParent()), obj));
+        } else if (event.getDropParent() instanceof HierarchyMetaData) {
+          // hierarchy - add as a level
+          newdata.add(model.createLevel(model.findHierarchy((HierarchyMetaData)event.getDropParent()), obj));
+        } else if (event.getDropParent() instanceof LevelMetaData) {
+          // level - cannot drop into a level
+          event.setAccepted(false);
+          return;
+        }
+      } else if (obj instanceof LevelMetaData) {
+        LevelMetaData level = (LevelMetaData)obj;
+        if (event.getDropParent() instanceof HierarchyMetaData) {
+          // rebind to model, including logical column and actual parent
+          LogicalColumn col = model.findLogicalColumn(obj.toString());
+          level.setLogicalColumn(col);
+          level.setParent(model.findHierarchy((HierarchyMetaData)event.getDropParent()));
+          newdata.add(level);
+        } else if (event.getDropParent() instanceof DimensionMetaData) {
+          // add as a new hierarchy
+          HierarchyMetaData hier = model.createHierarchy(model.findDimension((DimensionMetaData)event.getDropParent()), level.getColumnName());
+          hier.setName(level.getName());
+          hier.getChildren().get(0).setName(level.getName());
+          newdata.add(hier);
+        } else if (event.getDropParent() == null) {
+          DimensionMetaData dim = model.createDimension(level.getColumnName());
+          dim.setName(level.getName());
+          dim.get(0).setName(level.getName());
+          dim.get(0).get(0).setName(level.getName());
+          newdata.add(dim);
+        }
+      } else if (obj instanceof HierarchyMetaData) {
+        HierarchyMetaData hierarchy = (HierarchyMetaData)obj;
+        if (event.getDropParent() == null) {
+          DimensionMetaData dim = new DimensionMetaData(hierarchy.getName());
+          dim.add(hierarchy);
+          hierarchy.setParent(dim);
+          // TODO: this will also need to resolve the level LogicalColumns
+          newdata.add(dim);
+        } else if (event.getDropParent() instanceof DimensionMetaData) {
+          DimensionMetaData dim = (DimensionMetaData)event.getDropParent();
+          hierarchy.setParent(model.findDimension(dim));
+          // TODO: this will also need to resolve the level LogicalColumns
+          newdata.add(hierarchy);
+        }
+      } else if (obj instanceof DimensionMetaData) {
+        if (event.getDropParent() == null) {
+          newdata.add((DimensionMetaData)obj);
+          // TODO: this will also need to resolve level LogicalColumns
+        }
+      }
+      
+    }
+    if (newdata.size() == 0) {
+      event.setAccepted(false);
+    } else {
+      event.getDataTransfer().setData(newdata);
+    }
+  }
+
   public void init() throws ModelerException{
 
     createServerList();

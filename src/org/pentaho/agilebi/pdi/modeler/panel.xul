@@ -29,7 +29,7 @@
                         <spacer flex="1"/>                   
                         <button onclick="modeler.refreshFields()"  image="images/refresh.png"/>
                     </hbox>
-					<listbox id="fieldList" flex="1" seltype="multi" pen:binding="fieldName">
+					<listbox id="fieldList" flex="1" seltype="multi" pen:binding="fieldName" ondrag="modeler.onFieldListDrag()" pen:drageffect="copy">
 						<listitem label="field"/>
 						<listitem label="field"/>
 						<listitem label="field"/>
@@ -100,7 +100,7 @@
 				    				<button image="images/Add.png" onclick="modeler.showNewDimensionDialog()"/>
 				    				<button image="images/remove.png" onclick="modeler.removeDimension()"/>
 				    			</hbox>
-				    			<tree id="dimensionTree" flex="1" editable="true" pen:expanded="true">
+				    			<tree id="dimensionTree" flex="1" editable="true" pen:expanded="true" ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move" ondrop="modeler.onDimensionTreeDrop()">
 				    			    <treecols>
               						  <treecol flex="1" label="" primary="true" pen:binding="name"
                 						pen:childrenbinding="children" pen:imagebinding="image" editable="true"/>

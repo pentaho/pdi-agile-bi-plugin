@@ -18,6 +18,7 @@ package org.pentaho.agilebi.pdi.modeler;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -170,48 +171,70 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   	return this.selectedVisualization;
   }
 
-
+  public DimensionMetaData createDimension(Object obj) {
+    DimensionMetaData dimension = new DimensionMetaData(obj.toString());
+    HierarchyMetaData hierarchy = createHierarchy(dimension, obj);
+    hierarchy.setParent(dimension);
+    dimension.add(hierarchy);
+    return dimension;
+  }
   
   public void addDimension(Object obj){
-
-    DimensionMetaData dimension = new DimensionMetaData(obj.toString());
-    HierarchyMetaData hierarchy = new HierarchyMetaData(obj.toString());
-    hierarchy.setParent(dimension);
-    LevelMetaData level = new LevelMetaData(hierarchy, obj.toString());
-
-    // TODO: remove lookup
-    LogicalColumn col = findLogicalColumn(obj.toString());
-    level.setLogicalColumn(col);
-    
-    dimension.add(hierarchy);
-    hierarchy.add(level);
-
-    addDimension(dimension);
+    addDimension(createDimension(obj));
   }
   
   public void addDimension(DimensionMetaData dim){
     this.dimensions.add(dim);
   }
   
-  public void addToHeirarchy(Object selectedItem, Object newItem){
+  public DimensionMetaData findDimension(DimensionMetaData dim) {
+    for (DimensionMetaData d : dimensions) {
+      if (d.equals(dim)) {
+        return d;
+      }
+    }
+    return null;
+  }
+
+  public HierarchyMetaData findHierarchy(HierarchyMetaData hier) {
+    for (DimensionMetaData d : dimensions) {
+      if (d.equals(hier.getParent())) {
+        for (HierarchyMetaData h : d.getChildren()) {
+          if (h.equals(hier)) {
+            return h;
+          }
+        }
+      }
+    }
+    return null;
+  }
+  
+  public LevelMetaData createLevel(HierarchyMetaData parent, Object obj) {
+    LevelMetaData level = new LevelMetaData(parent, obj.toString());
+    level.setParent(parent);
+    // TODO: remove lookup
+    LogicalColumn col = findLogicalColumn(obj.toString());
+    level.setLogicalColumn(col);
+    return level;
+  }
+  
+  public HierarchyMetaData createHierarchy(DimensionMetaData parent, Object obj) {
+    HierarchyMetaData hier = new HierarchyMetaData(obj.toString());
+    hier.setParent(parent);
+    LevelMetaData level = createLevel(hier, obj.toString());
+    hier.add(level);
+    return hier;
+  }
+  
+  public void addToHeirarchy(Object selectedItem, Object newItem) {
     if (selectedItem instanceof LevelMetaData) {
       LevelMetaData sib = (LevelMetaData)selectedItem;
-      LevelMetaData level = new LevelMetaData(sib.getParent(), newItem.toString());
-
-      // TODO: remove lookup
-      LogicalColumn col = findLogicalColumn(newItem.toString());
-      level.setLogicalColumn(col);
-      
+      LevelMetaData level = createLevel(sib.getParent(), newItem);
       sib.getParent().add(level);
       this.firePropertyChange("dimensions", null , dimensions);
     } else if (selectedItem instanceof HierarchyMetaData) {
       HierarchyMetaData hier = (HierarchyMetaData) selectedItem;
-      LevelMetaData level = new LevelMetaData(hier, newItem.toString());
-
-      // TODO: remove lookup
-      LogicalColumn col = findLogicalColumn(newItem.toString());
-      level.setLogicalColumn(col);
-      
+      LevelMetaData level = createLevel(hier, newItem);
       hier.add(level);
       this.firePropertyChange("dimensions", null , dimensions);
     } else if (selectedItem instanceof DimensionMetaData) {
@@ -225,21 +248,18 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
         hier.setParent(dim);
         dim.add(hier);
       }
-      LevelMetaData level = new LevelMetaData(hier, newItem.toString());
+      LevelMetaData level = createLevel(hier, newItem);
       hier.add(level);
-      // TODO: remove lookup
-      LogicalColumn col = findLogicalColumn(newItem.toString());
-      level.setLogicalColumn(col);
       this.firePropertyChange("dimensions", null , dimensions);
     }
   }
 
-  private void fireFieldsChanged(){
+  private void fireFieldsChanged() {
     firePropertyChange("fields", null, inPlayFields);
     setDirty(true);
   }
   
-  private void fireDimensionsChanged(){
+  private void fireDimensionsChanged() {
     firePropertyChange("dimensions", null, dimensions);
     setDirty(true);
   }
@@ -267,7 +287,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     this.firePropertyChange("fields", null, inPlayFields);
   }
   
-  private LogicalColumn findLogicalColumn(String id){
+  public LogicalColumn findLogicalColumn(String id) {
     LogicalColumn col = null;
     for(LogicalColumn c : domain.getLogicalModels().get(0).getLogicalTables().get(0).getLogicalColumns()){
       
@@ -519,10 +539,10 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return domain;
   }  
 
-  public static class FieldsCollection extends AbstractModelList<FieldMetaData>{    
+  public static class FieldsCollection extends AbstractModelList<FieldMetaData> implements Serializable {    
   }
 
-  public static class DimensionMetaDataCollection extends AbstractModelNode<DimensionMetaData>{
+  public static class DimensionMetaDataCollection extends AbstractModelNode<DimensionMetaData> implements Serializable {
 
     private PropertyChangeListener listener = new PropertyChangeListener(){
       public void propertyChange(PropertyChangeEvent evt) {

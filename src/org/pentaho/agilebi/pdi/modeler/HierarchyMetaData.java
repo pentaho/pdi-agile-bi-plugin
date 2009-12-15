@@ -18,6 +18,7 @@ package org.pentaho.agilebi.pdi.modeler;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 import java.util.List;
 
 import org.pentaho.ui.xul.util.AbstractModelNode;
@@ -25,14 +26,12 @@ import org.pentaho.ui.xul.util.AbstractModelNode;
 /**
  * Event aware node class that also listens to it's children's events and propagates them up.
  */
-public class HierarchyMetaData extends AbstractModelNode<LevelMetaData>{
-  private PropertyChangeListener listener = new PropertyChangeListener(){
+public class HierarchyMetaData extends AbstractModelNode<LevelMetaData> implements Serializable {
+  private transient PropertyChangeListener listener = new PropertyChangeListener() {
     public void propertyChange(PropertyChangeEvent evt) {
       fireCollectionChanged();
     }
   };
-  
-  
 
   String name;
 
