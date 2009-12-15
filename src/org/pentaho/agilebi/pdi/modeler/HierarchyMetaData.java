@@ -70,5 +70,8 @@ public class HierarchyMetaData extends AbstractModelNode<LevelMetaData> implemen
   public void onRemove(LevelMetaData child) {
     child.removePropertyChangeListener(listener);
   }
-  
+
+  public boolean isUiExpanded(){
+    return true;
+  }
 }

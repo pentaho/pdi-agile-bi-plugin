@@ -107,10 +107,10 @@
 				    				<button image="images/Add.png" onclick="modeler.showNewDimensionDialog()"/>
 				    				<button image="images/remove.png" onclick="modeler.removeDimension()"/>
 				    			</hbox>
-				    			<tree id="dimensionTree" flex="1" editable="true" pen:expanded="true" ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move" ondrop="modeler.onDimensionTreeDrop()">
+				    			<tree id="dimensionTree" flex="1" editable="true" ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move" ondrop="modeler.onDimensionTreeDrop()">
 				    			    <treecols>
               						  <treecol flex="1" label="" primary="true" pen:binding="name"
-                						pen:childrenbinding="children" pen:imagebinding="image" editable="true"/>
+                						pen:childrenbinding="children" pen:imagebinding="image" editable="true" expandedbinding="uiExpanded"/>
             						</treecols>
 				    			    <treechildren>
 						              <treeitem container="true" open="true">

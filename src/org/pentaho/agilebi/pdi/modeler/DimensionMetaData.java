@@ -79,4 +79,7 @@ public class DimensionMetaData extends AbstractModelNode<HierarchyMetaData> impl
     return false;
   }
   
+  public boolean isUiExpanded(){
+    return true;
+  }
 }

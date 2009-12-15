@@ -145,5 +145,8 @@ public class FieldMetaData extends XulEventSourceAdapter implements Serializable
     }
     return false;
   }
-  
+
+  public boolean isUiExpanded(){
+    return true;
+  }
 }

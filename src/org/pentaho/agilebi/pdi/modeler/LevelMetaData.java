@@ -87,6 +87,8 @@ public class LevelMetaData extends XulEventSourceAdapter implements Serializable
   public Boolean isUniqueMembers(){
     return uniqueMembers;
   }
-  
-  
+
+  public boolean isUiExpanded(){
+    return true;
+  }
 }
