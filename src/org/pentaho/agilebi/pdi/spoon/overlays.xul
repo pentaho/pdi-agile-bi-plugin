@@ -18,5 +18,11 @@
 		<menuitem value="database-inst-model" label="Model" command="agileBi.databaseModelItem()"/>
 		<menuitem value="database-inst-visualize" label="Quick Visualize" command="agileBi.quickVisualizeTable()"/>
     </menupopup>
+    
+    
+    <menupopup id="view-perspectives-popup">
+	    <menuitem label="${Spoon.Perspectives.AgileBi.MenuItem.Label}"
+	      command="spoon.loadPerspective('org.pentaho.agilebi.pdi.perspective.AgileBiPerspective')" />
+	</menupopup>
 	
 </overlay>

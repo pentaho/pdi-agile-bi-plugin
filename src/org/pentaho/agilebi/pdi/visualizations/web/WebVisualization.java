@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -206,4 +207,28 @@ public class WebVisualization extends AbstractVisualization {
   }
 
 
+  public boolean accepts(String fileName) {
+    if(fileName == null || fileName.indexOf('.') == -1){
+      return false;
+    }
+    String extension = fileName.substring(fileName.lastIndexOf('.')+1);
+    return extension.equals("xanalyzer");
+  }
+
+  public boolean acceptsXml(String nodeName) {
+    return nodeName.equals("reportRecord");
+  }
+
+  public String[] getFileTypeDisplayNames(Locale locale) {
+    return new String[]{"Models"};
+  }
+
+  public String getRootNodeName() {
+    return null;
+  }
+
+  public String[] getSupportedExtensions() {
+    return new String[]{"xmi"};
+  }
+  
 }

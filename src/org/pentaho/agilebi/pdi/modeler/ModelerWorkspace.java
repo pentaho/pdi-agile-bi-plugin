@@ -99,7 +99,30 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
   
   public void setFileName(String fileName) {
+    String prevVal = this.fileName;
+    String prevFriendly = getShortFileName();
+    
     this.fileName = fileName;
+    firePropertyChange("fileName", prevVal, fileName);
+    firePropertyChange("shortFileName", prevFriendly, getShortFileName());
+  }
+  
+  public String getShortFileName(){
+
+    if( fileName == null ) {
+      return null;
+    }
+    int extensionPos = fileName.lastIndexOf('.');
+    if( extensionPos == -1 ) {
+      extensionPos = fileName.length();
+    }
+    int sepPos = fileName.replace('\\', '/').lastIndexOf('/');
+    if( sepPos == -1 ) {
+      sepPos = 0;
+    } else {
+      sepPos++;
+    }
+    return fileName.substring(sepPos, extensionPos);    
   }
   
   public String getFileName() {

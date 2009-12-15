@@ -529,7 +529,7 @@ public class ModelerController extends AbstractXulEventHandler{
   }
   
   public void loadWorkspace() throws ModelerException {
-  	
+      	
   	try {
 	  	StringBuffer theStringBuffer = new StringBuffer();
 	  	FileReader theReader = new FileReader(new File("my_metadata.xml"));
@@ -550,4 +550,7 @@ public class ModelerController extends AbstractXulEventHandler{
     model.setSelectedServer(server);
   }
   
+  public void loadPerspective(String id){
+   // document.loadPerspective(id);
+  }
 }

@@ -11,17 +11,24 @@
 	</dialog>
 
 	<vbox flex="1" id="mainVBox">
+		<!--<accordion>
+			<accordionpanel title="testing" expanded="true">
+			-->
+				<hbox>
+					<vbox flex="1">
+						<label value="Name:"/>
+						<textbox id="modelname"/>
+					</vbox>
+					<vbox flex="4">
+						<label value="Source:"/>
+						<label id="source_name" value="some source"/>
+					</vbox>
+				</hbox>		
+	<!--		</accordionpanel>
+		</accordion>
+		-->
 		<vbox flex="1">
-			<hbox>
-				<vbox flex="1">
-					<label value="Name:"/>
-					<textbox id="modelname"/>
-				</vbox>
-				<vbox flex="4">
-					<label value="Source:"/>
-					<label id="source_name" value="some source"/>
-				</vbox>
-			</hbox>
+			
 			<hbox flex="1">
 				<vbox flex="1">
                     <hbox>

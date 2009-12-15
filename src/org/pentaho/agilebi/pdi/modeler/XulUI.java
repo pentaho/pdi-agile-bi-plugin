@@ -25,10 +25,10 @@ import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.spoon.TabItemInterface;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
+import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.XulRunner;
-import org.pentaho.ui.xul.binding.BindingFactory;
-import org.pentaho.ui.xul.binding.DefaultBindingFactory;
-import org.pentaho.ui.xul.impl.XulEventHandler;
+import org.pentaho.ui.xul.impl.DefaultXulOverlay;
+import org.pentaho.ui.xul.impl.XulPerspectiveImpl;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
 
@@ -56,6 +56,7 @@ public class XulUI implements TabItemInterface {
       runner = new SwtXulRunner();
       runner.addContainer(container);
       runner.initialize();
+      container.loadPerspective("ov1");
     } catch(Exception e){
       logger.info(e);
       throw new ModelerException(e);

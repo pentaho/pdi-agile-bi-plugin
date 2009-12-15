@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -28,6 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.Const;
@@ -37,6 +39,7 @@ import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.core.database.dialog.DatabaseExplorerDialog;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.di.ui.util.ImageUtil;
 import org.pentaho.metadata.model.Domain;
@@ -44,7 +47,7 @@ import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.xul.swt.tab.TabItem;
 import org.w3c.dom.Node;
 
-public class ModelerHelper extends AbstractXulEventHandler implements FileListener {
+public class ModelerHelper extends AbstractXulEventHandler {
 
   private static final String MODELER_NAME = "Modeler"; //$NON-NLS-1$
 
@@ -70,10 +73,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements FileListen
     
     ModelerWorkspaceUtil.populateModelFromOutputStep(model);
     
-    XulUI xul = new XulUI(spoon.getShell(), model);
-
-    // create unique name
-    createModelerTab(spoon, xul, getUniqueUntitledTabName(spoon, MODELER_NAME));
+    AgileBiPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
   }
   
   public void createModelerTabFromSource( IModelerSource source ) throws ModelerException {
@@ -83,10 +83,9 @@ public class ModelerHelper extends AbstractXulEventHandler implements FileListen
     ModelerWorkspace model = new ModelerWorkspace();
     model.setModelSource(source);
     ModelerWorkspaceUtil.populateModelFromSource(model, source);
-    XulUI xul = new XulUI(spoon.getShell(), model);
-
+    
     // create unique name
-    createModelerTab(spoon, xul, getUniqueUntitledTabName(spoon, MODELER_NAME));
+    AgileBiPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
   }
 
   // TODO: replace this code after M1
@@ -104,29 +103,6 @@ public class ModelerHelper extends AbstractXulEventHandler implements FileListen
     return null;
   }
   
-  public boolean open(Node transNode, String fname, boolean importfile) {
-    try{
-      Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-
-      ModelerWorkspace model = new ModelerWorkspace();
-      String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
-      ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);
-      
-      XulUI xul = new XulUI(spoon.getShell(), model);
-      TabItem tabItem = createModelerTab(spoon, xul, createShortName(fname));
-      tabItem.setText(createShortName(fname));
-      File f = new File(fname);
-      String fullPath = f.getAbsolutePath();
-      spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
-      spoon.addMenuLast();
-    } catch(ModelerException e){
-      e.printStackTrace();
-    } catch(IOException e){
-      e.printStackTrace();
-    }
-    
-    return true;
-  }
   
   private String getUniqueUntitledTabName(Spoon spoon, String title) {
     int num = 1;
@@ -140,78 +116,17 @@ public class ModelerHelper extends AbstractXulEventHandler implements FileListen
     }
     return tabName;
   }
-  
-  private TabItem createModelerTab(Spoon spoon, XulUI xul, String tabName) throws ModelerException {
-    CTabFolder cTabFolder = spoon.tabfolder.getSwtTabset();
-    TabItem tabItem = new TabItem(spoon.tabfolder, tabName, tabName);
-    Image modelTabImage = ImageUtil.getImageAsResource(spoon.getDisplay(), "plugins/spoon/agile-bi/ui/images/modeler.png"); //$NON-NLS-1$
-    tabItem.setImage(modelTabImage);
-    
-    Composite comp = xul.getMainPanel();
-    comp.setParent(cTabFolder);
-    tabItem.setControl(comp);
-    
-    // TODO: Add new plugin object type to spoon
-    TabMapEntry entry = new TabMapEntry(tabItem, tabName, xul, TabMapEntry.OBJECT_TYPE_BROWSER);
-    
-    spoon.delegates.tabs.addTab(entry);
-    spoon.getTabSet().addTab(tabItem);
-
-    int idx = spoon.tabfolder.indexOf(tabItem);
-
-    // keep the focus on the graph
-    spoon.tabfolder.setSelected(idx);
-    
-    return tabItem;
-  } 
-
-
-  private String createShortName( String filename ) {
-    if( filename == null ) {
-      return null;
-    }
-    int extensionPos = filename.lastIndexOf('.');
-    if( extensionPos == -1 ) {
-      extensionPos = filename.length();
-    }
-    int sepPos = filename.replace('\\', '/').lastIndexOf('/');
-    if( sepPos == -1 ) {
-      sepPos = 0;
-    } else {
-      sepPos++;
-    }
-    return filename.substring(sepPos, extensionPos);    
-  }
-  
-  public boolean save(EngineMetaInterface meta, String fname, boolean isExport) {
-    try {
-      ((ModelerEngineMeta)meta).getController().saveWorkspace(fname);
-      File f = new File(fname);
-      String fullPath = f.getAbsolutePath();
-      Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-      spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
-      spoon.addMenuLast();
-
-      return true;
-    } catch (ModelerException e) {
-      e.printStackTrace();
-    } 
-    return false;
-  }
-
-  public void syncMetaName(EngineMetaInterface meta, String name) {
-    // TODO Auto-generated method stub
-    
-  }
 
   public String getName(){
     return "agileBi"; //$NON-NLS-1$
   }
   
   public void openModeler() {
-    
+
     try{
+      SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiPerspective.class);
       ModelerHelper.getInstance().createModelerTabFromOutputStep();
+      
     } catch(Exception e){
       e.printStackTrace();
       SpoonFactory.getInstance().messageBox( "Could not create a modeler: "+e.getLocalizedMessage(), "Modeler Error", false, Const.ERROR);
@@ -306,10 +221,9 @@ public class ModelerHelper extends AbstractXulEventHandler implements FileListen
         try{
           ModelerWorkspace model = new ModelerWorkspace();
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
-          XulUI xul = new XulUI(spoon.getShell(), model);
 
-          // create unique name
-          createModelerTab(spoon, xul, getUniqueUntitledTabName(spoon, source.getTableName()));
+          AgileBiPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
+          
         } catch(Exception e){
           e.printStackTrace();
           SpoonFactory.getInstance().messageBox( "Could not create a modeler: "+e.getLocalizedMessage(), "Modeler Error", false, Const.ERROR);
@@ -317,5 +231,6 @@ public class ModelerHelper extends AbstractXulEventHandler implements FileListen
       }
     }
   }
+  
     
 }

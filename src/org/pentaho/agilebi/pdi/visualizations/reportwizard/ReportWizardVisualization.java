@@ -16,6 +16,8 @@
  */
 package org.pentaho.agilebi.pdi.visualizations.reportwizard;
 
+import java.util.Locale;
+
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.w3c.dom.Node;
@@ -69,4 +71,26 @@ public class ReportWizardVisualization implements IVisualization {
     // TODO Auto-generated method stub
     
   }
+  
+
+  public boolean accepts(String fileName) {
+    return false;
+  }
+
+  public boolean acceptsXml(String nodeName) {
+    return false;
+  }
+
+  public String[] getFileTypeDisplayNames(Locale locale) {
+    return null;
+  }
+
+  public String getRootNodeName() {
+    return null;
+  }
+
+  public String[] getSupportedExtensions() {
+    return null;
+  }
+  
 }

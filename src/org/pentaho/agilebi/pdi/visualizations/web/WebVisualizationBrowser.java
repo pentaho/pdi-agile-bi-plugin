@@ -1,5 +1,7 @@
 package org.pentaho.agilebi.pdi.visualizations.web;
 
+import java.util.Locale;
+
 import mondrian.rolap.agg.AggregationManager;
 
 import org.eclipse.swt.SWT;
@@ -7,6 +9,7 @@ import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
+import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
@@ -111,7 +114,7 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   }
   
   public void editModel() {
-    ModelerHelper.getInstance().open(null, xmiFileLocation, false); 
+    AgileBiPerspective.getInstance().open(null, xmiFileLocation, false); 
     
   }
   
@@ -176,4 +179,30 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
     this.visFileLocation = visFileLocation;
   }
 
+  // FileListener methods
+  public boolean accepts(String fileName) {
+    if(fileName == null || fileName.indexOf('.') == -1){
+      return false;
+    }
+    String extension = fileName.substring(fileName.lastIndexOf('.')+1);
+    return extension.equals("xanalyzer");
+  }
+
+  public boolean acceptsXml(String nodeName) {
+    return nodeName.equals("reportRecord");
+  }
+
+  public String[] getFileTypeDisplayNames(Locale locale) {
+    return new String[]{"Models"};
+  }
+
+  public String getRootNodeName() {
+    return null;
+  }
+
+  public String[] getSupportedExtensions() {
+    return new String[]{"xmi"};
+  }
+  
+  
 }
