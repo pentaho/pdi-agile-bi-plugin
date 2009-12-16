@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,53 +20,42 @@ import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
-import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.XulTabAndPanel;
+import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.CloseConfirmXulDialogCallback;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
-import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
-import org.pentaho.di.ui.spoon.SpoonPerspective;
-import org.pentaho.di.ui.spoon.SpoonPerspectiveListener;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.ui.xul.XulComponent;
-import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
-import org.pentaho.ui.xul.XulRunner;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingConvertor;
 import org.pentaho.ui.xul.binding.DefaultBinding;
 import org.pentaho.ui.xul.components.XulConfirmBox;
 import org.pentaho.ui.xul.components.XulTab;
 import org.pentaho.ui.xul.components.XulTabpanel;
-import org.pentaho.ui.xul.containers.XulTabbox;
-import org.pentaho.ui.xul.containers.XulTabpanels;
-import org.pentaho.ui.xul.containers.XulTabs;
-import org.pentaho.ui.xul.dom.Document;
-import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.impl.XulEventHandler;
-import org.pentaho.ui.xul.swt.SwtXulLoader;
-import org.pentaho.ui.xul.swt.SwtXulRunner;
 import org.pentaho.ui.xul.swt.tags.SwtTab;
-import org.pentaho.ui.xul.util.XulDialogCallback;
 import org.w3c.dom.Node;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
-public class AgileBiPerspective extends AbstractPerspective implements SpoonPerspective, FileListener{
+public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
   private Log logger = LogFactory.getLog(AgileBiPerspective.class);
-  private static final AgileBiPerspective INSTANCE = new AgileBiPerspective();
+  private static final AgileBiVisualizationPerspective INSTANCE = new AgileBiVisualizationPerspective();
   private List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
   private ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective"); //$NON-NLS-1$
   
-  private AgileBiPerspective(){
+  private Map<ModelerWorkspace, EngineMetaInterface> metas = new HashMap<ModelerWorkspace, EngineMetaInterface>();
+  
+  private AgileBiVisualizationPerspective(){
     super();
     setDefaultExtension("xmi");
   }
   
-  public static AgileBiPerspective getInstance(){
+  public static AgileBiVisualizationPerspective getInstance(){
     return INSTANCE;
   }
   
@@ -78,11 +66,11 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
 
   public InputStream getPerspectiveIcon() {
     ClassLoader loader = getClass().getClassLoader();
-    return loader.getResourceAsStream("org/pentaho/agilebi/pdi/perspective/blueprint.png");
+    return loader.getResourceAsStream("org/pentaho/agilebi/pdi/perspective/analyzer.png");
   }
 
   public String getId() {
-    return "agilebi";
+    return "agilebiVisualization";
   }
 
   public boolean acceptsXml(String nodeName) {
@@ -90,12 +78,13 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
   }
 
   public String[] getFileTypeDisplayNames(Locale locale) {
-    return new String[]{"Models"};
+    return new String[]{"Visualizations"};
   }
 
   public String[] getSupportedExtensions() {
-    return new String[]{"xmi"};
+    return new String[]{"xanalyzer"};
   }
+
 
   public void createTabForModel(final ModelerWorkspace model, String name){
 
@@ -103,13 +92,11 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
       XulTabAndPanel tabAndPanel = createTab();
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       XulUI xul = new XulUI(spoon.getShell(), model);
-      metas.put(tabAndPanel.tab, xul.getMeta());
+      metas.put(model, xul.getMeta());
   
       Composite parentComposite = (Composite) tabAndPanel.panel.getManagedObject();
       xul.getMainPanel().setParent(parentComposite);
       parentComposite.layout(true);
-      
-      setNameForTab(tabAndPanel.tab, name);
       
       Binding bind = new DefaultBinding(model, "shortFileName", tabAndPanel.tab, "label"); //$NON-NLS-1$ //$NON-NLS-2$
       bind.setConversion(new NameBindingConvertor(this));
@@ -118,9 +105,11 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
       models.add(model);
       
       SpoonPerspectiveManager.getInstance().activatePerspective(getClass());
-    } catch (Exception e) {
+    } catch (KettleException e) {
       logger.error(e);
-    } 
+    } catch (ModelerException e) {
+      logger.error(e);
+    }
     
   }
   
@@ -136,7 +125,7 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
 
       File f = new File(fname);
       String fullPath = f.getAbsolutePath();
-      spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
+      spoon.getProperties().addLastFile("Visualization", fullPath, null, false, null);
       spoon.addMenuLast();
       
     } catch(ModelerException e){
@@ -195,34 +184,14 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
     return Collections.singletonList(overlay);
   }
 
-
   @Override
   public String getName() {
     return "perspective"; //$NON-NLS-1$
   }
   
   public boolean onTabClose(final int pos) throws XulException{
-    if(models.get(0).isDirty()){
-      XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox"); //$NON-NLS-1$
-      confirm.setTitle(messages.getString("unsavedChanges")); //$NON-NLS-1$
-      confirm.setMessage(messages.getString("unsavedChangesMessage")); //$NON-NLS-1$
-      
-      CloseConfirmXulDialogCallback callback = new CloseConfirmXulDialogCallback();
-      confirm.addDialogCallback(callback);
-      confirm.open();
-      if(callback.closeIt){
-        models.remove(pos);
-        metas.remove(tabbox.getTabs().getChildNodes().get(pos));
-        return true;
-      } else {
-        return false;
-      }
-      
-    } else {
-      models.remove(pos);
-      metas.remove(pos);
-    }
     return true;
   }
- 
+
+  
 }

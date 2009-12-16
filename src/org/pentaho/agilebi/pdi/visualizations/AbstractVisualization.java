@@ -48,44 +48,4 @@ public abstract class AbstractVisualization implements IVisualization {
     return tabIconLocation;
   }
   
-  /**
-   * this utility method adds a tab to the tabfolder for this visualization.
-   * 
-   * @param spoon
-   * @param item
-   * @param composite
-   * @param tabName
-   * @param vis
-   */
-  protected void addAndSelectTab(Spoon spoon, TabItemInterface item, Composite composite, String tabName) {
-    TabItem tabItem = new TabItem(spoon.tabfolder, tabName, tabName);
-    Image visualizeTabImage = ImageUtil.getImageAsResource(spoon.getDisplay(), this.getTabIconLocation());
-    tabItem.setImage(visualizeTabImage);
-    tabItem.setControl(composite);
-    // TODO: Add new plugin object type to spoon
-    spoon.delegates.tabs.addTab(new TabMapEntry(tabItem, tabName, item, TabMapEntry.OBJECT_TYPE_BROWSER));
-
-    int idx = spoon.tabfolder.indexOf(tabItem);
-    spoon.tabfolder.setSelected(idx);
-
-  }
-
-  /**
-   * this method generates a unique tab name for the current visualization.
-   * 
-   * @param spoon
-   * @return
-   */
-  protected String getUniqueUntitledTabName(Spoon spoon) {
-    int num = 1;
-    String tabName = getTitle() + " " + num; //$NON-NLS-1$
-    // TODO: Add new plugin object type to spoon
-    TabItem tabItem = spoon.delegates.tabs.findTabItem(tabName, TabMapEntry.OBJECT_TYPE_BROWSER);
-    while (tabItem != null) {
-      tabName = getTitle() + " " + (++num); //$NON-NLS-1$
-      // TODO: Add new plugin object type to spoon
-      tabItem = spoon.delegates.tabs.findTabItem(tabName, TabMapEntry.OBJECT_TYPE_BROWSER);
-    }
-    return tabName;
-  }
 }

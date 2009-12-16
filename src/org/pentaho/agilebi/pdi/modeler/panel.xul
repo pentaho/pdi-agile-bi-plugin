@@ -51,7 +51,7 @@
 					<button onclick="modeler.moveFieldOutOfPlay()" image="images/accum_remove.png"/>
 					<spacer flex="1"/>
 				</vbox>
-				<tabbox id="myTabList" selectedIndex="2" flex="4">
+				<tabbox id="myTabList" flex="4">
 				  <tabs id="tabs">
 				    <tab label="Measure" />
 				    <tab label="Dimension"/>
@@ -136,7 +136,7 @@
 			</hbox>
 			<hbox>
 				<spacer flex="1"/>
-				
+
 				<label value="New:"/>
 				<menulist id="visualizationlist" label="">
 				  <menupopup>

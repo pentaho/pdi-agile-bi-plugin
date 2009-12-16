@@ -8,12 +8,20 @@ import java.util.Locale;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.dom4j.Dom4jXPath;
+import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;
+import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.XulTabAndPanel;
 import org.pentaho.agilebi.pdi.visualizations.AbstractVisualization;
 import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
+import org.pentaho.ui.xul.util.Orient;
 import org.w3c.dom.Node;
 
 public class WebVisualization extends AbstractVisualization {
@@ -118,12 +126,36 @@ public class WebVisualization extends AbstractVisualization {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
       WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, fileLocation, modelId, null);
-      addAndSelectTab(spoon, browser, browser.getComposite(), getUniqueUntitledTabName(spoon));
+//      addAndSelectTab(spoon, browser, browser.getComposite(), getUniqueUntitledTabName(spoon));
+      createTabForBrowser(browser);
+      
     } catch (Throwable e) {
       throw new RuntimeException(e);
     }
   }
 
+	private void createTabForBrowser(WebVisualizationBrowser browser) throws KettleException{
+
+    XulTabAndPanel tabAndPanel = AgileBiVisualizationPerspective.getInstance().createTab();
+
+    GridData layoutData = new GridData();
+
+    layoutData.verticalAlignment = SWT.FILL;
+    layoutData.grabExcessVerticalSpace = true;
+    layoutData.horizontalAlignment = SWT.FILL;
+    layoutData.grabExcessHorizontalSpace = true;
+    
+    browser.getComposite().setLayoutData(layoutData);
+    
+    Composite parentComposite = (Composite) tabAndPanel.panel.getManagedObject();
+    browser.getComposite().setParent(parentComposite);
+    parentComposite.layout(true);
+    AgileBiVisualizationPerspective.getInstance().setNameForTab(tabAndPanel.tab, browser.getMeta().getName());
+    AgileBiVisualizationPerspective.getInstance().setMetaForTab(tabAndPanel.tab, browser.getMeta());
+
+    SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiVisualizationPerspective.class);
+	}
+	
   public boolean open(Node transNode, String fname, boolean importfile) {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
@@ -152,7 +184,10 @@ public class WebVisualization extends AbstractVisualization {
 
       WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, modelFileName, modelId, fname);
       browser.setXmiFileLocation(modelFileName);
-      addAndSelectTab(spoon, browser, browser.getComposite(), browser.getMeta().getName());
+     
+      this.createTabForBrowser(browser);
+      
+      
       String fullPath = f.getAbsolutePath();
       spoon.getProperties().addLastFile("Analyzer", fullPath, null, false, null);
       spoon.addMenuLast();
@@ -220,7 +255,7 @@ public class WebVisualization extends AbstractVisualization {
   }
 
   public String[] getFileTypeDisplayNames(Locale locale) {
-    return new String[]{"Models"};
+    return new String[]{"Analysis"};
   }
 
   public String getRootNodeName() {
@@ -228,7 +263,7 @@ public class WebVisualization extends AbstractVisualization {
   }
 
   public String[] getSupportedExtensions() {
-    return new String[]{"xmi"};
+    return new String[]{"xanalyzer"};
   }
   
 }

@@ -49,6 +49,8 @@ import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 /**
  * XUL Event Handler for the modeling interface. This class interacts with a ModelerModel to store state.
  * 
