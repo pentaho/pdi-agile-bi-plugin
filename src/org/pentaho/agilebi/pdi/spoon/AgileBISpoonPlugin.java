@@ -38,7 +38,7 @@ public class AgileBISpoonPlugin implements SpoonPlugin{
   }
 
   public Map<String, XulOverlay> getOverlays() {
-    XulOverlay overlay = new DefaultXulOverlay("spoon.agilebi", "org/pentaho/agilebi/pdi/spoon/overlays.xul", null, null); //$NON-NLS-1$  //$NON-NLS-2$
+    XulOverlay overlay = new DefaultXulOverlay("agilebi", "org/pentaho/agilebi/pdi/spoon/overlays.xul", null, null); //$NON-NLS-1$  //$NON-NLS-2$
     HashMap<String, XulOverlay> hash = new HashMap<String, XulOverlay>();
     hash.put("spoon", overlay);
     return hash;

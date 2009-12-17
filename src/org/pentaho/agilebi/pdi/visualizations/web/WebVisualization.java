@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -255,7 +256,8 @@ public class WebVisualization extends AbstractVisualization {
   }
 
   public String[] getFileTypeDisplayNames(Locale locale) {
-    return new String[]{"Analysis"};
+    ResourceBundle bundle = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/visualizations/web/webVisualization", locale);
+    return new String[]{bundle.getString("fileTypeName")};
   }
 
   public String getRootNodeName() {

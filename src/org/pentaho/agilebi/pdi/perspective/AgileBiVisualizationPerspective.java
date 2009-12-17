@@ -61,7 +61,9 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   
 
   public String getDisplayName(Locale l) {
-    return "Agile BI";
+    ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective", l); //$NON-NLS-1$
+    
+    return messages.getString("visualizationPerspectiveName");
   }
 
   public InputStream getPerspectiveIcon() {
