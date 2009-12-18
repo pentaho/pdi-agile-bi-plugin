@@ -449,7 +449,7 @@ public class ModelerController extends AbstractXulEventHandler{
   private List<Binding> selectedItemBindings = new ArrayList<Binding>();
 
   public void setDimTreeSelectionChanged(Object selection){
-    System.out.println("Selected Item = " + selection.getClass().toString());
+//    System.out.println("Selected Item = " + selection.getClass().toString());
     selectedTreeItem = selection;
     
     for (Binding binding : selectedItemBindings) {
