@@ -1,159 +1,138 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
-<window id="label-test" title="Flow Test"
-	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" height="600" width="800" onload="modeler.init()"
-    xmlns:pen="http://www.pentaho.org/2008/xul" >
-     
-	<dialog width="300" height="150" id="newDimesionDialog" title="Add Dimension" ondialogaccept="modeler.addNewDimension()" ondialogcancel="modeler.hideNewDimensionDialog()">
-		<label value="Name:"/>
-		<textbox id="newDimensionName"/>
-	</dialog>
+<window id="label-test" title="Flow Test" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" height="600" width="800" onload="modeler.init()"
+  xmlns:pen="http://www.pentaho.org/2008/xul">
 
-	<vbox flex="1" id="mainVBox">
-		<!--<accordion>
-			<accordionpanel title="testing" expanded="true">
-			-->
-				<hbox>
-					<vbox flex="1">
-						<label value="Name:"/>
-						<textbox id="modelname"/>
-					</vbox>
-					<vbox flex="4">
-						<label value="Source:"/>
-						<label id="source_name" value="some source"/>
-					</vbox>
-				</hbox>		
-	<!--		</accordionpanel>
-		</accordion>
-		-->
-		<vbox flex="1">
-			
-			<hbox flex="1">
-				<vbox flex="1">
-                    <hbox>
-                        <label value="Available:"/>
-                        <spacer flex="1"/>                   
-                        <button onclick="modeler.refreshFields()"  image="images/refresh.png"/>
-                    </hbox>
-					<listbox id="fieldList" flex="1" seltype="multi" pen:binding="fieldName" ondrag="modeler.onFieldListDrag()" pen:drageffect="copy">
-						<listitem label="field"/>
-						<listitem label="field"/>
-						<listitem label="field"/>
-						<listitem label="field"/>
-						<listitem label="field"/>
-						<listitem label="field"/>
-					</listbox>
-				</vbox>
-				<vbox>
-					<spacer flex="1"/>
-					<button onclick="modeler.moveFieldIntoPlay()" image="images/forward.gif"/>
-					<button onclick="modeler.moveFieldOutOfPlay()" image="images/accum_remove.png"/>
-					<spacer flex="1"/>
-				</vbox>
-				<tabbox id="myTabList" flex="4">
-				  <tabs id="tabs">
-				    <tab label="Measure" />
-				    <tab label="Dimension"/>
-				  </tabs>
-				  <tabpanels id="tabpanels">
-				    <tabpanel flex="1">
-						<tree flex="1" editable="true" id="fieldTable">
-							
-							<treecols>
-							  	<treecol label="Source" flex="1" editable="false" pen:binding="fieldName"/>  
-							  	<treecol label="Aggregation" type="combobox" flex="1" editable="true" pen:binding="aggTypeDesc" pen:combobinding="aggTypeDescValues"/>
-							  	<treecol label="Format" flex="1" editable="true" pen:binding="format"/>
-							  	<treecol label="Display Name" flex="2" editable="true" pen:binding="displayName"/>
-							</treecols>
-							
-							<treechildren>
-								<treeitem>
-									<treerow>
-										<treecell label="FieldName"/>
-										<treecell value="SUM,AVG,MIN,MAX"/>
-										<treecell label="$X.XX"/>
-										<treecell value="User Text"/>
-									</treerow>
-								</treeitem>
-								
-								<treeitem>
-									<treerow>
-										<treecell label="FieldName"/>
-										<treecell value="SUM,AVG,MIN,MAX"/>
-										<treecell label="$X.XX"/>
-										<treecell value="User Text"/>
-									</treerow>
-								</treeitem>
-								
-								<treeitem>
-									<treerow>
-										<treecell label="FieldName"/>
-										<treecell value="SUM,AVG,MIN,MAX"/>
-										<treecell label="$X.XX"/>
-										<treecell value="User Text"/>
-									</treerow>
-								</treeitem>
-							</treechildren>
-						</tree>
-					</tabpanel>
-				    <tabpanel flex="1">
-				    	<hbox flex="1">
-				    		<vbox flex="3">
-				    			<hbox>
-				    				<spacer flex="1"/>
-				    				<button image="images/16x16_down.png" onclick="modeler.moveDimensionDown()"/>
-				    				<button image="images/16x16_Up.png" onclick="modeler.moveDimensionUp()"/>
-				    				<button image="images/Add.png" onclick="modeler.showNewDimensionDialog()"/>
-				    				<button image="images/remove.png" onclick="modeler.removeDimension()"/>
-				    			</hbox>
-				    			<tree id="dimensionTree" flex="1" editable="true" ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move" ondrop="modeler.onDimensionTreeDrop()">
-				    			    <treecols>
-              						  <treecol flex="1" label="" primary="true" pen:binding="name"
-                						pen:childrenbinding="children" pen:imagebinding="image" editable="true" expandedbinding="uiExpanded"/>
-            						</treecols>
-				    			    <treechildren>
-						              <treeitem container="true" open="true">
-						                <treerow>
-						                  <treecell label="" />
-						                </treerow>
-						                <treechildren></treechildren>
-						              </treeitem>
-						            </treechildren>
-								</tree>
-				    		</vbox>
-				    		<vbox flex="2">
-				    			<label value="Details:"/>
-				    			<label id="details" value=" "/>
-				    			<label id="details2" value=" "/>
-				    			<label id="details3" value=" "/><!--
-		                        <checkbox id="uniquecb" label="Unique" checked="false" onclick="modeler.updateUniqueMember()"/>                        
-				    		--></vbox>
-				    	</hbox>
-					</tabpanel>
-				  </tabpanels>
-				</tabbox>
-			</hbox>
-			<hbox>
-				<spacer flex="1"/>
+  <dialog width="300" height="150" id="newDimesionDialog" title="Add Dimension" ondialogaccept="modeler.addNewDimension()"
+    ondialogcancel="modeler.hideNewDimensionDialog()">
+    <label value="Name:" />
+    <textbox id="newDimensionName" />
+  </dialog>
 
-				<label value="New:"/>
-				<menulist id="visualizationlist" label="">
-				  <menupopup>
-				    <menuitem label="Dummy Visualization"/>
-				  </menupopup>
-				</menulist>
-				
-				<button label="Go" id="exploreButton" onclick="modeler.visualize()"/>
-				<button label="Publish" id="publishButton" onclick="modeler.publish()"/>
-				
-				<menulist id="serverlist" label="">
-				  <menupopup>
-				    <menuitem label="Dummy Server"/>
-				  </menupopup>
-				</menulist>
-			</hbox>
-		</vbox>
-	</vbox>
-	
+  <vbox flex="1" id="mainVBox">
+    <hbox>
+      <vbox flex="1">
+        <label value="Name:" />
+        <textbox id="modelname" />
+      </vbox>
+      <vbox flex="4">
+        <label value="Source:" />
+        <label id="source_name" value="some source" />
+      </vbox>
+    </hbox>
+    <vbox flex="1">
+
+      <hbox flex="1">
+        <vbox flex="1">
+          <hbox>
+            <label value="Available:" />
+            <spacer flex="1" />
+            <button onclick="modeler.refreshFields()" image="images/refresh.png" />
+          </hbox>
+          <listbox id="fieldList" flex="1" seltype="multi" pen:binding="name" ondrag="modeler.onFieldListDrag()"
+            pen:drageffect="copy">
+            <listitem label="field" />
+            <listitem label="field" />
+            <listitem label="field" />
+            <listitem label="field" />
+            <listitem label="field" />
+            <listitem label="field" />
+          </listbox>
+          <hbox>
+            <button label="Add Measure" onclick="modeler.moveFieldsToMeasures()" />
+            <button label="Add Dimension" onclick="modeler.moveFieldsToDimensions()" />
+          </hbox>
+        </vbox>
+        <hbox flex="1">
+          <vbox flex="3">
+            <hbox>
+              <spacer flex="1" />
+              <button image="images/16x16_down.png" onclick="modeler.moveDimensionDown()" />
+              <button image="images/16x16_Up.png" onclick="modeler.moveDimensionUp()" />
+              <button image="images/Add.png" onclick="modeler.showNewDimensionDialog()" />
+              <button image="images/remove.png" onclick="modeler.removeDimension()" />
+            </hbox>
+            <tree id="dimensionTree" flex="1" editable="true" ondrag="modeler.onDimensionTreeDrag()"
+              pen:drageffect="move" ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false" >
+              <treecols>
+                <treecol flex="1" label="" primary="true" pen:binding="name" pen:childrenbinding="children"
+                  pen:imagebinding="image" editable="true" expandedbinding="uiExpanded" />
+              </treecols>
+              <treechildren>
+                <treeitem container="true" open="true">
+                  <treerow>
+                    <treecell label="" />
+                  </treerow>
+                  <treechildren></treechildren>
+                </treeitem>
+              </treechildren>
+            </tree>
+          </vbox>
+          <vbox flex="2">
+            <label value="Properties" />
+            <deck id="propertiesdeck" >
+              <vbox id="blank">
+              </vbox>
+              <vbox id="measuresprops">
+                <label value="FieldName:" />
+                <textbox id="displayname" />
+                <label value="Aggregation:" />
+                <menulist id="aggregationtype">
+                  <menupopup>
+                    <menuitem label="SUM" />
+                    <menuitem label="AVG" />
+                    <menuitem label="MIN" />
+                    <menuitem label="MAX" />
+                  </menupopup>
+                </menulist>
+                <!-- 
+                <textbox id="aggregationtype" />
+                -->
+                <label value="Format:" />
+                <menulist id="formatstring">
+                  <menupopup>
+                    <menuitem label="NONE" />
+                    <menuitem label="#,###;(#,###)" />
+                    <menuitem label="#,###.00;(#,###.00)" />
+                    <menuitem label="\\$ #,###;(\\$ #,###)" />
+                    <menuitem label="\\$ #,###.00;(\\$ #,###.00)" />
+                    <menuitem label="#.#%;(#.#%)" />
+                  </menupopup>
+                </menulist>                
+                <!-- 
+                <textbox id="formatstring" />
+                -->
+              </vbox>
+              <vbox id="dimensionprops">
+              </vbox>
+            </deck>
+            <!--
+              <checkbox id="uniquecb" label="Unique" checked="false" onclick="modeler.updateUniqueMember()"/>
+            -->
+          </vbox>
+        </hbox>
+      </hbox>
+      <hbox>
+        <spacer flex="1" />
+
+        <label value="New:" />
+        <menulist id="visualizationlist" label="">
+          <menupopup>
+            <menuitem label="Dummy Visualization" />
+          </menupopup>
+        </menulist>
+
+        <button label="Go" id="exploreButton" onclick="modeler.visualize()" />
+        <button label="Publish" id="publishButton" onclick="modeler.publish()" />
+
+        <menulist id="serverlist" label="">
+          <menupopup>
+            <menuitem label="Dummy Server" />
+          </menupopup>
+        </menulist>
+      </hbox>
+    </vbox>
+  </vbox>
+
 </window>

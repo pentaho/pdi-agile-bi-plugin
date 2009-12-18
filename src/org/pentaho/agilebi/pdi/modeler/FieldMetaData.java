@@ -16,6 +16,7 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
+import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ import org.pentaho.ui.xul.XulEventSourceAdapter;
 public class FieldMetaData extends XulEventSourceAdapter implements Serializable {
   
 	String rowNum;
-  String fieldName;
+  String name;
   String format;
   String displayName;
   String fieldTypeDesc = "---";
@@ -54,7 +55,7 @@ public class FieldMetaData extends XulEventSourceAdapter implements Serializable
   public FieldMetaData(String rowNum, String fieldName, String format, String displayName) {
     super();
     this.rowNum = rowNum;
-    this.fieldName = fieldName;
+    this.name = fieldName;
     this.format = format;
     this.displayName = displayName;
   }
@@ -68,15 +69,15 @@ public class FieldMetaData extends XulEventSourceAdapter implements Serializable
   }
 
   public String toString() {
-    return fieldName;
+    return name;
   }
   
-  public String getFieldName() {
-    return fieldName;
+  public String getName() {
+    return name;
   }
 
-  public void setFieldName(String fieldName) {
-    this.fieldName = fieldName;
+  public void setName(String name) {
+    this.name = name;
   }
 
   public String getFormat() {
@@ -146,6 +147,14 @@ public class FieldMetaData extends XulEventSourceAdapter implements Serializable
     return false;
   }
 
+  public List getChildren() {
+    return null;
+  }
+  
+  public Image getImage() {
+    return null;
+  }
+  
   public boolean isUiExpanded(){
     return true;
   }

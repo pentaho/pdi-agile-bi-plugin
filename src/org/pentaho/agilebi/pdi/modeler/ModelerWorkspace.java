@@ -16,6 +16,7 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
+import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
@@ -59,6 +60,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   private List<FieldMetaData> availableFields = new ArrayList<FieldMetaData>();
   
+  private MainModelNode model = new MainModelNode();
+  
   private String sourceName;
   
   private String modelName;
@@ -79,7 +82,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   private String fileName;
   
   public ModelerWorkspace(){
-    
     inPlayFields.addPropertyChangeListener(new PropertyChangeListener(){
       public void propertyChange(PropertyChangeEvent arg0) {
         fireFieldsChanged();
@@ -87,17 +89,28 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     });
     dimensions.addPropertyChangeListener(new PropertyChangeListener(){
       public void propertyChange(PropertyChangeEvent arg0) {
-        fireDimensionsChanged();
+        fireFieldsChanged();
       }
     });
-    
+    model.add(inPlayFields); 
+    model.add(dimensions);
+
     BiServerConfig biServerConfig = BiServerConfig.getInstance();
     List<String> serverNames = biServerConfig.getServerNames();
     if( serverNames.size() > 0 ) {
       selectedServer = serverNames.get(0);
     }
+   
   }
-  
+
+  public MainModelNode getModel() {
+    return model;
+  }
+
+  public void setModel(MainModelNode model) {
+    this.model = model;
+  }
+
   public void setFileName(String fileName) {
     String prevVal = this.fileName;
     String prevFriendly = getShortFileName();
@@ -205,7 +218,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public void addDimension(Object obj){
     addDimension(createDimension(obj));
   }
-  
+
   public void addDimension(DimensionMetaData dim){
     this.dimensions.add(dim);
   }
@@ -231,7 +244,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     }
     return null;
   }
-  
+
   public LevelMetaData createLevel(HierarchyMetaData parent, Object obj) {
     LevelMetaData level = new LevelMetaData(parent, obj.toString());
     level.setParent(parent);
@@ -249,7 +262,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return hier;
   }
   
-  public void addToHeirarchy(Object selectedItem, Object newItem) {
+  public void addToHeirarchy(Object selectedItem, Object newItem){
     if (selectedItem instanceof LevelMetaData) {
       LevelMetaData sib = (LevelMetaData)selectedItem;
       LevelMetaData level = createLevel(sib.getParent(), newItem);
@@ -277,12 +290,12 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     }
   }
 
-  private void fireFieldsChanged() {
-    firePropertyChange("fields", null, inPlayFields);
+  private void fireFieldsChanged(){
+    firePropertyChange("model", null, model);
     setDirty(true);
   }
   
-  private void fireDimensionsChanged() {
+  private void fireDimensionsChanged(){
     firePropertyChange("dimensions", null, dimensions);
     setDirty(true);
   }
@@ -363,7 +376,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
         if(!exists){
           FieldMetaData fm = new FieldMetaData();
           fm.setLogicalColumn(lc);
-          fm.setFieldName(lc.getName(Locale.getDefault().toString()));
+          fm.setName(lc.getName(Locale.getDefault().toString()));
           fm.setDisplayName(lc.getName(Locale.getDefault().toString()));
           availableFields.add(fm);
           Collections.sort(availableFields, new Comparator<FieldMetaData>(){
@@ -469,7 +482,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     for(LogicalColumn c : table.getLogicalColumns()){
       FieldMetaData fm = new FieldMetaData();
       fm.setLogicalColumn(c);
-      fm.setFieldName(c.getPhysicalColumn().getName(Locale.getDefault().toString()));
+      fm.setName(c.getPhysicalColumn().getName(Locale.getDefault().toString()));
       fm.setDisplayName(c.getName(Locale.getDefault().toString()));
       fm.setAggTypeDesc(c.getAggregationType().toString());
       availableFields.add(fm);
@@ -529,9 +542,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    		OlapMeasure theMeasure = theMeasuresItr.next();
 	    		
 	    		FieldMetaData theMeasureMD = new FieldMetaData();
-	    		theMeasureMD.setFieldName(theMeasure.getName());
+	    		theMeasureMD.setName(theMeasure.getName());
 
-	    		theMeasureMD.setFieldName(theMeasure.getLogicalColumn().getPhysicalColumn().getName(Locale.getDefault().toString()));
+	    		theMeasureMD.setName(theMeasure.getLogicalColumn().getPhysicalColumn().getName(Locale.getDefault().toString()));
 	    		theMeasureMD.setDisplayName(theMeasure.getLogicalColumn().getName(Locale.getDefault().toString()));
           theMeasureMD.setAggTypeDesc(theMeasure.getLogicalColumn().getAggregationType().toString());
 	        
@@ -562,10 +575,45 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return domain;
   }  
 
-  public static class FieldsCollection extends AbstractModelList<FieldMetaData> implements Serializable {    
+  public static class FieldsCollection extends AbstractModelList<FieldMetaData>  implements Serializable {
+    private String name = "Measures";
+    
+    public String getName() {
+      return name;
+    }
+    
+    public void setName(String name) {
+      this.name = name;
+    }
+    
+    public Image getImage() {
+      return null;
+    }
+    
+    public boolean isUiExpanded(){
+      return true;
+    }
+
   }
 
   public static class DimensionMetaDataCollection extends AbstractModelNode<DimensionMetaData> implements Serializable {
+    private String name = "Dimensions";
+    
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+  
+    public Image getImage() {
+      return null;
+    }
+
+    public boolean isUiExpanded(){
+      return true;
+    }
 
     private PropertyChangeListener listener = new PropertyChangeListener(){
       public void propertyChange(PropertyChangeEvent evt) {
@@ -588,4 +636,48 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     }
     
   }
+  
+  public class MainModelNode extends AbstractModelNode<XulEventSourceAdapter> implements Serializable {
+    String name = "Model";
+    
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      // noop
+    }
+
+    public Image getImage() {
+      return null;
+    }
+    
+    public boolean isUiExpanded(){
+      return true;
+    }
+
+    private PropertyChangeListener listener = new PropertyChangeListener(){
+      public void propertyChange(PropertyChangeEvent evt) {
+        fireCollectionChanged();
+      }
+    };
+
+    protected void fireCollectionChanged() {
+      this.changeSupport.firePropertyChange("children", null, this);
+    }
+
+    @Override
+    public void onAdd(XulEventSourceAdapter child) {
+      child.addPropertyChangeListener("children", listener);
+    }
+
+    @Override
+    public void onRemove(XulEventSourceAdapter child) {
+      child.removePropertyChangeListener(listener);
+    }
+    
+    
+
+  }
+
 }

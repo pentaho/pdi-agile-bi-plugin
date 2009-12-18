@@ -159,7 +159,7 @@ public class ModelerWorkspaceUtil {
       DataType dataType = field.getLogicalColumn().getDataType();
       if( dataType == DataType.NUMERIC) {
         // create a measure
-        model.addFieldIntoPlay(field.getFieldName());
+        model.addFieldIntoPlay(field.getName());
       }
       // create a dimension
       model.addDimension(field.getDisplayName());
@@ -344,7 +344,7 @@ public class ModelerWorkspaceUtil {
       for (FieldMetaData f : model.getFields()) {
 
         OlapMeasure measure = new OlapMeasure();
-        String n = f.getDisplayName() != null ? f.getDisplayName() : f.getFieldName();
+        String n = f.getDisplayName() != null ? f.getDisplayName() : f.getName();
         measure.setName(n);
         f.getLogicalColumn().setAggregationType(AggregationType.valueOf(f.getAggTypeDesc()));
         measure.setLogicalColumn(f.getLogicalColumn());
