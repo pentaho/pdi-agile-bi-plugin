@@ -19,11 +19,9 @@
 package org.pentaho.agilebi.pdi.spoon;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.swt.SWT;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
@@ -32,10 +30,8 @@ import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.Const;
-import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
-import org.pentaho.di.ui.core.database.dialog.DatabaseExplorerDialog;
-import org.pentaho.di.ui.core.database.dialog.XulDatabaseExplorerDialog;
+import org.pentaho.di.ui.core.database.dialog.XulDatabaseExplorerController;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
@@ -45,6 +41,8 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 
 	private static final String MODELER_NAME = "Modeler"; //$NON-NLS-1$
 	private static Log logger = LogFactory.getLog(AgileBiDatabaseController.class);
+
+	private XulDatabaseExplorerController dbExplorerController;
 
 	public AgileBiDatabaseController() {
 	}
@@ -64,47 +62,34 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 
 	public void openModeler() {
 
-		/*
+		TableModelerSource source = new TableModelerSource(this.dbExplorerController.getDatabaseMeta(), this.dbExplorerController.getSelectedTable(), this.dbExplorerController.getSelectedSchema());
+		try {
+			ModelerWorkspace model = new ModelerWorkspace();
+			ModelerWorkspaceUtil.populateModelFromSource(model, source);
 
-				TableModelerSource source = new TableModelerSource(databaseMeta, std.getTableName(), std.getSchemaName());
-				try {
-					ModelerWorkspace model = new ModelerWorkspace();
-					ModelerWorkspaceUtil.populateModelFromSource(model, source);
+			AgileBiPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName((Spoon) SpoonFactory.getInstance(), MODELER_NAME));
 
-					AgileBiPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
+		} catch (Exception e) {
+			e.printStackTrace();
+			SpoonFactory.getInstance().messageBox("Could not create a modeler: " + e.getLocalizedMessage(), "Modeler Error", false, Const.ERROR);
+		}
 
-				} catch (Exception e) {
-					e.printStackTrace();
-					SpoonFactory.getInstance().messageBox("Could not create a modeler: " + e.getLocalizedMessage(), "Modeler Error", false, Const.ERROR);
-				}
-			
-		*/
 	}
 
 	public void quickVisualize() {
 
-		Spoon spoon = ((Spoon) SpoonFactory.getInstance());
-		if (spoon.getSelectionObject() instanceof DatabaseMeta) {
-			final DatabaseMeta databaseMeta = (DatabaseMeta) spoon.getSelectionObject();
+		TableModelerSource source = new TableModelerSource(this.dbExplorerController.getDatabaseMeta(), this.dbExplorerController.getSelectedTable(), this.dbExplorerController.getSelectedSchema() == null ? "" : this.dbExplorerController.getSelectedSchema()); //$NON-NLS-1$
+		if (source.getSchemaName() == null) {
+			source.setSchemaName(""); //$NON-NLS-1$
+		}
 
-			DatabaseExplorerDialog std = new DatabaseExplorerDialog(spoon.getShell(), SWT.NONE, databaseMeta, new ArrayList<DatabaseMeta>());
-			std.setSplitSchemaAndTable(true);
-			if (std.open() != null) {
-
-				TableModelerSource source = new TableModelerSource(databaseMeta, std.getTableName(), std.getSchemaName() == null ? "" : std.getSchemaName()); //$NON-NLS-1$
-				if (source.getSchemaName() == null) {
-					source.setSchemaName(""); //$NON-NLS-1$
-				}
-
-				try {
-					ModelerWorkspace model = new ModelerWorkspace();
-					ModelerWorkspaceUtil.populateModelFromSource(model, source);
-					quickVisualize(model);
-				} catch (Exception e) {
-					e.printStackTrace();
-					SpoonFactory.getInstance().messageBox("Could not create a modeler: " + e.getLocalizedMessage(), "Modeler Error", false, Const.ERROR);
-				}
-			}
+		try {
+			ModelerWorkspace model = new ModelerWorkspace();
+			ModelerWorkspaceUtil.populateModelFromSource(model, source);
+			quickVisualize(model);
+		} catch (Exception e) {
+			e.printStackTrace();
+			SpoonFactory.getInstance().messageBox("Could not create a modeler: " + e.getLocalizedMessage(), "Modeler Error", false, Const.ERROR);
 		}
 	}
 
@@ -143,15 +128,12 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 		}
 
 	}
-	
+
 	public String getName() {
 		return "agilebi_database";
 	}
-	
+
 	public void setData(Object aDatabaseDialog) {
-		
-		//(XulDatabaseExplorerDialog) aDatabaseDialog;
-		
-		
+		this.dbExplorerController = (XulDatabaseExplorerController) aDatabaseDialog;
 	}
-} 
+}
