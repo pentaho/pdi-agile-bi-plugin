@@ -20,8 +20,6 @@ package org.pentaho.agilebi.pdi.spoon;
 
 import java.io.File;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
@@ -40,7 +38,6 @@ import org.pentaho.xul.swt.tab.TabItem;
 public class AgileBiDatabaseController extends AbstractXulEventHandler {
 
 	private static final String MODELER_NAME = "Modeler"; //$NON-NLS-1$
-	private static Log logger = LogFactory.getLog(AgileBiDatabaseController.class);
 
 	private XulDatabaseExplorerController dbExplorerController;
 
@@ -61,7 +58,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 	}
 
 	public void openModeler() {
-
+		this.dbExplorerController.close();
 		TableModelerSource source = new TableModelerSource(this.dbExplorerController.getDatabaseMeta(), this.dbExplorerController.getSelectedTable(), this.dbExplorerController.getSelectedSchema());
 		try {
 			ModelerWorkspace model = new ModelerWorkspace();
@@ -78,11 +75,11 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 
 	public void quickVisualize() {
 
+		this.dbExplorerController.close();
 		TableModelerSource source = new TableModelerSource(this.dbExplorerController.getDatabaseMeta(), this.dbExplorerController.getSelectedTable(), this.dbExplorerController.getSelectedSchema() == null ? "" : this.dbExplorerController.getSelectedSchema()); //$NON-NLS-1$
 		if (source.getSchemaName() == null) {
 			source.setSchemaName(""); //$NON-NLS-1$
 		}
-
 		try {
 			ModelerWorkspace model = new ModelerWorkspace();
 			ModelerWorkspaceUtil.populateModelFromSource(model, source);
