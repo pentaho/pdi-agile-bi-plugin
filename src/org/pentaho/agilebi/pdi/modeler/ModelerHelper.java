@@ -43,6 +43,7 @@ import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.di.ui.util.ImageUtil;
 import org.pentaho.metadata.model.Domain;
+import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.xul.swt.tab.TabItem;
 import org.w3c.dom.Node;
@@ -230,7 +231,6 @@ public class ModelerHelper extends AbstractXulEventHandler {
         }
       }
     }
-  }
-  
+  }  
     
 }

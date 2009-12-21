@@ -16,10 +16,8 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
-import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,8 +38,6 @@ import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
 import org.pentaho.metadata.model.olap.OlapMeasure;
 import org.pentaho.metadata.util.ThinModelConverter;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
-import org.pentaho.ui.xul.util.AbstractModelList;
-import org.pentaho.ui.xul.util.AbstractModelNode;
 
 
 /**
@@ -53,10 +49,6 @@ import org.pentaho.ui.xul.util.AbstractModelNode;
  */
 @SuppressWarnings("unchecked")
 public class ModelerWorkspace extends XulEventSourceAdapter{
-
-  private FieldsCollection inPlayFields = new FieldsCollection();
-  
-  private DimensionMetaDataCollection dimensions = new DimensionMetaDataCollection();
   
   private List<FieldMetaData> availableFields = new ArrayList<FieldMetaData>();
   
@@ -82,18 +74,14 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   private String fileName;
   
   public ModelerWorkspace(){
-    inPlayFields.addPropertyChangeListener(new PropertyChangeListener(){
-      public void propertyChange(PropertyChangeEvent arg0) {
-        fireFieldsChanged();
+    
+    model.addPropertyChangeListener("children", new PropertyChangeListener(){
+
+      public void propertyChange(PropertyChangeEvent arg0) {  
+        fireModelChanged();
       }
+      
     });
-    dimensions.addPropertyChangeListener(new PropertyChangeListener(){
-      public void propertyChange(PropertyChangeEvent arg0) {
-        fireFieldsChanged();
-      }
-    });
-    model.add(inPlayFields); 
-    model.add(dimensions);
 
     BiServerConfig biServerConfig = BiServerConfig.getInstance();
     List<String> serverNames = biServerConfig.getServerNames();
@@ -174,7 +162,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 
   public int getNumberLevels() {
     int v = 0;
-    for (DimensionMetaData dim : dimensions) {
+    for (DimensionMetaData dim : model.getDimensions()) {
       for (HierarchyMetaData hier : dim) {
         for (LevelMetaData lvl : hier.getChildren()) {
           v++;
@@ -220,11 +208,11 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
 
   public void addDimension(DimensionMetaData dim){
-    this.dimensions.add(dim);
+    this.model.getDimensions().add(dim);
   }
   
   public DimensionMetaData findDimension(DimensionMetaData dim) {
-    for (DimensionMetaData d : dimensions) {
+    for (DimensionMetaData d : model.getDimensions()) {
       if (d.equals(dim)) {
         return d;
       }
@@ -233,7 +221,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
 
   public HierarchyMetaData findHierarchy(HierarchyMetaData hier) {
-    for (DimensionMetaData d : dimensions) {
+    for (DimensionMetaData d : model.getDimensions()) {
       if (d.equals(hier.getParent())) {
         for (HierarchyMetaData h : d) {
           if (h.equals(hier)) {
@@ -267,12 +255,12 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       LevelMetaData sib = (LevelMetaData)selectedItem;
       LevelMetaData level = createLevel(sib.getParent(), newItem);
       sib.getParent().add(level);
-      this.firePropertyChange("dimensions", null , dimensions);
+      this.firePropertyChange("dimensions", null , model.getDimensions());
     } else if (selectedItem instanceof HierarchyMetaData) {
       HierarchyMetaData hier = (HierarchyMetaData) selectedItem;
       LevelMetaData level = createLevel(hier, newItem);
       hier.add(level);
-      this.firePropertyChange("dimensions", null , dimensions);
+      this.firePropertyChange("dimensions", null , model.getDimensions());
     } else if (selectedItem instanceof DimensionMetaData) {
       DimensionMetaData dim = (DimensionMetaData)selectedItem;
       HierarchyMetaData hier = null;
@@ -286,17 +274,17 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       }
       LevelMetaData level = createLevel(hier, newItem);
       hier.add(level);
-      this.firePropertyChange("dimensions", null , dimensions);
+      this.firePropertyChange("dimensions", null , model.getDimensions());
     }
   }
 
   private void fireFieldsChanged(){
-    firePropertyChange("model", null, model);
+    firePropertyChange("availableFields", null, this.availableFields);
     setDirty(true);
   }
   
-  private void fireDimensionsChanged(){
-    firePropertyChange("dimensions", null, dimensions);
+  private void fireModelChanged(){
+    firePropertyChange("model", null, model);
     setDirty(true);
   }
   
@@ -311,16 +299,14 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   //  this.firePropertyChange("fields", null, inPlayFields);
   //}
   
-  public void addFieldIntoPlay(Object selectedField){
-    FieldMetaData meta = new FieldMetaData(Integer.toString(inPlayFields.size()+1), selectedField.toString(), "", selectedField.toString());
+  public FieldMetaData addFieldIntoPlay(Object selectedField){
+    FieldMetaData meta = new FieldMetaData(Integer.toString(model.getMeasures().size()+1), selectedField.toString(), "", selectedField.toString());
     
     // TODO: replace this terrible resolution with better model code.
     LogicalColumn col = findLogicalColumn(selectedField.toString());
     meta.setLogicalColumn(col);
-    this.inPlayFields.add(meta); //$NON-NLS-1$
-    
-    
-    this.firePropertyChange("fields", null, inPlayFields);
+    this.model.getMeasures().add(meta); //$NON-NLS-1$
+    return meta;
   }
   
   public LogicalColumn findLogicalColumn(String id) {
@@ -335,11 +321,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return col;
   }
   
-  public void removeFieldFromPlay(FieldMetaData field){
-    this.inPlayFields.remove(field);
-    this.firePropertyChange("fields", null, inPlayFields);
-  }
-  
   public void setModelSource(IModelerSource source) {
     this.source = source;
   }
@@ -349,12 +330,12 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }    
 
   public List<FieldMetaData> getFields() {
-    return inPlayFields;
+    return model.getMeasures();
   }
   
   public void setFields(List<FieldMetaData> fields){
-    this.inPlayFields.clear();
-    this.inPlayFields.addAll(fields);
+    this.model.getMeasures().clear();
+    this.model.getMeasures().addAll(fields);
   }
 
  public void refresh() throws ModelerException {
@@ -409,7 +390,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       firePropertyChange("availableFields", null, getAvailableFields()); //$NON-NLS-1$
       fireFieldsChanged();
       
-      for(DimensionMetaData dm : dimensions){
+      for(DimensionMetaData dm : model.getDimensions()){
         for(HierarchyMetaData hm : dm){
           for(LevelMetaData lm : hm.getChildren()){
             String existingLmId = lm.getLogicalColumn().getId();
@@ -430,9 +411,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       //fireDimensionsChanged();
   }
 
-  public DimensionMetaDataCollection getDimensions(){
-    return dimensions;
-  }
   
   public String getDatabaseName(){
     return source.getDatabaseName();
@@ -474,8 +452,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   public void setDomain(Domain d){
     this.domain = d;
-    this.dimensions.clear();
-    this.inPlayFields.clear();
+    this.model.getDimensions().clear();
+    this.model.getMeasures().clear();
     this.availableFields.clear();
         
     LogicalTable table = domain.getLogicalModels().get(0).getLogicalTables().get(0);
@@ -526,7 +504,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    		theHierarchyMD.setParent(theDimensionMD);
 	    		theDimensionMD.add(theHierarchyMD);
 	    	}
-	    	this.dimensions.add(theDimensionMD);
+	    	this.model.getDimensions().add(theDimensionMD);
 	    }
     }
     
@@ -549,7 +527,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
           theMeasureMD.setAggTypeDesc(theMeasure.getLogicalColumn().getAggregationType().toString());
 	        
 	    		theMeasureMD.setLogicalColumn(theMeasure.getLogicalColumn());
-	    		this.inPlayFields.add(theMeasureMD);
+	    		this.model.getMeasures().add(theMeasureMD);
 	    	}
 	    }
     }
@@ -573,111 +551,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   private Domain updateDomain(){
     // TODO: update domain with changes
     return domain;
-  }  
-
-  public static class FieldsCollection extends AbstractModelList<FieldMetaData>  implements Serializable {
-    private String name = "Measures";
-    
-    public String getName() {
-      return name;
-    }
-    
-    public void setName(String name) {
-      this.name = name;
-    }
-    
-    public Image getImage() {
-      return null;
-    }
-    
-    public boolean isUiExpanded(){
-      return true;
-    }
-
-  }
-
-  public static class DimensionMetaDataCollection extends AbstractModelNode<DimensionMetaData> implements Serializable {
-    private String name = "Dimensions";
-    
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-  
-    public Image getImage() {
-      return null;
-    }
-
-    public boolean isUiExpanded(){
-      return true;
-    }
-
-    private PropertyChangeListener listener = new PropertyChangeListener(){
-      public void propertyChange(PropertyChangeEvent evt) {
-        fireCollectionChanged();
-      }
-    };
-
-    protected void fireCollectionChanged() {
-      this.changeSupport.firePropertyChange("children", null, this);
-    }
-
-    @Override
-    public void onAdd(DimensionMetaData child) {
-      child.addPropertyChangeListener("children", listener);
-    }
-
-    @Override
-    public void onRemove(DimensionMetaData child) {
-      child.removePropertyChangeListener(listener);
-    }
-    
-  }
-  
-  public class MainModelNode extends AbstractModelNode<XulEventSourceAdapter> implements Serializable {
-    String name = "Model";
-    
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      // noop
-    }
-
-    public Image getImage() {
-      return null;
-    }
-    
-    public boolean isUiExpanded(){
-      return true;
-    }
-
-    private PropertyChangeListener listener = new PropertyChangeListener(){
-      public void propertyChange(PropertyChangeEvent evt) {
-        fireCollectionChanged();
-      }
-    };
-
-    protected void fireCollectionChanged() {
-      this.changeSupport.firePropertyChange("children", null, this);
-    }
-
-    @Override
-    public void onAdd(XulEventSourceAdapter child) {
-      child.addPropertyChangeListener("children", listener);
-    }
-
-    @Override
-    public void onRemove(XulEventSourceAdapter child) {
-      child.removePropertyChangeListener(listener);
-    }
-    
-    
-
   }
 
 }

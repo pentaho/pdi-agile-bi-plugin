@@ -115,7 +115,7 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
       setNameForTab(tabAndPanel.tab, name);
       
       Binding bind = new DefaultBinding(model, "shortFileName", tabAndPanel.tab, "label"); //$NON-NLS-1$ //$NON-NLS-2$
-      bind.setConversion(new NameBindingConvertor(this));
+      bind.setConversion(new NameBindingConvertor(this, tabAndPanel.tab));
       bind.setBindingType(Binding.Type.ONE_WAY);
       document.addBinding(bind);
       models.add(model);

@@ -224,15 +224,19 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   
   protected static class NameBindingConvertor extends BindingConvertor<String, String>{
     AbstractPerspective per;
-    public NameBindingConvertor(AbstractPerspective per){
+    XulTab tab;
+    public NameBindingConvertor(AbstractPerspective per, XulTab tab){
       this.per = per;
+      this.tab = tab;
     }
     @Override
     public String sourceToTarget(String value) {
       String tabName = value;
       List<String> usedNames = new ArrayList<String>();
       for(XulComponent c : per.tabs.getChildNodes()){
-        usedNames.add(((SwtTab) c).getLabel());
+        if(c != tab){
+          usedNames.add(((SwtTab) c).getLabel());
+        }
       }
       if(usedNames.contains(value)){
         int num = 2;

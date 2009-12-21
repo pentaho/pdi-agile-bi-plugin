@@ -50,6 +50,7 @@ import org.pentaho.ui.xul.containers.XulTabbox;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
+import org.pentaho.ui.xul.util.AbstractModelNode;
 
 /**
  * XUL Event Handler for the modeling interface. This class interacts with a ModelerModel to store state.
@@ -92,7 +93,6 @@ public class ModelerController extends AbstractXulEventHandler{
   private XulDialog newDimensionDialog;
   private XulTextbox newDimensionName;
   private XulTree dimensionTree;
-  private XulDeck propertiesDeck;
   private XulMenuList serverList;
   private XulMenuList visualizationList;
   
@@ -200,7 +200,6 @@ public class ModelerController extends AbstractXulEventHandler{
     newDimensionDialog = (XulDialog) document.getElementById(NEW_DIMESION_DIALOG);
     newDimensionName = (XulTextbox) document.getElementById(NEW_DIMENSION_NAME);
     dimensionTree = (XulTree) document.getElementById("dimensionTree");
-    propertiesDeck = (XulDeck) document.getElementById("propertiesdeck");
     serverList = (XulMenuList)document.getElementById("serverlist");
     visualizationList = (XulMenuList)document.getElementById("visualizationlist");
 
@@ -236,11 +235,10 @@ public class ModelerController extends AbstractXulEventHandler{
     bf.createBinding(workspace, "selectedVisualization", visualizationList, "selectedItem");    
     visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements");
     
-    dimensionTreeBinding = bf.createBinding(workspace, "model", dimensionTree, "elements");
+    modelTreeBinding = bf.createBinding(workspace, "model", dimensionTree, "elements");
     bf.createBinding(dimensionTree, "selectedItem", this, "dimTreeSelectionChanged");
     
     bf.setBindingType(Type.BI_DIRECTIONAL);
-//    inPlayTableBinding = bf.createBinding(workspace, "fields" , "fieldTable", "elements");
     modelNameBinding = bf.createBinding(workspace, MODEL_NAME_PROPERTY, MODEL_NAME_FIELD_ID, VALUE_PROPERTY);
     
     fireBindings();
@@ -249,8 +247,7 @@ public class ModelerController extends AbstractXulEventHandler{
   private void fireBindings() throws ModelerException{
     try {
       fieldListBinding.fireSourceChanged();
-      dimensionTreeBinding.fireSourceChanged();
-//      inPlayTableBinding.fireSourceChanged();
+      modelTreeBinding.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
       serversBinding.fireSourceChanged();
       visualizationsBinding.fireSourceChanged();
@@ -258,6 +255,10 @@ public class ModelerController extends AbstractXulEventHandler{
       logger.info("Error firing off initial bindings", e);
       throw new ModelerException(e);
     }
+  }
+  
+  public void setPropertiesForm(PropertiesForm form){
+    this.propertiesForm = form;
   }
   
   public void setSelectedDims(List<Object> selectedDims) {
@@ -272,8 +273,9 @@ public class ModelerController extends AbstractXulEventHandler{
   public void moveFieldsToMeasures() {
     XulListbox fieldsList = (XulListbox) document.getElementById(FIELD_LIST_ID);
     Object[] selectedItems = fieldsList.getSelectedItems();
+    List<FieldMetaData> generatedFields = new ArrayList<FieldMetaData>();
     for (Object obj : selectedItems) {
-      workspace.addFieldIntoPlay(obj);
+      FieldMetaData field = workspace.addFieldIntoPlay(obj);
     }
   }
   
@@ -312,21 +314,6 @@ public class ModelerController extends AbstractXulEventHandler{
 //    }
 //  }
 
-  public void moveFieldOutOfPlay() {
-    XulTree tree = (XulTree) document.getElementById(IN_PLAY_TABLE_ID);
-    int[] selectedIndexes = tree.getSelectedRows();
-    int tabIndex = ((XulTabbox) document.getElementById(MY_TAB_LIST_ID)).getSelectedIndex();
-    if (tabIndex == 0) {
-      for (int index : selectedIndexes) {
-        FieldMetaData fieldMeta = workspace.getFields().get(index);
-        workspace.removeFieldFromPlay(fieldMeta);
-      }
-    } else if (tabIndex == 1){
-      if (selectedTreeItem instanceof LevelMetaData) {
-        removeDimension();
-      }
-    }
-  }
   
   public void visualize() throws ModelerException{
     try{
@@ -390,48 +377,20 @@ public class ModelerController extends AbstractXulEventHandler{
     hideNewDimensionDialog();
   }
   
-  public void moveDimensionUp() {
-
-    if (selectedTreeItem instanceof DimensionMetaData) {
-      if(workspace.getDimensions().indexOf(selectedTreeItem) > 0){
-        workspace.getDimensions().moveChildUp((DimensionMetaData) selectedTreeItem);
-        setDimTreeSelectionChanged(null);
-      }
-    } else if (selectedTreeItem instanceof HierarchyMetaData) {
-      DimensionMetaData dim = (DimensionMetaData) ((HierarchyMetaData)selectedTreeItem).getParent();
-      if(dim.indexOf(selectedTreeItem) > 0){
-        dim.moveChildUp((HierarchyMetaData)selectedTreeItem);
-        setDimTreeSelectionChanged(null);
-      }
-    } else if (selectedTreeItem instanceof LevelMetaData) {
-      HierarchyMetaData dim = (HierarchyMetaData) ((LevelMetaData)selectedTreeItem).getParent();
-      if(dim.indexOf(selectedTreeItem) > 0){
-        dim.moveChildUp((LevelMetaData)selectedTreeItem);
-        setDimTreeSelectionChanged(null);
-      }
+  public void moveFieldUp() {
+    if(selectedTreeItem == null){
+      return;
     }
+    ((AbstractModelNode) selectedTreeItem).getParent().moveChildUp(selectedTreeItem);
+    
   }
   
-  public void moveDimensionDown() {
-
-    if (selectedTreeItem instanceof DimensionMetaData) {
-      if(workspace.getDimensions().size() > workspace.getDimensions().indexOf(selectedTreeItem) + 1){
-        workspace.getDimensions().moveChildDown((DimensionMetaData) selectedTreeItem);
-        setDimTreeSelectionChanged(null);
-      }
-    } else if (selectedTreeItem instanceof HierarchyMetaData) {
-      DimensionMetaData dim = (DimensionMetaData) ((HierarchyMetaData)selectedTreeItem).getParent();
-      if(dim.size() > dim.indexOf(selectedTreeItem) +1){
-        dim.moveChildDown((HierarchyMetaData)selectedTreeItem);
-        setDimTreeSelectionChanged(null);
-      }
-    } else if (selectedTreeItem instanceof LevelMetaData) {
-      HierarchyMetaData dim = (HierarchyMetaData) ((LevelMetaData)selectedTreeItem).getParent();
-      if(dim.getChildren().size() > dim.getChildren().indexOf(selectedTreeItem) +1){
-        dim.moveChildDown((LevelMetaData)selectedTreeItem);
-        setDimTreeSelectionChanged(null);
-      }
+  public void moveFieldDown() {
+    if(selectedTreeItem == null){
+      return;
     }
+    ((AbstractModelNode) selectedTreeItem).getParent().moveChildDown(selectedTreeItem);
+    
   }
 
   Object selectedTreeItem;
@@ -442,57 +401,20 @@ public class ModelerController extends AbstractXulEventHandler{
 
   private Binding visualizationsBinding;
 
-  private Binding dimensionTreeBinding;
+  private Binding modelTreeBinding;
 
   private Binding modelNameBinding;
   
-  private List<Binding> selectedItemBindings = new ArrayList<Binding>();
-
+  private PropertiesForm propertiesForm;
+  
   public void setDimTreeSelectionChanged(Object selection){
-//    System.out.println("Selected Item = " + selection.getClass().toString());
     selectedTreeItem = selection;
+    propertiesForm.setSelectedItem(selection);
     
-    for (Binding binding : selectedItemBindings) {
-      binding.destroyBindings();
-    }
-    selectedItemBindings.clear();
-    if (selection != null) {
-      bf.setBindingType(Type.BI_DIRECTIONAL);
-      if (selection instanceof FieldMetaData) {
-        propertiesDeck.setSelectedIndex(1);
-        selectedItemBindings.add(bf.createBinding(selectedTreeItem, "displayName", "displayname", "value"));
-        selectedItemBindings.add(bf.createBinding(selectedTreeItem, "aggTypeDesc", "aggregationtype", "selectedItem"));
-        selectedItemBindings.add(bf.createBinding(selectedTreeItem, "format", "formatstring", "selectedItem", new FormatStringConverter()));
-      } else {
-        propertiesDeck.setSelectedIndex(0);
-      }
-      for (Binding binding : selectedItemBindings) {
-        try {
-          binding.fireSourceChanged();
-        } catch (IllegalArgumentException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        } catch (XulException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        } catch (InvocationTargetException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-      }
-    } else {
-      propertiesDeck.setSelectedIndex(0);
-    }
   }
   
-  public void removeDimension() {
-    if (selectedTreeItem instanceof DimensionMetaData) {
-      workspace.getDimensions().remove(selectedTreeItem);
-    } else if (selectedTreeItem instanceof HierarchyMetaData) {
-      ((HierarchyMetaData)selectedTreeItem).getParent().remove(selectedTreeItem);
-    } else if (selectedTreeItem instanceof LevelMetaData) {
-      ((LevelMetaData)selectedTreeItem).getParent().remove(selectedTreeItem);
-    }
+  public void removeField() {
+    ((AbstractModelNode) selectedTreeItem).getParent().remove(selectedTreeItem);
     setDimTreeSelectionChanged(null);
   }
 
@@ -580,36 +502,6 @@ public class ModelerController extends AbstractXulEventHandler{
    // document.loadPerspective(id);
   }
   
-  /**
-   * @author wseyler
-   *
-   */
-public class FormatStringConverter extends BindingConvertor<String, String> {
 
-  /* (non-Javadoc)
-   * @see org.pentaho.ui.xul.binding.BindingConvertor#sourceToTarget(java.lang.Object)
-   */
-  @Override
-  public String sourceToTarget(String value) {
-    if (value == null) {
-      return "NONE";
-    } else {
-      return value;
-    }
-  }
-
-  /* (non-Javadoc)
-   * @see org.pentaho.ui.xul.binding.BindingConvertor#targetToSource(java.lang.Object)
-   */
-  @Override
-  public String targetToSource(String value) {
-    if (value.equalsIgnoreCase("NONE")) {
-      return null;
-    } else {
-      return value;
-    }
-  }
-
-}
 
 }
