@@ -25,7 +25,7 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
     return true;
   }
 
-  private PropertyChangeListener listener = new PropertyChangeListener(){
+  private transient PropertyChangeListener listener = new PropertyChangeListener(){
     public void propertyChange(PropertyChangeEvent evt) {
       fireCollectionChanged();
     }
