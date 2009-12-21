@@ -59,8 +59,7 @@ public class PropertiesForm extends AbstractXulEventHandler{
 
   public void setDisplayName(String displayName) {
     String prevVal = fieldMeta.getDisplayName();
-    fieldMeta.setDisplayName(displayName);
-    this.firePropertyChange("displayName", prevVal, displayName);
+    this.firePropertyChange("displayName", null, displayName);
     
   }
 
@@ -74,9 +73,8 @@ public class PropertiesForm extends AbstractXulEventHandler{
 
 
   public void setFormat(String format) {
-    String prevVal = fieldMeta.getFormat();
     fieldMeta.setFormat(format);
-    this.firePropertyChange("format", prevVal, format);
+    this.firePropertyChange("format", null, format);
   }
 
 
@@ -89,9 +87,8 @@ public class PropertiesForm extends AbstractXulEventHandler{
 
 
   public void setAggTypeDesc(String aggTypeDesc) {
-    String prevVal = fieldMeta.getAggTypeDesc();
     fieldMeta.setAggTypeDesc(aggTypeDesc);
-    this.firePropertyChange("aggTypeDesc", prevVal, aggTypeDesc);    
+    this.firePropertyChange("aggTypeDesc", null, aggTypeDesc);    
   }
 
 

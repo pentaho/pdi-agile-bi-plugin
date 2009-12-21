@@ -41,6 +41,7 @@ public class DimensionMetaDataCollection extends AbstractModelNode<DimensionMeta
 
   @Override
   public void onAdd(DimensionMetaData child) {
+    child.setParent(this);
     child.addPropertyChangeListener("children", listener);
   }
 

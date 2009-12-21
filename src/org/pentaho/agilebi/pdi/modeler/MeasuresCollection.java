@@ -27,4 +27,8 @@ public class MeasuresCollection extends AbstractModelNode<FieldMetaData>  implem
     return true;
   }
 
+  @Override
+  public void onAdd(FieldMetaData field) {
+    field.setParent(this);
+  }
 }

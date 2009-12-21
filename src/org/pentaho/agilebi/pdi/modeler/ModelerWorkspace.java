@@ -50,7 +50,7 @@ import org.pentaho.ui.xul.XulEventSourceAdapter;
 @SuppressWarnings("unchecked")
 public class ModelerWorkspace extends XulEventSourceAdapter{
   
-  private List<FieldMetaData> availableFields = new ArrayList<FieldMetaData>();
+  private AvailableFieldCollection availableFields = new AvailableFieldCollection();
   
   private MainModelNode model = new MainModelNode();
   
@@ -173,7 +173,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
   
   
-  public List<FieldMetaData> getAvailableFields() {
+  public AvailableFieldCollection getAvailableFields() {
     return availableFields;
   }
   
@@ -275,12 +275,13 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       LevelMetaData level = createLevel(hier, newItem);
       hier.add(level);
       this.firePropertyChange("dimensions", null , model.getDimensions());
+    } else if(selectedItem instanceof DimensionMetaDataCollection){
+      addDimension(newItem);
     }
   }
 
   private void fireFieldsChanged(){
     firePropertyChange("availableFields", null, this.availableFields);
-    setDirty(true);
   }
   
   private void fireModelChanged(){
@@ -347,7 +348,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       for(LogicalColumn lc : newDomain.getLogicalModels().get(0).getLogicalTables().get(0).getLogicalColumns()){
         boolean exists = false;
         inner:
-        for(FieldMetaData fmd : this.availableFields){
+        for(AvailableField fmd : this.availableFields){
           if(fmd.getLogicalColumn().getId().equals(lc.getId())){
             fmd.setLogicalColumn(lc);
             exists = true;
@@ -355,13 +356,13 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
           }
         }
         if(!exists){
-          FieldMetaData fm = new FieldMetaData();
+          AvailableField fm = new AvailableField();
           fm.setLogicalColumn(lc);
           fm.setName(lc.getName(Locale.getDefault().toString()));
           fm.setDisplayName(lc.getName(Locale.getDefault().toString()));
           availableFields.add(fm);
-          Collections.sort(availableFields, new Comparator<FieldMetaData>(){
-            public int compare(FieldMetaData arg0, FieldMetaData arg1) {
+          Collections.sort(availableFields, new Comparator<AvailableField>(){
+            public int compare(AvailableField arg0, AvailableField arg1) {
               return arg0.getLogicalColumn().getId().compareTo(arg1.getLogicalColumn().getId());
             }
           });
@@ -369,8 +370,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       }
       
       // Remove logicalColumns that no longer exist.
-      List<FieldMetaData> toRemove = new ArrayList<FieldMetaData>();
-      for(FieldMetaData fm : availableFields){
+      List<AvailableField> toRemove = new ArrayList<AvailableField>();
+      for(AvailableField fm : availableFields){
         boolean exists = false;
         LogicalColumn fmlc = fm.getLogicalColumn();
         inner:
@@ -396,7 +397,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
             String existingLmId = lm.getLogicalColumn().getId();
             boolean found = false;
             inner:
-            for(FieldMetaData fm : availableFields){
+            for(AvailableField fm : availableFields){
               if(fm.getLogicalColumn().getId().equals(existingLmId)){
                 found = true;
                 break inner;
@@ -435,8 +436,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       else if( o2 == null ) {
         return 1;
       }
-      String name1 = ((FieldMetaData) o1).getDisplayName();
-      String name2 = ((FieldMetaData) o2).getDisplayName();
+      String name1 = ((AvailableField) o1).getDisplayName();
+      String name2 = ((AvailableField) o2).getDisplayName();
       if( name1 == null && name2 == null ) {
         return 0;
       }
@@ -458,7 +459,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
         
     LogicalTable table = domain.getLogicalModels().get(0).getLogicalTables().get(0);
     for(LogicalColumn c : table.getLogicalColumns()){
-      FieldMetaData fm = new FieldMetaData();
+      AvailableField fm = new AvailableField();
       fm.setLogicalColumn(c);
       fm.setName(c.getPhysicalColumn().getName(Locale.getDefault().toString()));
       fm.setDisplayName(c.getName(Locale.getDefault().toString()));

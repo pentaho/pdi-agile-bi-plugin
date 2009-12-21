@@ -23,21 +23,22 @@ import java.util.List;
 import java.util.Vector;
 
 import org.pentaho.metadata.model.LogicalColumn;
-import org.pentaho.ui.xul.XulEventSourceAdapter;
+import org.pentaho.reporting.libraries.base.util.StringUtils;
+import org.pentaho.ui.xul.util.AbstractModelNode;
 
 /**
  * @author wseyler
  *
  */
-public class FieldMetaData extends XulEventSourceAdapter implements Serializable {
+public class FieldMetaData extends AbstractModelNode implements Serializable {
   
 	String rowNum;
   String name;
-  String format;
+  String format = "NONE";
   String displayName;
   String fieldTypeDesc = "---";
   String levelTypeDesc = "---";
-  String aggTypeDesc;
+  String aggTypeDesc = "SUM";
   transient LogicalColumn logicalColumn;
   
   private List<String> aggTypes = new ArrayList<String>();
@@ -81,10 +82,14 @@ public class FieldMetaData extends XulEventSourceAdapter implements Serializable
   }
 
   public String getFormat() {
+    if(StringUtils.isEmpty(format)){
+      return "NONE";
+    }
     return format;
   }
 
   public void setFormat(String format) {
+    
     this.format = format;
   }
 
@@ -113,7 +118,7 @@ public class FieldMetaData extends XulEventSourceAdapter implements Serializable
   }
 
   public String getAggTypeDesc() {
-    if(aggTypeDesc == null){
+    if(StringUtils.isEmpty(aggTypeDesc)){
       aggTypeDesc = aggTypes.get(0);
     }
     return aggTypeDesc;

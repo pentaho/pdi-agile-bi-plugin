@@ -414,6 +414,9 @@ public class ModelerController extends AbstractXulEventHandler{
   }
   
   public void removeField() {
+    if(selectedTreeItem instanceof DimensionMetaDataCollection || selectedTreeItem instanceof MeasuresCollection){
+      return;
+    }
     ((AbstractModelNode) selectedTreeItem).getParent().remove(selectedTreeItem);
     setDimTreeSelectionChanged(null);
   }

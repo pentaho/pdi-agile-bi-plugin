@@ -154,8 +154,8 @@ public class ModelerWorkspaceUtil {
    */
   public static void autoModelFlat( ModelerWorkspace model ) throws ModelerException {
     
-    List<FieldMetaData> fields = model.getAvailableFields();
-    for( FieldMetaData field : fields ) {
+    List<AvailableField> fields = model.getAvailableFields();
+    for( AvailableField field : fields ) {
       DataType dataType = field.getLogicalColumn().getDataType();
       if( dataType == DataType.NUMERIC) {
         // create a measure

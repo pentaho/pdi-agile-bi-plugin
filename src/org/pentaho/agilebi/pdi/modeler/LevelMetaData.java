@@ -20,9 +20,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.pentaho.metadata.model.LogicalColumn;
-import org.pentaho.ui.xul.XulEventSourceAdapter;
+import org.pentaho.ui.xul.util.AbstractModelNode;
 
-public class LevelMetaData extends XulEventSourceAdapter implements Serializable {
+public class LevelMetaData extends AbstractModelNode implements Serializable {
   String name;
   String columnName;
   HierarchyMetaData parent;
@@ -66,10 +66,6 @@ public class LevelMetaData extends XulEventSourceAdapter implements Serializable
 
   public String getImage(){
     return "images/sm_level_icon.png";
-  }
-
-  public List getChildren(){
-    return null;
   }
 
   public LogicalColumn getLogicalColumn() {
