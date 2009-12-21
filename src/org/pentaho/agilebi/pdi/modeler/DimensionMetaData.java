@@ -104,4 +104,8 @@ public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaDa
   public boolean isUiExpanded() {
     return true;
   }
+
+  public boolean isEditingDisabled(){
+    return false;
+  }
 }

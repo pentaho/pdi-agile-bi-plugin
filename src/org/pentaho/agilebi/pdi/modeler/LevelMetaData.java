@@ -105,4 +105,8 @@ public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements 
   public boolean isUiExpanded() {
     return true;
   }
+
+  public boolean isEditingDisabled(){
+    return false;
+  }
 }

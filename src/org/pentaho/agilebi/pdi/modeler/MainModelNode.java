@@ -67,4 +67,8 @@ public class MainModelNode extends AbstractModelNode<AbstractMetaDataModelNode<?
   public MeasuresCollection getMeasures(){
     return measures;
   }
+  
+  public boolean isEditingDisabled(){
+    return true;
+  }
 }

@@ -57,7 +57,7 @@
               pen:drageffect="move" ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false" >
               <treecols>
                 <treecol flex="1" label="" primary="true" pen:binding="name" pen:childrenbinding="children"
-                  pen:imagebinding="image" editable="true" expandedbinding="uiExpanded" />
+                  pen:imagebinding="image" editable="true" pen:expandedbinding="uiExpanded" pen:disabledbinding="editingDisabled"/>
               </treecols>
               <treechildren>
                 <treeitem container="true" open="true">

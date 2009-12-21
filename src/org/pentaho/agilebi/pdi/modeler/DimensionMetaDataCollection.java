@@ -60,4 +60,8 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
     }
   }
   
+  public boolean isEditingDisabled(){
+    return true;
+  }
+  
 }

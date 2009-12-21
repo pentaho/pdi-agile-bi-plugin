@@ -98,4 +98,8 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
   public boolean isUiExpanded(){
     return true;
   }
+  
+  public boolean isEditingDisabled(){
+    return false;
+  }
 }

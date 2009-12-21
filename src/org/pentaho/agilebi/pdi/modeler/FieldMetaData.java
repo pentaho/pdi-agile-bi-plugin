@@ -171,4 +171,8 @@ public class FieldMetaData extends AbstractMetaDataModelNode implements Serializ
       valid = false;
     }
   }
+  
+  public boolean isEditingDisabled(){
+    return false;
+  }
 }

@@ -43,4 +43,8 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<FieldMetaData>
   public void onAdd(FieldMetaData field) {
     field.setParent(this);
   }
+  
+  public boolean isEditingDisabled(){
+    return true;
+  }
 }

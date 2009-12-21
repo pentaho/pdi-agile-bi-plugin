@@ -275,7 +275,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       LevelMetaData level = createLevel(hier, newItem);
       hier.add(level);
       this.firePropertyChange("dimensions", null , model.getDimensions());
-    } else if(selectedItem instanceof DimensionMetaDataCollection){
+    } else {
       addDimension(newItem);
     }
   }
