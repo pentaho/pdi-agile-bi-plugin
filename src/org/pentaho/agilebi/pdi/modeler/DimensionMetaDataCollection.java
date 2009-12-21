@@ -48,7 +48,7 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
 
   @Override
   public String getValidImage() {
-    return null;
+    return "images/sm_folder_icon.png"; //$NON-NLS-1$
   }
 
   @Override

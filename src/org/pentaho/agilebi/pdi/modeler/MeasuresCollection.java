@@ -25,8 +25,7 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<FieldMetaData>
 
   @Override
   public String getValidImage() {
-    // TODO Auto-generated method stub
-    return null;
+    return "images/sm_folder_icon.png"; //$NON-NLS-1$
   }
 
   @Override

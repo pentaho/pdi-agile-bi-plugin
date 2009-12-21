@@ -159,7 +159,7 @@ public class FieldMetaData extends AbstractMetaDataModelNode implements Serializ
 
   @Override
   public String getValidImage() {
-    return "images/sm_level_icon.png"; //$NON-NLS-1$
+    return "images/sm_measure_icon.png"; //$NON-NLS-1$
   }
 
   @Override

@@ -32,8 +32,8 @@ public class MainModelNode extends AbstractModelNode<AbstractMetaDataModelNode<?
     // noop
   }
 
-  public Image getImage() {
-    return null;
+  public String getImage() {
+    return "images/sm_model_icon.png"; //$NON-NLS-1$
   }
   
   public boolean isUiExpanded(){
