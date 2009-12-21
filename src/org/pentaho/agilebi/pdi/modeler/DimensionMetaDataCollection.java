@@ -54,6 +54,7 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
   @Override
   public void validate() {
     valid = true;
+    validationMessages.clear();
     if (size() == 0) {
       validationMessages.add("Model requires at least one Dimension");
       valid = false;

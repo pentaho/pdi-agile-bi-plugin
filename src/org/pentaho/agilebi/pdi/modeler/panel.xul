@@ -73,8 +73,17 @@
             <label value="Properties" />
             <deck id="propertiesdeck" >
               <vbox id="blank">
+              	<hbox id="messages1" visible="false">
+              		<image src="images/warning.png"/>
+              		<label id="messages1label" value="This is a test to see how a warning message will appear."/>
+              	</hbox>
               </vbox>
               <vbox id="measuresprops">
+              	<hbox id="messages2">
+              		<image src="images/warning.png"/>
+              		<label id="messages2label" value="This is a test to see how a warning message will appear."/>
+              	</hbox>
+              
                 <label value="FieldName:" />
                 <textbox id="displayname" />
                 <label value="Aggregation:" />

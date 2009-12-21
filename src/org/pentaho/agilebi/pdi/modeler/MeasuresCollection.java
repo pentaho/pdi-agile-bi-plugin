@@ -32,6 +32,7 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<FieldMetaData>
   @Override
   public void validate() {
     valid = true;
+    validationMessages.clear();
     if (size() == 0) {
       validationMessages.add("Model requires at least one Measure");
       valid = false;

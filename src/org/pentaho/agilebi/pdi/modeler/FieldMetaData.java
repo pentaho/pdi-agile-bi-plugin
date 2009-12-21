@@ -165,6 +165,7 @@ public class FieldMetaData extends AbstractMetaDataModelNode implements Serializ
   @Override
   public void validate() {
     valid = true;
+    validationMessages.clear();
     // check name
     if (StringUtils.isEmpty(name)) {
       validationMessages.add("Name is empty");

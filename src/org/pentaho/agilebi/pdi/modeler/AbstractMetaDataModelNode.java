@@ -17,6 +17,17 @@ public abstract class AbstractMetaDataModelNode<T> extends AbstractModelNode<T> 
     this.image = getValidImage();
   }
   
+  public String getValidationMessagesString() {
+    String str = ""; //$NON-NLS-1$
+    for (int i = 0 ; i < validationMessages.size(); i++) {
+      if (i > 0) {
+        str += ", "; //$NON-NLS-1$
+      } 
+      str += validationMessages.get(i);
+    }
+    return str;
+  }
+  
   public List<String> getValidationMessages() {
     return validationMessages; 
   }

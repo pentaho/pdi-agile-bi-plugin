@@ -19,9 +19,37 @@ public class PropertiesForm extends AbstractXulEventHandler{
     
     propertiesDeck = (XulDeck) document.getElementById("propertiesdeck");
     
+    
+    bf.createBinding(this, "notValid", "messages2", "visible");
+    bf.createBinding(this, "validMessages", "messages2label", "value");
     bf.createBinding(this, "displayName", "displayname", "value");
     bf.createBinding(this, "aggTypeDesc", "aggregationtype", "selectedItem");
     bf.createBinding(this, "format", "formatstring", "selectedItem", new FormatStringConverter());
+    
+  }
+  
+  public boolean isNotValid() {
+    if (fieldMeta != null) {
+      return !fieldMeta.isValid();
+    } else {
+      return false;
+    }
+  }
+    
+  public void setNotValid(boolean notValid) {
+    this.firePropertyChange("notValid", null, notValid);
+  }
+  
+  public void setValidMessages(String validMessages) {
+    this.firePropertyChange("validMessages", null, validMessages);
+  }
+  
+  public String getValidMessages() {
+    if (fieldMeta != null) {
+      return fieldMeta.getValidationMessagesString();
+    } else {
+      return null;
+    }
   }
   
   
@@ -40,6 +68,8 @@ public class PropertiesForm extends AbstractXulEventHandler{
     setDisplayName(fieldMeta.getDisplayName());
     setFormat(fieldMeta.getFormat());
     setAggTypeDesc(fieldMeta.getAggTypeDesc());
+    setNotValid(!fieldMeta.isValid());
+    setValidMessages(fieldMeta.getValidationMessagesString());
   }
   
   @Override
