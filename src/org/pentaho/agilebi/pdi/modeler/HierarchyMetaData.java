@@ -21,12 +21,15 @@ import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.List;
 
-import org.pentaho.ui.xul.util.AbstractModelNode;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Event aware node class that also listens to it's children's events and propagates them up.
  */
-public class HierarchyMetaData extends AbstractModelNode<LevelMetaData> implements Serializable {
+public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> implements Serializable {
+
+  private static final long serialVersionUID = 7063031303948537101L;
+
   private transient PropertyChangeListener listener = new PropertyChangeListener() {
     public void propertyChange(PropertyChangeEvent evt) {
       fireCollectionChanged();
@@ -44,31 +47,52 @@ public class HierarchyMetaData extends AbstractModelNode<LevelMetaData> implemen
   }
   
   public void setName(String name) {
-    this.name = name;
+    if (!StringUtils.equals(name, this.name)) {
+      String oldName = this.name;
+      this.name = name;
+      this.firePropertyChange("name", oldName, name); //$NON-NLS-1$
+      validateNode();
+    }
   }
   
   public List<LevelMetaData> getChildren() {
     return children;
   }
   
+  @Override
+  public void validate() {
+    valid = true;
+    
+    // check name
+    if (StringUtils.isEmpty(name)) {
+      validationMessages.add("Name is empty");
+      valid = false;
+    }
+    if (size() == 0) {
+      validationMessages.add("Hierarchy must have at least one level");
+      valid = false;
+    }
+  }
   
   public String toString() {
     return "Hierarchy Name: " + name;
   }
   
-  public String getImage(){
-    return "images/hieraracy.png";
+  @Override
+  public String getValidImage() {
+    return "images/sm_hierarchy_icon.png"; //$NON-NLS-1$
   }
-  
   
   @Override
   public void onAdd(LevelMetaData child) {
-    child.addPropertyChangeListener("children", listener);
+    child.addPropertyChangeListener("children", listener); //$NON-NLS-1$
+    validate();
   }
 
   @Override
   public void onRemove(LevelMetaData child) {
     child.removePropertyChangeListener(listener);
+    validate();
   }
 
   public boolean isUiExpanded(){

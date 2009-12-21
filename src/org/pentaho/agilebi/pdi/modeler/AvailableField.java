@@ -1,9 +1,14 @@
 package org.pentaho.agilebi.pdi.modeler;
 
+import java.io.Serializable;
+
 import org.pentaho.metadata.model.LogicalColumn;
 
-public class AvailableField {
-  private LogicalColumn logicalColumn;
+public class AvailableField implements Serializable {
+
+  private static final long serialVersionUID = -4430951279551589688L;
+  
+  private transient LogicalColumn logicalColumn;
   private String name, displayName, aggTypeDesc;
 
   public LogicalColumn getLogicalColumn() {
@@ -37,7 +42,9 @@ public class AvailableField {
   public void setAggTypeDesc(String aggTypeDesc) {
     this.aggTypeDesc = aggTypeDesc;
   }
-  
-  
+
+  public String toString() {
+    return name;
+  }
   
 }

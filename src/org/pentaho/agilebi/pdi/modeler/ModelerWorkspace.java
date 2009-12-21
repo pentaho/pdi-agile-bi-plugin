@@ -73,7 +73,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   // full path to file
   private String fileName;
   
-  public ModelerWorkspace(){
+  public ModelerWorkspace() {
     
     model.addPropertyChangeListener("children", new PropertyChangeListener(){
 
@@ -108,7 +108,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     firePropertyChange("shortFileName", prevFriendly, getShortFileName());
   }
   
-  public String getShortFileName(){
+  public String getShortFileName() {
 
     if( fileName == null ) {
       return null;
@@ -131,11 +131,11 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
   
   //transMeta.getFilename()
-  public String getSourceName(){
+  public String getSourceName() {
     return sourceName;
   }
   
-  public void setSourceName(String sourceName){
+  public void setSourceName(String sourceName) {
     this.sourceName = sourceName;
   }
 
@@ -150,11 +150,11 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     this.firePropertyChange("modelName", prevVal, this.modelName);
   }
   
-  public boolean isDirty(){
+  public boolean isDirty() {
     return dirty;
   }
  
-  public void setDirty(boolean dirty){
+  public void setDirty(boolean dirty) {
     boolean prevVal = this.dirty;
     this.dirty = dirty;
     this.firePropertyChange("dirty", prevVal, this.dirty);
@@ -178,11 +178,11 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
   
   
-  public void setSelectedServer(String server){
+  public void setSelectedServer(String server) {
     this.selectedServer = server;
   }
   
-  public String getSelectedServer(){
+  public String getSelectedServer() {
     return selectedServer;
   }
   
@@ -203,11 +203,11 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return dimension;
   }
   
-  public void addDimension(Object obj){
+  public void addDimension(Object obj) {
     addDimension(createDimension(obj));
   }
 
-  public void addDimension(DimensionMetaData dim){
+  public void addDimension(DimensionMetaData dim) {
     this.model.getDimensions().add(dim);
   }
   
@@ -250,7 +250,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return hier;
   }
   
-  public void addToHeirarchy(Object selectedItem, Object newItem){
+  public void addToHeirarchy(Object selectedItem, Object newItem) {
     if (selectedItem instanceof LevelMetaData) {
       LevelMetaData sib = (LevelMetaData)selectedItem;
       LevelMetaData level = createLevel(sib.getParent(), newItem);
@@ -280,32 +280,25 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     }
   }
 
-  private void fireFieldsChanged(){
+  private void fireFieldsChanged() {
     firePropertyChange("availableFields", null, this.availableFields);
   }
   
-  private void fireModelChanged(){
+  private void fireModelChanged() {
     firePropertyChange("model", null, model);
     setDirty(true);
   }
-  
-  // Restore once SetListBox is returning bound objects instead of Strings
-  //public void addFieldIntoPlay(Object selectedField){
-  //  
-  //  FieldMetaData selected = (FieldMetaData) selectedField;
-  //  selected.setRowNum(Integer.toString(inPlayFields.size()+1));
-  //  
-  //  this.inPlayFields.add(selected); //$NON-NLS-1$
-  //  
-  //  this.firePropertyChange("fields", null, inPlayFields);
-  //}
-  
-  public FieldMetaData addFieldIntoPlay(Object selectedField){
-    FieldMetaData meta = new FieldMetaData(Integer.toString(model.getMeasures().size()+1), selectedField.toString(), "", selectedField.toString());
-    
+
+  public FieldMetaData createMeasure(Object selectedField) {
+    FieldMetaData meta = new FieldMetaData(selectedField.toString(), "", selectedField.toString());
     // TODO: replace this terrible resolution with better model code.
     LogicalColumn col = findLogicalColumn(selectedField.toString());
     meta.setLogicalColumn(col);
+    return meta;
+  }
+  
+  public FieldMetaData addFieldIntoPlay(Object selectedField) {
+    FieldMetaData meta = createMeasure(selectedField);
     this.model.getMeasures().add(meta); //$NON-NLS-1$
     return meta;
   }
@@ -313,7 +306,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public LogicalColumn findLogicalColumn(String id) {
     LogicalColumn col = null;
     for(LogicalColumn c : domain.getLogicalModels().get(0).getLogicalTables().get(0).getLogicalColumns()){
-      
       if(c.getName(Locale.getDefault().toString()).equals(id)){
         col = c;
         break;
@@ -334,7 +326,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return model.getMeasures();
   }
   
-  public void setFields(List<FieldMetaData> fields){
+  public void setFields(List<FieldMetaData> fields) {
     this.model.getMeasures().clear();
     this.model.getMeasures().addAll(fields);
   }
@@ -391,7 +383,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       firePropertyChange("availableFields", null, getAvailableFields()); //$NON-NLS-1$
       fireFieldsChanged();
       
-      for(DimensionMetaData dm : model.getDimensions()){
+      for(DimensionMetaData dm : model.getDimensions()) {
         for(HierarchyMetaData hm : dm){
           for(LevelMetaData lm : hm.getChildren()){
             String existingLmId = lm.getLogicalColumn().getId();
@@ -413,15 +405,15 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
 
   
-  public String getDatabaseName(){
+  public String getDatabaseName() {
     return source.getDatabaseName();
   }
   
-  public String getSchemaName(){
+  public String getSchemaName() {
     return schemaName; 
   }
   
-  public void setSchemaName(String schemaName){
+  public void setSchemaName(String schemaName) {
     this.schemaName = schemaName;
   }
   
@@ -451,7 +443,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
        } });
   }
   
-  public void setDomain(Domain d){
+  public void setDomain(Domain d) {
     this.domain = d;
     this.model.getDimensions().clear();
     this.model.getMeasures().clear();
@@ -545,11 +537,11 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     
   }
   
-  public Domain getDomain(){
+  public Domain getDomain() {
     return updateDomain();
   }
   
-  private Domain updateDomain(){
+  private Domain updateDomain() {
     // TODO: update domain with changes
     return domain;
   }

@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 import org.pentaho.ui.xul.util.AbstractModelNode;
 
-public class MeasuresCollection extends AbstractModelNode<FieldMetaData>  implements Serializable {
+public class MeasuresCollection extends AbstractMetaDataModelNode<FieldMetaData>  implements Serializable {
   private String name = "Measures";
   
   public String getName() {
@@ -19,12 +19,24 @@ public class MeasuresCollection extends AbstractModelNode<FieldMetaData>  implem
     this.name = name;
   }
   
-  public Image getImage() {
-    return null;
-  }
-  
   public boolean isUiExpanded(){
     return true;
+  }
+
+  @Override
+  public String getValidImage() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void validate() {
+    valid = true;
+    if (size() == 0) {
+      validationMessages.add("Model requires at least one Measure");
+      valid = false;
+    }
+    
   }
 
   @Override

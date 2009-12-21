@@ -19,10 +19,12 @@ package org.pentaho.agilebi.pdi.modeler;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.pentaho.metadata.model.LogicalColumn;
-import org.pentaho.ui.xul.util.AbstractModelNode;
 
-public class LevelMetaData extends AbstractModelNode implements Serializable {
+public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements Serializable {
+
+  private static final long serialVersionUID = -8026104295937064671L;
   String name;
   String columnName;
   HierarchyMetaData parent;
@@ -40,7 +42,12 @@ public class LevelMetaData extends AbstractModelNode implements Serializable {
   }
   
   public void setName(String name) {
-    this.name = name;
+    if (!StringUtils.equals(name, this.name)) {
+      String oldName = this.name;
+      this.name = name;
+      this.firePropertyChange("name", oldName, name); //$NON-NLS-1$
+      validateNode();
+    }
   }
   
   public String getColumnName() {
@@ -64,10 +71,11 @@ public class LevelMetaData extends AbstractModelNode implements Serializable {
     return "Level Name: " + name + "\nColumn Name: " + columnName;
   }
 
-  public String getImage(){
+  @Override
+  public String getValidImage() {
     return "images/sm_level_icon.png";
   }
-
+  
   public LogicalColumn getLogicalColumn() {
     return logicalColumn;
   }
@@ -84,7 +92,17 @@ public class LevelMetaData extends AbstractModelNode implements Serializable {
     return uniqueMembers;
   }
 
-  public boolean isUiExpanded(){
+  @Override
+  public void validate() {
+    valid = true;
+    // check name
+    if (StringUtils.isEmpty(name)) {
+      validationMessages.add("Name is empty");
+      valid = false;
+    }
+  }
+  
+  public boolean isUiExpanded() {
     return true;
   }
 }

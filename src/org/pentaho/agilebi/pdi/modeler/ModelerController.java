@@ -125,10 +125,15 @@ public class ModelerController extends AbstractXulEventHandler{
     List<Object> data = event.getDataTransfer().getData();
     List<Object> newdata = new ArrayList<Object>();
     for (Object obj : data) {
-      if (obj instanceof FieldMetaData) {
+      if (obj instanceof AvailableField) {
         // depending on the parent
         if (event.getDropParent() == null) {
-          // null - add as a dimension
+          // null - cannot add fields at this level
+        } else if (event.getDropParent() instanceof MeasuresCollection) {
+          // measure collection - add as a measure
+          newdata.add(workspace.createMeasure(obj));
+        } else if (event.getDropParent() instanceof DimensionMetaDataCollection) {
+          // dimension collection - add as a dimension
           newdata.add(workspace.createDimension(obj));
         } else if (event.getDropParent() instanceof DimensionMetaData) {
           // dimension - add as a hierarchy
@@ -180,6 +185,13 @@ public class ModelerController extends AbstractXulEventHandler{
         if (event.getDropParent() == null) {
           newdata.add((DimensionMetaData)obj);
           // TODO: this will also need to resolve level LogicalColumns
+        }
+      } else if (obj instanceof FieldMetaData) {
+        if (event.getDropParent() instanceof MeasuresCollection) {
+          FieldMetaData measure = (FieldMetaData)obj;
+          LogicalColumn col = workspace.findLogicalColumn(obj.toString());
+          measure.setLogicalColumn(col);
+          newdata.add(measure);
         }
       }
       

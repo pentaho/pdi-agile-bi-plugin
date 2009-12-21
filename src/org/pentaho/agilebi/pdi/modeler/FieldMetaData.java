@@ -16,7 +16,6 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
-import java.awt.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +23,13 @@ import java.util.Vector;
 
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
-import org.pentaho.ui.xul.util.AbstractModelNode;
 
 /**
  * @author wseyler
  *
  */
-public class FieldMetaData extends AbstractModelNode implements Serializable {
+public class FieldMetaData extends AbstractMetaDataModelNode implements Serializable {
   
-	String rowNum;
   String name;
   String format = "NONE";
   String displayName;
@@ -53,20 +50,11 @@ public class FieldMetaData extends AbstractModelNode implements Serializable {
     
   }
   
-  public FieldMetaData(String rowNum, String fieldName, String format, String displayName) {
+  public FieldMetaData(String fieldName, String format, String displayName) {
     super();
-    this.rowNum = rowNum;
     this.name = fieldName;
     this.format = format;
     this.displayName = displayName;
-  }
-
-  public String getRowNum() {
-    return rowNum;
-  }
-
-  public void setRowNum(String rowNum) {
-    this.rowNum = rowNum;
   }
 
   public String toString() {
@@ -78,7 +66,12 @@ public class FieldMetaData extends AbstractModelNode implements Serializable {
   }
 
   public void setName(String name) {
-    this.name = name;
+    if (!StringUtils.equals(name, this.name)) {
+      String oldName = this.name;
+      this.name = name;
+      this.firePropertyChange("name", oldName, name); //$NON-NLS-1$
+      validateNode();
+    }
   }
 
   public String getFormat() {
@@ -141,7 +134,7 @@ public class FieldMetaData extends AbstractModelNode implements Serializable {
   }
   
   @Override
-  public boolean equals(Object o){
+  public boolean equals(Object o) {
     if(o == null || o instanceof FieldMetaData == false){
       return false;
     }
@@ -156,15 +149,26 @@ public class FieldMetaData extends AbstractModelNode implements Serializable {
     return null;
   }
   
-  public Image getImage() {
-    return null;
-  }
-  
-  public void setUiExpanded(){
+  public void setUiExpanded() {
     
   }
   
-  public boolean isUiExpanded(){
+  public boolean isUiExpanded() {
     return true;
+  }
+
+  @Override
+  public String getValidImage() {
+    return "images/sm_level_icon.png"; //$NON-NLS-1$
+  }
+
+  @Override
+  public void validate() {
+    valid = true;
+    // check name
+    if (StringUtils.isEmpty(name)) {
+      validationMessages.add("Name is empty");
+      valid = false;
+    }
   }
 }

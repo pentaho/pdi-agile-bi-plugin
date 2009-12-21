@@ -20,13 +20,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 
-import org.pentaho.ui.xul.util.AbstractModelNode;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Event aware node class that also listens to it's children's events and propagates them up.
  */
-public class DimensionMetaData extends AbstractModelNode<HierarchyMetaData> implements Serializable {
+public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaData> implements Serializable {
   
+  private static final long serialVersionUID = -891901735974255178L;
+
   private transient PropertyChangeListener listener = new PropertyChangeListener(){
     public void propertyChange(PropertyChangeEvent evt) {
       fireCollectionChanged();
@@ -34,6 +36,7 @@ public class DimensionMetaData extends AbstractModelNode<HierarchyMetaData> impl
   };
   
   String name;
+  
   public DimensionMetaData(String name) {
     this.name = name;
   }
@@ -43,16 +46,33 @@ public class DimensionMetaData extends AbstractModelNode<HierarchyMetaData> impl
   }
   
   public void setName(String name) {
-    this.name = name;
+    if (!StringUtils.equals(name, this.name)) {
+      String oldName = this.name;
+      this.name = name;
+      this.firePropertyChange("name", oldName, name); //$NON-NLS-1$
+      validateNode();
+    }
   }
-  
   
   public String toString() {
     return "Dimension Name: " + name;
   }
   
-  public String getImage(){
-    return "images/sm_dim_icon.png";
+  public String getValidImage() {
+    return "images/sm_dim_icon.png"; //$NON-NLS-1$
+  }
+  
+  public void validate() {
+    validationMessages.clear();
+    valid = true;
+    if (StringUtils.isEmpty(name)) {
+      validationMessages.add("Name is empty");
+      valid = false;
+    }
+    if (size() == 0) {
+      validationMessages.add("Dimension must have at least one hierarchy.");
+      valid = false;
+    }
   }
   
   public boolean equals(Object obj) {
@@ -66,20 +86,22 @@ public class DimensionMetaData extends AbstractModelNode<HierarchyMetaData> impl
 
   @Override
   public void onAdd(HierarchyMetaData child) {
-    child.addPropertyChangeListener("children", listener);
+    child.addPropertyChangeListener("children", listener); //$NON-NLS-1$
+    validateNode();
   }
 
   @Override
   public void onRemove(HierarchyMetaData child) {
     child.removePropertyChangeListener(listener);
+    validateNode();
   }
   
-  public boolean isTime(){
+  public boolean isTime() {
     // TODO: make time dimension real
     return false;
   }
   
-  public boolean isUiExpanded(){
+  public boolean isUiExpanded() {
     return true;
   }
 }

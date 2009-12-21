@@ -8,10 +8,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 
-import org.pentaho.ui.xul.XulEventSourceAdapter;
 import org.pentaho.ui.xul.util.AbstractModelNode;
 
-public class MainModelNode extends AbstractModelNode<XulEventSourceAdapter> implements Serializable {
+public class MainModelNode extends AbstractModelNode<AbstractMetaDataModelNode<?>> implements Serializable {
+
+  private static final long serialVersionUID = 2399128598598210134L;
+
   String name = "Model";
   
   private MeasuresCollection measures = new MeasuresCollection();
@@ -45,16 +47,16 @@ public class MainModelNode extends AbstractModelNode<XulEventSourceAdapter> impl
   };
 
   protected void fireCollectionChanged() {
-    this.changeSupport.firePropertyChange("children", null, this);
+    this.changeSupport.firePropertyChange("children", null, this); //$NON-NLS-1$
   }
 
   @Override
-  public void onAdd(XulEventSourceAdapter child) {
-    child.addPropertyChangeListener("children", listener);
+  public void onAdd(AbstractMetaDataModelNode<?> child) {
+    child.addPropertyChangeListener("children", listener); //$NON-NLS-1$
   }
 
   @Override
-  public void onRemove(XulEventSourceAdapter child) {
+  public void onRemove(AbstractMetaDataModelNode<?> child) {
     child.removePropertyChangeListener(listener);
   }
   
