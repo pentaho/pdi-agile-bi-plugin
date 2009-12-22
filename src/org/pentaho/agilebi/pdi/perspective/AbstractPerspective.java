@@ -186,7 +186,9 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
     try{
       
       XulTab tab = (XulTab) document.createElement("tab");
-      tab.setLabel(name);
+      if(name != null){
+        tab.setLabel(name);
+      }
       XulTabpanel panel = (XulTabpanel) document.createElement("tabpanel"); //$NON-NLS-1
       
       tabs.addChild(tab);
