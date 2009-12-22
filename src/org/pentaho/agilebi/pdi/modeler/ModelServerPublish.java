@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
@@ -44,6 +45,11 @@ import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServi
 import org.pentaho.platform.dataaccess.client.ConnectionServiceClient;
 import org.pentaho.platform.util.client.PublisherUtil;
 
+/**
+ * A utility class for publishing models to a BI server. Also helps synchronize database connections.
+ * @author jamesdixon
+ *
+ */
 public class ModelServerPublish {
 
   public static final int PUBLISH_UNKNOWN_PROBLEM = -1;
@@ -66,7 +72,26 @@ public class ModelServerPublish {
   
   private ModelerWorkspace model;
   
+  private int serviceClientStatus = 0;
+  
   public ModelServerPublish() {
+  }
+  
+  /**
+   * Lists the database connections that are available on the current BI server
+   * @return
+   * @throws ConnectionServiceException
+   */
+  public List<IConnection> listRemoteConnections() throws ConnectionServiceException {
+      // get information about the remote connection
+      ConnectionServiceClient serviceClient = new ConnectionServiceClient();
+      serviceClient.setHost(biServerConnection.getUrl());
+      serviceClient.setUserId(biServerConnection.getUserId());
+      serviceClient.setPassword(biServerConnection.getPassword());
+      
+      List<IConnection> connections = serviceClient.getConnections();
+//      serviceClientStatus = serviceClient.getStatus();
+      return connections;
   }
   
   /**
@@ -84,10 +109,21 @@ public class ModelServerPublish {
       serviceClient.setPassword(biServerConnection.getPassword());
       
       remoteConnection = serviceClient.getConnectionByName(connectionName);
+//      serviceClientStatus = serviceClient.getStatus();
+
     }
     return remoteConnection;
   }
   
+  /**
+   * Compares a provided DatabaseMeta with the database connections available on the current BI server.
+   * Returns the result of the comparison - missing, same, different.
+   * This only works for native connections (JNDI)
+   * @param databaseMeta
+   * @return
+   * @throws ConnectionServiceException
+   * @throws KettleDatabaseException
+   */
   public int compareDataSourceWithRemoteConnection( DatabaseMeta databaseMeta ) throws ConnectionServiceException, KettleDatabaseException {
     
     int result = 0;
@@ -146,14 +182,29 @@ public class ModelServerPublish {
     connection.setUsername(databaseMeta.getUsername());
 
     // call updateConnection or addConnection
+    boolean result = false;
     if( update ) {
-      return serviceClient.updateConnection(connection);
+      result = serviceClient.updateConnection(connection);
     } else {
-      return serviceClient.addConnection(connection);
+      result = serviceClient.addConnection(connection);
     }
+//    serviceClientStatus = serviceClient.getStatus();
+
+    return result;
     
   }
   
+  /**
+   * Publishes a file to the current BI server
+   * @param publishPath
+   * @param publishFile
+   * @param jndiName
+   * @param modelId
+   * @param enableXmla
+   * @return
+   * @throws Exception
+   * @throws UnsupportedEncodingException
+   */
   private int publish(
       String publishPath,
       File publishFile, 
@@ -179,17 +230,16 @@ public class ModelServerPublish {
   }
   filePost.setRequestEntity(new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), filePost.getParams()));
   HttpClient client = getClient(biServerConnection.getUserId(), biServerConnection.getPassword());
-  int status;
   try {
-      status = client.executeMethod(filePost);
+    serviceClientStatus = client.executeMethod(filePost);
   } catch (IOException e) {
       throw new Exception(e.getMessage(), e);
   }
-  if (status != HttpStatus.SC_OK) {
-      if (status == HttpStatus.SC_MOVED_TEMPORARILY) {
-          throw new Exception("Invalid Username or Password");
+  if (serviceClientStatus != HttpStatus.SC_OK) {
+      if (serviceClientStatus == HttpStatus.SC_MOVED_TEMPORARILY) {
+          throw new Exception(Messages.getInstance().getString("ModelServerPublish.Errors.InvalidUser")); //$NON-NLS-1$
       } else {
-          throw new Exception("Unknown server error: HTTP status code " + status);
+          throw new Exception(Messages.getInstance().getString("ModelServerPublish.Errors.UnknownError", Integer.toString(serviceClientStatus)) ); //$NON-NLS-1$
       }
   } else {
       try {
@@ -219,6 +269,11 @@ public class ModelServerPublish {
 
   }
   
+  /**
+   * Refreshes the OLAP cache for the current BI server
+   * @param modelId
+   * @throws IOException
+   */
   public void refreshOlapCaches(       
       String modelId ) throws IOException {
     
@@ -226,8 +281,8 @@ public class ModelServerPublish {
     refreshOlapCaches( modelId, client );
   }
   
-  public void refreshOlapCaches( String modelId, HttpClient client ) throws IOException {
-    String urlModelId = URLEncoder.encode( modelId );
+  private void refreshOlapCaches( String modelId, HttpClient client ) throws IOException {
+    String urlModelId = URLEncoder.encode( modelId, "UTF-8" ); //$NON-NLS-1$
     GetMethod get = new GetMethod( biServerConnection.getUrl()+"ViewAction?solution=admin&path=&action=clear_mondrian_schema_cache.xaction&userid="+biServerConnection.getUserId()+"&password="+biServerConnection.getPassword() ); //$NON-NLS-1$ //$NON-NLS-2$
     client.executeMethod( get );
     // assume we are ok
@@ -235,7 +290,7 @@ public class ModelServerPublish {
     client.executeMethod( get );
   }
   
-  public String getPasswordKey(String passWord) {
+  private String getPasswordKey(String passWord) {
     try {
         MessageDigest md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
         md.reset();
@@ -255,6 +310,14 @@ public class ModelServerPublish {
     return null;
 }
 
+  /**
+   * Publishes the specified model, schema, and connection to the current BI server
+   * @param schemaName
+   * @param jndiName
+   * @param modelName
+   * @param showFeedback
+   * @throws Exception
+   */
   public void publishToServer( String schemaName, String jndiName, String modelName, boolean showFeedback ) throws Exception {
 
     checkDataSource();
@@ -283,30 +346,37 @@ public class ModelServerPublish {
 //    boolean same = (compare | ModelServerPublish.REMOTE_CONNECTION_SAME) > 0;
     
     if(missing && !nonJndi) {
-      if( !SpoonFactory.getInstance().messageBox( "Datasource does not exist on server, ok to publish it?", "Publish To Server: "+serverName, true, Const.INFO) ) {
-        SpoonFactory.getInstance().messageBox( "Publish cancelled", "Publish To Server: "+serverName, false, Const.ERROR);
+      if( !SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.OkToPublish" ),  //$NON-NLS-1$
+          Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), true, Const.INFO) ) { //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.PublishCancelled" ),  //$NON-NLS-1$ 
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         return;
       }
       boolean ok = publishDataSource(databaseMeta, false);
       if( ok ) {
-        SpoonFactory.getInstance().messageBox( "Datasource added", "Publish To Server: "+serverName, false, Const.ERROR);
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.Added" ),  //$NON-NLS-1$
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
       }
     }
     else if(missing && nonJndi) {
-      SpoonFactory.getInstance().messageBox( "The datasource does not exist on the server, but only JNDI datasources can be published", "Publish To Server: "+serverName, false, Const.ERROR);
+      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.NonJNDI" ),  //$NON-NLS-1$
+          Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
       return;
     }
     else if( different && !nonJndi ) {
-      if( !SpoonFactory.getInstance().messageBox( "Datasource exists on server, but is different. Ok to update it?", "Publish To Server: "+serverName, true, Const.INFO) ) {
+      if( !SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.IsDifferent" ),  //$NON-NLS-1$
+          Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), true, Const.INFO) ) { //$NON-NLS-1$
         // replace the data source
         boolean ok = publishDataSource(databaseMeta, true);
         if( ok ) {
-          SpoonFactory.getInstance().messageBox( "Datasource updated", "Publish To Server: "+serverName, false, Const.ERROR);
+          SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.Updated" ),  //$NON-NLS-1$
+              Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         }
       }
     }
     else if(different && nonJndi) {
-      SpoonFactory.getInstance().messageBox( "Datasource exists on server, but is different. Cannot update it.", "Publish To Server: "+serverName, false, Const.ERROR);
+      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.CannotUpdate" ),  //$NON-NLS-1$
+          Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
       return;
     }
     
@@ -320,50 +390,70 @@ public class ModelServerPublish {
     
     int result = publish(publishPath, publishFile, jndiName, modelName, enableXmla);
     if( showFeedback ) {
+      String serverName = biServerConnection.getName();
     switch (result) {
       case ModelServerPublish.PUBLISH_CATALOG_EXISTS: {
-        SpoonFactory.getInstance().messageBox( "Catalog exists already", "Publish To Server", false, Const.ERROR);
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.CatalogExists" ),  //$NON-NLS-1$
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_DATASOURCE_PROBLEM: {
-        SpoonFactory.getInstance().messageBox( "Datasource problem", "Publish To Server", false, Const.ERROR);
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.DataSourceProblem" ),  //$NON-NLS-1$
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_FAILED: {
-        SpoonFactory.getInstance().messageBox( "Publish failed", "Publish To Server", false, Const.ERROR);
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.Failed" ),  //$NON-NLS-1$  
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_FILE_EXISTS: {
-        SpoonFactory.getInstance().messageBox( "File exists already", "Publish To Server", false, Const.ERROR);
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.FileExists" ),  //$NON-NLS-1$  
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_INVALID_PASSWORD: {
-        SpoonFactory.getInstance().messageBox( "Invalid pssword", "Publish To Server", false, Const.ERROR);
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.BadPassword" ),  //$NON-NLS-1$  
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_INVALID_USER_OR_PASSWORD: {
-        SpoonFactory.getInstance().messageBox( "Invalid user id or password", "Publish To Server", false, Const.ERROR);
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Errors.InvalidUser" ),  //$NON-NLS-1$  
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_SUCCESS: {
-        SpoonFactory.getInstance().messageBox( "Publish was successful", "Publish To Server", false, Const.ERROR);
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.Success" ),  //$NON-NLS-1$  
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_UNKNOWN_PROBLEM: {
-        SpoonFactory.getInstance().messageBox( "Unknown problem encountered while publishing", "Publish To Server", false, Const.ERROR);
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.UnknownProblem" ),  //$NON-NLS-1$  
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
     }
     }
   }
 
+  /**
+   * Sets the current BI server connection
+   * @param biServerConnection
+   */
   public void setBiServerConnection(BiServerConnection biServerConnection) {
     this.biServerConnection = biServerConnection;
   }
 
+  /**
+   * Sets the metadata model
+   * @param model
+   */
   public void setModel(ModelerWorkspace model) {
     this.model = model;
   }
 
+  public int getServerConnectionStatus() {
+    return serviceClientStatus;
+  }
   
 }

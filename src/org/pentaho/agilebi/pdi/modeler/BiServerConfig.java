@@ -19,20 +19,30 @@ package org.pentaho.agilebi.pdi.modeler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.pentaho.di.core.encryption.Encr;
+
+/**
+ * A class for loading, saving and manipulating a list of connections to BI servers.
+ * @author jamesdixon
+ *
+ */
 public class BiServerConfig {
 
   private static BiServerConfig instance = null;
   
   private static final String CONFIG_FILE_LOCATION = "plugins/spoon/agile-bi/biservers.properties"; //$NON-NLS-1$
+    
+  private BiServerConnectionCollection servers;
   
-  private Properties props;
-  
-  private List<BiServerConnection> servers;
-  
+  /**
+   * Creates a BiServerConfig instance
+   * @return
+   */
   public static BiServerConfig getInstance() {
     if( instance == null ) {
       instance = new BiServerConfig();
@@ -41,15 +51,18 @@ public class BiServerConfig {
   }
   
   protected BiServerConfig() {
-    props = new Properties();
-    servers = new ArrayList<BiServerConnection>();
+    servers = new BiServerConnectionCollection();
     refreshServerList();
   }
   
+  /**
+   * Reads the list of BI server connections from plugins/spoon/agile-bi/biservers.properties.
+   */
   public void refreshServerList() {
     try {
       File file = new File( CONFIG_FILE_LOCATION ); 
       InputStream in = new FileInputStream( file );
+      Properties props = new Properties();
       props.load( in );
       int idx = 1;
       boolean running = true;
@@ -58,8 +71,8 @@ public class BiServerConfig {
         String serverName = props.getProperty(serverId+"/name"); //$NON-NLS-1$
         String url = props.getProperty(serverId+"/url"); //$NON-NLS-1$
         String userId = props.getProperty(serverId+"/user"); //$NON-NLS-1$
-        String password = props.getProperty(serverId+"/password");    //$NON-NLS-1$
-        String publishPassword = props.getProperty(serverId+"/publishpassword"); //$NON-NLS-1$
+        String password = Encr.decryptPassword( props.getProperty(serverId+"/password") );    //$NON-NLS-1$
+        String publishPassword = Encr.decryptPassword( props.getProperty(serverId+"/publishpassword") ); //$NON-NLS-1$
         if( serverName != null ) {
           BiServerConnection server = new BiServerConnection();
           server.setName( serverName );
@@ -80,6 +93,10 @@ public class BiServerConfig {
     
   }
   
+  /**
+   * Returns a list of strings holding the names of the BI server connections
+   * @return
+   */
   public List<String> getServerNames() {
     List<String> serverNames = new ArrayList<String>();
     for( BiServerConnection server : servers ) {
@@ -88,10 +105,21 @@ public class BiServerConfig {
     return serverNames;
   }
   
-  public List<BiServerConnection> getServerConnections() {
+  /**
+   * Returns a BiServerConnectionCollection holding the current BI server 
+   * connections. If this list is modified, save() can be called to flush
+   * the changes back to the properties file.
+   * @return
+   */
+  public BiServerConnectionCollection getServerConnections() {
     return servers;
   }
   
+  /**
+   * Deletes a server connection by its name
+   * @param serverName
+   * @return
+   */
   public boolean deleteServerByName( String serverName ) {
     for( BiServerConnection server : servers ) {
       if( server.getName().equals( serverName ) ) {
@@ -102,10 +130,19 @@ public class BiServerConfig {
     return false;
   }
   
+  /**
+   * Adds a server connection to the current list
+   * @param server
+   */
   public void addServer( BiServerConnection server ) {
     servers.add( server );
   }
   
+  /**
+   * Returns the server connection with the specified name
+   * @param serverName
+   * @return
+   */
   public BiServerConnection getServerByName( String serverName ) {
     for( BiServerConnection server : servers ) {
       if( server.getName().equals( serverName ) ) {
@@ -115,8 +152,36 @@ public class BiServerConfig {
     return null;
   }
   
+  /**
+   * SaVes the current server connection list to the properties file.
+   * The password and publish password are encrypted
+   */
   public void save() {
-    
+    PrintWriter writer = null;
+    try {
+      File file = new File( CONFIG_FILE_LOCATION ); 
+      Properties props = new Properties();
+
+      int idx = 1;
+      for( BiServerConnection server : servers ) {
+        String serverId = "biserver"+Integer.toString(idx); //$NON-NLS-1$
+        props.put(serverId+"/name", server.getName() ); //$NON-NLS-1$
+        props.put(serverId+"/url", server.getUrl() ); //$NON-NLS-1$
+        props.put(serverId+"/user", server.getUserId() ); //$NON-NLS-1$
+        props.put(serverId+"/password", Encr.encryptPassword( server.getPassword() ) ); //$NON-NLS-1$
+        props.put(serverId+"/publishpassword", Encr.encryptPassword( server.getPublishPassword() ) ); //$NON-NLS-1$
+        idx++;
+      }
+      writer = new PrintWriter( file );
+      props.list( writer );
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      if( writer != null ) {
+        writer.close();
+      }
+    }    
   }
   
 }

@@ -16,8 +16,6 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
@@ -36,10 +34,8 @@ public class OutputStepModelerSource extends TableModelerSource {
 	private String fileName;
 	private String repositoryName;
 	private String stepId;
-	public static final String SOURCE_TYPE = OutputStepModelerSource.class.getSimpleName();
+	public static final String OUTPUTSTEP_SOURCE_TYPE = OutputStepModelerSource.class.getSimpleName();
 	
-  private static Log logger = LogFactory.getLog(OutputStepModelerSource.class);
-  
   public OutputStepModelerSource(){
     
   }
@@ -55,10 +51,10 @@ public class OutputStepModelerSource extends TableModelerSource {
 	public void initialize(Domain domain) throws ModelerException {
 	  super.initialize(domain);
 	  LogicalModel lm = domain.getLogicalModels().get(0);
-	  if(lm.getProperty("trans_file") != null){
-	    setFileName(lm.getProperty("trans_file").toString());
-	    setRepositoryName(lm.getProperty("trans_repo").toString());
-      setStepId(lm.getProperty("trans_step").toString());
+	  if(lm.getProperty("trans_file") != null){ //$NON-NLS-1$
+	    setFileName(lm.getProperty("trans_file").toString()); //$NON-NLS-1$
+	    setRepositoryName(lm.getProperty("trans_repo").toString()); //$NON-NLS-1$
+      setStepId(lm.getProperty("trans_step").toString()); //$NON-NLS-1$
 	  }
     
 //		try {
@@ -114,7 +110,7 @@ public class OutputStepModelerSource extends TableModelerSource {
 	}
 
 	public void setRepositoryName(String repositoryName) {
-	  if(repositoryName != null && repositoryName.equals("")){
+	  if(repositoryName != null && repositoryName.equals("")){ //$NON-NLS-1$
 	    this.repositoryName = null;
 	  }
 	  this.repositoryName = repositoryName;
@@ -130,10 +126,10 @@ public class OutputStepModelerSource extends TableModelerSource {
 
   public void serializeIntoDomain(Domain d) {
     LogicalModel lm = d.getLogicalModels().get(0);
-    lm.setProperty("trans_file", this.fileName);
-    lm.setProperty("trans_repo", this.repositoryName != null ? this.repositoryName : "");
-    lm.setProperty("source_type", this.SOURCE_TYPE);
-    lm.setProperty("trans_step", this.stepId);
+    lm.setProperty("trans_file", this.fileName); //$NON-NLS-1$
+    lm.setProperty("trans_repo", this.repositoryName != null ? this.repositoryName : ""); //$NON-NLS-1$ //$NON-NLS-2$
+    lm.setProperty("source_type", OutputStepModelerSource.OUTPUTSTEP_SOURCE_TYPE); //$NON-NLS-1$
+    lm.setProperty("trans_step", this.stepId); //$NON-NLS-1$
   }
 
 }

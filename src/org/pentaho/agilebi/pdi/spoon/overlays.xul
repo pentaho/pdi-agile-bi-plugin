@@ -21,4 +21,9 @@
 	      command="spoon.loadPerspective('org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective')" />
 	</menupopup>
 	
+	<menupopup id="edit-popup">
+	    <menuitem label="${Spoon.Edit.EditBiServerConfig.MenuItem.Label}"
+	      command="agileBi.editBiServerConfig()" />
+	</menupopup>
+	
 </overlay>

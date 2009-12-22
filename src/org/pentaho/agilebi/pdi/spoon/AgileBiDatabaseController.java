@@ -127,7 +127,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 	}
 
 	public String getName() {
-		return "agilebi_database";
+		return "agilebi_database"; //$NON-NLS-1$
 	}
 
 	public void setData(Object aDatabaseDialog) {

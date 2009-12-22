@@ -32,8 +32,8 @@ public class AgileBISpoonPlugin implements SpoonPlugin{
 
   public Map<String, XulEventHandler> getEventHandlers() {
     HashMap<String, XulEventHandler> hash = new HashMap<String, XulEventHandler>();
-    hash.put("spoon", ModelerHelper.getInstance());
-    hash.put("database_dialog", new AgileBiDatabaseController());
+    hash.put("spoon", ModelerHelper.getInstance()); //$NON-NLS-1$
+    hash.put("database_dialog", new AgileBiDatabaseController()); //$NON-NLS-1$
     return hash;
   }
 
@@ -41,11 +41,11 @@ public class AgileBISpoonPlugin implements SpoonPlugin{
    
   	HashMap<String, XulOverlay> hash = new HashMap<String, XulOverlay>();
   	
-  	XulOverlay overlay = new DefaultXulOverlay("org/pentaho/agilebi/pdi/spoon/overlays.xul"); //$NON-NLS-1$  //$NON-NLS-2$
-    hash.put("spoon", overlay);
+  	XulOverlay overlay = new DefaultXulOverlay("org/pentaho/agilebi/pdi/spoon/overlays.xul"); //$NON-NLS-1$ 
+    hash.put("spoon", overlay); //$NON-NLS-1$
     
-    overlay = new DefaultXulOverlay("org/pentaho/agilebi/pdi/spoon/database_dialog_overlay.xul"); //$NON-NLS-1$  //$NON-NLS-2$
-    hash.put("database_dialog", overlay);
+    overlay = new DefaultXulOverlay("org/pentaho/agilebi/pdi/spoon/database_dialog_overlay.xul"); //$NON-NLS-1$  
+    hash.put("database_dialog", overlay); //$NON-NLS-1$
     
     return hash;
   }

@@ -16,12 +16,9 @@ OutputStepModelerSource.java * This program is free software; you can redistribu
  */
 package org.pentaho.agilebi.pdi.modeler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
-import org.pentaho.metadata.model.SqlDataSource;
 import org.pentaho.metadata.model.SqlPhysicalModel;
 import org.pentaho.metadata.model.SqlPhysicalTable;
 import org.pentaho.metadata.util.ThinModelConverter;
@@ -40,8 +37,6 @@ public class TableModelerSource implements IModelerSource {
 	private String schemaName;
 	public static final String SOURCE_TYPE = TableModelerSource.class.getSimpleName();
 	
-  private static Log logger = LogFactory.getLog(TableModelerSource.class);
-  
   public TableModelerSource(){
     
   }
@@ -51,7 +46,7 @@ public class TableModelerSource implements IModelerSource {
 		this.databaseMeta = databaseMeta;
 		this.schemaName = schemaName;
 		if( schemaName == null ) {
-		  this.schemaName = "";
+		  this.schemaName = ""; //$NON-NLS-1$
 		}
 	}
 
@@ -65,21 +60,20 @@ public class TableModelerSource implements IModelerSource {
 
 	public void initialize(Domain domain) throws ModelerException {
 	  SqlPhysicalModel model = (SqlPhysicalModel) domain.getPhysicalModels().get(0);
-	  SqlPhysicalTable table = (SqlPhysicalTable) model.getPhysicalTables().get(0);
+	  SqlPhysicalTable table = model.getPhysicalTables().get(0);
 	  
-	  SqlDataSource dSource = model.getDatasource();
 	  this.databaseMeta = ThinModelConverter.convertToLegacy(model.getId(), model.getDatasource());
     this.tableName = table.getTargetTable();
 	  this.schemaName = table.getTargetSchema();
 	  
     if( schemaName == null ) {
-      schemaName = "";
+      schemaName = ""; //$NON-NLS-1$
     }
 	}
 	
   public void serializeIntoDomain(Domain d) {
     LogicalModel lm = d.getLogicalModels().get(0);
-    lm.setProperty("source_type", SOURCE_TYPE);
+    lm.setProperty("source_type", SOURCE_TYPE); //$NON-NLS-1$
   }
 
   public DatabaseMeta getDatabaseMeta() {
@@ -99,12 +93,12 @@ public class TableModelerSource implements IModelerSource {
   }
 
   public String getSchemaName() {
-    return schemaName == null ? "" : schemaName;
+    return schemaName == null ? "" : schemaName; //$NON-NLS-1$
   }
 
   public void setSchemaName(String schemaName) {
     if( schemaName == null ) {
-      schemaName = "";
+      schemaName = ""; //$NON-NLS-1$
     }
     this.schemaName = schemaName;
   }

@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
+<window id="root" title="" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" height="600" width="800" onload="dialog.init()"
+  xmlns:pen="http://www.pentaho.org/2008/xul">
+
+  <dialog width="300" height="300" id="biserverlist" title="${Spoon.Perspectives.AgileBi.EditBIServerConfigsDialog.Title}" 
+  	buttons="accept"
+  	buttonlabelaccept="${Spoon.Perspectives.AgileBi.EditBIServerConfigsDialog.Accept}"
+  	ondialogaccept="dialog.onDialogAccept()"
+    >
+
+	<vbox flex="1" id="mainVBox">
+	    <hbox>
+	    	<label value="${Spoon.Perspectives.AgileBi.EditBIServerConfigsDialog.ListTitle}" />
+    	    <spacer flex="1" />
+            <button image="images/Add.png" onclick="dialog.addBiServer()"/>
+            <button id="removeButton" image="images/remove_disabled.png" onclick="dialog.removeBiServer()" disabled="true"/>
+            <button id="editButton" image="images/edit_disabled.png" onclick="dialog.editBiServer()" disabled="true"/>
+        </hbox>
+        <listbox id="serverListBox" onselect="dialog.serverClick()" flex="1" seltype="single" pen:binding="name">
+        </listbox>
+	    <hbox>
+			<button width="100" id="testButton" label="${Spoon.Perspectives.AgileBi.EditBIServerConfigsDialog.Test}" onclick="dialog.testServerConnection()" disabled="true"/>
+	        <spacer flex="3" />
+        </hbox>
+	</vbox>
+
+  </dialog>
+
+  <dialog width="410" height="360" id="biserverconfig" title="${Spoon.Perspectives.AgileBi.EditBIServerConfigDialog.Title}" 
+  	ondialogaccept="dialog.okClick()"
+    ondialogcancel="dialog.cancelClick()"
+    >
+
+	<vbox flex="1" id="mainVBox">
+	    <hbox>
+	    	<label flex="1" value="${Spoon.Perspectives.AgileBi.EditBIServerConfigDialog.Server.Name}" />
+	        <textbox flex="3" id="name" oninput="updateButtonStatus()" onchange="updateButtonStatus()" onkeyup="updateButtonStatus()"/>
+        </hbox>
+	    <hbox>
+	    	<label flex="1" value="${Spoon.Perspectives.AgileBi.EditBIServerConfigDialog.Server.URL}" />
+	        <textbox flex="3" id="url"/>
+        </hbox>
+	    <hbox>
+	    	<label flex="1" value="${Spoon.Perspectives.AgileBi.EditBIServerConfigDialog.Server.UserId}" />
+	        <textbox flex="3" id="userid"/>
+        </hbox>
+	    <hbox>
+	    	<label flex="1" value="${Spoon.Perspectives.AgileBi.EditBIServerConfigDialog.Server.Password}" />
+	        <textbox flex="3" id="password" type="password"/>
+        </hbox>
+	    <hbox>
+	    	<label flex="1" value="${Spoon.Perspectives.AgileBi.EditBIServerConfigDialog.Server.PublishPassword}" />
+	        <textbox flex="3" id="publishpassword" type="password"/>
+        </hbox>
+	    <hbox>
+			<button width="100" label="${Spoon.Perspectives.AgileBi.EditBIServerConfigsDialog.Test}" onclick="dialog.testServerConnection()"/>
+	        <spacer flex="3" />
+        </hbox>
+	</vbox>	
+
+  </dialog>
+
+</window>

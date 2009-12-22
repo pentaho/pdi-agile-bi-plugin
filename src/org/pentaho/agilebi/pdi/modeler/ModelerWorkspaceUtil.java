@@ -95,35 +95,34 @@ public class ModelerWorkspaceUtil {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     TransMeta transMeta = spoon.getActiveTransformation();
     if( transMeta == null ) {
-      SpoonFactory.getInstance().messageBox( "This must be open from a transformation", MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException("Could not get transformation");
+      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen" ), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+      throw new IllegalStateException(Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen")); //$NON-NLS-1$
     }
     StepMeta steps[] = transMeta.getSelectedSteps();
     if( steps == null || steps.length > 1 ) {
-      SpoonFactory.getInstance().messageBox( "One (and only one) step must be selected", MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException("One (and only one) step must be selected");
+      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.OneStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+      throw new IllegalStateException(Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.OneStepNeeded")); //$NON-NLS-1$
     }
     
     // assume only one selected 
     StepMeta stepMeta = steps[0];
     if( !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
-      SpoonFactory.getInstance().messageBox( "A Table Output step must be selected", MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException("A Table Output step must be selected");
+      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+      throw new IllegalStateException(Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded")); //$NON-NLS-1$
     }
     
     TableOutputMeta tableOutputMeta = (TableOutputMeta) stepMeta.getStepMetaInterface();
     DatabaseMeta databaseMeta = tableOutputMeta.getDatabaseMeta();
-    String tableName = tableOutputMeta.getTablename();
 
     RowMetaInterface rowMeta = null;
     try {
       rowMeta = transMeta.getStepFields(stepMeta);
     } catch (KettleException e) {
     	logger.info(e);
-      throw new ModelerException("Could not get transformation step metadata", e);
+      throw new ModelerException(Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta"), e); //$NON-NLS-1$
     }
     if(rowMeta == null){
-   	 throw new ModelerException("Could not get transformation step metadata");
+   	 throw new ModelerException(Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta")); //$NON-NLS-1$
     }
     
     
@@ -237,14 +236,14 @@ public class ModelerWorkspaceUtil {
       String formatMask = f.getFormat();
       System.out.println(formatMask);
       if (formatMask != null) {
-        lCol.setProperty("mask", formatMask);
+        lCol.setProperty("mask", formatMask); //$NON-NLS-1$
       }
       lCol.setAggregationList(DEFAULT_AGGREGATION_LIST);
       AggregationType selectedAgg = AggregationType.NONE; 
       try{
         selectedAgg = AggregationType.valueOf(f.getAggTypeDesc());
       } catch(IllegalArgumentException e){
-        logger.info("Could not parse Aggregation string to type: "+f.getAggTypeDesc(), e);
+        logger.info(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadAggType", f.getAggTypeDesc() ), e); //$NON-NLS-1$
         throw new ModelerException(e);
       }
       lCol.setAggregationType(selectedAgg);
@@ -265,7 +264,6 @@ public class ModelerWorkspaceUtil {
       }
     }
 
-    String domainName = model.getDomain().getId();
     XmiParser parser = new XmiParser();
     String xmi = parser.generateXmi(model.getDomain());
   
@@ -279,8 +277,8 @@ public class ModelerWorkspaceUtil {
       pw.print(xmi);
       pw.close();
     } catch(IOException e){
-      logger.info("Error writing metadata model",e);
-      throw new ModelerException("Error writing metadata model",e);
+      logger.info(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
+      throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
     }
   
 
@@ -338,7 +336,7 @@ public class ModelerWorkspaceUtil {
       OlapCube cube = new OlapCube();
       cube.setLogicalTable(logicalTable);
       // TODO find a better way to generate default names
-      cube.setName(model.getModelName() + " Cube");
+      cube.setName( Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.CubeName", model.getModelName() ) ); //$NON-NLS-1$
       cube.setOlapDimensionUsages(usages);
 
       for (MeasureMetaData f : model.getFields()) {
@@ -371,7 +369,6 @@ public class ModelerWorkspaceUtil {
         // run it thru the parser to be safe and get a doc type node
         Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
         byte schemaBytes[] = schemaDoc.asXML().getBytes();
-        String schemaFileName = model.getModelName() + ".mondrian.xml"; //$NON-NLS-1$
         // write out the file
         File modelFile = new File("models"); //$NON-NLS-1$
         modelFile.mkdirs();
@@ -379,7 +376,7 @@ public class ModelerWorkspaceUtil {
         OutputStream out = new FileOutputStream(modelFile);
         out.write(schemaBytes);
       } catch(Exception e){
-        throw new ModelerException("Could not generate Mondrian model",e);
+        throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadGenerateOLAP"),e); //$NON-NLS-1$
       }
       // now add to the schema catalog
       /*
@@ -406,8 +403,8 @@ public class ModelerWorkspaceUtil {
 	      pw.close();
 	      
 	    } catch(IOException e){
-	      logger.info("Error writing metadata model",e);
-	      throw new ModelerException("Error writing metadata model",e);
+	      logger.info(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadGenerateMetadata"),e); //$NON-NLS-1$
+	      throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadGenerateMetadata"),e); //$NON-NLS-1$
 	    }
 
   	} catch (Exception e) {
@@ -431,7 +428,7 @@ public class ModelerWorkspaceUtil {
         	
       // re-hydrate the source
       LogicalModel logical = domain.getLogicalModels().get(0);
-      Object property = logical.getProperty("source_type");
+      Object property = logical.getProperty("source_type"); //$NON-NLS-1$
       if( property != null ) {
         IModelerSource theSource = ModelerSourceFactory.generateSource(property.toString());
         theSource.initialize(domain);   
@@ -445,7 +442,7 @@ public class ModelerWorkspaceUtil {
     } catch (Exception e){
       logger.info(e);
       e.printStackTrace();
-      throw new ModelerException("Error loading workspace",e);
+      throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.LoadWorkspace.Failed"),e); //$NON-NLS-1$
     }
   }  
 }
