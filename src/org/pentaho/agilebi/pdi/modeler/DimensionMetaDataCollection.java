@@ -65,4 +65,9 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
     return true;
   }
   
+  @Override
+  public Class<? extends ModelerNodePropertiesForm> getPropertiesForm() {
+    return null;
+  }
+  
 }

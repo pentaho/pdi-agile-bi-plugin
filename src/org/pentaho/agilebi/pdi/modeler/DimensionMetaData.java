@@ -108,4 +108,10 @@ public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaDa
   public boolean isEditingDisabled(){
     return false;
   }
+
+  public Class getPropertiesForm() {
+    return DimensionPropertiesForm.class;
+  }
+  
+  
 }

@@ -289,16 +289,16 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     setDirty(true);
   }
 
-  public FieldMetaData createMeasure(Object selectedField) {
-    FieldMetaData meta = new FieldMetaData(selectedField.toString(), "", selectedField.toString());
+  public MeasureMetaData createMeasure(Object selectedField) {
+    MeasureMetaData meta = new MeasureMetaData(selectedField.toString(), "", selectedField.toString());
     // TODO: replace this terrible resolution with better model code.
     LogicalColumn col = findLogicalColumn(selectedField.toString());
     meta.setLogicalColumn(col);
     return meta;
   }
   
-  public FieldMetaData addFieldIntoPlay(Object selectedField) {
-    FieldMetaData meta = createMeasure(selectedField);
+  public MeasureMetaData addFieldIntoPlay(Object selectedField) {
+    MeasureMetaData meta = createMeasure(selectedField);
     this.model.getMeasures().add(meta); //$NON-NLS-1$
     return meta;
   }
@@ -322,11 +322,11 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return source;
   }    
 
-  public List<FieldMetaData> getFields() {
+  public List<MeasureMetaData> getFields() {
     return model.getMeasures();
   }
   
-  public void setFields(List<FieldMetaData> fields) {
+  public void setFields(List<MeasureMetaData> fields) {
     this.model.getMeasures().clear();
     this.model.getMeasures().addAll(fields);
   }
@@ -512,7 +512,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    	while(theMeasuresItr.hasNext()) {
 	    		OlapMeasure theMeasure = theMeasuresItr.next();
 	    		
-	    		FieldMetaData theMeasureMD = new FieldMetaData();
+	    		MeasureMetaData theMeasureMD = new MeasureMetaData();
 	    		theMeasureMD.setName(theMeasure.getName());
 
 	    		theMeasureMD.setName(theMeasure.getLogicalColumn().getPhysicalColumn().getName(Locale.getDefault().toString()));

@@ -110,4 +110,9 @@ public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements 
   public boolean isEditingDisabled(){
     return false;
   }
+  
+  @Override
+  public Class<? extends ModelerNodePropertiesForm> getPropertiesForm() {
+    return LevelsPropertiesForm.class;
+  }
 }

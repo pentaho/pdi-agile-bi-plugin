@@ -73,7 +73,7 @@ public abstract class AbstractMetaDataModelNode<T> extends AbstractModelNode<T> 
     for (T t : this) {
       ((AbstractMetaDataModelNode)t).validate();
     }
-  }
+  };
   
   @SuppressWarnings("unchecked")
   public boolean isTreeValid() {
@@ -91,4 +91,7 @@ public abstract class AbstractMetaDataModelNode<T> extends AbstractModelNode<T> 
   public boolean isValid() {
     return valid;
   }
+  
+  public abstract Class<? extends ModelerNodePropertiesForm> getPropertiesForm();
+  
 }

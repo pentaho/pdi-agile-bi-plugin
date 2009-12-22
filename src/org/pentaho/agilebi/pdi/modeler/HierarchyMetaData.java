@@ -102,4 +102,11 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
   public boolean isEditingDisabled(){
     return false;
   }
+
+  @Override
+  public Class<? extends ModelerNodePropertiesForm> getPropertiesForm() {
+    return null;
+  }
+  
+
 }

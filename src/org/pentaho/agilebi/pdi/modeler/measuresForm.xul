@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
+
+<vbox id="measuresprops"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" xmlns:pen="http://www.pentaho.org/2008/xul">
+  <hbox id="messages2">
+    <image src="images/warning.png" />
+    <label id="messages2label"
+      value="This is a test to see how a warning message will appear." />
+  </hbox>
+  <label value="FieldName:" />
+  <textbox id="displayname" />
+  <label value="Aggregation:" />
+  <menulist id="aggregationtype">
+    <menupopup>
+      <menuitem label="SUM" />
+      <menuitem label="AVG" />
+      <menuitem label="MIN" />
+      <menuitem label="MAX" />
+    </menupopup>
+  </menulist>
+  <label value="Format:" />
+  <menulist id="formatstring">
+    <menupopup>
+      <menuitem label="NONE" />
+      <menuitem label="#,###;(#,###)" />
+      <menuitem label="#,###.00;(#,###.00)" />
+      <menuitem label="\\$ #,###;(\\$ #,###)" />
+      <menuitem label="\\$ #,###.00;(\\$ #,###.00)" />
+      <menuitem label="#.#%;(#.#%)" />
+    </menupopup>
+  </menulist>
+</vbox>

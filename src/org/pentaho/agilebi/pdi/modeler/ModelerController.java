@@ -19,9 +19,10 @@ package org.pentaho.agilebi.pdi.modeler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +36,6 @@ import org.pentaho.metadata.model.IPhysicalTable;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
-import org.pentaho.ui.xul.binding.BindingConvertor;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.binding.Binding.Type;
@@ -46,7 +46,6 @@ import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDeck;
 import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.containers.XulListbox;
-import org.pentaho.ui.xul.containers.XulTabbox;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
@@ -95,11 +94,13 @@ public class ModelerController extends AbstractXulEventHandler{
   private XulTree dimensionTree;
   private XulMenuList serverList;
   private XulMenuList visualizationList;
+  private XulDeck propDeck;
   
   private BindingFactory bf = new DefaultBindingFactory();
  
   private List<String> serverNames;
   private List<String> visualizationNames;
+  private Map<Class<? extends ModelerNodePropertiesForm>, ModelerNodePropertiesForm> propertiesForms = new HashMap<Class<? extends ModelerNodePropertiesForm>, ModelerNodePropertiesForm>();
   
   public ModelerController(){
     workspace = new ModelerWorkspace();
@@ -186,9 +187,9 @@ public class ModelerController extends AbstractXulEventHandler{
           newdata.add((DimensionMetaData)obj);
           // TODO: this will also need to resolve level LogicalColumns
         }
-      } else if (obj instanceof FieldMetaData) {
+      } else if (obj instanceof MeasureMetaData) {
         if (event.getDropParent() instanceof MeasuresCollection) {
-          FieldMetaData measure = (FieldMetaData)obj;
+          MeasureMetaData measure = (MeasureMetaData)obj;
           LogicalColumn col = workspace.findLogicalColumn(obj.toString());
           measure.setLogicalColumn(col);
           newdata.add(measure);
@@ -214,6 +215,7 @@ public class ModelerController extends AbstractXulEventHandler{
     dimensionTree = (XulTree) document.getElementById("dimensionTree");
     serverList = (XulMenuList)document.getElementById("serverlist");
     visualizationList = (XulMenuList)document.getElementById("visualizationlist");
+    propDeck = (XulDeck) document.getElementById("propertiesdeck");
 
     XulLabel sourceLabel = (XulLabel) document.getElementById(SOURCE_NAME_LABEL_ID);
     String connectionName = "";
@@ -269,10 +271,6 @@ public class ModelerController extends AbstractXulEventHandler{
     }
   }
   
-  public void setPropertiesForm(PropertiesForm form){
-    this.propertiesForm = form;
-  }
-  
   public void setSelectedDims(List<Object> selectedDims) {
     List<Object> prevSelected = null; // this.selectedColumns;
     if (selectedDims != null) {
@@ -285,9 +283,9 @@ public class ModelerController extends AbstractXulEventHandler{
   public void moveFieldsToMeasures() {
     XulListbox fieldsList = (XulListbox) document.getElementById(FIELD_LIST_ID);
     Object[] selectedItems = fieldsList.getSelectedItems();
-    List<FieldMetaData> generatedFields = new ArrayList<FieldMetaData>();
+    List<MeasureMetaData> generatedFields = new ArrayList<MeasureMetaData>();
     for (Object obj : selectedItems) {
-      FieldMetaData field = workspace.addFieldIntoPlay(obj);
+      MeasureMetaData field = workspace.addFieldIntoPlay(obj);
     }
   }
   
@@ -417,11 +415,18 @@ public class ModelerController extends AbstractXulEventHandler{
 
   private Binding modelNameBinding;
   
-  private PropertiesForm propertiesForm;
   
   public void setDimTreeSelectionChanged(Object selection){
     selectedTreeItem = selection;
-    propertiesForm.setSelectedItem(selection);
+    if(selection != null && selection instanceof AbstractMetaDataModelNode){
+      AbstractMetaDataModelNode node = (AbstractMetaDataModelNode) selection;
+      ModelerNodePropertiesForm form = propertiesForms.get(node.getPropertiesForm());
+      if(form != null){
+        form.activate((AbstractMetaDataModelNode) selection);
+        return;
+      }
+    }
+    this.propDeck.setSelectedIndex(0);
     
   }
   
@@ -519,6 +524,9 @@ public class ModelerController extends AbstractXulEventHandler{
    // document.loadPerspective(id);
   }
   
+  public void addPropertyForm(AbstractModelerNodeForm form){
+    propertiesForms.put(form.getClass(), form);
+  }
 
-
+  
 }

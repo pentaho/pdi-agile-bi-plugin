@@ -48,13 +48,26 @@ public class XulUI implements TabItemInterface {
       loader.setOuterContext(shell);
       container = loader.loadXul("org/pentaho/agilebi/pdi/modeler/panel.xul"); //$NON-NLS-1$
 
-      PropertiesForm propController = new PropertiesForm();
+      
       controller = new ModelerController(model);
-      controller.setPropertiesForm(propController);
       this.meta = new ModelerEngineMeta(controller);
       
       container.addEventHandler(controller);
+      
+      AbstractModelerNodeForm propController = new MeasuresPropertiesForm();
       container.addEventHandler(propController);
+      controller.addPropertyForm(propController);
+      propController.init();
+      
+      propController = new DimensionPropertiesForm();
+      container.addEventHandler(propController);
+      controller.addPropertyForm(propController);
+      propController.init();
+      
+      propController = new LevelsPropertiesForm();
+      container.addEventHandler(propController);
+      controller.addPropertyForm(propController);
+      propController.init();
       
       runner = new SwtXulRunner();
       runner.addContainer(container);

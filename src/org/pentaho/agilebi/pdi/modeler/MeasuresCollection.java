@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 import org.pentaho.ui.xul.util.AbstractModelNode;
 
-public class MeasuresCollection extends AbstractMetaDataModelNode<FieldMetaData>  implements Serializable {
+public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaData>  implements Serializable {
   private String name = "Measures";
   
   public String getName() {
@@ -36,15 +36,19 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<FieldMetaData>
       validationMessages.add("Model requires at least one Measure");
       valid = false;
     }
-    
   }
 
   @Override
-  public void onAdd(FieldMetaData field) {
+  public void onAdd(MeasureMetaData field) {
     field.setParent(this);
   }
   
   public boolean isEditingDisabled(){
     return true;
+  }
+  
+  @Override
+  public Class<? extends ModelerNodePropertiesForm> getPropertiesForm() {
+    return null;
   }
 }

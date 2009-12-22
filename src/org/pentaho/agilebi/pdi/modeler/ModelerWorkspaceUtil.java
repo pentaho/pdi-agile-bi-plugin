@@ -223,7 +223,7 @@ public class ModelerWorkspaceUtil {
     cat.getLogicalColumns().clear();
 
     // Add all measures
-    for (FieldMetaData f : model.getFields()) {
+    for (MeasureMetaData f : model.getFields()) {
       LogicalColumn lCol = f.getLogicalColumn();
       if (f.getFormat() != null) {
         // TODO: set mask
@@ -341,7 +341,7 @@ public class ModelerWorkspaceUtil {
       cube.setName(model.getModelName() + " Cube");
       cube.setOlapDimensionUsages(usages);
 
-      for (FieldMetaData f : model.getFields()) {
+      for (MeasureMetaData f : model.getFields()) {
 
         OlapMeasure measure = new OlapMeasure();
         String n = f.getDisplayName() != null ? f.getDisplayName() : f.getName();

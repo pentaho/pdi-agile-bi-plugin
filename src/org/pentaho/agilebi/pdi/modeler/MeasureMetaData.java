@@ -28,7 +28,7 @@ import org.pentaho.reporting.libraries.base.util.StringUtils;
  * @author wseyler
  *
  */
-public class FieldMetaData extends AbstractMetaDataModelNode implements Serializable {
+public class MeasureMetaData extends AbstractMetaDataModelNode implements Serializable {
   
   String name;
   String format = "NONE";
@@ -46,11 +46,11 @@ public class FieldMetaData extends AbstractMetaDataModelNode implements Serializ
     aggTypes.add("MAXIMUM");
   }
   
-  public FieldMetaData(){
+  public MeasureMetaData(){
     
   }
   
-  public FieldMetaData(String fieldName, String format, String displayName) {
+  public MeasureMetaData(String fieldName, String format, String displayName) {
     super();
     this.name = fieldName;
     this.format = format;
@@ -135,10 +135,10 @@ public class FieldMetaData extends AbstractMetaDataModelNode implements Serializ
   
   @Override
   public boolean equals(Object o) {
-    if(o == null || o instanceof FieldMetaData == false){
+    if(o == null || o instanceof MeasureMetaData == false){
       return false;
     }
-    FieldMetaData f = (FieldMetaData) o;
+    MeasureMetaData f = (MeasureMetaData) o;
     if(f.getLogicalColumn().getId().equals(this.getLogicalColumn().getId())){
       return true;
     }
@@ -175,5 +175,10 @@ public class FieldMetaData extends AbstractMetaDataModelNode implements Serializ
   
   public boolean isEditingDisabled(){
     return false;
+  }
+  
+  @Override
+  public Class<? extends ModelerNodePropertiesForm> getPropertiesForm() {
+    return MeasuresPropertiesForm.class;
   }
 }
