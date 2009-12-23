@@ -29,6 +29,7 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
     this.dim = dim;
     this.dim.addPropertyChangeListener("name", nameListener);
     sourceLabel.setValue(dim.getLogicalColumn().getName(Locale.getDefault().toString()));
+    name.setValue(dim.getName());
   }
 
   public void init() {

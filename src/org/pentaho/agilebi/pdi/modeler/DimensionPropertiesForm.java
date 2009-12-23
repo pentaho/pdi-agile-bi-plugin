@@ -30,6 +30,7 @@ public class DimensionPropertiesForm extends AbstractModelerNodeForm<DimensionMe
     }
     this.dim = dim;
     this.dim.addPropertyChangeListener("name", nameListener);
+    name.setValue(dim.getName());
   }
 
   public void init() {
