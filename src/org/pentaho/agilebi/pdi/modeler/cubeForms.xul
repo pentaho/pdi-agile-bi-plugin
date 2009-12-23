@@ -7,7 +7,7 @@
     <hbox id="dimension_message">
       <image src="images/warning.png" />
       <label id="dimension_message_label"
-        value="This is a test to see how a warning message will appear." />
+        value="This is a test to see how a warning message will appear." flex="1"/>
     </hbox>
     <spacer height="10"/>
     <label value="Dimension Name:" />
@@ -17,7 +17,7 @@
   <vbox id="levelprops">
     <hbox id="level_message">
       <image src="images/warning.png" />
-      <label id="dimension_message_label"
+      <label id="level_message_label" flex="1"
         value="This is a test to see how a warning message will appear." />
     </hbox>
     <spacer height="10"/>

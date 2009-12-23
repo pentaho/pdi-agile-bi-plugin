@@ -3,17 +3,16 @@ package org.pentaho.agilebi.pdi.modeler;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.pentaho.ui.xul.binding.BindingFactory;
-import org.pentaho.ui.xul.binding.DefaultBindingFactory;
+import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulTextbox;
-import org.pentaho.ui.xul.containers.XulDeck;
-import org.pentaho.ui.xul.containers.XulVbox;
-import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
+import org.pentaho.ui.xul.containers.XulHbox;
 
 public class DimensionPropertiesForm extends AbstractModelerNodeForm<DimensionMetaData>{
 
   private XulTextbox name;
   private DimensionMetaData dim;
+  private XulHbox messageBox;
+  private XulLabel messageLabel;
   private PropertyChangeListener nameListener = new PropertyChangeListener(){
     public void propertyChange(PropertyChangeEvent arg0) {
       setName(dim.getName());
@@ -31,11 +30,15 @@ public class DimensionPropertiesForm extends AbstractModelerNodeForm<DimensionMe
     this.dim = dim;
     this.dim.addPropertyChangeListener("name", nameListener);
     name.setValue(dim.getName());
+    messageLabel.setValue(dim.getValidationMessagesString());
+    messageBox.setVisible(dim.getValidationMessages().size() > 0);
   }
 
   public void init() {
     super.init();
     name = (XulTextbox) document.getElementById("dimension_name");
+    messageBox = (XulHbox) document.getElementById("dimension_message");
+    messageLabel = (XulLabel) document.getElementById("dimension_message_label");
     bf.createBinding(this, "name", name, "value");
     
   }

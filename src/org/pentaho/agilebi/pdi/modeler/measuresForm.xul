@@ -6,18 +6,18 @@
   xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" xmlns:pen="http://www.pentaho.org/2008/xul">
   <hbox id="messages2">
     <image src="images/warning.png" />
-    <label id="messages2label"
+    <label id="messages2label" flex="1"
       value="This is a test to see how a warning message will appear." />
   </hbox>
-  <label value="FieldName:" />
+  <label value="Display Name:" />
   <textbox id="displayname" />
   <label value="Aggregation:" />
   <menulist id="aggregationtype">
     <menupopup>
       <menuitem label="SUM" />
-      <menuitem label="AVG" />
-      <menuitem label="MIN" />
-      <menuitem label="MAX" />
+      <menuitem label="AVERAGE" />
+      <menuitem label="MINIMUM" />
+      <menuitem label="MAXIMUM" />
     </menupopup>
   </menulist>
   <label value="Format:" />

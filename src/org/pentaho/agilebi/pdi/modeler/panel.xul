@@ -70,22 +70,21 @@
             </tree>
           </vbox>
           <vbox flex="2">
-            <label value="Properties" />
-            <deck id="propertiesdeck" >
-            
-              <vbox id="blank">
-              	<hbox id="messages1" visible="false">
-              		
-              	</hbox>
-              </vbox>
-              <pen:include src="measuresForm.xul"/>
+            <groupbox flex="1">
+              <caption label="Properties"/>
+              <deck id="propertiesdeck" >
               
-              <pen:include src="cubeForms.xul" ignoreroot="true"/>
-              
-            </deck>
-            <!--
-              <checkbox id="uniquecb" label="Unique" checked="false" onclick="modeler.updateUniqueMember()"/>
-            -->
+                <vbox id="blank">
+                	<hbox id="messages1" visible="false">
+                		
+                	</hbox>
+                </vbox>
+                <pen:include src="measuresForm.xul"/>
+                
+                <pen:include src="cubeForms.xul" ignoreroot="true"/>
+                
+              </deck>
+            </groupbox>
           </vbox>
         </hbox>
       </hbox>
