@@ -21,12 +21,14 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.widgets.Shell;
+import org.pentaho.platform.util.StringUtil;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.binding.Binding.Type;
 import org.pentaho.ui.xul.components.XulButton;
+import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulListbox;
 
 /**
@@ -44,8 +46,14 @@ public class XulDialogBiServerList extends AbstractSwtXulDialogController {
   
   private XulListbox serverListBox;
   
-  private XulButton testButton, removeButton, editButton;
+  private XulButton testButton, removeButton, saveButton;
+
+  private XulTextbox nameTextBox, urlTextBox, userIdTextBox, passwordTextBox, publishPasswordTextBox;
+
+  private String serverName, url, userId, password, publishPassword;
   
+  private Binding nameBinding, urlBinding, userIdBinding, passwordBinding, publishPasswordBinding;
+
   private BiServerConnectionCollection biServerConnections;
   
   private BiServerConfig biServerConfig;
@@ -60,10 +68,6 @@ public class XulDialogBiServerList extends AbstractSwtXulDialogController {
     
     setName("dialog"); //$NON-NLS-1$
 
-    biServerConfig = BiServerConfig.getInstance();
-    
-    biServerConnections = biServerConfig.getServerConnections();
-    
     // create the 'biserverlist' dialog
     initDialogController( "org/pentaho/agilebi/pdi/modeler/biserverconfig.xul", "biserverlist", null, null ); //$NON-NLS-1$ //$NON-NLS-2$
     
@@ -86,17 +90,30 @@ public class XulDialogBiServerList extends AbstractSwtXulDialogController {
    */
   public void init() {
 
+    biServerConfig = BiServerConfig.getInstance();
+    biServerConnections = biServerConfig.getServerConnections();
+
     bf.setDocument(document);
 
     bf.setBindingType(Type.ONE_WAY);
 
     serverListBox = (XulListbox)document.getElementById("serverListBox"); //$NON-NLS-1$
 
+    nameTextBox = (XulTextbox)document.getElementById("name"); //$NON-NLS-1$
+    urlTextBox = (XulTextbox)document.getElementById("url"); //$NON-NLS-1$
+    userIdTextBox = (XulTextbox)document.getElementById("userid"); //$NON-NLS-1$
+    passwordTextBox = (XulTextbox)document.getElementById("password"); //$NON-NLS-1$
+    publishPasswordTextBox = (XulTextbox)document.getElementById("publishpassword"); //$NON-NLS-1$
+    saveButton = (XulButton)document.getElementById("saveButton"); //$NON-NLS-1$
     testButton = (XulButton)document.getElementById("testButton"); //$NON-NLS-1$
     removeButton = (XulButton)document.getElementById("removeButton"); //$NON-NLS-1$
-    editButton = (XulButton)document.getElementById("editButton"); //$NON-NLS-1$
     
     serverNamesBinding = bf.createBinding(this, "BiServerConnections", serverListBox, "elements"); //$NON-NLS-1$ //$NON-NLS-2$
+    nameBinding = bf.createBinding(this, "serverName", nameTextBox, "value"); //$NON-NLS-1$ //$NON-NLS-2$
+    urlBinding = bf.createBinding(this, "url", urlTextBox, "value"); //$NON-NLS-1$ //$NON-NLS-2$
+    userIdBinding = bf.createBinding(this, "userId", userIdTextBox, "value"); //$NON-NLS-1$ //$NON-NLS-2$
+    passwordBinding = bf.createBinding(this, "password", passwordTextBox, "value"); //$NON-NLS-1$ //$NON-NLS-2$
+    publishPasswordBinding = bf.createBinding(this, "publishPassword", publishPasswordTextBox, "value"); //$NON-NLS-1$ //$NON-NLS-2$
     
     updateConnectionList();
     updateButtonStatus();
@@ -134,21 +151,14 @@ public class XulDialogBiServerList extends AbstractSwtXulDialogController {
    */
   public void addBiServer() {
 
-    BiServerConnection connection = new BiServerConnection();
-    
-    try {
-      XulDialogBiServerConfig serverConfigDialog = new XulDialogBiServerConfig( getShell(), connection );
-      serverConfigDialog.showDialog();
-      if(serverConfigDialog.isAccepted()) {
-        biServerConnections.add( connection );
-        updateConnectionList();
-        serverListBox.setSelectedIndex( biServerConnections.size()-1 );
-        updateButtonStatus();
-        biServerConfig.save();
-      }
-    } catch (XulException e) {
-      e.printStackTrace();
-    }
+    serverListBox.setSelectedIndex(-1);
+    serverName = "untitled";
+    url = "http://server:port/pentaho";
+    userId = ""; //$NON-NLS-1$
+    password = ""; //$NON-NLS-1$
+    publishPassword = ""; //$NON-NLS-1$
+    updateSettings();
+    updateButtonStatus();
     
   }
 
@@ -161,60 +171,97 @@ public class XulDialogBiServerList extends AbstractSwtXulDialogController {
       return;
     }
     biServerConnections.remove(idx);
+    serverName = ""; //$NON-NLS-1$
+    url = ""; //$NON-NLS-1$
+    userId = ""; //$NON-NLS-1$
+    password = ""; //$NON-NLS-1$
+    publishPassword = ""; //$NON-NLS-1$
     updateConnectionList();
+    updateSettings();
     updateButtonStatus();
-    biServerConfig.save();
   }
   
    /**
-    * Edits a BI server connection. Opens the XulDialogBiServerConfig dialog.
-    * If the user clicks ok the listbox and buttons are refreshed. The list 
-    * is flushed to the properties file.
+    * Saves a BI server connection. The current settings are copied to the
+    * current BI server connection object.
     */
-  public void editBiServer() {
+  public void saveServerConnection() {
     int idx = serverListBox.getSelectedIndex();
+    BiServerConnection biServerConnection = null;
     if( idx == -1 ) {
-      return;
-    }
-    BiServerConnection connection = biServerConnections.get( idx );
-    if( connection == null ) {
-      return;
-    }
-    try {
-      XulDialogBiServerConfig serverConfigDialog = new XulDialogBiServerConfig( getShell(), connection );
-      serverConfigDialog.showDialog();
-      if(serverConfigDialog.isAccepted()) {
-        // maybe the name changed
-        updateConnectionList();
-        serverListBox.setSelectedIndex( idx );
-        updateButtonStatus();
-        biServerConfig.save();
+      // we are doing an add
+      biServerConnection = new BiServerConnection();
+      biServerConnections.add(biServerConnection);
+      idx = biServerConnections.size()-1;
+    } else {
+      biServerConnection = biServerConnections.get( idx );
+      if( biServerConnection == null ) {
+        return;
       }
-    } catch (XulException e) {
-      e.printStackTrace();
     }
+    
+    biServerConnection.setName( serverName );
+    biServerConnection.setUrl( url );
+    biServerConnection.setUserId(userId);
+    biServerConnection.setPassword(password);
+    biServerConnection.setPublishPassword(publishPassword);
+
+    updateConnectionList();
+    serverListBox.setSelectedIndex( idx );
+    updateButtonStatus();
+
   }
   
   /**
-   * Tests a selected connection.
+   * Creates a temporary BI server connection object and tests it
    */
   public void testServerConnection() {
     
-    int idx = serverListBox.getSelectedIndex();
-    if( idx == -1 ) {
-      return;
-    }
-    BiServerConnection connection = biServerConnections.get( idx );
-    if( connection == null ) {
-      return;
-    }
+    BiServerConnection tmpServerConnection = new BiServerConnection();
+    tmpServerConnection.setName( serverName );
+    tmpServerConnection.setUrl( url );
+    tmpServerConnection.setUserId(userId);
+    tmpServerConnection.setPassword(password);
+    tmpServerConnection.setPublishPassword(publishPassword);
 
-    XulDialogBiServerConfig.testServerConnection(connection);
+    XulDialogBiServerConfig.testServerConnection(tmpServerConnection);
     
   }
 
   public void serverClick() {
+    
+    int idx = serverListBox.getSelectedIndex();
+    if( idx == -1 ) {
+      return;
+    }
+    BiServerConnection connection = biServerConnections.get( idx );
+    if( connection == null ) {
+      return;
+    }
+
+    serverName = connection.getName();
+    url = connection.getUrl();
+    userId = connection.getUserId();
+    password = connection.getPassword();
+    publishPassword = connection.getPublishPassword();
+    updateSettings();
     updateButtonStatus();
+  }
+  
+  private void updateSettings() {
+    try {
+      nameBinding.fireSourceChanged();
+      urlBinding.fireSourceChanged();
+      userIdBinding.fireSourceChanged();
+      passwordBinding.fireSourceChanged();
+      publishPasswordBinding.fireSourceChanged();
+    } catch (IllegalArgumentException e1) {
+      e1.printStackTrace();
+    } catch (XulException e1) {
+      e1.printStackTrace();
+    } catch (InvocationTargetException e1) {
+      e1.printStackTrace();
+    }
   }
   
   /**
@@ -223,16 +270,66 @@ public class XulDialogBiServerList extends AbstractSwtXulDialogController {
    */
   public void updateButtonStatus() {
     int idx = serverListBox.getSelectedIndex();
-    editButton.setDisabled( idx == -1 );
     removeButton.setDisabled( idx == -1 );
-    testButton.setDisabled( idx == -1 );
+    testButton.setDisabled( StringUtil.isEmpty( url ) );
+    saveButton.setDisabled( StringUtil.isEmpty( url ) );
     if( idx == -1 ) {
-      editButton.setImage( "images/edit_disabled.png" ); //$NON-NLS-1$
       removeButton.setImage( "images/remove_disabled.png" ); //$NON-NLS-1$
     } else {
-      editButton.setImage( "images/edit.png" ); //$NON-NLS-1$
       removeButton.setImage( "images/remove.png" ); //$NON-NLS-1$
     }
   }
   
+  public void okClick() {
+    
+    biServerConfig.save();
+    onDialogAccept();
+  }
+
+  public void cancelClick() {
+    // perform an undo by reloading from the properties file
+    biServerConfig.refreshServerList();
+    onDialogCancel();
+  }
+
+  public String getServerName() {
+    return serverName;
+  }
+
+  public void setServerName(String serverName) {
+    this.serverName = serverName;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getPublishPassword() {
+    return publishPassword;
+  }
+
+  public void setPublishPassword(String publishPassword) {
+    this.publishPassword = publishPassword;
+  }
+
 }

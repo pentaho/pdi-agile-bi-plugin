@@ -205,7 +205,7 @@ public class ModelServerPublish {
    * @throws Exception
    * @throws UnsupportedEncodingException
    */
-  private int publish(
+  public int publish(
       String publishPath,
       File publishFile, 
       String jndiName,
