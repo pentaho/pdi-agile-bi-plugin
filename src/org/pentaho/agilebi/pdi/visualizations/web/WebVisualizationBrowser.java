@@ -35,8 +35,8 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   private WebVisualizationMeta meta;
   private String visFileLocation = null;
 
-  public WebVisualizationBrowser(Composite parent, final Spoon spoon, final WebVisualization visualization, String xmiFileLocation, String modelId, String visFileLocaiton) throws SWTError {
-    super(parent, spoon, visualization.generateNewUrl(xmiFileLocation, modelId), true, true );
+  public WebVisualizationBrowser(Composite parent, final Spoon spoon, final WebVisualization visualization, String xmiFileLocation, String modelId, String visFileLocation, String url) throws SWTError {
+    super(parent, spoon, url, true, true );
     this.visualization = visualization;
     this.xmiFileLocation = xmiFileLocation;
     this.modelId = modelId;

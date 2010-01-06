@@ -126,7 +126,8 @@ public class WebVisualization extends AbstractVisualization {
 	public void createVisualizationFromModel(String fileLocation, String modelId) {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
-      WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, fileLocation, modelId, null);
+      String url = generateNewUrl(fileLocation, modelId);
+      WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, fileLocation, modelId, null, url);
 //      addAndSelectTab(spoon, browser, browser.getComposite(), getUniqueUntitledTabName(spoon));
       createTabForBrowser(browser);
       
@@ -182,8 +183,8 @@ public class WebVisualization extends AbstractVisualization {
 
       String modelFileName = node.getText();
       String modelId = node2.getText();
-
-      WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, modelFileName, modelId, fname);
+      String url = generateOpenUrl(fname);
+      WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, modelFileName, modelId, fname, url);
       browser.setXmiFileLocation(modelFileName);
      
       this.createTabForBrowser(browser);

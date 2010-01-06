@@ -117,8 +117,7 @@ public class WebVisualizationMeta implements EngineMetaInterface {
   }
 
   public void setFilename(String arg0) {
-    // TODO Auto-generated method stub
-    
+    browser.setVisFileLocation(arg0);
   }
 
   public void setID(long arg0) {
