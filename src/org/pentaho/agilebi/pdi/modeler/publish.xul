@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
+<window id="root" title="" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" height="600" width="800" onload="dialog.init()"
+  xmlns:pen="http://www.pentaho.org/2008/xul">
+
+  <dialog width="600" height="480" id="publish" title="${Spoon.Perspectives.AgileBi.Publish.Title}" 
+  	buttons="accept,cancel"
+  	ondialogaccept="dialog.okClick()"
+    ondialogcancel="dialog.cancelClick()"
+    >
+
+	<vbox flex="1" id="mainVBox">
+		<label id="comment" value=""/>
+		<groupbox id="filenameGroupBox" padding="1" spacing="1">
+			<caption label="${Spoon.Perspectives.AgileBi.Publish.Filename}"/>
+	        <textbox id="filename" flex="1" padding="1" spacing="1"/>
+		</groupbox>		
+		<!-- groupbox id="serverGroupBox" height="50" padding="1" spacing="1">
+			<caption label="${Spoon.Perspectives.AgileBi.Publish.Server}"/>
+		</groupbox -->
+		<groupbox id="locationGroupBox" flex="1" padding="1" spacing="1">
+			<caption label="${Spoon.Perspectives.AgileBi.Publish.Location}"/>
+			<vbox id="serverControls" padding="1" spacing="1">
+	            <label value="${Spoon.Perspectives.AgileBi.Publish.Server}" />
+				<hbox flex="1" padding="1" spacing="1">
+					<menulist flex="1" id="serverlist" label="" padding="1" spacing="1">
+				    	<menupopup >
+				            <menuitem label="Dummy Server" />
+				        </menupopup>
+				    </menulist>
+			        <button image="images/edit.png" onclick="dialog.editBiServers()" padding="1" spacing="1"/>
+			    </hbox>
+	        </vbox>
+			<vbox id="folderControls" flex="1" padding="1" spacing="1">
+	            <label value="${Spoon.Perspectives.AgileBi.Publish.Folder}" />
+				<hbox id="currentFolderControls" padding="1" spacing="1">
+					<menulist flex="1" id="folderparents" label="" padding="1" spacing="1" pen:binding="name" oncommand="dialog.folderChange()">
+				    	<menupopup >
+				            <menuitem label="dummy" />
+				        </menupopup>
+				    </menulist>
+			        <button image="images/up.png" onclick="dialog.folderUpClick()" padding="1" spacing="1"/>
+			    </hbox>
+			    <tree id="filesBox" flex="1" editable="false" hiddenrootnode="true" onselect="dialog.fileClick()" command="dialog.fileDblClick()" >
+	              <treecols>
+	                <treecol flex="1" label="" primary="true" pen:binding="name" pen:childrenbinding="children"
+	                  pen:imagebinding="image" editable="false"/>
+	              </treecols>
+	              <treechildren>
+	                <treeitem container="true" open="true">
+	                  <treerow>
+	                    <treecell label="" />
+	                  </treerow>
+	                  <treechildren></treechildren>
+	                </treeitem>
+	              </treechildren>
+	            </tree>
+				<label id="publishpath" value=""/>
+			    
+		        <!-- listbox id="filesListBox" onselect="dialog.fileClick()" command="dialog.fileDblClick()" flex="1" seltype="single" pen:binding="name">
+		        </listbox -->
+	            <!-- checkbox label="${Spoon.Perspectives.AgileBi.Publish.Default}"/ -->
+	        </vbox>
+		</groupbox>
+		<groupbox id="datasourceGroupBox" padding="1" spacing="1">
+			<caption label="${Spoon.Perspectives.AgileBi.Publish.DataSource}"/>
+	            <label id="datasourceLabel" value="${Spoon.Perspectives.AgileBi.Publish.Status}" />
+				<radiogroup>
+				  <radio id="publishradio" label="Publish" selected="true"/>
+				  <radio id="nopublishradio" label="Do not publish"/>
+				</radiogroup>
+		</groupbox>
+	</vbox>
+
+  </dialog>
+
+</window>

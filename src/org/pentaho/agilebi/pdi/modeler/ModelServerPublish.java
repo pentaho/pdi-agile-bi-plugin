@@ -35,14 +35,20 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+import org.pentaho.commons.util.repository.type.CmisObject;
+import org.pentaho.commons.util.repository.type.PropertiesBase;
+import org.pentaho.commons.util.repository.type.TypesOfFileableObjects;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleDatabaseException;
 import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.platform.dataaccess.datasource.IConnection;
 import org.pentaho.platform.dataaccess.datasource.beans.Connection;
 import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServiceException;
 import org.pentaho.platform.dataaccess.client.ConnectionServiceClient;
+import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
+import org.pentaho.platform.util.client.BiPlatformRepositoryClientNavigationService;
 import org.pentaho.platform.util.client.PublisherUtil;
 
 /**
@@ -73,6 +79,8 @@ public class ModelServerPublish {
   private ModelerWorkspace model;
   
   private int serviceClientStatus = 0;
+  
+  private BiPlatformRepositoryClientNavigationService navigationService;
   
   public ModelServerPublish() {
   }
@@ -159,6 +167,38 @@ public class ModelServerPublish {
   }
   
   /**
+   * Returns a list of repository folders
+   * @param depth
+   * @return
+   * @throws Exception
+   */
+  public List<CmisObject> getRepositoryFiles( CmisObject folder, int depth, boolean foldersOnly ) throws Exception {
+    
+    BiPlatformRepositoryClient client = new BiPlatformRepositoryClient();
+    
+    client.setServerUri( biServerConnection.getUrl() );
+    client.setUserId(biServerConnection.getUserId());
+    client.setPassword( biServerConnection.getPassword() );
+    
+    client.connect();
+    navigationService = client.getNavigationService();
+    
+    TypesOfFileableObjects folderTypes;
+    if( foldersOnly ) {
+      folderTypes = new TypesOfFileableObjects( TypesOfFileableObjects.FOLDERS );
+    } else {
+      folderTypes = new TypesOfFileableObjects( TypesOfFileableObjects.ANY );
+      
+    }
+    String startLocation = ""; //$NON-NLS-1$
+    if( folder != null ) {
+      startLocation = folder.findIdProperty( PropertiesBase.OBJECTID );
+    }
+    List<CmisObject> objects = navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, startLocation, folderTypes, depth, null, false, false); 
+    return objects;
+  }
+  
+  /**
    * Publishes a datasource to the current BI server
    * @param databaseMeta
    * @param update
@@ -213,14 +253,22 @@ public class ModelServerPublish {
       boolean enableXmla) throws Exception, UnsupportedEncodingException
 {
 
-    String fullURL = biServerConnection.getUrl() + "MondrianCatalogPublisher?publishPath=" + URLEncoder.encode(publishPath, "UTF-8");// NON-NLS //$NON-NLS-1$ //$NON-NLS-2$
-  fullURL += "&publishKey=" + getPasswordKey(new String(biServerConnection.getPublishPassword())); //$NON-NLS-1$
-  fullURL += "&overwrite=true"; //$NON-NLS-1$
-  fullURL += "&jndiName=" + jndiName; //$NON-NLS-1$
-  fullURL += "&enableXmla=" + enableXmla; //$NON-NLS-1$
-  fullURL += "&userid="+biServerConnection.getUserId()+"&password="+biServerConnection.getPassword(); //$NON-NLS-1$ //$NON-NLS-2$
-  
-  PostMethod filePost = new PostMethod(fullURL);
+    String url = biServerConnection.getUrl();
+    StringBuilder sb = new StringBuilder();
+    sb.append(url);
+    if( url.charAt( url.length()-1) != ISolutionRepository.SEPARATOR ) {
+      sb.append( ISolutionRepository.SEPARATOR );
+    }
+    sb.append( "MondrianCatalogPublisher?publishPath=" ) //$NON-NLS-1$
+    .append( URLEncoder.encode(publishPath, "UTF-8") ) //$NON-NLS-1$
+    .append( "&publishKey=" ).append( getPasswordKey(new String(biServerConnection.getPublishPassword()))) //$NON-NLS-1$
+    .append( "&overwrite=true" ) //$NON-NLS-1$
+    .append( "&jndiName=" ).append( jndiName ) //$NON-NLS-1$
+    .append( "&enableXmla=" ).append( enableXmla ) //$NON-NLS-1$
+    .append( "&userid=" ).append( biServerConnection.getUserId() ) //$NON-NLS-1$
+    .append( "&password=" ).append( biServerConnection.getPassword() ); //$NON-NLS-1$ 
+    String fullUrl = sb.toString();
+  PostMethod filePost = new PostMethod(fullUrl);
   ArrayList<Part> parts = new ArrayList<Part>();
   try {
       parts.add(new FilePart(publishFile.getName(), publishFile));
@@ -318,21 +366,24 @@ public class ModelServerPublish {
    * @param showFeedback
    * @throws Exception
    */
-  public void publishToServer( String schemaName, String jndiName, String modelName, boolean showFeedback ) throws Exception {
+  public void publishToServer( String schemaName, String jndiName, String modelName, String repositoryPath, boolean publishDatasource, boolean showFeedback ) throws Exception {
 
-    checkDataSource();
-    publishOlapSchemaToServer( schemaName, jndiName , modelName, showFeedback  );
-    publishMetadataModel( modelName );
+    if( publishDatasource ) {
+      DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
+      publishDataSource(databaseMeta, false);    
+    }
+    publishOlapSchemaToServer( schemaName, jndiName , modelName, repositoryPath, showFeedback  );
+    publishMetadataModel( modelName, repositoryPath );
   }
   
-  private int publishMetadataModel( String modelName ) {
+  private int publishMetadataModel( String modelName, String repositoryPath ) {
     String DEFAULT_PUBLISH_URL = biServerConnection.getUrl()+"RepositoryFilePublisher"; //$NON-NLS-1$
     File files[] = {new File("models/" + modelName + ".xmi")}; //$NON-NLS-1$ //$NON-NLS-2$
-    int result = PublisherUtil.publish(DEFAULT_PUBLISH_URL, "models/resources/metadata", files, biServerConnection.getPublishPassword(), biServerConnection.getUserId(), biServerConnection.getPassword(), true); //$NON-NLS-1$
+    int result = PublisherUtil.publish(DEFAULT_PUBLISH_URL, repositoryPath, files, biServerConnection.getPublishPassword(), biServerConnection.getUserId(), biServerConnection.getPassword(), true, true); 
     return result;
   }
   
-  private void checkDataSource() throws KettleDatabaseException, ConnectionServiceException {
+  public boolean checkDataSource( boolean autoMode ) throws KettleDatabaseException, ConnectionServiceException {
     // check the data source
     
     DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
@@ -346,49 +397,56 @@ public class ModelServerPublish {
 //    boolean same = (compare | ModelServerPublish.REMOTE_CONNECTION_SAME) > 0;
     
     if(missing && !nonJndi) {
-      if( !SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.OkToPublish" ),  //$NON-NLS-1$
+      if( !autoMode && !SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.OkToPublish" ),  //$NON-NLS-1$
           Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), true, Const.INFO) ) { //$NON-NLS-1$
         SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.PublishCancelled" ),  //$NON-NLS-1$ 
             Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
-        return;
+        return false;
       }
       boolean ok = publishDataSource(databaseMeta, false);
-      if( ok ) {
+      if( !autoMode && ok ) {
         SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.Added" ),  //$NON-NLS-1$
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.INFO); //$NON-NLS-1$
       }
+      return ok;
     }
     else if(missing && nonJndi) {
-      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.NonJNDI" ),  //$NON-NLS-1$
-          Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
-      return;
+      if( !autoMode ) {
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.NonJNDI" ),  //$NON-NLS-1$
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+      }
+      return false;
     }
     else if( different && !nonJndi ) {
-      if( !SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.IsDifferent" ),  //$NON-NLS-1$
+      if( !autoMode && !SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.IsDifferent" ),  //$NON-NLS-1$
           Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), true, Const.INFO) ) { //$NON-NLS-1$
-        // replace the data source
-        boolean ok = publishDataSource(databaseMeta, true);
-        if( ok ) {
+        return false;
+      }
+      // replace the data source
+      boolean ok = publishDataSource(databaseMeta, true);
+      if( !autoMode && ok ) {
           SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.Updated" ),  //$NON-NLS-1$
               Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
-        }
       }
+      return ok;
     }
     else if(different && nonJndi) {
-      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.CannotUpdate" ),  //$NON-NLS-1$
-          Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
-      return;
+      if( !autoMode ) {
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.CannotUpdate" ),  //$NON-NLS-1$
+            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+      }
+      return false;
     }
+    return false;
     
   }
   
-  private void publishOlapSchemaToServer( String schemaFilePath, String jndiName, String modelName, boolean showFeedback  ) throws Exception {
+  private void publishOlapSchemaToServer( String schemaFilePath, String jndiName, String modelName, String repositoryPath, boolean showFeedback  ) throws Exception {
     
-    String publishPath = "models"; //$NON-NLS-1$
     File publishFile = new File( "models/"+schemaFilePath ); //$NON-NLS-1$
     boolean enableXmla = false;
     
-    int result = publish(publishPath, publishFile, jndiName, modelName, enableXmla);
+    int result = publish(repositoryPath, publishFile, jndiName, modelName, enableXmla);
     if( showFeedback ) {
       String serverName = biServerConnection.getName();
     switch (result) {
@@ -454,6 +512,10 @@ public class ModelServerPublish {
 
   public int getServerConnectionStatus() {
     return serviceClientStatus;
+  }
+
+  public BiPlatformRepositoryClientNavigationService getNavigationService() {
+    return navigationService;
   }
   
 }

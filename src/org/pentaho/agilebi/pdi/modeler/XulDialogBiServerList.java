@@ -109,6 +109,7 @@ public class XulDialogBiServerList extends AbstractSwtXulDialogController {
     removeButton = (XulButton)document.getElementById("removeButton"); //$NON-NLS-1$
     
     serverNamesBinding = bf.createBinding(this, "BiServerConnections", serverListBox, "elements"); //$NON-NLS-1$ //$NON-NLS-2$
+    bf.setBindingType(Type.BI_DIRECTIONAL);
     nameBinding = bf.createBinding(this, "serverName", nameTextBox, "value"); //$NON-NLS-1$ //$NON-NLS-2$
     urlBinding = bf.createBinding(this, "url", urlTextBox, "value"); //$NON-NLS-1$ //$NON-NLS-2$
     userIdBinding = bf.createBinding(this, "userId", userIdTextBox, "value"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -306,6 +307,7 @@ public class XulDialogBiServerList extends AbstractSwtXulDialogController {
 
   public void setUrl(String url) {
     this.url = url;
+    updateButtonStatus();
   }
 
   public String getUserId() {

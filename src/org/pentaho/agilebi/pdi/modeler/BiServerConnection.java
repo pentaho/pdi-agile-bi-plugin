@@ -16,6 +16,8 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
+import org.pentaho.platform.api.repository.ISolutionRepository;
+
 /**
  * A bean defining a BI server connectpion
  * @author jamesdixon
@@ -33,6 +35,26 @@ public class BiServerConnection {
   
   private String name;
 
+  private String defaultFolder;
+  
+  private boolean defaultDatasourcePublish = false;
+  
+  public String getDefaultFolder() {
+    return defaultFolder;
+  }
+
+  public void setDefaultFolder(String defaultFolder) {
+    this.defaultFolder = defaultFolder;
+  }
+
+  public boolean getDefaultDatasourcePublish() {
+    return defaultDatasourcePublish;
+  }
+
+  public void setDefaultDatasourcePublish(boolean defaultDatasourcePublish) {
+    this.defaultDatasourcePublish = defaultDatasourcePublish;
+  }
+
   /**
    * Gets the URL for the BI server
    * In the form protocol:server:port/context, e.g. http://localhost:8080/pentaho
@@ -49,6 +71,10 @@ public class BiServerConnection {
    */
   public void setUrl(String url) {
     this.url = url;
+    if( this.url.charAt( this.url.length()-1) != ISolutionRepository.SEPARATOR ) {
+      this.url = this.url + ISolutionRepository.SEPARATOR;
+    }
+
   }
 
   /**

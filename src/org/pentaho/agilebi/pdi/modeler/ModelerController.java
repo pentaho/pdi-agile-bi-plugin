@@ -31,9 +31,11 @@ import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
 import org.pentaho.metadata.model.LogicalColumn;
+import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
@@ -92,13 +94,11 @@ public class ModelerController extends AbstractXulEventHandler{
   private XulDialog newDimensionDialog;
   private XulTextbox newDimensionName;
   private XulTree dimensionTree;
-  private XulMenuList serverList;
   private XulMenuList visualizationList;
   private XulDeck propDeck;
   
   private BindingFactory bf = new DefaultBindingFactory();
  
-  private List<String> serverNames;
   private List<String> visualizationNames;
   private Map<Class<? extends ModelerNodePropertiesForm>, ModelerNodePropertiesForm> propertiesForms = new HashMap<Class<? extends ModelerNodePropertiesForm>, ModelerNodePropertiesForm>();
   
@@ -206,14 +206,11 @@ public class ModelerController extends AbstractXulEventHandler{
 
   public void init() throws ModelerException{
 
-    createServerList();
-    
     bf.setDocument(document);
     
     newDimensionDialog = (XulDialog) document.getElementById(NEW_DIMESION_DIALOG);
     newDimensionName = (XulTextbox) document.getElementById(NEW_DIMENSION_NAME);
     dimensionTree = (XulTree) document.getElementById("dimensionTree");
-    serverList = (XulMenuList)document.getElementById("serverlist");
     visualizationList = (XulMenuList)document.getElementById("visualizationlist");
     propDeck = (XulDeck) document.getElementById("propertiesdeck");
 
@@ -241,11 +238,6 @@ public class ModelerController extends AbstractXulEventHandler{
     bf.setBindingType(Type.ONE_WAY);
     fieldListBinding = bf.createBinding(workspace, "availableFields", FIELD_LIST_ID, ELEMENTS_PROPERTY);
     
-    // dimensionTable
-
-    bf.createBinding(workspace, "selectedServer", serverList, "selectedItem");    
-    serversBinding = bf.createBinding(this, "serverNames", serverList, "elements");
-    
     bf.createBinding(workspace, "selectedVisualization", visualizationList, "selectedItem");    
     visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements");
     
@@ -263,7 +255,6 @@ public class ModelerController extends AbstractXulEventHandler{
       fieldListBinding.fireSourceChanged();
       modelTreeBinding.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
-      serversBinding.fireSourceChanged();
       visualizationsBinding.fireSourceChanged();
     } catch (Exception e) {
       logger.info("Error firing off initial bindings", e);
@@ -341,9 +332,49 @@ public class ModelerController extends AbstractXulEventHandler{
       ModelServerPublish publisher = new ModelServerPublish();
       publisher.setModel( workspace );
 
-      BiServerConnection biServerConnection = BiServerConfig.getInstance().getServerByName( workspace.getSelectedServer() );
-      publisher.setBiServerConnection(biServerConnection);
-      publisher.publishToServer( workspace.getModelName() + ".mondrian.xml", workspace.getDatabaseName(), workspace.getModelName(), true );
+      Spoon spoon = ((Spoon)SpoonFactory.getInstance());
+      try {
+      XulDialogPublish publishDialog = new XulDialogPublish( spoon.getShell() );
+      publishDialog.setFolderTreeDepth(1);
+      publishDialog.setComment( Messages.getInstance().getString("ModelServerPublish.Publish.ModelPublishComment") ); //$NON-NLS-1$
+      DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
+      publishDialog.setDatabaseMeta(databaseMeta);
+      publishDialog.setFilename( workspace.getModelName() );
+      publishDialog.setShowLocation( true, true, false );
+      String template = "{path}"+ //$NON-NLS-1$
+      "resources"+ISolutionRepository.SEPARATOR+ //$NON-NLS-1$
+      "metadata"+ISolutionRepository.SEPARATOR+ //$NON-NLS-1$
+        "{file}.xmi"; //$NON-NLS-1$ 
+      publishDialog.setPathTemplate( template );
+      publishDialog.showDialog();
+      if( publishDialog.isAccepted() ) {
+        // now try to publish
+        String path = publishDialog.getPath();
+        // we always publish to {solution}/resources/metadata
+        StringBuilder sb = new StringBuilder();
+        BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
+        publisher.setBiServerConnection(biServerConnection);
+        boolean publishDatasource = publishDialog.isPublishDataSource();
+        sb.append( path )
+        .append(ISolutionRepository.SEPARATOR)
+        .append( "resources" ) //$NON-NLS-1$
+        .append(ISolutionRepository.SEPARATOR)
+        .append( "metadata" ); //$NON-NLS-1$
+        String repositoryPath = sb.toString();
+        String filename = publishDialog.getFilename();
+        publisher.publishToServer( filename + ".mondrian.xml", workspace.getDatabaseName(), filename, repositoryPath, publishDatasource, true ); //$NON-NLS-1$
+      }
+      } catch (XulException e) {
+        e.printStackTrace();
+        SpoonFactory.getInstance().messageBox( "Could not create dialog: "+e.getLocalizedMessage(), "Dialog Error", false, Const.ERROR);
+      }
+
+//      BiServerConnection biServerConnection = BiServerConfig.getInstance().getServerByName( workspace.getSelectedServer() );
+//      publisher.setBiServerConnection(biServerConnection);
+      
+      // create the publish dialog
+      
+//      publisher.publishToServer( workspace.getModelName() + ".mondrian.xml", workspace.getDatabaseName(), workspace.getModelName(), true );
     } catch(Exception e){
       logger.info(e);
       SpoonFactory.getInstance().messageBox( "Publish Failed: "+ e.getLocalizedMessage(), "Publish To Server: "+workspace.getSelectedServer(), false, Const.ERROR);
@@ -407,8 +438,6 @@ public class ModelerController extends AbstractXulEventHandler{
 
   private Binding fieldListBinding;
 
-  private Binding serversBinding;
-
   private Binding visualizationsBinding;
 
   private Binding modelTreeBinding;
@@ -441,10 +470,6 @@ public class ModelerController extends AbstractXulEventHandler{
     setDimTreeSelectionChanged(null);
   }
 
-  public List<String> getServerNames() {
-    return serverNames;
-  }
-  
   public List<String> getVisualizationNames() {
   	if(this.visualizationNames == null) {
   		VisualizationManager theManager = VisualizationManager.getInstance();
@@ -453,11 +478,6 @@ public class ModelerController extends AbstractXulEventHandler{
   	return this.visualizationNames;
   }
   
-  private void createServerList() {
-    BiServerConfig biServerConfig = BiServerConfig.getInstance();
-    serverNames = biServerConfig.getServerNames();
-  }
-
   public ModelerWorkspace getModel() {
     return workspace;
   }

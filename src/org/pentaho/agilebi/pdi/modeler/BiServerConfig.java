@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.pentaho.di.core.encryption.Encr;
+import org.pentaho.platform.api.repository.ISolutionRepository;
 
 /**
  * A class for loading, saving and manipulating a list of connections to BI servers.
@@ -66,6 +67,7 @@ public class BiServerConfig {
       props.load( in );
       int idx = 1;
       boolean running = true;
+      servers.clear();
       while( running ) {
         String serverId = "biserver"+Integer.toString(idx); //$NON-NLS-1$
         String serverName = props.getProperty(serverId+"/name"); //$NON-NLS-1$
@@ -73,6 +75,8 @@ public class BiServerConfig {
         String userId = props.getProperty(serverId+"/user"); //$NON-NLS-1$
         String password = Encr.decryptPassword( props.getProperty(serverId+"/password") );    //$NON-NLS-1$
         String publishPassword = Encr.decryptPassword( props.getProperty(serverId+"/publishpassword") ); //$NON-NLS-1$
+        String defaultFolder = props.getProperty(serverId+"/defaultfolder"); //$NON-NLS-1$
+        boolean defaultDatasourcePublish = "true".equalsIgnoreCase(props.getProperty(serverId+"/defaultdatasourcepublish"));  //$NON-NLS-1$//$NON-NLS-2$
         if( serverName != null ) {
           BiServerConnection server = new BiServerConnection();
           server.setName( serverName );
@@ -80,6 +84,8 @@ public class BiServerConfig {
           server.setPublishPassword(publishPassword);
           server.setUrl(url);
           server.setUserId(userId);
+          server.setDefaultDatasourcePublish(defaultDatasourcePublish);
+          server.setDefaultFolder(defaultFolder);
           servers.add( server );
           idx++;
         } else {
@@ -165,11 +171,26 @@ public class BiServerConfig {
       int idx = 1;
       for( BiServerConnection server : servers ) {
         String serverId = "biserver"+Integer.toString(idx); //$NON-NLS-1$
-        props.put(serverId+"/name", server.getName() ); //$NON-NLS-1$
-        props.put(serverId+"/url", server.getUrl() ); //$NON-NLS-1$
-        props.put(serverId+"/user", server.getUserId() ); //$NON-NLS-1$
-        props.put(serverId+"/password", Encr.encryptPassword( server.getPassword() ) ); //$NON-NLS-1$
-        props.put(serverId+"/publishpassword", Encr.encryptPassword( server.getPublishPassword() ) ); //$NON-NLS-1$
+        if( server.getName() != null ) {
+          props.put(serverId+"/name", server.getName() ); //$NON-NLS-1$
+        }
+        if( server.getUrl() != null ) {
+          props.put(serverId+"/url", server.getUrl() ); //$NON-NLS-1$
+        }
+        if( server.getUserId() != null ) {
+          props.put(serverId+"/user", server.getUserId() ); //$NON-NLS-1$
+        }
+        if( server.getPassword() != null ) {
+          props.put(serverId+"/password", Encr.encryptPassword( server.getPassword() ) ); //$NON-NLS-1$
+       }
+        if( server.getPublishPassword() != null ) {
+          props.put(serverId+"/publishpassword", Encr.encryptPassword( server.getPublishPassword() ) ); //$NON-NLS-1$
+        }
+        if( server.getDefaultFolder() != null ) {
+          props.put(serverId+"/defaultfolder", server.getDefaultFolder()); //$NON-NLS-1$
+        }
+        props.put(serverId+"/defaultdatasourcepublish", server.getDefaultDatasourcePublish() ? "true" : "false" );  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
         idx++;
       }
       writer = new PrintWriter( file );

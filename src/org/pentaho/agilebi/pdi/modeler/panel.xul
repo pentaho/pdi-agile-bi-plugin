@@ -100,12 +100,6 @@
 
         <button label="Go" id="exploreButton" onclick="modeler.visualize()" />
         <button label="Publish" id="publishButton" onclick="modeler.publish()" />
-
-        <menulist id="serverlist" label="">
-          <menupopup>
-            <menuitem label="Dummy Server" />
-          </menupopup>
-        </menulist>
       </hbox>
     </vbox>
   </vbox>

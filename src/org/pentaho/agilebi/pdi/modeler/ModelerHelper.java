@@ -235,7 +235,6 @@ public class ModelerHelper extends AbstractXulEventHandler {
   }  
     
   public void editBiServerConfig() {
-    System.out.println("editBiServerConfig");
     
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
@@ -246,5 +245,5 @@ public class ModelerHelper extends AbstractXulEventHandler {
       SpoonFactory.getInstance().messageBox( "Could not create dialog: "+e.getLocalizedMessage(), "Dialog Error", false, Const.ERROR);
     }
   }
-  
+ 
 }
