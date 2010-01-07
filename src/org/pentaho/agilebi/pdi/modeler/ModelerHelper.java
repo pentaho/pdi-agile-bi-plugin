@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
+import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
@@ -43,6 +44,8 @@ import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.di.ui.util.ImageUtil;
 import org.pentaho.metadata.model.Domain;
+import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
+import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
@@ -173,6 +176,20 @@ public class ModelerHelper extends AbstractXulEventHandler {
 
   }
   
+  public void reportWizard() {
+    try {
+      ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
+//      if (!engineBoot.isBootDone()) {
+        engineBoot.start();
+//      }
+      EmbeddedWizard wizard = new EmbeddedWizard();
+      wizard.run(null);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+  
   public void quickVisualize( ModelerWorkspace model ) throws ModelerException {
 
 
@@ -245,5 +262,5 @@ public class ModelerHelper extends AbstractXulEventHandler {
       SpoonFactory.getInstance().messageBox( "Could not create dialog: "+e.getLocalizedMessage(), "Dialog Error", false, Const.ERROR);
     }
   }
- 
+  
 }

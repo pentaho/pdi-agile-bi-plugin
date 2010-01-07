@@ -8,6 +8,7 @@
 	<menupopup id="trans-graph-entry">
       <menuitem id="trans-graph-entry-model" label="Model" command="agileBi.openModeler()" />
       <menuitem id="trans-graph-entry-visualize" label="Quick Visualize" command="agileBi.quickVisualizeTableOutputStep()" />
+      <menuitem id="trans-graph-entry-wizard" label="Report Wizard" command="agileBi.reportWizard()" />
     </menupopup>
     
     <!-- menupopup id="file-new-popup">
