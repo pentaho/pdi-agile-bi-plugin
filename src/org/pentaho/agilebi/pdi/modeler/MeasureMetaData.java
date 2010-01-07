@@ -30,8 +30,10 @@ import org.pentaho.reporting.libraries.base.util.StringUtils;
  */
 public class MeasureMetaData extends AbstractMetaDataModelNode implements Serializable {
   
+  public static final String FORMAT_NONE = "NONE"; //$NON-NLS-1$
+  
   String name;
-  String format = "NONE";
+  String format = FORMAT_NONE;
   String displayName;
   String fieldTypeDesc = "---";
   String levelTypeDesc = "---";
@@ -76,7 +78,7 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
 
   public String getFormat() {
     if(StringUtils.isEmpty(format)){
-      return "NONE";
+      return FORMAT_NONE;
     }
     return format;
   }

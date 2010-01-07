@@ -240,7 +240,9 @@ public class ModelerWorkspaceUtil {
         lCol.setAggregationType(type);
       }
       String formatMask = f.getFormat();
-      System.out.println(formatMask);
+      if( MeasureMetaData.FORMAT_NONE.equals(formatMask)) {
+        formatMask = "#;-#";
+      }
       if (formatMask != null) {
         lCol.setProperty("mask", formatMask); //$NON-NLS-1$
       }
