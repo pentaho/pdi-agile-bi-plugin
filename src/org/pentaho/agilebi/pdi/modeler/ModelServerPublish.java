@@ -272,7 +272,7 @@ public class ModelServerPublish {
     sb.append( "MondrianCatalogPublisher?publishPath=" ) //$NON-NLS-1$
     .append( URLEncoder.encode(publishPath, "UTF-8") ) //$NON-NLS-1$
     .append( "&publishKey=" ).append( getPasswordKey(new String(biServerConnection.getPublishPassword()))) //$NON-NLS-1$
-    .append( "&overwrite=true" ) //$NON-NLS-1$
+    .append( "&overwrite=true&mkdirs=true" ) //$NON-NLS-1$
     .append( "&jndiName=" ).append( jndiName ) //$NON-NLS-1$
     .append( "&enableXmla=" ).append( enableXmla ) //$NON-NLS-1$
     .append( "&userid=" ).append( biServerConnection.getUserId() ) //$NON-NLS-1$
@@ -380,7 +380,7 @@ public class ModelServerPublish {
 
     if( publishDatasource ) {
       DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
-      publishDataSource(databaseMeta, false);    
+      publishDataSource(databaseMeta, true);    
     }
     publishOlapSchemaToServer( schemaName, jndiName , modelName, repositoryPath, showFeedback  );
     publishMetadataModel( modelName, repositoryPath );
