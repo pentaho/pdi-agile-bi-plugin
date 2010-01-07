@@ -12,6 +12,7 @@ import org.dom4j.DocumentHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.jaxen.JaxenException;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.dom4j.Dom4jXPath;
 import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;
@@ -158,39 +159,55 @@ public class WebVisualization extends AbstractVisualization {
     SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiVisualizationPerspective.class);
 	}
 	
+	public static Document getXAnalyzerDocument( File file ) throws Exception {
+	  
+    FileInputStream in = new FileInputStream( file );
+    StringBuilder sb = new StringBuilder();
+    byte b[] = new byte[2048];
+    int n = in.read(b);
+    while( n != -1 ) {
+      sb.append( new String(b, 0, n) );
+      n = in.read(b);
+    }
+    
+    Document doc = DocumentHelper.parseText(sb.toString());
+
+    return doc;
+	}
+	
+	public static String getDocumentText( Document doc, String xPath ) throws JaxenException {
+    Dom4jXPath xpath = new Dom4jXPath( xPath );
+    HashMap<String, String> map = new HashMap<String, String>();
+    map.put( "pho", "http://www.pentaho.com");  //$NON-NLS-1$//$NON-NLS-2$
+    xpath.setNamespaceContext( new SimpleNamespaceContext( map));
+    org.dom4j.Node node = (org.dom4j.Node) xpath.selectSingleNode( doc);
+    return node.getText();
+	}
+
+	 public static void setDocumentText( Document doc, String xPath, String value ) throws JaxenException {
+	    Dom4jXPath xpath = new Dom4jXPath( xPath );
+	    HashMap<String, String> map = new HashMap<String, String>();
+	    map.put( "pho", "http://www.pentaho.com");  //$NON-NLS-1$//$NON-NLS-2$
+	    xpath.setNamespaceContext( new SimpleNamespaceContext( map));
+	    org.dom4j.Node node = (org.dom4j.Node) xpath.selectSingleNode( doc);
+	    node.setText( value );
+	  }
+
   public boolean open(Node transNode, String fname, boolean importfile) {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
-      File f = new File( fname );
-      FileInputStream in = new FileInputStream( f );
-      StringBuilder sb = new StringBuilder();
-      byte b[] = new byte[2048];
-      int n = in.read(b);
-      while( n != -1 ) {
-        sb.append( new String(b, 0, n) );
-        n = in.read(b);
-      }
       
-      Document doc = DocumentHelper.parseText(sb.toString());
-      Dom4jXPath xpath = new Dom4jXPath( "//@catalog");
-      Dom4jXPath xpath2 = new Dom4jXPath( "//@cube");
-      HashMap map = new HashMap();
-      map.put( "pho", "http://www.pentaho.com");
-      xpath.setNamespaceContext( new SimpleNamespaceContext( map));
-      xpath2.setNamespaceContext( new SimpleNamespaceContext( map));
-      org.dom4j.Node node = (org.dom4j.Node) xpath.selectSingleNode( doc);
-      org.dom4j.Node node2 = (org.dom4j.Node) xpath2.selectSingleNode( doc);
+      File file = new File( fname );
+      Document doc = WebVisualization.getXAnalyzerDocument( file );
+      String catalogFileName = WebVisualization.getDocumentText(doc, "//@catalog"); //$NON-NLS-1$
+      String cubeName = WebVisualization.getDocumentText(doc, "//@cube"); //$NON-NLS-1$
 
-      String modelFileName = node.getText();
-      String modelId = node2.getText();
       String url = generateOpenUrl(fname);
-      WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, modelFileName, modelId, fname, url);
+      WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, catalogFileName, cubeName, fname, url);
       browser.setXmiFileLocation(modelFileName);
      
       this.createTabForBrowser(browser);
-      
-      
-      String fullPath = f.getAbsolutePath();
+      String fullPath = file.getAbsolutePath();
       spoon.getProperties().addLastFile("Analyzer", fullPath, null, false, null);
       spoon.addMenuLast();
     } catch (Throwable e) {

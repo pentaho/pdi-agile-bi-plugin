@@ -87,7 +87,9 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
   
   private String filename;
   
-  private boolean publishDataSource;
+  private boolean publishDataSource = false;
+  
+  private boolean checkDatasources = false;
   
   private boolean accepted = false;
   
@@ -314,36 +316,39 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
     List<CmisObject >files = getFiles(null, 1, true );
     createFilesList( files );
     
-    // compare data sources
-    try {
-      int result = publisher.compareDataSourceWithRemoteConnection(databaseMeta);
-      switch (result) {
-        case ModelServerPublish.REMOTE_CONNECTION_SAME : {
-          datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceSame") ); //$NON-NLS-1$
-          noPublishDatasourceRadio.setSelected( true );
-          publishDatasourceRadio.setSelected( false );
-          break;
+    if( checkDatasources ) {
+      // compare data sources
+      try {
+        int result = publisher.compareDataSourceWithRemoteConnection(databaseMeta);
+        switch (result) {
+          case ModelServerPublish.REMOTE_CONNECTION_SAME : {
+            datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceSame") ); //$NON-NLS-1$
+            noPublishDatasourceRadio.setSelected( true );
+            publishDatasourceRadio.setSelected( false );
+            break;
+          }
+          case ModelServerPublish.REMOTE_CONNECTION_MISSING : {
+            datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceMissing") ); //$NON-NLS-1$
+            break;
+          }
+          case ModelServerPublish.REMOTE_CONNECTION_MUST_BE_JNDI : {
+            datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceCannotPublish") ); //$NON-NLS-1$
+            noPublishDatasourceRadio.setSelected( true );
+            publishDatasourceRadio.setSelected( false );
+            break;
+          }
+          case ModelServerPublish.REMOTE_CONNECTION_DIFFERENT : {
+            datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceDifferent") ); //$NON-NLS-1$
+            break;
+          }
         }
-        case ModelServerPublish.REMOTE_CONNECTION_MISSING : {
-          datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceMissing") ); //$NON-NLS-1$
-          break;
-        }
-        case ModelServerPublish.REMOTE_CONNECTION_MUST_BE_JNDI : {
-          datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceCannotPublish") ); //$NON-NLS-1$
-          noPublishDatasourceRadio.setSelected( true );
-          publishDatasourceRadio.setSelected( false );
-          break;
-        }
-        case ModelServerPublish.REMOTE_CONNECTION_DIFFERENT : {
-          datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceDifferent") ); //$NON-NLS-1$
-          break;
-        }
-      }
-    } catch (Exception e) {
-      logger.error(e);
-      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.CouldNotGetDataSources", e.getLocalizedMessage() ),  //$NON-NLS-1$
-          Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
+      } catch (Exception e) {
+        logger.error(e);
+        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.CouldNotGetDataSources", e.getLocalizedMessage() ),  //$NON-NLS-1$
+            Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
+      }      
     }
+
   }
   
   public void setSelectedServer(String server){
@@ -593,6 +598,10 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
 
   public void setPathTemplate(String pathTemplate) {
     this.pathTemplate = pathTemplate;
+  }
+
+  public void setCheckDatasources(boolean checkDatasources) {
+    this.checkDatasources = checkDatasources;
   }
   
 }

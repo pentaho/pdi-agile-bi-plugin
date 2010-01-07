@@ -8,6 +8,8 @@
 			<toolbarbutton value="analyzer-reload-model" label="Refresh Model" image="images/refresh_model.png" tooltiptext="Reload the current model"  onclick="browser.refreshModel()"/>
             <toolbarseparator />
             <toolbarbutton value="analyzer-model" label="Edit the model" image="images/modeler.png" onclick="browser.editModel()" tooltiptext="Edit the model" />
+            <toolbarseparator />
+            <toolbarbutton value="analyzer-publish" label="${analyzer-publish}" image="images/publish.png" onclick="browser.publishView()" tooltiptext="${analyzer-publish}" />
 		</toolbar>
 
 </window>

@@ -1,23 +1,32 @@
 package org.pentaho.agilebi.pdi.visualizations.web;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.Locale;
 
 import mondrian.rolap.agg.AggregationManager;
 
+import org.dom4j.Document;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
-import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
+import org.pentaho.agilebi.pdi.modeler.BiServerConnection;
+import org.pentaho.agilebi.pdi.modeler.Messages;
+import org.pentaho.agilebi.pdi.modeler.ModelServerPublish;
+import org.pentaho.agilebi.pdi.modeler.XulDialogPublish;
+import org.pentaho.agilebi.pdi.perspective.AbstractPerspective;
 import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.spoon.FileListener;
-import org.pentaho.di.ui.spoon.Messages;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonBrowser;
 import org.pentaho.ui.xul.XulDomContainer;
+import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulLoader;
 import org.pentaho.ui.xul.containers.XulToolbar;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
@@ -70,7 +79,7 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
       addToolBarListeners();
     } catch (Throwable t ) {
       log.logError(toString(), Const.getStackTracker(t));
-      new ErrorDialog(shell, Messages.getString("Spoon.Exception.ErrorReadingXULFile.Title"), Messages.getString("Spoon.Exception.ErrorReadingXULFile.Message", XUL_FILE_ANALYZER_BROWSER_TOOLBAR), new Exception(t)); //$NON-NLS-1$ //$NON-NLS-2$
+      new ErrorDialog(shell, org.pentaho.di.ui.spoon.Messages.getString("Spoon.Exception.ErrorReadingXULFile.Title"), org.pentaho.di.ui.spoon.Messages.getString("Spoon.Exception.ErrorReadingXULFile.Message", XUL_FILE_ANALYZER_BROWSER_TOOLBAR), new Exception(t)); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 
@@ -116,6 +125,60 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
   public void editModel() {
     AgileBiPerspective.getInstance().open(null, xmiFileLocation, false); 
     
+  }
+  
+  public void publishView() {
+
+    // save the file locally
+    File tmp = new File("tmp"); //$NON-NLS-1$
+    if( !tmp.exists() ) {
+      tmp.mkdirs();
+    }
+    String origName = meta.getName();
+    String origVisFileLocation = visFileLocation;
+    
+    // now throw up the publish dialog
+
+    try {
+    XulDialogPublish publishDialog = new XulDialogPublish( spoon.getShell() );
+    publishDialog.setFolderTreeDepth(99);
+    publishDialog.setComment( Messages.getInstance().getString("ModelServerPublish.Publish.ViewPublishComment") ); //$NON-NLS-1$
+    publishDialog.setFilename( origName );
+    publishDialog.setCheckDatasources( false );
+    publishDialog.setShowLocation( true, true, true );
+    publishDialog.setShowDatasourceStatus( false );
+    String template = "{path}{file}.xanalyzer"; //$NON-NLS-1$ 
+    publishDialog.setPathTemplate( template );
+    publishDialog.showDialog();
+    if( publishDialog.isAccepted() ) {
+      
+      String newName = publishDialog.getFilename();
+      
+      String tmpFileName = "tmp/"+newName+".xanalyzer"; //$NON-NLS-1$ //$NON-NLS-2$
+      File file = new File(tmpFileName);
+      tmpFileName = file.getAbsolutePath();
+      meta.setFilename(tmpFileName); 
+      if( file.exists() ) {
+        file.delete();
+      }
+      spoon.saveToFile(meta);
+
+      PublishThread publish = new PublishThread();
+      publish.setBiServerConnection(publishDialog.getBiServerConnection());
+      publish.setRepositoryPath(publishDialog.getPath());
+      
+      publish.setFile(file);
+      
+      Thread thread = new Thread( publish );
+      thread.start();
+
+    }
+    } catch (XulException e) {
+      e.printStackTrace();
+      SpoonFactory.getInstance().messageBox( "Could not create dialog: "+e.getLocalizedMessage(), "Dialog Error", false, Const.ERROR);
+    } finally {
+      visFileLocation = origVisFileLocation;
+    }
   }
   
   public void refreshData() {
@@ -202,6 +265,86 @@ public class WebVisualizationBrowser extends SpoonBrowser implements FileListene
 
   public String[] getSupportedExtensions() {
     return new String[]{"xmi"};
+  }
+  
+  private class PublishThread implements Runnable {
+
+    private File file;
+    
+    private String repositoryPath;
+    
+    private BiServerConnection biServerConnection;
+    
+    public void run() {
+      // wait for the file to appear
+      long time = (new Date()).getTime();
+      long target = time + 10 * 1000;
+      while( !file.exists() && (new Date()).getTime() < target ) {
+        Thread.yield();
+        try {
+          Thread.sleep( 250 );
+        } catch (InterruptedException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
+
+      if( file.exists() ) {
+        
+        // first modify the catalog
+        try {
+          Document doc = WebVisualization.getXAnalyzerDocument( file );
+
+          // tidy up the catalog
+          String catalogFileName = WebVisualization.getDocumentText(doc, "//@catalog"); //$NON-NLS-1$
+          String catalog = AbstractPerspective.createShortName(catalogFileName);
+
+          WebVisualization.setDocumentText(doc, "//@catalog", catalog ); //$NON-NLS-1$
+          // now write the document back
+          FileOutputStream out = new FileOutputStream( file );
+          String xml = doc.asXML();
+          out.write( xml.getBytes() );
+          out.close();
+          
+          File files[] = {file};
+          ModelServerPublish publisher = new ModelServerPublish();
+          publisher.setBiServerConnection(biServerConnection);
+          publisher.publishFile(repositoryPath, files, true);
+        } catch (Exception e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        
+      } else {
+        // we timed out...
+        SpoonFactory.getInstance().messageBox( "The publish timed-out", "Dialog Error", false, Const.ERROR);
+      }
+    }
+
+    public File getFile() {
+      return file;
+    }
+
+    public void setFile(File file) {
+      this.file = file;
+    }
+
+    public String getRepositoryPath() {
+      return repositoryPath;
+    }
+
+    public void setRepositoryPath(String repositoryPath) {
+      this.repositoryPath = repositoryPath;
+    }
+
+    public BiServerConnection getBiServerConnection() {
+      return biServerConnection;
+    }
+
+    public void setBiServerConnection(BiServerConnection biServerConnection) {
+      this.biServerConnection = biServerConnection;
+    }
+    
   }
   
   

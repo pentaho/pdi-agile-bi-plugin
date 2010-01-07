@@ -120,7 +120,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       ModelerWorkspace model = new ModelerWorkspace();
-      createTabForModel(model,createShortName(fname));
+      createTabForModel(model,AgileBiPerspective.createShortName(fname));
 
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
       ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);

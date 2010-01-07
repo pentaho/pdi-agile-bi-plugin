@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.pentaho.di.core.encryption.Encr;
-import org.pentaho.platform.api.repository.ISolutionRepository;
 
 /**
  * A class for loading, saving and manipulating a list of connections to BI servers.

@@ -11,7 +11,6 @@ import java.util.ResourceBundle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.widgets.Composite;
-import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
@@ -119,8 +118,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
     
   }
 
-
-  protected String createShortName( String filename ) {
+  public static String createShortName( String filename ) {
     if( filename == null ) {
       return null;
     }
@@ -136,7 +134,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
     }
     return filename.substring(sepPos, extensionPos);    
   }
-
+  
   public abstract List<XulEventHandler> getEventHandlers();
 
   public abstract List<XulOverlay> getOverlays();
@@ -261,7 +259,11 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   }
 
   public EngineMetaInterface getActiveMeta() {
-    return metas.get(tabbox.getTabs().getChildNodes().get(tabbox.getSelectedIndex()));
+    int idx = tabbox.getSelectedIndex();
+    if( idx == -1 ) {
+      return null;
+    }
+    return metas.get(tabbox.getTabs().getChildNodes().get( idx ));
   }
   
 }

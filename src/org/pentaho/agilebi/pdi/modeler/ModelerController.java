@@ -340,6 +340,7 @@ public class ModelerController extends AbstractXulEventHandler{
       DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
       publishDialog.setDatabaseMeta(databaseMeta);
       publishDialog.setFilename( workspace.getModelName() );
+      publishDialog.setCheckDatasources( true );
       publishDialog.setShowLocation( true, true, false );
       String template = "{path}"+ //$NON-NLS-1$
       "resources"+ISolutionRepository.SEPARATOR+ //$NON-NLS-1$

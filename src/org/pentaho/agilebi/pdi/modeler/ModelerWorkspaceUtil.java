@@ -204,10 +204,16 @@ public class ModelerWorkspaceUtil {
   }
   
   public static void populateDomain(ModelerWorkspace model) throws ModelerException {
+    
+    model.getDomain().setId( model.getModelName() );
+    
     List<Category> cats = model.getDomain().getLogicalModels().get(0).getCategories();
     LogicalTable logicalTable = model.getDomain().getLogicalModels().get(0).getLogicalTables().get(0);
 
     model.getModelSource().serializeIntoDomain(model.getDomain());
+    
+    LogicalModel logicalModel = model.getDomain().getLogicalModels().get(0);
+    logicalModel.setName( new LocalizedString( Locale.getDefault().toString(), model.getModelName() ) );
     
     Category cat;
     // Find existing category or create new one

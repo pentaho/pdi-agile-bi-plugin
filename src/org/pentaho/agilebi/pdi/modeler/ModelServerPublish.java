@@ -198,6 +198,16 @@ public class ModelServerPublish {
     return objects;
   }
   
+  public int publishFile( String repositoryPath, File[] files, boolean showFeedback ) {
+    String DEFAULT_PUBLISH_URL = biServerConnection.getUrl()+"RepositoryFilePublisher"; //$NON-NLS-1$
+    int result = PublisherUtil.publish(DEFAULT_PUBLISH_URL, repositoryPath, files, biServerConnection.getPublishPassword(), biServerConnection.getUserId(), biServerConnection.getPassword(), true, true); 
+
+    if( showFeedback ) {
+      showFeedback( result );
+    }
+    return result;
+  }
+  
   /**
    * Publishes a datasource to the current BI server
    * @param databaseMeta
@@ -441,14 +451,8 @@ public class ModelServerPublish {
     
   }
   
-  private void publishOlapSchemaToServer( String schemaFilePath, String jndiName, String modelName, String repositoryPath, boolean showFeedback  ) throws Exception {
-    
-    File publishFile = new File( "models/"+schemaFilePath ); //$NON-NLS-1$
-    boolean enableXmla = false;
-    
-    int result = publish(repositoryPath, publishFile, jndiName, modelName, enableXmla);
-    if( showFeedback ) {
-      String serverName = biServerConnection.getName();
+  protected void showFeedback( int result ) {
+    String serverName = biServerConnection.getName();
     switch (result) {
       case ModelServerPublish.PUBLISH_CATALOG_EXISTS: {
         SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.CatalogExists" ),  //$NON-NLS-1$
@@ -490,7 +494,16 @@ public class ModelServerPublish {
             Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
-    }
+    }  }
+  
+  private void publishOlapSchemaToServer( String schemaFilePath, String jndiName, String modelName, String repositoryPath, boolean showFeedback  ) throws Exception {
+    
+    File publishFile = new File( "models/"+schemaFilePath ); //$NON-NLS-1$
+    boolean enableXmla = false;
+    
+    int result = publish(repositoryPath, publishFile, jndiName, modelName, enableXmla);
+    if( showFeedback ) {
+      showFeedback( result );
     }
   }
 
