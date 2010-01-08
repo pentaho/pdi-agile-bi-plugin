@@ -11,9 +11,9 @@ import org.pentaho.di.repository.RepositoryDirectory;
 
 public class WebVisualizationMeta implements EngineMetaInterface {
 
-  WebVisualizationBrowser browser;
+  WebVisualizationController browser;
   
-  public WebVisualizationMeta(WebVisualizationBrowser browser) {
+  public WebVisualizationMeta(WebVisualizationController browser) {
     this.browser = browser;
   }
   

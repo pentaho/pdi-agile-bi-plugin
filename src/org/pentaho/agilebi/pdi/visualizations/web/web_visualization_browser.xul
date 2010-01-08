@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
+<window id="label-test" title="Flow Test" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" onload="web_visualiztion.init()"
+  xmlns:pen="http://www.pentaho.org/2008/xul">
+
+  <vbox id="mainVBox">
+    <toolbar id="nav-toolbar" parenttoouter="true" mode="icons">
+      <toolbarbutton value="analyzer-file-save" image="images/save.png" tooltiptext="${save}" onclick="web_visualiztion.save()"/>
+      <toolbarbutton value="analyzer-file-save-as" image="images/saveas.png" tooltiptext="${save_as}" onclick="web_visualiztion.saveAs()"/>
+      <toolbarseparator/>
+      <toolbarbutton value="analyzer-reload-data" label="Refresh Data" image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="web_visualiztion.refreshData()"/>
+      <toolbarbutton value="analyzer-reload-model" image="images/refresh_model.png" tooltiptext="${reload_model}" onclick="web_visualiztion.refreshModel()"/>
+      <toolbarseparator/>
+      <toolbarbutton value="analyzer-model" image="images/modeler.png" onclick="web_visualiztion.editModel()" tooltiptext="${edit_model}" />
+    </toolbar>
+    <hbox flex="1">
+      <browser id="web_visualization_browser" flex="1" src="" showtoolbar="false"/>
+      <editpanel width="250" collapsible="true">
+        <caption label="${visualization_properties}"/>
+        <groupbox>
+          <caption label="${model}"/>
+          <vbox>
+            <label value="${name}:" />
+            <label id="modelName" value="" />
+            <hbox>
+              <button label="${refresh}" onclick="web_visualiztion.refreshModel()"/>
+              <button label="${view}" onclick="web_visualiztion.editModel()"/>
+            </hbox>
+          </vbox>
+        </groupbox>
+        <groupbox>
+          <caption label="${data}"/>
+          <vbox>
+            <label value="${source}:" />
+            <label id="factTableName" value="" />
+            <hbox>
+              <button label="${refresh}" onclick="web_visualiztion.refreshData()"/>
+              <button label="${view}"/>
+            </hbox>
+          </vbox>
+        </groupbox>
+      </editpanel>
+    </hbox>
+  </vbox>
+</window>
