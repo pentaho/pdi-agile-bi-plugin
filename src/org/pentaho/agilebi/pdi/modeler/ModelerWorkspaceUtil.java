@@ -211,7 +211,9 @@ public class ModelerWorkspaceUtil {
     List<Category> cats = model.getDomain().getLogicalModels().get(0).getCategories();
     LogicalTable logicalTable = model.getDomain().getLogicalModels().get(0).getLogicalTables().get(0);
 
-    model.getModelSource().serializeIntoDomain(model.getDomain());
+    if (model.getModelSource() != null) {
+      model.getModelSource().serializeIntoDomain(model.getDomain());
+    }
     
     LogicalModel logicalModel = model.getDomain().getLogicalModels().get(0);
     logicalModel.setName( new LocalizedString( Locale.getDefault().toString(), model.getModelName() ) );
@@ -424,7 +426,7 @@ public class ModelerWorkspaceUtil {
 
   	} catch (Exception e) {
   		logger.info(e.getLocalizedMessage());
-  		new ModelerException(e);
+  		throw new ModelerException(e);
   	}
   }
   
