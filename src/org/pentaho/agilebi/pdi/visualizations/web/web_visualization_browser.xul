@@ -36,7 +36,7 @@
             <label id="factTableName" value="" />
             <hbox>
               <button label="${refresh}" onclick="web_visualiztion.refreshData()"/>
-              <button label="${view}"/>
+              <!--button label="${view}"/-->
             </hbox>
           </vbox>
         </groupbox>
