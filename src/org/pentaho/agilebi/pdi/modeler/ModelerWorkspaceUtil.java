@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -230,22 +231,28 @@ public class ModelerWorkspaceUtil {
     // Add all measures
     for (MeasureMetaData f : model.getFields()) {
       LogicalColumn lCol = f.getLogicalColumn();
-      if (f.getFormat() != null) {
-        // TODO: set mask
-        // lCol.setFormat( f.getFormat());
-      }
+
       lCol.setName(new LocalizedString(Locale.getDefault().toString(), f.getDisplayName()));
       AggregationType type = AggregationType.valueOf(f.getAggTypeDesc());
       if (type != AggregationType.NONE) {
         lCol.setAggregationType(type);
       }
+      
+      // set the format mask
+      
       String formatMask = f.getFormat();
-      if( MeasureMetaData.FORMAT_NONE.equals(formatMask)) {
-        formatMask = "#;-#";
+      if( MeasureMetaData.FORMAT_NONE.equals(formatMask) || StringUtils.isBlank(formatMask)) {
+        formatMask = null;
       }
       if (formatMask != null) {
         lCol.setProperty("mask", formatMask); //$NON-NLS-1$
+      } else {
+        // remove old mask that might have been set
+        if (lCol.getChildProperty("mask") != null) { //$NON-NLS-1$
+          lCol.removeChildProperty("mask"); //$NON-NLS-1$
+        }
       }
+      
       lCol.setAggregationList(DEFAULT_AGGREGATION_LIST);
       AggregationType selectedAgg = AggregationType.NONE; 
       try{
