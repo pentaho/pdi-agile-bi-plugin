@@ -132,10 +132,12 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
 
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       ModelerWorkspace model = new ModelerWorkspace();
-      createTabForModel(model,AgileBiPerspective.createShortName(fname));
-
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
       ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);
+      
+      createTabForModel(model,AgileBiPerspective.createShortName(fname));
+
+      
 
       File f = new File(fname);
       String fullPath = f.getAbsolutePath();
