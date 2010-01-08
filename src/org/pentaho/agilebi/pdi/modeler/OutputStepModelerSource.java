@@ -125,6 +125,9 @@ public class OutputStepModelerSource extends TableModelerSource {
   }
 
   public void serializeIntoDomain(Domain d) {
+    if(this.fileName == null){
+      return;
+    }
     LogicalModel lm = d.getLogicalModels().get(0);
     lm.setProperty("trans_file", this.fileName); //$NON-NLS-1$
     lm.setProperty("trans_repo", this.repositoryName != null ? this.repositoryName : ""); //$NON-NLS-1$ //$NON-NLS-2$
