@@ -37,9 +37,7 @@ public class WebVisualization extends AbstractVisualization {
 	
   private String getStateJavascript;
   private String setStateJavascript;
-	
-	private String modelFileName;
-	
+		
 	public String getNewUrl() {
 		return newUrl;
 	}
@@ -204,7 +202,7 @@ public class WebVisualization extends AbstractVisualization {
 
       String url = generateOpenUrl(fname);
       WebVisualizationBrowser browser = new WebVisualizationBrowser(spoon.tabfolder.getSwtTabset(), spoon, this, catalogFileName, cubeName, fname, url);
-      browser.setXmiFileLocation(modelFileName);
+      browser.setXmiFileLocation(catalogFileName);
      
       this.createTabForBrowser(browser);
       String fullPath = file.getAbsolutePath();
