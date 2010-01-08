@@ -122,7 +122,7 @@ public class WebVisualization extends AbstractVisualization {
 	public String generateRefreshModelJavascript(String fileLocation, String modelId) {
 	  String str = replaceField(refreshModelJavascript, "modelLocation", fileLocation, true); //$NON-NLS-1$
     str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
-    str = replaceField(str, "basedir", new File("").getAbsolutePath(), false); //$NON-NLS-1$ //$NON-NLS-2$
+    str = replaceField(str, "basedir", new File("").getAbsolutePath(), true); //$NON-NLS-1$ //$NON-NLS-2$
     return str;
 	}
 	
