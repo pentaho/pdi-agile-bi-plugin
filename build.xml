@@ -97,10 +97,7 @@
 			
 			
 			<!-- second, remove unnecessary jars -->
-			
-			<!-- pentaho reporting -->
-			<include name="pentaho-reporting-*.jar"/>
-			<include name="lib*.jar"/>
+
 			<!-- batik -->
 			<include name="batik-*.jar"/>
 			<!-- jackrabbit -->
