@@ -46,6 +46,7 @@ import org.pentaho.di.ui.util.ImageUtil;
 import org.pentaho.metadata.model.Domain;
 //import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 //import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
+import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
@@ -177,18 +178,17 @@ public class ModelerHelper extends AbstractXulEventHandler {
   }
   
   public void reportWizard() {
-    return;
-//    try {
-//      ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
-////      if (!engineBoot.isBootDone()) {
-//        engineBoot.start();
-////      }
-//      EmbeddedWizard wizard = new EmbeddedWizard();
-//      wizard.run(null);
-//    } catch (Exception e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    }
+    try {
+      ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
+//      if (!engineBoot.isBootDone()) {
+        engineBoot.start();
+//      }
+      EmbeddedWizard wizard = new EmbeddedWizard();
+      wizard.run(null);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
   
   public void quickVisualize( ModelerWorkspace model ) throws ModelerException {
