@@ -22,7 +22,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.pentaho.metadata.model.LogicalColumn;
 
-public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements Serializable {
+public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements Serializable, ColumnBackedNode {
 
   private static final long serialVersionUID = -8026104295937064671L;
   String name;
@@ -82,6 +82,7 @@ public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements 
 
   public void setLogicalColumn(LogicalColumn logicalColumn) {
     this.logicalColumn = logicalColumn;
+    validate();
   }
   
   public void setUniqueMembers(Boolean uniqueMembers) {
@@ -99,6 +100,10 @@ public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements 
     // check name
     if (StringUtils.isEmpty(name)) {
       validationMessages.add("Name is empty");
+      valid = false;
+    }
+    if(logicalColumn == null){
+      validationMessages.add("Column is missing");
       valid = false;
     }
   }

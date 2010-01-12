@@ -100,7 +100,7 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
     return new String[]{"xmi"};
   }
 
-  public void createTabForModel(final ModelerWorkspace model, String name){
+  public void createTabForModel(final ModelerWorkspace model, String name) throws ModelerException {
 
     try{
       XulTabAndPanel tabAndPanel = createTab();
@@ -121,9 +121,9 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
       models.add(model);
       
       SpoonPerspectiveManager.getInstance().activatePerspective(getClass());
-    } catch (Exception e) {
-      logger.error(e);
-    } 
+    } catch(KettleException e){
+      throw new ModelerException(e);
+    }
     
   }
   
@@ -143,14 +143,15 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
       String fullPath = f.getAbsolutePath();
       spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
       spoon.addMenuLast();
-      
+
+      return true;  
     } catch(ModelerException e){
-      e.printStackTrace();
+      logger.error(e);
     } catch(IOException e){
-      e.printStackTrace();
+      logger.error(e);
     } 
     
-    return true;
+    return false;
   }
 
   public boolean save(EngineMetaInterface meta, String fname, boolean isExport) {

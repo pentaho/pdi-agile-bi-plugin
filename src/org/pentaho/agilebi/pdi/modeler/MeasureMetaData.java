@@ -28,7 +28,7 @@ import org.pentaho.reporting.libraries.base.util.StringUtils;
  * @author wseyler
  *
  */
-public class MeasureMetaData extends AbstractMetaDataModelNode implements Serializable {
+public class MeasureMetaData extends AbstractMetaDataModelNode implements Serializable, ColumnBackedNode {
   
   public static final String FORMAT_NONE = "NONE"; //$NON-NLS-1$
   
@@ -133,6 +133,7 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
   }
   public void setLogicalColumn(LogicalColumn col){
     this.logicalColumn = col;
+    validateNode();
   }
   
   @Override
@@ -141,6 +142,11 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
       return false;
     }
     MeasureMetaData f = (MeasureMetaData) o;
+    
+    if(o == this){
+      return true;
+    }
+    
     if(f.getLogicalColumn().getId().equals(this.getLogicalColumn().getId())){
       return true;
     }
@@ -172,7 +178,12 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
     if (StringUtils.isEmpty(name)) {
       validationMessages.add("Name is empty");
       valid = false;
+    } 
+    if(logicalColumn == null){
+      validationMessages.add("Database column missing. I think you should do something abuot that and this really long message");
+      valid = false;
     }
+    this.firePropertyChange("valid", null, valid);
   }
   
   public boolean isEditingDisabled(){

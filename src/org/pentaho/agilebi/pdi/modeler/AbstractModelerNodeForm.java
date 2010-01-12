@@ -19,8 +19,8 @@ public abstract class AbstractModelerNodeForm<T> extends AbstractXulEventHandler
   }
   
   public void activate(T obj) {
-    deck.setSelectedIndex(deck.getChildNodes().indexOf(panel));
     this.setObject(obj);
+    deck.setSelectedIndex(deck.getChildNodes().indexOf(panel));
   }
 
 

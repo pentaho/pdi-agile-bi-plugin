@@ -383,6 +383,19 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       firePropertyChange("availableFields", null, getAvailableFields()); //$NON-NLS-1$
       fireFieldsChanged();
       
+
+      for(MeasureMetaData measure : model.getMeasures()) {
+        boolean found = false;
+        for(AvailableField fm : availableFields){
+          if(fm.getLogicalColumn().getId().equals(measure.getLogicalColumn().getId())){
+            found = true;
+          }
+        }
+        if(!found){
+          measure.setLogicalColumn(null);
+        }
+      }
+      
       for(DimensionMetaData dm : model.getDimensions()) {
         for(HierarchyMetaData hm : dm){
           for(LevelMetaData lm : hm.getChildren()){
@@ -396,7 +409,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
               }
             }
             if(!found){
-              lm.getParent().remove(lm);
+              lm.setLogicalColumn(null);
             }
           }
         }

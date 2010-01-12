@@ -65,7 +65,7 @@ public class XulDialogBiServerListCopy extends AbstractSwtXulDialogController {
     biServerConnections = biServerConfig.getServerConnections();
     
     // create the 'biserverlist' dialog
-    initDialogController( "org/pentaho/agilebi/pdi/modeler/biserverconfig.xul", "biserverlist", null, null ); //$NON-NLS-1$ //$NON-NLS-2$
+    initDialogController( "org/pentaho/agilebi/pdi/modeler/res/biserverconfig.xul", "biserverlist", null, null ); //$NON-NLS-1$ //$NON-NLS-2$
     
   }
 

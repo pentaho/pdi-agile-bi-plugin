@@ -102,6 +102,8 @@ public class ModelerController extends AbstractXulEventHandler{
   private List<String> visualizationNames;
   private Map<Class<? extends ModelerNodePropertiesForm>, ModelerNodePropertiesForm> propertiesForms = new HashMap<Class<? extends ModelerNodePropertiesForm>, ModelerNodePropertiesForm>();
   
+  private ColResolverController colController;
+  
   public ModelerController(){
     workspace = new ModelerWorkspace();
   }
@@ -520,6 +522,13 @@ public class ModelerController extends AbstractXulEventHandler{
     workspace.setDirty(false);
   }
   
+  public void resolveMissingColumns(){
+    if(selectedTreeItem instanceof ColumnBackedNode 
+        && ((AbstractMetaDataModelNode) selectedTreeItem).isValid() == false){
+      colController.show(this.workspace, (ColumnBackedNode) selectedTreeItem); 
+    }
+  }
+  
   public void loadWorkspace() throws ModelerException {
   	
   	try {
@@ -534,7 +543,7 @@ public class ModelerController extends AbstractXulEventHandler{
 	  	
   	} catch(Exception e) {
   		logger.info(e.getLocalizedMessage());
-  		new ModelerException(e);
+  		throw new ModelerException(e);
   	}
   }
   
@@ -550,5 +559,9 @@ public class ModelerController extends AbstractXulEventHandler{
     propertiesForms.put(form.getClass(), form);
   }
 
+  
+  public void setColResolver(ColResolverController controller){
+    this.colController = controller;
+  }
   
 }

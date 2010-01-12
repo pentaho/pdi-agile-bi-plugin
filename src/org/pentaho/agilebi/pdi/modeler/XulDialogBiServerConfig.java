@@ -76,7 +76,7 @@ public class XulDialogBiServerConfig extends AbstractSwtXulDialogController {
     password = biServerConnection.getPassword();
     publishPassword = biServerConnection.getPublishPassword();
     
-    initDialogController( "org/pentaho/agilebi/pdi/modeler/biserverconfig.xul", "biserverconfig", null, null ); //$NON-NLS-1$ //$NON-NLS-2$
+    initDialogController( "org/pentaho/agilebi/pdi/modeler/res/biserverconfig.xul", "biserverconfig", null, null ); //$NON-NLS-1$ //$NON-NLS-2$
     
   }
 

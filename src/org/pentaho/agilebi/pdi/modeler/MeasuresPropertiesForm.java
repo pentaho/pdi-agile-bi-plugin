@@ -1,15 +1,21 @@
 package org.pentaho.agilebi.pdi.modeler;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.pentaho.ui.xul.binding.BindingConvertor;
-import org.pentaho.ui.xul.binding.BindingFactory;
-import org.pentaho.ui.xul.binding.DefaultBindingFactory;
-import org.pentaho.ui.xul.containers.XulDeck;
-import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
 public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaData> {
 
   private MeasureMetaData fieldMeta;
 
+  private PropertyChangeListener propListener = new PropertyChangeListener(){
+
+    public void propertyChange(PropertyChangeEvent arg0) {
+      setObject(fieldMeta);
+    }
+  };
+  
   public MeasuresPropertiesForm() {
     super("measuresprops");
   }
@@ -23,16 +29,22 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     bf.createBinding(this, "displayName", "displayname", "value");
     bf.createBinding(this, "aggTypeDesc", "aggregationtype", "selectedItem");
     bf.createBinding(this, "format", "formatstring", "selectedItem", new FormatStringConverter());
+    bf.createBinding(this, "notValid", "fixMeasuresColumnsBtn", "visible");
 
   }
 
   public void setObject(MeasureMetaData t) {
+    if(fieldMeta != null){
+      fieldMeta.removePropertyChangeListener(propListener);
+    }
     this.fieldMeta = t;
+    t.addPropertyChangeListener("valid", propListener);
+    
     setDisplayName(fieldMeta.getDisplayName());
     setFormat(fieldMeta.getFormat());
     setAggTypeDesc(fieldMeta.getAggTypeDesc());
-    setNotValid(!fieldMeta.isValid());
     setValidMessages(fieldMeta.getValidationMessagesString());
+    setNotValid(!fieldMeta.isValid());
   }
 
   public boolean isNotValid() {

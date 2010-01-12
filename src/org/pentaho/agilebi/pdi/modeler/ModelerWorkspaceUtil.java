@@ -233,7 +233,6 @@ public class ModelerWorkspaceUtil {
     // Add all measures
     for (MeasureMetaData f : model.getFields()) {
       LogicalColumn lCol = f.getLogicalColumn();
-
       lCol.setName(new LocalizedString(Locale.getDefault().toString(), f.getDisplayName()));
       AggregationType type = AggregationType.valueOf(f.getAggTypeDesc());
       if (type != AggregationType.NONE) {
@@ -455,6 +454,7 @@ public class ModelerWorkspaceUtil {
     	aModel.setDomain(domain);
     	aModel.setFileName(fileName);
     	aModel.resolveConnectionFromDomain();
+    	aModel.refresh();
     	aModel.setDirty(false);
     } catch (Exception e){
       logger.info(e);

@@ -9,6 +9,9 @@
     <label value="Name:" />
     <textbox id="newDimensionName" />
   </dialog>
+  
+  
+  <pen:include src="columnResolver.xul" />
 
   <vbox flex="1" id="mainVBox">
     <hbox>
@@ -72,13 +75,8 @@
           <vbox flex="2">
             <groupbox flex="1">
               <caption label="Properties"/>
-              <deck id="propertiesdeck" >
-              
-                <vbox id="blank">
-                	<hbox id="messages1" visible="false">
-                		
-                	</hbox>
-                </vbox>
+              <deck id="propertiesdeck" flex="1" >
+                <vbox/>
                 <pen:include src="measuresForm.xul"/>
                 
                 <pen:include src="cubeForms.xul" ignoreroot="true"/>

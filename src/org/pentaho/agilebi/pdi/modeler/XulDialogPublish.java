@@ -110,7 +110,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
     setName("dialog"); //$NON-NLS-1$
 
     // create the 'biserverlist' dialog
-    initDialogController( "org/pentaho/agilebi/pdi/modeler/publish.xul", "publish", null, null ); //$NON-NLS-1$ //$NON-NLS-2$
+    initDialogController( "org/pentaho/agilebi/pdi/modeler/res/publish.xul", "publish", null, null ); //$NON-NLS-1$ //$NON-NLS-2$
     
   }
 
