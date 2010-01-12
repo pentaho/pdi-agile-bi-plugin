@@ -1,6 +1,9 @@
 package org.pentaho.agilebi.pdi.perspective;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,11 +13,19 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.DocumentHelper;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.spoon.FileListener;
+import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveListener;
+import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
@@ -46,12 +57,12 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   protected List<SpoonPerspectiveListener> listeners = new ArrayList<SpoonPerspectiveListener>();
   private ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective"); //$NON-NLS-1$
   private String defaultExtension = "";
-
+  protected ModelerWorkspace model;
+  
   protected Map<XulTab, EngineMetaInterface> metas = new HashMap<XulTab, EngineMetaInterface>();
   
-  protected AbstractPerspective(){
-    try{
-      
+  protected AbstractPerspective() {
+    try {
       SwtXulLoader loader = new SwtXulLoader();
       container = loader.loadXul("org/pentaho/agilebi/pdi/perspective/perspective.xul"); //$NON-NLS-1$
       
@@ -67,6 +78,32 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
     } catch(Exception e){
       logger.error(e);
     }
+  }
+  
+  public void exportSchema() {
+  	try {
+  		ModelerWorkspaceUtil.populateDomain(this.model);
+  		LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
+  	
+  		FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell());
+   	  String theFile = fileDialog.open();
+   		MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
+   		String mondrianSchema = exporter.createMondrianModelXML();
+   	  logger.info(mondrianSchema);   		
+   		
+      org.dom4j.Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
+      byte schemaBytes[] = schemaDoc.asXML().getBytes();      
+      
+      File modelFile = new File(theFile);
+      OutputStream out = new FileOutputStream(modelFile);
+      out.write(schemaBytes);
+      out.flush();
+      out.close();
+      
+  	} catch(Exception e) {
+  		MessageDialog.openError(Spoon.getInstance().getShell(), "", e.getMessage());
+  		e.printStackTrace();
+  	}
   }
 
   public abstract String getDisplayName(Locale l);
@@ -115,7 +152,6 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   public abstract boolean save(EngineMetaInterface meta, String fname, boolean isExport);
 
   public void syncMetaName(EngineMetaInterface meta, String name) {
-    
   }
 
   public static String createShortName( String filename ) {
@@ -138,8 +174,6 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   public abstract List<XulEventHandler> getEventHandlers();
 
   public abstract List<XulOverlay> getOverlays();
-  
-
 
   public void addPerspectiveListener(SpoonPerspectiveListener listener) {
     if(listeners.contains(listener) == false){
@@ -181,8 +215,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   
   public XulTabAndPanel createTab(){
 
-    try{
-      
+    try {
       XulTab tab = (XulTab) document.createElement("tab");
       if(name != null){
         tab.setLabel(name);
@@ -199,7 +232,6 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
       e.printStackTrace();
     }
     return null;
-    
   }
   
   public void setNameForTab(XulTab tab, String name){
@@ -265,5 +297,4 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
     }
     return metas.get(tabbox.getTabs().getChildNodes().get( idx ));
   }
-  
 }

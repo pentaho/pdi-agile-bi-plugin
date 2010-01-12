@@ -20,38 +20,27 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
 import org.pentaho.di.core.Const;
-import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.core.database.dialog.DatabaseExplorerDialog;
-import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.TabMapEntry;
-import org.pentaho.di.ui.util.ImageUtil;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
-import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
-import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
-import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.xul.swt.tab.TabItem;
-import org.w3c.dom.Node;
 
 public class ModelerHelper extends AbstractXulEventHandler {
 
@@ -220,7 +209,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     if(theVisualization != null) {
       if (model.getFileName() != null) {
         // TODO: Find a better name for the cube, maybe just model name?
-        theVisualization.createVisualizationFromModel(model.getFileName(), model.getModelName() + " Cube");
+        theVisualization.createVisualizationFromModel(model);
       } else {
         throw new UnsupportedOperationException("TODO: prompt to save model before visualization");
       }

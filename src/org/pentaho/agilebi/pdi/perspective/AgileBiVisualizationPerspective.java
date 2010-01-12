@@ -20,23 +20,16 @@ import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
-import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.CloseConfirmXulDialogCallback;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
-import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.binding.Binding;
-import org.pentaho.ui.xul.binding.BindingConvertor;
 import org.pentaho.ui.xul.binding.DefaultBinding;
-import org.pentaho.ui.xul.components.XulConfirmBox;
-import org.pentaho.ui.xul.components.XulTab;
-import org.pentaho.ui.xul.components.XulTabpanel;
 import org.pentaho.ui.xul.impl.XulEventHandler;
-import org.pentaho.ui.xul.swt.tags.SwtTab;
 import org.w3c.dom.Node;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -45,9 +38,8 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
   private Log logger = LogFactory.getLog(AgileBiPerspective.class);
   private static final AgileBiVisualizationPerspective INSTANCE = new AgileBiVisualizationPerspective();
-  private List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
   private ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective"); //$NON-NLS-1$
-  
+  protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
   private Map<ModelerWorkspace, EngineMetaInterface> metas = new HashMap<ModelerWorkspace, EngineMetaInterface>();
   
   private AgileBiVisualizationPerspective(){
@@ -59,10 +51,12 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
     return INSTANCE;
   }
   
-
+  public void setModel(ModelerWorkspace aModel) {
+  	model = aModel;
+  }
+  
   public String getDisplayName(Locale l) {
     ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective", l); //$NON-NLS-1$
-    
     return messages.getString("visualizationPerspectiveName");
   }
 
@@ -87,10 +81,9 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
     return new String[]{"xanalyzer"};
   }
 
-
   public void createTabForModel(final ModelerWorkspace model, String name){
 
-    try{
+    try {
       XulTabAndPanel tabAndPanel = createTab();
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       XulUI xul = new XulUI(spoon.getShell(), model);
@@ -112,12 +105,10 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
     } catch (ModelerException e) {
       logger.error(e);
     }
-    
   }
   
   public boolean open(Node transNode, String fname, boolean importfile) {
-    try{
-
+    try {
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       ModelerWorkspace model = new ModelerWorkspace();
       createTabForModel(model,AgileBiPerspective.createShortName(fname));
@@ -130,12 +121,11 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
       spoon.getProperties().addLastFile("Visualization", fullPath, null, false, null);
       spoon.addMenuLast();
       
-    } catch(ModelerException e){
+    } catch(ModelerException e) {
       e.printStackTrace();
     } catch(IOException e){
       e.printStackTrace();
     } 
-    
     return true;
   }
 
@@ -150,9 +140,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   }
 
   public void syncMetaName(EngineMetaInterface meta, String name) {
-    
   }
-
 
   public List<XulEventHandler> getEventHandlers() {
     return Collections.singletonList(this);
@@ -166,7 +154,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
       }
 
       public String getOverlayUri() {
-        return "org/pentaho/agilebi/pdi/perspective/perspective_overlay.xul"; //$NON-NLS-1$
+        return "org/pentaho/agilebi/pdi/perspective/visualization_perspective_overlay.xul"; //$NON-NLS-1$
         
       }
 
@@ -188,12 +176,10 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
   @Override
   public String getName() {
-    return "perspective"; //$NON-NLS-1$
+    return "agileBiVisPerspective"; //$NON-NLS-1$
   }
   
   public boolean onTabClose(final int pos) throws XulException{
     return true;
   }
-
-  
 }

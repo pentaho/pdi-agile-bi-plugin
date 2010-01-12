@@ -18,6 +18,7 @@ package org.pentaho.agilebi.pdi.visualizations.reportwizard;
 
 import java.util.Locale;
 
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.w3c.dom.Node;
@@ -67,7 +68,7 @@ public class ReportWizardVisualization implements IVisualization {
     return null;
   }
 
-  public void createVisualizationFromModel(String modelFileLocation, String modelId) {
+  public void createVisualizationFromModel(ModelerWorkspace model) {
     // TODO Auto-generated method stub
     
   }

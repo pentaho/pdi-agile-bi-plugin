@@ -218,4 +218,8 @@ public class WebVisualizationController extends AbstractXulEventHandler implemen
 	public String getName() {
 		return "web_visualiztion";
 	}
+	
+	public String getFileLocation() {
+		return this.xmiFileLocation;
+	}
 }

@@ -16,6 +16,7 @@
  */
 package org.pentaho.agilebi.pdi.visualizations;
 
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.di.ui.spoon.FileListener;
 
 public interface IVisualization extends FileListener {
@@ -33,7 +34,7 @@ public interface IVisualization extends FileListener {
 	public int getOrder();
 
 	// should change this to "new"
-	public void createVisualizationFromModel(String modelFileLocation, String modelId);
+	public void createVisualizationFromModel(ModelerWorkspace model);
 
 	public String getExtension();
 	

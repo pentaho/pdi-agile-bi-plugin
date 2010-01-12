@@ -15,6 +15,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.jaxen.JaxenException;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.dom4j.Dom4jXPath;
+import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;
 import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.XulTabAndPanel;
 import org.pentaho.agilebi.pdi.visualizations.AbstractVisualization;
@@ -23,6 +26,7 @@ import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
+import org.pentaho.metadata.model.Domain;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
@@ -126,24 +130,25 @@ public class WebVisualization extends AbstractVisualization {
     return str;
 	}
 	
-	public void createVisualizationFromModel(String fileLocation, String modelId) {
+	public void createVisualizationFromModel(ModelerWorkspace model) {
+		
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
     	SwtXulLoader theXulLoader = new SwtXulLoader();
-      WebVisualizationController theController = new WebVisualizationController(spoon.tabfolder.getSwtTabset(), this, fileLocation, modelId, null);
+      WebVisualizationController theController = new WebVisualizationController(spoon.tabfolder.getSwtTabset(), this, model.getFileName(), model.getModelName() + " Cube", null);
     	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION);
 			theXulContainer.addEventHandler(theController);
 			Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject();
 			SwtXulRunner theRunner = new SwtXulRunner();
 			theRunner.addContainer(theXulContainer);
 			theRunner.initialize();
-      createTabForBrowser(theMainBox, theController);      
+      createTabForBrowser(theMainBox, theController, model);      
     } catch (Throwable e) {
       throw new RuntimeException(e);
     }
   }
 
-	private void createTabForBrowser(Composite composite, WebVisualizationController controller) throws KettleException{
+	private void createTabForBrowser(Composite composite, WebVisualizationController controller, ModelerWorkspace model) throws KettleException {
 
     XulTabAndPanel tabAndPanel = AgileBiVisualizationPerspective.getInstance().createTab();
 
@@ -161,6 +166,7 @@ public class WebVisualization extends AbstractVisualization {
     parentComposite.layout(true);
     AgileBiVisualizationPerspective.getInstance().setNameForTab(tabAndPanel.tab, controller.getMeta().getName());
     AgileBiVisualizationPerspective.getInstance().setMetaForTab(tabAndPanel.tab, controller.getMeta());
+    AgileBiVisualizationPerspective.getInstance().setModel(model);    
 
     SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiVisualizationPerspective.class);
 	}
@@ -223,8 +229,7 @@ public class WebVisualization extends AbstractVisualization {
       org.dom4j.Node node2 = (org.dom4j.Node) xpath2.selectSingleNode( doc);
 
       String modelFileName = node.getText();
-      String modelId = node2.getText();
-            
+      String modelId = node2.getText();            
       
       SwtXulLoader theXulLoader = new SwtXulLoader();
       WebVisualizationController theController = new WebVisualizationController(spoon.tabfolder.getSwtTabset(), this, modelFileName, modelId, null);
@@ -234,8 +239,13 @@ public class WebVisualization extends AbstractVisualization {
 			SwtXulRunner theRunner = new SwtXulRunner();
 			theRunner.addContainer(theXulContainer);
 			theRunner.initialize();
-      createTabForBrowser(theMainBox, theController);
-      
+			
+	  	Domain domain = ModelerHelper.getInstance().loadDomain(modelFileName);
+			ModelerWorkspace model = new ModelerWorkspace();
+			model.setDomain(domain);
+			model.setModelName(modelId);
+			model.setFileName(modelFileName);			
+      createTabForBrowser(theMainBox, theController, model);      
       
       String fullPath = f.getAbsolutePath();
       spoon.getProperties().addLastFile("Analyzer", fullPath, null, false, null);

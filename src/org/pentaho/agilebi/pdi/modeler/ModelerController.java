@@ -509,7 +509,7 @@ public class ModelerController extends AbstractXulEventHandler{
   	if(theVisualization != null) {
   	  if (workspace.getFileName() != null) {
   	    // TODO: Find a better name for the cube, maybe just workspace name?
-  	    theVisualization.createVisualizationFromModel(workspace.getFileName(), workspace.getModelName() + " Cube");
+  	    theVisualization.createVisualizationFromModel(workspace);
   	  } else {
   	    throw new UnsupportedOperationException("TODO: prompt to save workspace before visualization");
   	  }
@@ -522,7 +522,7 @@ public class ModelerController extends AbstractXulEventHandler{
     workspace.setDirty(false);
   }
   
-  public void resolveMissingColumns(){
+  public void resolveMissingColumns() {
     if(selectedTreeItem instanceof ColumnBackedNode 
         && ((AbstractMetaDataModelNode) selectedTreeItem).isValid() == false){
       colController.show(this.workspace, (ColumnBackedNode) selectedTreeItem); 
@@ -559,7 +559,6 @@ public class ModelerController extends AbstractXulEventHandler{
     propertiesForms.put(form.getClass(), form);
   }
 
-  
   public void setColResolver(ColResolverController controller){
     this.colController = controller;
   }
