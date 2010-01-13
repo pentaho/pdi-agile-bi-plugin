@@ -176,11 +176,11 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
     if( currentFolder != null ) {
       CmisObject folder = currentFolder;
       while( folder != null ) {
-        folders.add(0, folder.findStringProperty(CmisObject.LOCALIZEDNAME) );
+        folders.add(0, folder.findStringProperty(CmisObject.LOCALIZEDNAME, null) );
         List<CmisObject> objects;
         try {
           objects = publisher.getNavigationService()
-            .getFolderParent(BiPlatformRepositoryClient.PLATFORMORIG, folder.findIdProperty( PropertiesBase.OBJECTID ), null, false, false, false);
+            .getFolderParent(BiPlatformRepositoryClient.PLATFORMORIG, folder.findIdProperty( PropertiesBase.OBJECTID, null ), null, false, false, false);
           if( objects != null && objects.size() > 0 ) {
             folder = objects.get(0);
           } else {
@@ -491,9 +491,9 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
     if( object == null ) {
       return;
     }
-    String objectType = object.findStringProperty( PropertiesBase.OBJECTTYPEID );
+    String objectType = object.findStringProperty( PropertiesBase.OBJECTTYPEID, null );
     if( !CmisObject.OBJECT_TYPE_FOLDER.equals( objectType ) ) {
-      setFilename( object.findStringProperty( CmisObject.LOCALIZEDNAME ) );
+      setFilename( object.findStringProperty( CmisObject.LOCALIZEDNAME, null ) );
     } else {
       currentFolder = object;
     }
@@ -509,7 +509,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
     }
     CmisObject object = getCurrentFile();
     // is the current object a file or folder?
-    String objectType = object.findStringProperty( PropertiesBase.OBJECTTYPEID );
+    String objectType = object.findStringProperty( PropertiesBase.OBJECTTYPEID, null );
     if( CmisObject.OBJECT_TYPE_FOLDER.equals( objectType ) ) {
       folderNames.add( new NamedCmisObject(object) );
       fireFoldersBinding();
@@ -537,7 +537,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
     // remove all of the folders that come after the selected one
     String selectedFolder = null;
     if( currentFolder != null ) {
-      selectedFolder = currentFolder.findStringProperty(CmisObject.LOCALIZEDNAME);
+      selectedFolder = currentFolder.findStringProperty(CmisObject.LOCALIZEDNAME, null);
     } else {
       selectedFolder = folderNames.get(0).getName();
     }

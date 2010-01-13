@@ -11,7 +11,7 @@ public class NamedCmisObject extends NamedObject {
   
   public NamedCmisObject( CmisObject cmisObject ) {
     this.cmisObject = cmisObject;
-    this.name = cmisObject.findStringProperty( CmisObject.LOCALIZEDNAME );
+    this.name = cmisObject.findStringProperty( CmisObject.LOCALIZEDNAME, null );
   }
   
   public String getName() {
@@ -32,7 +32,7 @@ public class NamedCmisObject extends NamedObject {
   
   public String getImage() {
     
-    String type = cmisObject.findStringProperty( PropertiesBase.OBJECTTYPEID );
+    String type = cmisObject.findStringProperty( PropertiesBase.OBJECTTYPEID, null );
     if( CmisObject.OBJECT_TYPE_FOLDER.equals( type ) ) {
       return "images/sm_folder_icon.png"; //$NON-NLS-1$
     } else {

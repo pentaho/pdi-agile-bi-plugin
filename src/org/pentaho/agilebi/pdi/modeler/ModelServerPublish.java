@@ -192,7 +192,7 @@ public class ModelServerPublish {
     }
     String startLocation = ""; //$NON-NLS-1$
     if( folder != null ) {
-      startLocation = folder.findIdProperty( PropertiesBase.OBJECTID );
+      startLocation = folder.findIdProperty( PropertiesBase.OBJECTID, null );
     }
     List<CmisObject> objects = navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, startLocation, folderTypes, depth, null, false, false); 
     return objects;

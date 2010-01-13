@@ -53,5 +53,6 @@
         
         <exclude org="xerces" module="xerces"/>
         <exclude org="xml-apis" module="xml-apis"/>
+        <exclude org="org.olap4j" module="olap4j"/>
     </dependencies>
 </ivy-module>
