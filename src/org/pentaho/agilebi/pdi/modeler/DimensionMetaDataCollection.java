@@ -59,6 +59,10 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
       validationMessages.add("Model requires at least one Dimension");
       valid = false;
     }
+    for(DimensionMetaData dim: children){
+      valid &= dim.isValid();
+      validationMessages.addAll(dim.getValidationMessages());
+    }
   }
   
   public boolean isEditingDisabled(){

@@ -32,9 +32,14 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
   public void validate() {
     valid = true;
     validationMessages.clear();
+
     if (size() == 0) {
       validationMessages.add("Model requires at least one Measure");
       valid = false;
+    }
+    for(MeasureMetaData measure : children){
+      valid &= measure.isValid();
+      validationMessages.addAll(measure.getValidationMessages());
     }
   }
 

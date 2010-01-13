@@ -153,6 +153,15 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public boolean isDirty() {
     return dirty;
   }
+  
+  public boolean isValid(){
+    model.validateTree();
+    return this.model.isValid();
+  }
+  
+  public List<String> getValidationMessages(){
+    return model.getValidationMessages();
+  }
  
   public void setDirty(boolean dirty) {
     boolean prevVal = this.dirty;

@@ -73,6 +73,10 @@ public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaDa
       validationMessages.add("Dimension must have at least one hierarchy.");
       valid = false;
     }
+    for(HierarchyMetaData hier: children){
+      valid &= hier.isValid();
+      validationMessages.addAll(hier.getValidationMessages());
+    }
   }
   
   public boolean equals(Object obj) {

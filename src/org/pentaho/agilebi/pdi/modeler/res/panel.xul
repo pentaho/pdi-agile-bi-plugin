@@ -1,105 +1,107 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
-<window id="label-test" title="Flow Test" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" height="600" width="800" onload="propertiesForm.init(),modeler.init()"
-  xmlns:pen="http://www.pentaho.org/2008/xul">
+<window id="label-test" title="Flow Test"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" height="600"
+  width="800" onload="propertiesForm.init(),modeler.init()" xmlns:pen="http://www.pentaho.org/2008/xul">
 
-  <dialog width="300" height="150" id="newDimesionDialog" title="Add Dimension" ondialogaccept="modeler.addNewDimension()"
-    ondialogcancel="modeler.hideNewDimensionDialog()">
+  <dialog width="300" height="150" id="newDimesionDialog" title="Add Dimension"
+    ondialogaccept="modeler.addNewDimension()" ondialogcancel="modeler.hideNewDimensionDialog()">
     <label value="Name:" />
     <textbox id="newDimensionName" />
   </dialog>
-  
-  
+
+
   <pen:include src="columnResolver.xul" />
 
-  <vbox flex="1" id="mainVBox">
-    <hbox>
+  <vbox flex="1" id="mainVBox" spacing="0" padding="0">
+
+    <hbox flex="1">
       <vbox flex="1">
-        <label value="Name:" />
-        <textbox id="modelname" />
-      </vbox>
-      <vbox flex="4">
-        <label value="Source:" />
-        <label id="source_name" value="some source" />
-      </vbox>
-    </hbox>
-    <vbox flex="1">
-
-      <hbox flex="1">
-        <vbox flex="1">
-          <hbox>
-            <label value="Available:" />
-            <spacer flex="1" />
-            <button onclick="modeler.refreshFields()" image="images/refresh.png" />
-          </hbox>
-          <listbox id="fieldList" flex="1" seltype="multi" pen:binding="name" ondrag="modeler.onFieldListDrag()"
-            pen:drageffect="copy">
-            <listitem label="field" />
-            <listitem label="field" />
-            <listitem label="field" />
-            <listitem label="field" />
-            <listitem label="field" />
-            <listitem label="field" />
-          </listbox>
-          <hbox>
-            <button label="Add Measure" onclick="modeler.moveFieldsToMeasures()" />
-            <button label="Add Dimension" onclick="modeler.moveFieldsToDimensions()" />
-          </hbox>
-        </vbox>
-        <hbox flex="2">
-          <vbox flex="3">
-            <hbox>
-              <spacer flex="1" />
-              <button image="images/16x16_down.png" onclick="modeler.moveFieldDown()" />
-              <button image="images/16x16_Up.png" onclick="modeler.moveFieldUp()" />
-              <button image="images/Add.png" onclick="modeler.showNewDimensionDialog()" />
-              <button image="images/remove.png" onclick="modeler.removeField()" />
-            </hbox>
-            <tree id="dimensionTree" flex="1" editable="true" ondrag="modeler.onDimensionTreeDrag()"
-              pen:drageffect="move" ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false" >
-              <treecols>
-                <treecol flex="1" label="" primary="true" pen:binding="name" pen:childrenbinding="children"
-                  pen:imagebinding="image" editable="true" pen:expandedbinding="uiExpanded" pen:disabledbinding="editingDisabled"/>
-              </treecols>
-              <treechildren>
-                <treeitem container="true" open="true">
-                  <treerow>
-                    <treecell label="" />
-                  </treerow>
-                  <treechildren></treechildren>
-                </treeitem>
-              </treechildren>
-            </tree>
-          </vbox>
-          <vbox flex="2">
-            <groupbox flex="1">
-              <caption label="Properties"/>
-              <deck id="propertiesdeck" flex="1" >
-                <vbox/>
-                <pen:include src="measuresForm.xul"/>
-                
-                <pen:include src="cubeForms.xul" ignoreroot="true"/>
-                
-              </deck>
-            </groupbox>
-          </vbox>
+        <hbox>
+          <label value="Available:" />
+          <spacer flex="1" />
+          <button onclick="modeler.refreshFields()" image="images/refresh.png" />
         </hbox>
-      </hbox>
-      <hbox>
-        <spacer flex="1" />
+        <listbox id="fieldList" flex="1" seltype="multi"
+          pen:binding="name" ondrag="modeler.onFieldListDrag()"
+          pen:drageffect="copy">
+          <listitem label="field" />
+          <listitem label="field" />
+          <listitem label="field" />
+          <listitem label="field" />
+          <listitem label="field" />
+          <listitem label="field" />
+        </listbox>
+        <hbox>
+          <button label="Add Measure" onclick="modeler.moveFieldsToMeasures()" />
+          <button label="Add Dimension" onclick="modeler.moveFieldsToDimensions()" />
+        </hbox>
+      </vbox>
+      <hbox flex="2">
+        <vbox flex="3">
+          <hbox>
+            <spacer flex="1" />
+            <button image="images/16x16_down.png" onclick="modeler.moveFieldDown()" />
+            <button image="images/16x16_Up.png" onclick="modeler.moveFieldUp()" />
+            <button image="images/Add.png" onclick="modeler.showNewDimensionDialog()" />
+            <button image="images/remove.png" onclick="modeler.removeField()" />
+          </hbox>
+          <tree id="dimensionTree" flex="1" editable="true"
+            ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move"
+            ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false">
+            <treecols>
+              <treecol flex="1" label="" primary="true"
+                pen:binding="name" pen:childrenbinding="children"
+                pen:imagebinding="image" editable="true"
+                pen:expandedbinding="uiExpanded" pen:disabledbinding="editingDisabled"
+                pen:tooltipbinding="validationMessagesString" />
+            </treecols>
+            <treechildren>
+              <treeitem container="true" open="true">
+                <treerow>
+                  <treecell label="" />
+                </treerow>
+                <treechildren></treechildren>
+              </treeitem>
+            </treechildren>
+          </tree>
+        </vbox>
+        <vbox flex="2">
+          <groupbox flex="1">
+            <caption label="Properties" />
+            <deck id="propertiesdeck" flex="1">
+              <vbox/>
+              <vbox id="mainprops" flex="1" spacing="4">
+                <label value="Name:" />
+                <textbox id="modelname" />
+             
+                <label value="Source:" />
+                <label id="source_name" value="some source" />
+             
+              </vbox>
+              <pen:include src="measuresForm.xul" />
 
-        <label value="New:" />
-        <menulist id="visualizationlist" label="">
-          <menupopup>
-            <menuitem label="Dummy Visualization" />
-          </menupopup>
-        </menulist>
+              <pen:include src="cubeForms.xul" ignoreroot="true" />
 
-        <button label="Go" id="exploreButton" onclick="modeler.visualize()" />
-        <button label="Publish" id="publishButton" onclick="modeler.publish()" />
+            </deck>
+          </groupbox>
+        </vbox>
       </hbox>
-    </vbox>
+    </hbox>
+    <hbox bgcolor="#FFFFFF">
+      <spacer flex="1" />
+
+      <label value="New:" />
+      <menulist id="visualizationlist" label="">
+        <menupopup>
+          <menuitem label="Dummy Visualization" />
+        </menupopup>
+      </menulist>
+
+      <button label="Go" id="exploreButton" onclick="modeler.visualize()" />
+      <button label="Publish" id="publishButton" onclick="modeler.publish()" />
+    </hbox>
   </vbox>
 
 </window>

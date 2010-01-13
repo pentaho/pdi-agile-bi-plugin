@@ -28,7 +28,7 @@ import org.pentaho.reporting.libraries.base.util.StringUtils;
  * @author wseyler
  *
  */
-public class MeasureMetaData extends AbstractMetaDataModelNode implements Serializable, ColumnBackedNode {
+public class MeasureMetaData extends AbstractMetaDataModelNode<Object> implements Serializable, ColumnBackedNode {
   
   public static final String FORMAT_NONE = "NONE"; //$NON-NLS-1$
   
@@ -153,7 +153,7 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
     return false;
   }
 
-  public List getChildren() {
+  public List<Object> getChildren() {
     return null;
   }
   
@@ -176,11 +176,11 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
     validationMessages.clear();
     // check name
     if (StringUtils.isEmpty(name)) {
-      validationMessages.add("Name is empty");
+      validationMessages.add(Messages.getInstance().getString("measure_name_missing")); 
       valid = false;
     } 
     if(logicalColumn == null){
-      validationMessages.add("Database column missing. I think you should do something abuot that and this really long message");
+      validationMessages.add(Messages.getInstance().getString("measure_column_missing"));
       valid = false;
     }
     this.firePropertyChange("valid", null, valid);
@@ -191,7 +191,7 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
   }
   
   @Override
-  public Class<? extends ModelerNodePropertiesForm> getPropertiesForm() {
+  public Class<? extends ModelerNodePropertiesForm<MeasureMetaData>> getPropertiesForm() {
     return MeasuresPropertiesForm.class;
   }
 }

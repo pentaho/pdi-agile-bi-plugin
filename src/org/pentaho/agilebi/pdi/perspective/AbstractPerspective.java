@@ -221,6 +221,8 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
         tab.setLabel(name);
       }
       XulTabpanel panel = (XulTabpanel) document.createElement("tabpanel"); //$NON-NLS-1
+      panel.setSpacing(0);
+      panel.setPadding(0);
       
       tabs.addChild(tab);
       panels.addChild(panel);

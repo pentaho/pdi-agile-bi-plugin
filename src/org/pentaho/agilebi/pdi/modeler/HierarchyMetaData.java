@@ -72,6 +72,10 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
       validationMessages.add("Hierarchy must have at least one level");
       valid = false;
     }
+    for(LevelMetaData level: children){
+      valid &= level.isValid();
+      validationMessages.addAll(level.getValidationMessages());
+    }
   }
   
   public String toString() {

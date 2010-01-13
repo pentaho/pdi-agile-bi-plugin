@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 import org.pentaho.ui.xul.util.AbstractModelNode;
 
-public class MainModelNode extends AbstractModelNode<AbstractMetaDataModelNode<?>> implements Serializable {
+public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataModelNode<?>> implements Serializable {
 
   private static final long serialVersionUID = 2399128598598210134L;
 
@@ -71,4 +71,30 @@ public class MainModelNode extends AbstractModelNode<AbstractMetaDataModelNode<?
   public boolean isEditingDisabled(){
     return true;
   }
+
+  @Override
+  public Class<? extends ModelerNodePropertiesForm> getPropertiesForm() {
+    return MainModelerNodePropertiesForm.class;
+  }
+
+  @Override
+  public String getValidImage() {
+    return getImage();
+  }
+
+  @Override
+  public void validate() {
+    valid = true;
+    this.validationMessages.clear();
+    if(this.children.size() != 2){
+      valid = false;
+      this.validationMessages.add(Messages.getInstance().getString("model_structure_invalid"));
+    }
+    for(AbstractMetaDataModelNode child : children){
+      valid &= child.isValid();
+      this.validationMessages.addAll(child.getValidationMessages());
+    }
+  }
+  
+  
 }

@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.swt.SWT;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.Const;
@@ -36,6 +37,7 @@ import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.platform.api.repository.ISolutionRepository;
+import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
@@ -44,6 +46,7 @@ import org.pentaho.ui.xul.binding.Binding.Type;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMenuList;
 import org.pentaho.ui.xul.components.XulMessageBox;
+import org.pentaho.ui.xul.components.XulPromptBox;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDeck;
 import org.pentaho.ui.xul.containers.XulDialog;
@@ -52,6 +55,8 @@ import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.util.AbstractModelNode;
+import org.pentaho.ui.xul.util.XulDialogCallback;
+import org.pentaho.ui.xul.util.XulDialogCallback.Status;
 
 /**
  * XUL Event Handler for the modeling interface. This class interacts with a ModelerModel to store state.
@@ -219,7 +224,9 @@ public class ModelerController extends AbstractXulEventHandler{
     XulLabel sourceLabel = (XulLabel) document.getElementById(SOURCE_NAME_LABEL_ID);
     String connectionName = "";
     String tableName = "";
-    if( workspace.getModelSource() != null ) {
+    
+    //TODO: migrate this code elsewhere or remove it entirely
+    if( workspace.getModelSource() != null && workspace.getModelSource() instanceof OutputStepModelerSource) {
       // for now just list the first table in the first physical workspace
       DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
       if( databaseMeta != null ) {
@@ -234,7 +241,7 @@ public class ModelerController extends AbstractXulEventHandler{
         }
       }
     }
-    sourceLabel.setValue( "Connection : "+connectionName + ", Table : " + tableName );
+    sourceLabel.setValue( "Table : " + tableName );
     bf.createBinding(workspace, "sourceName", sourceLabel, "value");
 
     bf.setBindingType(Type.ONE_WAY);
@@ -402,23 +409,34 @@ public class ModelerController extends AbstractXulEventHandler{
   
 
   public void showNewDimensionDialog(){
-    this.newDimensionDialog.show();
-  }
-  
-  public void hideNewDimensionDialog(){
-    this.newDimensionDialog.hide();
-  }
-  
-  public void addNewDimension(){
-    String dimName = this.newDimensionName.getValue();
-
-    DimensionMetaData dimension = new DimensionMetaData(dimName);
-    HierarchyMetaData hierarchy = new HierarchyMetaData(dimName);
-    hierarchy.setParent(dimension);
-    dimension.add(hierarchy);
-    workspace.addDimension(dimension);
     
-    hideNewDimensionDialog();
+    try {
+      XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox");
+      prompt.setModalParent(((Spoon) SpoonFactory.getInstance()).getShell());
+      prompt.setTitle("New Dimension");
+      prompt.setMessage("Enter new Dimension name");
+      prompt.addDialogCallback(new XulDialogCallback(){
+  
+        public void onClose(XulComponent sender, Status returnCode, Object retVal) {
+          if(returnCode == Status.ACCEPT){
+  
+            DimensionMetaData dimension = new DimensionMetaData(""+retVal);
+            HierarchyMetaData hierarchy = new HierarchyMetaData(""+retVal);
+            hierarchy.setParent(dimension);
+            dimension.add(hierarchy);
+            workspace.addDimension(dimension);
+          }
+        }
+  
+        public void onError(XulComponent sender, Throwable t) {
+          logger.error(t);
+        }
+        
+      });
+      prompt.open();
+    } catch (XulException e) {
+      logger.error(e);
+    }
   }
   
   public void moveFieldUp() {

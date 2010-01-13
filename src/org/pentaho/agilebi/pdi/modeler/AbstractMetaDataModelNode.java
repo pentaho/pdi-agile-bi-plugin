@@ -69,10 +69,10 @@ public abstract class AbstractMetaDataModelNode<T> extends AbstractModelNode<T> 
   
   @SuppressWarnings("unchecked")
   public void validateTree() {
-    validate();
     for (T t : this) {
-      ((AbstractMetaDataModelNode)t).validate();
+      ((AbstractMetaDataModelNode)t).validateTree();
     }
+    validate();
   };
   
   @SuppressWarnings("unchecked")
