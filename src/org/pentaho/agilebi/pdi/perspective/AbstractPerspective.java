@@ -80,31 +80,41 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
     }
   }
   
-  public void exportSchema() {
-  	try {
-  		ModelerWorkspaceUtil.populateDomain(this.model);
-  		LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
-  	
-  		FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell());
-   	  String theFile = fileDialog.open();
-   		MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
-   		String mondrianSchema = exporter.createMondrianModelXML();
-   	  logger.info(mondrianSchema);   		
-   		
-      org.dom4j.Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
-      byte schemaBytes[] = schemaDoc.asXML().getBytes();      
-      
-      File modelFile = new File(theFile);
-      OutputStream out = new FileOutputStream(modelFile);
-      out.write(schemaBytes);
-      out.flush();
-      out.close();
-      
-  	} catch(Exception e) {
-  		MessageDialog.openError(Spoon.getInstance().getShell(), "", e.getMessage());
-  		e.printStackTrace();
-  	}
-  }
+	public void exportSchema() {
+		try {
+			if (this.model.isValid()) {
+				ModelerWorkspaceUtil.populateDomain(this.model);
+				LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
+
+				FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell());
+				String theFile = fileDialog.open();
+				MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
+				String mondrianSchema = exporter.createMondrianModelXML();
+				logger.info(mondrianSchema);
+
+				org.dom4j.Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
+				byte schemaBytes[] = schemaDoc.asXML().getBytes();
+
+				File modelFile = new File(theFile);
+				OutputStream out = new FileOutputStream(modelFile);
+				out.write(schemaBytes);
+				out.flush();
+				out.close();
+			} else {
+				StringBuffer validationErrors = new StringBuffer();
+				for (String msg : this.model.getValidationMessages()) {
+					validationErrors.append(msg);
+					validationErrors.append("\n");
+					logger.info(msg);
+				}
+				MessageDialog.openError(Spoon.getInstance().getShell(), "", validationErrors.toString());
+			}
+		} catch (Exception e) {
+			logger.error(e);
+			MessageDialog.openError(Spoon.getInstance().getShell(), "", e.getMessage());
+		}
+	}
+
 
   public abstract String getDisplayName(Locale l);
 
