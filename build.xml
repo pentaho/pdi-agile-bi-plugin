@@ -22,6 +22,10 @@
 	            value="../bi-platform-assembly/dist"
 	            description="Location of platform assembly zip" />
 
+	<property name="report-designer-assembly.dir"
+		            value="../report-designer-assembly"
+		            description="Location of report designer assembly zip" />
+
 	<property name="platform.unzip.dir"
 	            value="${bin.dir}/platform-unzip"
 	            description="Location of platform assembly zip" />
@@ -61,7 +65,14 @@
     <mkdir dir="${stage.dir}" />
   </target>
 	
-  <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server">
+  <target name="assemble-report-wizard">
+  	<!-- copy wizard templates into agile-bi plugin -->
+    <copy todir="${approot.stage.dir}/templates" overwrite="true">
+      <fileset dir="${report-designer-assembly.dir}/resource/templates"/>
+    </copy>
+  </target>
+	
+  <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server,assemble-report-wizard">
     <copy todir="${approot.stage.dir}" overwrite="true">
       <fileset dir="${package.resdir}" />
     </copy>
