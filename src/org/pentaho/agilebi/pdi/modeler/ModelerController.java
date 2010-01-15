@@ -399,8 +399,7 @@ public class ModelerController extends AbstractXulEventHandler{
    * Updates the UI accordingly
    */
   public void refreshFields() throws ModelerException {
-    ((XulTree) document.getElementById("dimensionTree")).setElements(workspace.getModel());
-//    workspace.refresh();
+    workspace.refresh();
   }
   
   public void setFileName(String fileName){
