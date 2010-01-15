@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -32,8 +33,6 @@ import org.pentaho.ui.xul.binding.DefaultBinding;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.w3c.dom.Node;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-
 public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
   private Log logger = LogFactory.getLog(AgileBiPerspective.class);
@@ -43,8 +42,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   private Map<ModelerWorkspace, EngineMetaInterface> metas = new HashMap<ModelerWorkspace, EngineMetaInterface>();
   
   private AgileBiVisualizationPerspective(){
-    super();
-    setDefaultExtension("xmi");
+    super("org/pentaho/agilebi/pdi/perspective/perspective.xul");
   }
   
   public static AgileBiVisualizationPerspective getInstance(){
@@ -143,7 +141,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   }
 
   public List<XulEventHandler> getEventHandlers() {
-    return Collections.singletonList(this);
+    return Collections.singletonList((XulEventHandler)this);
   }
 
   public List<XulOverlay> getOverlays() {

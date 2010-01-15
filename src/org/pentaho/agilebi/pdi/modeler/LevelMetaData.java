@@ -82,7 +82,7 @@ public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements 
 
   public void setLogicalColumn(LogicalColumn logicalColumn) {
     this.logicalColumn = logicalColumn;
-    validate();
+    validateNode();
   }
   
   public void setUniqueMembers(Boolean uniqueMembers) {
@@ -106,6 +106,7 @@ public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements 
       validationMessages.add("Column is missing");
       valid = false;
     }
+    this.firePropertyChange("valid", null, valid);
   }
   
   public boolean isUiExpanded() {

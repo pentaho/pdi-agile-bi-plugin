@@ -389,15 +389,16 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       availableFields.removeAll(toRemove);
       sortFields();
 
-      firePropertyChange("availableFields", null, getAvailableFields()); //$NON-NLS-1$
       fireFieldsChanged();
       
 
       for(MeasureMetaData measure : model.getMeasures()) {
         boolean found = false;
-        for(AvailableField fm : availableFields){
-          if(fm.getLogicalColumn().getId().equals(measure.getLogicalColumn().getId())){
-            found = true;
+        if(measure.getLogicalColumn() != null){
+          for(AvailableField fm : availableFields){
+            if(fm.getLogicalColumn().getId().equals(measure.getLogicalColumn().getId())){
+              found = true;
+            }
           }
         }
         if(!found){
@@ -408,13 +409,14 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       for(DimensionMetaData dm : model.getDimensions()) {
         for(HierarchyMetaData hm : dm){
           for(LevelMetaData lm : hm.getChildren()){
-            String existingLmId = lm.getLogicalColumn().getId();
             boolean found = false;
-            inner:
-            for(AvailableField fm : availableFields){
-              if(fm.getLogicalColumn().getId().equals(existingLmId)){
-                found = true;
-                break inner;
+            if(lm.getLogicalColumn() != null){
+              inner:
+              for(AvailableField fm : availableFields){
+                if(fm.getLogicalColumn().getId().equals(lm.getLogicalColumn().getId())){
+                  found = true;
+                  break inner;
+                }
               }
             }
             if(!found){

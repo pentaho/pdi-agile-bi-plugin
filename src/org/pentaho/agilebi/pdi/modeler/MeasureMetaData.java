@@ -147,6 +147,10 @@ public class MeasureMetaData extends AbstractMetaDataModelNode<Object> implement
       return true;
     }
     
+    if(f.getLogicalColumn() == null || this.getLogicalColumn() == null){
+      return false;
+    }
+    
     if(f.getLogicalColumn().getId().equals(this.getLogicalColumn().getId())){
       return true;
     }

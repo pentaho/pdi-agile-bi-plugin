@@ -1,15 +1,19 @@
 package org.pentaho.agilebi.pdi.visualizations.pdf;
 
+import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.util.Locale;
+
+import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.jpedal.examples.simpleviewer.SimpleViewer;
 import org.pentaho.agilebi.pdi.modeler.Messages;
-import org.pentaho.agilebi.pdi.modeler.ModelerController;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;
 import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.XulTabAndPanel;
@@ -21,6 +25,11 @@ import org.w3c.dom.Node;
 
 public class PDFVisualization extends AbstractVisualization {
 
+  public PDFVisualization(){
+    super();
+    System.setProperty("org.jpedal.suppressViewerPopups", "true");
+  }
+  
   private static Log logger = LogFactory.getLog(PDFVisualization.class);
   
   public void createVisualizationFromModel(String modelFileLocation, String modelId) {
@@ -52,15 +61,21 @@ public class PDFVisualization extends AbstractVisualization {
     
     XulTabAndPanel tabAndPanel = AgileBiVisualizationPerspective.getInstance().createTab();
 
-    GridData layoutData = new GridData();
-
-    layoutData.verticalAlignment = SWT.FILL;
-    layoutData.grabExcessVerticalSpace = true;
-    layoutData.horizontalAlignment = SWT.FILL;
-    layoutData.grabExcessHorizontalSpace = true;
+    GridData gData = new GridData(GridData.FILL_BOTH);
 
     Composite parentComposite = (Composite) tabAndPanel.panel.getManagedObject();
-    Browser browser = new Browser(parentComposite, SWT.NONE);
+
+    Composite swingComposite = new Composite(parentComposite, SWT.EMBEDDED);
+    swingComposite .setLayoutData(gData);
+
+    Frame swingFrame = SWT_AWT.new_Frame(swingComposite);
+
+    JPanel browserPanel = new JPanel();
+    browserPanel.setLayout(new BorderLayout());
+    
+    swingFrame.add(browserPanel);
+    
+    SimpleViewer viewer = new SimpleViewer(browserPanel, "plugins/spoon/agile-bi/visualizations/pdf/jPedalPrefs.xml");
     
     parentComposite.layout(true);
     AgileBiVisualizationPerspective.getInstance().setNameForTab(tabAndPanel.tab, fname);
@@ -74,7 +89,9 @@ public class PDFVisualization extends AbstractVisualization {
       return false;
     }
 
-    browser.setUrl("file://"+fname);
+    viewer.setupViewer();
+    
+    viewer.openDefaultFile(fname);
     return true;
   }
 

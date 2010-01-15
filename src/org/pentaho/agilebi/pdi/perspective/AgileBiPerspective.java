@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -33,7 +34,6 @@ import org.pentaho.ui.xul.components.XulConfirmBox;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.w3c.dom.Node;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class AgileBiPerspective extends AbstractPerspective implements SpoonPerspective, FileListener{
 
@@ -43,7 +43,7 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
     
   private AgileBiPerspective() {
-    super();
+    super("org/pentaho/agilebi/pdi/perspective/agileBiPerspective.xul");
     setDefaultExtension("xmi");
   }
   
@@ -142,7 +142,7 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
   }
 
   public List<XulEventHandler> getEventHandlers() {
-    return Collections.singletonList(this);
+    return Collections.singletonList( (XulEventHandler) this);
   }
 
   public List<XulOverlay> getOverlays() {

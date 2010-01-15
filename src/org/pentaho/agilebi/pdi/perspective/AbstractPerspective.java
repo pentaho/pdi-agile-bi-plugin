@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -61,10 +62,10 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   
   protected Map<XulTab, EngineMetaInterface> metas = new HashMap<XulTab, EngineMetaInterface>();
   
-  protected AbstractPerspective() {
+  protected AbstractPerspective(String perspectiveSrc) {
     try {
       SwtXulLoader loader = new SwtXulLoader();
-      container = loader.loadXul("org/pentaho/agilebi/pdi/perspective/perspective.xul"); //$NON-NLS-1$
+      container = loader.loadXul(perspectiveSrc); //$NON-NLS-1$
       
       runner = new SwtXulRunner();
       runner.addContainer(container);
@@ -86,7 +87,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
 				ModelerWorkspaceUtil.populateDomain(this.model);
 				LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
 
-				FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell());
+				FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell(), SWT.SAVE);
 				String theFile = fileDialog.open();
 				MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
 				String mondrianSchema = exporter.createMondrianModelXML();

@@ -49,12 +49,12 @@
           </hbox>
           <tree id="dimensionTree" flex="1" editable="true"
             ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move"
-            ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false">
+            ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false" pen:preserveexpandedstate="true">
             <treecols>
               <treecol flex="1" label="" primary="true"
                 pen:binding="name" pen:childrenbinding="children"
                 pen:imagebinding="image" editable="true"
-                pen:expandedbinding="uiExpanded" pen:disabledbinding="editingDisabled"
+                 pen:disabledbinding="editingDisabled"
                 pen:tooltipbinding="validationMessagesString" />
             </treecols>
             <treechildren>

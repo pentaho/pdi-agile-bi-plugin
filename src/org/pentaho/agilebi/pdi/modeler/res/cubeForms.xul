@@ -4,22 +4,50 @@
   xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" xmlns:pen="http://www.pentaho.org/2008/xul">
   
   <vbox id="dimensionprops">
-    <hbox id="dimension_message">
-      <image src="images/warning.png" />
-      <label id="dimension_message_label"
-        value="This is a test to see how a warning message will appear." flex="1"/>
-    </hbox>
+  <vbox bgcolor="#FFFFCC" id="dimension_message">
+    <grid spacing="3">
+      <columns>
+        <column/>
+        <column flex="1"/>
+      </columns>
+      <rows>
+        <row flex="1">
+          <image src="images/warning.png" />
+          <label id="dimension_message_label" flex="1" multiline="true"
+            value="This is a test to see how a warning message will appear." />
+        </row>
+    
+     </rows>
+    </grid>
+    </vbox>
     <spacer height="10"/>
     <label value="Dimension Name:" />
     <textbox id="dimension_name" />
   </vbox>
   
   <vbox id="levelprops">
-    <hbox id="level_message">
-      <image src="images/warning.png" />
-      <label id="level_message_label" flex="1"
-        value="This is a test to see how a warning message will appear." />
-    </hbox>
+  <vbox bgcolor="#FFFFCC" id="level_message">
+    <grid spacing="3">
+      <columns>
+        <column/>
+        <column flex="1"/>
+      </columns>
+      <rows>
+        <row flex="1">
+          <image src="images/warning.png" />
+          <label id="level_message_label" flex="1" multiline="true"
+            value="This is a test to see how a warning message will appear." />
+        </row>
+    
+     </rows>
+    </grid>
+      <hbox flex="1">
+      <spacer flex="1"/>
+        <button id="fixLevelColumnsBtn" label="${missing_columns}"
+          onclick="modeler.resolveMissingColumn()" visible="true" />
+      <spacer flex="1"/>
+      </hbox>
+    </vbox>
     <spacer height="10"/>
     <label value="Source Column:"/>
     <label id="level_source_col"/>

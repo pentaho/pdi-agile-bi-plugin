@@ -23,7 +23,7 @@
       <hbox flex="1">
       <spacer flex="1"/>
         <button id="fixMeasuresColumnsBtn" label="Fix Missing Columns"
-          onclick="modeler.resolveMissingColumns()" visible="true" />
+          onclick="modeler.resolveMissingColumn()" visible="true" />
       <spacer flex="1"/>
       </hbox>
     </vbox>

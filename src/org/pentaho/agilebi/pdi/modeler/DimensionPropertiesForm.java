@@ -5,13 +5,13 @@ import java.beans.PropertyChangeListener;
 
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulTextbox;
-import org.pentaho.ui.xul.containers.XulHbox;
+import org.pentaho.ui.xul.containers.XulVbox;
 
 public class DimensionPropertiesForm extends AbstractModelerNodeForm<DimensionMetaData>{
 
   private XulTextbox name;
   private DimensionMetaData dim;
-  private XulHbox messageBox;
+  private XulVbox messageBox;
   private XulLabel messageLabel;
   private PropertyChangeListener nameListener = new PropertyChangeListener(){
     public void propertyChange(PropertyChangeEvent arg0) {
@@ -37,7 +37,7 @@ public class DimensionPropertiesForm extends AbstractModelerNodeForm<DimensionMe
   public void init() {
     super.init();
     name = (XulTextbox) document.getElementById("dimension_name");
-    messageBox = (XulHbox) document.getElementById("dimension_message");
+    messageBox = (XulVbox) document.getElementById("dimension_message");
     messageLabel = (XulLabel) document.getElementById("dimension_message_label");
     bf.createBinding(this, "name", name, "value");
     

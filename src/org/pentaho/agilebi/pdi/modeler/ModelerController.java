@@ -399,8 +399,8 @@ public class ModelerController extends AbstractXulEventHandler{
    * Updates the UI accordingly
    */
   public void refreshFields() throws ModelerException {
-
-    workspace.refresh();
+    ((XulTree) document.getElementById("dimensionTree")).setElements(workspace.getModel());
+//    workspace.refresh();
   }
   
   public void setFileName(String fileName){
@@ -412,7 +412,7 @@ public class ModelerController extends AbstractXulEventHandler{
     
     try {
       XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox");
-      prompt.setModalParent(((Spoon) SpoonFactory.getInstance()).getShell());
+      //prompt.setModalParent(((Spoon) SpoonFactory.getInstance()).getShell());
       prompt.setTitle("New Dimension");
       prompt.setMessage("Enter new Dimension name");
       prompt.addDialogCallback(new XulDialogCallback(){
@@ -540,7 +540,7 @@ public class ModelerController extends AbstractXulEventHandler{
     workspace.setDirty(false);
   }
   
-  public void resolveMissingColumns() {
+  public void resolveMissingColumn() {
     if(selectedTreeItem instanceof ColumnBackedNode 
         && ((AbstractMetaDataModelNode) selectedTreeItem).isValid() == false){
       colController.show(this.workspace, (ColumnBackedNode) selectedTreeItem); 
