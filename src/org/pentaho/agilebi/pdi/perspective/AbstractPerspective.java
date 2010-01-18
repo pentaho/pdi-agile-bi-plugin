@@ -89,18 +89,20 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
 
 				FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell(), SWT.SAVE);
 				String theFile = fileDialog.open();
-				MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
-				String mondrianSchema = exporter.createMondrianModelXML();
-				logger.info(mondrianSchema);
-
-				org.dom4j.Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
-				byte schemaBytes[] = schemaDoc.asXML().getBytes();
-
-				File modelFile = new File(theFile);
-				OutputStream out = new FileOutputStream(modelFile);
-				out.write(schemaBytes);
-				out.flush();
-				out.close();
+				if(theFile != null) {
+					MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
+					String mondrianSchema = exporter.createMondrianModelXML();
+					logger.info(mondrianSchema);
+	
+					org.dom4j.Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
+					byte schemaBytes[] = schemaDoc.asXML().getBytes();
+	
+					File modelFile = new File(theFile);
+					OutputStream out = new FileOutputStream(modelFile);
+					out.write(schemaBytes);
+					out.flush();
+					out.close();
+				}
 			} else {
 				StringBuffer validationErrors = new StringBuffer();
 				for (String msg : this.model.getValidationMessages()) {
