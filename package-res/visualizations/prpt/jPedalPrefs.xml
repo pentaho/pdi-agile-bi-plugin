@@ -2,7 +2,7 @@
 <properties>
   <recentfiles/>
   <showfirsttimepopup value="false"/>
-  <showsaveformsmessage value="true"/>
+  <showsaveformsmessage value="FALSE"/>
   <showitextmessage value="false"/>
   <showddmessage value="true"/>
   <searchWindowType value="0"/>
@@ -85,13 +85,13 @@
   <Imageopdisplay value="false"/>
   <Progressdisplay value="false"/>
   <Memorybottom value="false"/>
-  <Firstbottom value="false"/>
+  <Firstbottom value="true"/>
   <Back10bottom value="false"/>
-  <Backbottom value="false"/>
-  <Gotobottom value="false"/>
-  <Forwardbottom value="false"/>
-  <Forward10bottom value="false"/>
-  <Lastbottom value="false"/>
+  <Backbottom value="true"/>
+  <Gotobottom value="true"/>
+  <Forwardbottom value="true"/>
+  <Forward10bottom value="true"/>
+  <Lastbottom value="true"/>
   <Singlebottom value="false"/>
   <Continuousbottom value="false"/>
   <Continuousfacingbottom value="false"/>
