@@ -168,15 +168,15 @@ public class ModelerHelper extends AbstractXulEventHandler {
   
   public void reportWizard() {
     try {
+      ModelerWorkspace model = new ModelerWorkspace();
+      ModelerWorkspaceUtil.populateModelFromOutputStep(model);
       ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
-//      if (!engineBoot.isBootDone()) {
-        engineBoot.start();
-//      }
-      EmbeddedWizard wizard = new EmbeddedWizard();
+      engineBoot.start();
+      EmbeddedWizard wizard = new EmbeddedWizard(model);
       wizard.run(null);
     } catch (Exception e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
+      SpoonFactory.getInstance().messageBox( "Could not create a report: "+e.getLocalizedMessage(), "Report Error", false, Const.ERROR);
     }
   }
   

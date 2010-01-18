@@ -17,36 +17,31 @@
 
 package org.pentaho.agilebi.pdi.wizard.ui.xul.steps;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
+import org.pentaho.agilebi.pdi.modeler.ModelerException;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
+import org.pentaho.commons.metadata.mqleditor.editor.SwtMqlEditor;
+import org.pentaho.metadata.repository.FileBasedMetadataDomainRepository;
+import org.pentaho.metadata.util.XmiParser;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
 import org.pentaho.reporting.engine.classic.core.DataFactory;
-import org.pentaho.reporting.engine.classic.core.NamedDataFactory;
 import org.pentaho.reporting.engine.classic.core.ReportDataFactoryException;
-import org.pentaho.reporting.engine.classic.core.designtime.DataSourcePlugin;
-import org.pentaho.reporting.engine.classic.core.metadata.DataFactoryMetaData;
-import org.pentaho.reporting.engine.classic.core.metadata.DataFactoryRegistry;
 import org.pentaho.reporting.engine.classic.core.states.datarow.StaticDataRow;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaModel;
+import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdConnectionProvider;
+import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdDataFactory;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.WizardEditorModel;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.AbstractWizardStep;
 import org.pentaho.reporting.libraries.base.util.DebugLog;
-import org.pentaho.reporting.libraries.base.util.ObjectUtilities;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
-import org.pentaho.ui.xul.binding.Binding.Type;
-import org.pentaho.ui.xul.binding.BindingConvertor;
-import org.pentaho.ui.xul.containers.XulDialog;
-import org.pentaho.ui.xul.containers.XulListbox;
-import org.pentaho.ui.xul.containers.XulTree;
+import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.util.AbstractModelNode;
 
@@ -62,95 +57,6 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     ROOT, DATAFACTORY, CONNECTION, QUERY
   }
 
-  private static class DataFactoryMetaDataComparator implements Comparator<DataFactoryMetaData>
-  {
-    private DataFactoryMetaDataComparator()
-    {
-    }
-
-    public int compare(DataFactoryMetaData o1, DataFactoryMetaData o2)
-    {
-      return o1.getDisplayName(Locale.getDefault()).compareTo(o2.getDisplayName(Locale.getDefault()));
-    }
-  }
-
-  private class SelectedIndexUpdateHandler implements PropertyChangeListener
-  {
-    private SelectedIndexUpdateHandler()
-    {
-    }
-
-    public void propertyChange(PropertyChangeEvent evt)
-    {
-      if (SELECTED_INDEX_PROPERTY_NAME.equals(evt.getPropertyName()))
-      {
-        XulDialog datasourceType = (XulDialog) getDocument().getElementById(DATASOURCE_TYPE_DIALOG_ID);
-        datasourceType.setVisible(false);
-      }
-    }
-
-  }
-
-  protected static class XulEditorDataFactoryMetaData
-  {
-    private DataFactoryMetaData metadata;
-
-    public XulEditorDataFactoryMetaData(DataFactoryMetaData metadata)
-    {
-      if (metadata == null)
-      {
-        throw new NullPointerException();
-      }
-      this.metadata = metadata;
-    }
-
-    public String getName()
-    {
-      return metadata.getDisplayName(Locale.getDefault());
-    }
-
-    public DataFactoryMetaData getMetadata()
-    {
-      return metadata;
-    }
-
-    public String toString()
-    {
-      return getName();
-    }
-  }
-
-
-  /**
-   * @author wseyler
-   */
-  private class CurrentQueryBindingConverter extends BindingConvertor<DatasourceModelNode, String>
-  {
-
-    /* (non-Javadoc)
-     * @see org.pentaho.ui.xul.binding.BindingConvertor#sourceToTarget(java.lang.Object)
-     */
-    @Override
-    public String sourceToTarget(DatasourceModelNode value)
-    {
-      if (value != null && value.getType() == DATASOURCE_TYPE.QUERY)
-      {
-        return value.getValue();
-      }
-      return DataSourceAndQueryStep.this.getCurrentQuery();
-    }
-
-    /* (non-Javadoc)
-     * @see org.pentaho.ui.xul.binding.BindingConvertor#targetToSource(java.lang.Object)
-     */
-    @Override
-    public DatasourceModelNode targetToSource(String value)
-    {
-      // not used for one way binding
-      return null;
-    }
-  }
-
   protected class DatasourceAndQueryStepHandler extends AbstractXulEventHandler
   {
     public DatasourceAndQueryStepHandler()
@@ -162,45 +68,28 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       return HANDLER_NAME;
     }
 
-    public void doCreateDataFactory()
-    {
-      DataSourceAndQueryStep.this.createDataFactory();
-    }
-
-    public void doEditDatasource()
-    {
-      XulTree tree = (XulTree) document.getElementById(DATASOURCES_TREE_ID);
-      DatasourceModelNode node = (DatasourceModelNode) tree.getSelectedItem();
-      switch (node.getType())
-      {
-        case CONNECTION:
-          DataFactory df = (DataFactory) node.getUserObject();
-          DataFactoryMetaData o = getMetaForDataFactory(df, dataFactoryMetas);
-          editOrCreateDataFactory(o);
-          break;
-        case QUERY:
-          editQuery(node.getValue());
-          break;
-        default:
-          break;
+    public void doCreateQuery() {
+      FileBasedMetadataDomainRepository repo = new FileBasedMetadataDomainRepository();
+      repo.setDomainFolder(modelFile.getParent());
+      XmiParser parser = new XmiParser();
+      try {
+        InputStream inStream = new FileInputStream(modelFile);
+        if (inStream != null) {
+          org.pentaho.metadata.model.Domain d = parser.parseXmi(inStream);
+          d.setId(modelFile.getName());
+          repo.storeDomain(d, true);
+          repo.reloadDomains();
+        }
+      } catch (Exception e) {
+        
       }
+      SwtMqlEditor editor = new SwtMqlEditor(repo);
+      editor.show();
+      System.out.println("In 'doCreateQuery()'");
     }
-
-    public void doDeleteDatasourceItem()
-    {
-      XulTree tree = (XulTree) document.getElementById(DATASOURCES_TREE_ID);
-      DatasourceModelNode node = (DatasourceModelNode) tree.getSelectedItem();
-      switch (node.getType())
-      {
-        case DATAFACTORY:
-          deleteDataFactory((DataFactoryMetaData) node.getUserObject());
-          break;
-        case CONNECTION:
-          deleteConnection((DataFactory) node.getUserObject());
-        default:
-          break;
-      }
-      updateDatasourceTree();
+    
+    public void doEditQuery() {
+      System.out.println("In 'doEditQuery()'");
     }
   }
 
@@ -253,211 +142,92 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     }
   }
 
-  private class IndiciesToBooleanBindingConverter extends BindingConvertor<int[], Boolean>
-  {
-
-    /* (non-Javadoc)
-     * @see org.pentaho.ui.xul.binding.BindingConvertor#sourceToTarget(java.lang.Object)
-     */
-    @Override
-    public Boolean sourceToTarget(int[] value)
-    {
-      return value.length > 0;
-    }
-
-    /* (non-Javadoc)
-     * @see org.pentaho.ui.xul.binding.BindingConvertor#targetToSource(java.lang.Object)
-     */
-    @Override
-    public int[] targetToSource(Boolean value)
-    {
-      // Not needed for one way binding
-      return null;
-    }
-
-  }
-
-  private static final String DATASOURCES_ROOT_NODE_NAME = "Datasources Root"; //$NON-NLS-1$
-
   private static final String DATASOURCE_AND_QUERY_STEP_OVERLAY = "org/pentaho/agilebi/pdi/wizard/ui/xul/res/datasource_and_query_step_Overlay.xul"; //$NON-NLS-1$
   private static final String HANDLER_NAME = "datasource_and_query_step_handler"; //$NON-NLS-1$
 
-  private static final String DATASOURCES_TREE_ID = "datasources_tree"; //$NON-NLS-1$
-  private static final String DATASOURCE_TYPE_DIALOG_ID = "datasource_type_dialog"; //$NON-NLS-1$
-  private static final String DATASOURCE_SELECTIONS_BOX_ID = "datasource_selections_box"; //$NON-NLS-1$
-  private static final String EDIT_DATASOURCES_BTN_ID = "edit_datasource_btn"; //$NON-NLS-1$
-  private static final String REMOVE_DATASOURCES_BTN_ID = "remove_datasource_btn"; //$NON-NLS-1$
-
-  private static final String ELEMENTS_PROPERTY_NAME = "elements"; //$NON-NLS-1$
-  private static final String SELECTED_INDEX_PROPERTY_NAME = "selectedIndex"; //$NON-NLS-1$
-  private static final String SELECTED_ROWS_PROPERTY_NAME = "selectedRows"; //$NON-NLS-1$
-  private static final String SELECTED_ITEM_PROPERTY_NAME = "selectedItem"; //$NON-NLS-1$
   private static final String CURRENT_QUERY_PROPERTY_NAME = "currentQuery"; //$NON-NLS-1$
-  private static final String DATASOURCES_ROOT_PROPERTY_NAME = "dataSourcesRoot"; //$NON-NLS-1$
   private static final String VALUE_PROPERTY_NAME = "value"; //$NON-NLS-1$
-  private static final String ENABLED_PROPERTY_NAME = "!disabled"; //$NON-NLS-1$
+  private static final String DATA_SOURCE_NAME_LABEL_ID = "data_source_name_label";  //$NON-NLS-1$
 
-  private IndiciesToBooleanBindingConverter indiciesToBooleanBindingConverter;
   private DatasourceModelNode dataSourcesRoot;
-  private List<XulEditorDataFactoryMetaData> dataFactoryMetas;
   private CompoundDataFactory cdf;
+  private ModelerWorkspace model;
+  private File modelFile;
 
   public DataSourceAndQueryStep()
   {
     super();
-    indiciesToBooleanBindingConverter = new IndiciesToBooleanBindingConverter();
-    dataFactoryMetas = new ArrayList<XulEditorDataFactoryMetaData>();
-
-    DataFactoryMetaData[] dfmdArray = DataFactoryRegistry.getInstance().getAll();
-    Arrays.sort(dfmdArray, new DataFactoryMetaDataComparator());
-    for (DataFactoryMetaData dfmd : dfmdArray)
-    {
-      if (dfmd.isEditable() == false)
-      {
-        continue;
-      }
-      if (dfmd.isEditorAvailable() == false)
-      {
-        continue;
-      }
-
-      if (dfmd.isHidden() == false)
-      {
-        dataFactoryMetas.add(new XulEditorDataFactoryMetaData(dfmd));
-      }
-    }
   }
 
   public void setBindings()
   {
-    getBindingFactory().setBindingType(Type.ONE_WAY);
-    getBindingFactory().createBinding(this, DATASOURCES_ROOT_PROPERTY_NAME, DATASOURCES_TREE_ID, ELEMENTS_PROPERTY_NAME);
-    getBindingFactory().createBinding(DATASOURCES_TREE_ID, SELECTED_ITEM_PROPERTY_NAME, this, CURRENT_QUERY_PROPERTY_NAME, new CurrentQueryBindingConverter());
-    getBindingFactory().createBinding(DATASOURCES_TREE_ID, SELECTED_ROWS_PROPERTY_NAME, EDIT_DATASOURCES_BTN_ID, ENABLED_PROPERTY_NAME, indiciesToBooleanBindingConverter);
-    getBindingFactory().createBinding(DATASOURCES_TREE_ID, SELECTED_ROWS_PROPERTY_NAME, REMOVE_DATASOURCES_BTN_ID, ENABLED_PROPERTY_NAME, indiciesToBooleanBindingConverter);
   }
 
   public void editQuery(String queryName)
   {
     DataFactory dataFactory = getOwnerDataFactory(queryName);
-    DataFactoryMetaData o = getMetaForDataFactory(dataFactory, dataFactoryMetas);
-    editOrCreateDataFactory(o);
   }
 
-  private DataFactoryMetaData getMetaForDataFactory(DataFactory dataFactory,
-                                                    List<XulEditorDataFactoryMetaData> metaDatas)
-  {
-    String dfClassName = dataFactory.getClass().getName();
-    for (XulEditorDataFactoryMetaData mdfmd : metaDatas)
-    {
-      final DataFactoryMetaData data = mdfmd.getMetadata();
-      String mdFactoryName = data.getName();
-      if (dfClassName.equals(mdFactoryName))
-      {
-        return mdfmd.getMetadata();
-      }
-    }
-    return null;
-  }
-
-  private int getDataFactoryForMeta(DataFactoryMetaData dfMetaData)
-  {
-    for (int i = 0; i < cdf.size(); i++)
-    {
-      DataFactory df = cdf.getReference(i);
-      if (dfMetaData.getName().equals(df.getClass().getName()))
-      {
-        return i;
-      }
-    }
-
-    return -1;
-  }
 
   private DataFactory getOwnerDataFactory(String queryName)
   {
     return cdf.getDataFactoryForQuery(queryName);
   }
 
-  public void createDataFactory()
-  {
-    XulDialog datasourceType = (XulDialog) getDocument().getElementById(DATASOURCE_TYPE_DIALOG_ID);
-    datasourceType.setVisible(true);
-    XulListbox box = (XulListbox) getDocument().getElementById(DATASOURCE_SELECTIONS_BOX_ID);
-    XulEditorDataFactoryMetaData myEditData = (XulEditorDataFactoryMetaData) box.getSelectedItem();
-    if (myEditData != null)
-    {
-      editOrCreateDataFactory(myEditData.getMetadata());
-    }
-    box.setSelectedIndices(new int[0]);  // clear the selection for next time.
-  }
-
-  public void editOrCreateDataFactory(DataFactoryMetaData o)
-  {
-
-    if (o == null)
-    {
-      return;
-    }
-
-    if (o.isHidden())
-    {
-      return;
-    }
-
-    DataFactory editDataFactory = getEditDataFactory(o);
-    final DataSourcePlugin dataSourcePlugin = o.createEditor();
-    final DataFactory generatedDataFactory = dataSourcePlugin.performEdit(getDesignTimeContext(), editDataFactory, null);
-    try
-    {
-      if (generatedDataFactory != null)
-      {
-        cdf.add(generatedDataFactory);
-        cdf = CompoundDataFactory.normalize(cdf);
-        updateDatasourceTree();
-      }
-      else
-      {  // user must have cancelled
-        if (editDataFactory != null)
-        {
-          cdf.add(editDataFactory);
-        }
-      }
-    }
-    catch (ReportDataFactoryException e)
-    {
-      getDesignTimeContext().error(e);
-    }
-
-    setValid(validateStep());
-  }
-
-  /**
-   * @param o
-   * @return a DataFactory that matches the type of the DataFactoryMetaData (o) if it exists in the
-   *         CompoundDataFactory (cdf), null if it doesn't exist.
-   */
-  private DataFactory getEditDataFactory(DataFactoryMetaData o)
-  {
-    String mdfactoryName = o.getName();
-    for (int i = 0; i < cdf.size(); i++)
-    {
-      DataFactory df = cdf.getReference(i);
-      String dfClassName = df.getClass().getName();
-      if (mdfactoryName.equals(dfClassName))
-      {
-        cdf.remove(i);
-        return df;
-      }
-    }
-    return null;
-  }
-
   public void stepActivating()
   {
     super.stepActivating();
     cdf = (CompoundDataFactory) getEditorModel().getReportDefinition().getDataFactory();
-    updateDatasourceTree();
+    if (model != null) {
+      // Populate a PmdDataFactoryClass for the report definition to use
+      File modelsDir = new File("models"); //$NON-NLS-1$
+      modelsDir.mkdirs();
+      int idx = 1;
+      boolean looking = true;
+      String fileName = ""; //$NON-NLS-1$
+      String modelName = ""; //$NON-NLS-1$
+      while( looking ) {
+        modelName = "Model "+idx; //$NON-NLS-1$
+        fileName = "models/"+modelName+".xmi"; //$NON-NLS-1$ //$NON-NLS-2$
+        modelFile = new File(fileName);
+        if( !modelFile.exists() ) {
+          looking = false;
+        }
+        idx++;
+      }
+      model.setFileName(fileName);
+      model.setModelName(modelName);
+      
+      try {
+        ModelerWorkspaceUtil.autoModelFlat(model);
+        ModelerWorkspaceUtil.saveWorkspace( model, fileName);
+      } catch (ModelerException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      }
+
+      PmdDataFactory dataFactory = new PmdDataFactory();
+      dataFactory.setConnectionProvider(new PmdConnectionProvider());
+      dataFactory.setXmiFile(fileName);
+      dataFactory.setDomainId(fileName);
+      
+      try {
+        cdf.add(dataFactory);
+      } catch (ReportDataFactoryException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+    
+    DataFactory df = null;
+    try {
+      df = cdf.get(0);
+      XulLabel datasourceLabel = (XulLabel) getDocument().getElementById(DATA_SOURCE_NAME_LABEL_ID);
+      datasourceLabel.setValue(df.toString());
+    } catch (ReportDataFactoryException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     setValid(validateStep());
   }
 
@@ -465,140 +235,6 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   {
     getEditorModel().getReportDefinition().setDataFactory(cdf);
     return super.stepDeactivating();
-  }
-
-  public void deleteDataFactory(DataFactoryMetaData userObject)
-  {
-    int datasourceIndex = getDataFactoryForMeta(userObject);
-    if (datasourceIndex >= 0)
-    {
-      cdf.remove(getDataFactoryForMeta(userObject));
-    }
-  }
-
-  public void deleteConnection(DataFactory datafactory)
-  {
-    cdf.remove(datafactory);
-  }
-
-  /**
-   *
-   */
-  private void updateDatasourceTree()
-  {
-    DatasourceModelNode newRoot = new DatasourceModelNode(DATASOURCES_ROOT_NODE_NAME, null, DATASOURCE_TYPE.ROOT);
-
-    for (int i = 0; i < cdf.size(); i++)
-    {
-      DataFactory df = cdf.getReference(i);
-      DataFactoryMetaData dfmd = getMetaForDataFactory(df, dataFactoryMetas);
-      if (dfmd == null)
-      {
-        continue;
-      }
-
-      DatasourceModelNode dfmdNode = findUserObjectInTree(dfmd, newRoot);
-      if (dfmdNode == null)
-      {
-        dfmdNode = new DatasourceModelNode(dfmd.getDisplayName(Locale.getDefault()), dfmd, DATASOURCE_TYPE.DATAFACTORY);
-        newRoot.add(dfmdNode);
-      }
-      DatasourceModelNode dataSourceNode = null;
-      if (df instanceof NamedDataFactory)
-      {
-        String connectionName = ((NamedDataFactory) df).getConnectionName();
-        if (connectionName != null && connectionName.length() > 0)
-        {
-          dataSourceNode = new DatasourceModelNode(connectionName, df, DATASOURCE_TYPE.CONNECTION);
-        }
-      }
-      if (dataSourceNode != null)
-      {
-        dfmdNode.add(dataSourceNode);
-      }
-      for (String queryName : df.getQueryNames())
-      {
-        DatasourceModelNode queryNode = new DatasourceModelNode(queryName, null, DATASOURCE_TYPE.QUERY);
-        if (dataSourceNode != null)
-        {
-          dataSourceNode.add(queryNode);
-        }
-        else
-        {
-          dfmdNode.add(queryNode);
-        }
-      }
-    }
-    this.setDataSourcesRoot(newRoot);
-    XulTree tree = (XulTree) getDocument().getElementById(DATASOURCES_TREE_ID);
-
-    final String currentQuery = getCurrentQuery();
-    int selectedQueryRow = findRowForObject(getDataSourcesRoot(), currentQuery, new int[]{0});
-    if (selectedQueryRow == -1)
-    {
-      int[] selectedRows = new int[1];
-      selectedRows[0] = selectedQueryRow - 1;  // have to subtract one for the (unshown) root
-      tree.setSelectedRows(selectedRows);
-    }
-  }
-
-  private int findRowForObject(DatasourceModelNode startNode, Object searchObj, int[] index)
-  {
-    if (index == null || index.length != 1)
-    {
-      throw new IllegalArgumentException();
-    }
-
-    if (searchObj == null)
-    {
-      return -1;
-    }
-    // First try to match a user object if we have one
-    if (ObjectUtilities.equal(searchObj, startNode.getUserObject()))
-    {
-      return index[0];
-    }
-
-    // Otherwise check the children
-
-    for (DatasourceModelNode node : startNode)
-    {
-      index[0] += 1;
-      final int result = findRowForObject(node, searchObj, index);
-      if (result != -1)
-      {
-        return result;
-      }
-    }
-
-    return -1;
-  }
-
-  private DatasourceModelNode findUserObjectInTree(Object userObj, DatasourceModelNode startNode)
-  {
-    if (userObj == null)
-    {
-      throw new NullPointerException("UserObject must not be null");
-    }
-    if (startNode == null)
-    {
-      throw new NullPointerException("StartNode must not be null");
-    }
-
-    if (userObj.equals(startNode.getUserObject()))
-    {
-      return startNode;
-    }
-    for (DatasourceModelNode childNode : startNode)
-    {
-      DatasourceModelNode found = findUserObjectInTree(userObj, childNode);
-      if (found != null)
-      {
-        return found;
-      }
-    }
-
-    return null;
   }
 
   protected boolean validateStep()
@@ -641,23 +277,6 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
 
     mainWizardContainer.loadOverlay(DATASOURCE_AND_QUERY_STEP_OVERLAY);
     mainWizardContainer.addEventHandler(new DatasourceAndQueryStepHandler());
-    XulListbox box = (XulListbox) getDocument().getElementById(DATASOURCE_SELECTIONS_BOX_ID);
-    box.removeItems();
-    for (XulEditorDataFactoryMetaData dfMeta : dataFactoryMetas)
-    {
-      box.addItem(dfMeta);
-    }
-    box.addPropertyChangeListener(new SelectedIndexUpdateHandler());
-  }
-
-  public List<XulEditorDataFactoryMetaData> getDataFactoryMetas()
-  {
-    return dataFactoryMetas;
-  }
-
-  public void setDataFactoryMetas(ArrayList<XulEditorDataFactoryMetaData> datas)
-  {
-    this.dataFactoryMetas = datas;
   }
 
   public String getCurrentQuery()
@@ -680,14 +299,6 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     return dataSourcesRoot;
   }
 
-  public void setDataSourcesRoot(DatasourceModelNode dataSourcesRoot)
-  {
-    DatasourceModelNode oldDataSourcesRoot = this.dataSourcesRoot;
-    this.dataSourcesRoot = dataSourcesRoot;
-
-    this.firePropertyChange(DATASOURCES_ROOT_PROPERTY_NAME, oldDataSourcesRoot, dataSourcesRoot);
-  }
-
   /* (non-Javadoc)
    * @see org.pentaho.reporting.engine.classic.wizard.ui.xul.components.WizardStep#getStepName()
    */
@@ -696,5 +307,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     return messages.getString("DATASOURCE_AND_QUERY_STEP.Step_Name"); //$NON-NLS-1$
   }
 
-
+  public void setModel(ModelerWorkspace model) {
+    this.model = model;
+  }
 }

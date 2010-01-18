@@ -21,7 +21,11 @@ import java.awt.HeadlessException;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 
+import org.pentaho.agilebi.pdi.modeler.ModelerException;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.wizard.ui.xul.DefaultWizardDesignTimeContext;
 import org.pentaho.agilebi.pdi.wizard.ui.xul.steps.DataSourceAndQueryStep;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
@@ -30,6 +34,8 @@ import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
 import org.pentaho.reporting.engine.classic.core.SubReport;
 import org.pentaho.reporting.engine.classic.core.designtime.DesignTimeContext;
+import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdConnectionProvider;
+import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdDataFactory;
 import org.pentaho.reporting.engine.classic.wizard.WizardProcessor;
 import org.pentaho.reporting.engine.classic.wizard.WizardProcessorUtil;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
@@ -59,18 +65,28 @@ public class EmbeddedWizard
   private final static String MAIN_WIZARD_PANEL = "org/pentaho/reporting/engine/classic/wizard/ui/xul/res/main_wizard_panel.xul"; //$NON-NLS-1$
 
   private Window owner;
+  private ModelerWorkspace model;
   private XulDialog dialog;
 
   private LinearWizardController wizardController;
 
-  public EmbeddedWizard() throws HeadlessException
+  public EmbeddedWizard() {
+    this(null, null);
+  }
+  
+  public EmbeddedWizard(final Window owner) {
+    this(owner, null);
+  }
+  
+  public EmbeddedWizard(ModelerWorkspace model) throws HeadlessException
   {
-    this(null);
+    this(null, model);
   }
 
-  public EmbeddedWizard(final Window owner) throws HeadlessException
+  public EmbeddedWizard(final Window owner, final ModelerWorkspace model) throws HeadlessException
   {
     this.owner = owner;
+    this.model = model;
     init();
   }
 
@@ -100,11 +116,13 @@ public class EmbeddedWizard
     else
     {
       final MasterReport report = new MasterReport();
-      report.setDataFactory(new CompoundDataFactory());
-      report.setQuery(null);
+      CompoundDataFactory cdf = new CompoundDataFactory();
+      report.setDataFactory(cdf);
       wizardController.getEditorModel().setReportDefinition(report, false);
+      ((DataSourceAndQueryStep)wizardController.getStep(1)).setModel(model);
     }
 
+    
     // Create the gui
     try
     {
