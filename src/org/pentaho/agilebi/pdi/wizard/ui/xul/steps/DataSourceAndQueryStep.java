@@ -18,18 +18,14 @@
 package org.pentaho.agilebi.pdi.wizard.ui.xul.steps;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.IOException;
 
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.commons.metadata.mqleditor.editor.SwtMqlEditor;
-import org.pentaho.metadata.repository.FileBasedMetadataDomainRepository;
-import org.pentaho.metadata.util.XmiParser;
+import org.pentaho.metadata.repository.IMetadataDomainRepository;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
-import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
-import org.pentaho.reporting.engine.classic.core.DataFactory;
 import org.pentaho.reporting.engine.classic.core.ReportDataFactoryException;
 import org.pentaho.reporting.engine.classic.core.states.datarow.StaticDataRow;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaModel;
@@ -41,6 +37,7 @@ import org.pentaho.reporting.libraries.base.util.DebugLog;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
+import org.pentaho.ui.xul.components.XulButton;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.util.AbstractModelNode;
@@ -69,23 +66,26 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     }
 
     public void doCreateQuery() {
-      FileBasedMetadataDomainRepository repo = new FileBasedMetadataDomainRepository();
-      repo.setDomainFolder(modelFile.getParent());
-      XmiParser parser = new XmiParser();
       try {
-        InputStream inStream = new FileInputStream(modelFile);
-        if (inStream != null) {
-          org.pentaho.metadata.model.Domain d = parser.parseXmi(inStream);
-          d.setId(modelFile.getName());
-          repo.storeDomain(d, true);
-          repo.reloadDomains();
-        }
-      } catch (Exception e) {
-        
+        df = new PmdDataFactory();
+        PmdConnectionProvider connectionProvider = new PmdConnectionProvider();
+        IMetadataDomainRepository repo = connectionProvider.getMetadataDomainRepository("default", getEditorModel().getReportDefinition().getResourceManager(), getEditorModel().getReportDefinition().getContentBase(), modelFile.getCanonicalPath());
+        SwtMqlEditor editor = new SwtMqlEditor(repo);
+        editor.show();
+        String queryString = editor.getQuery();
+        df.setConnectionProvider(connectionProvider);
+        df.setXmiFile(modelFile.getCanonicalPath());
+        df.setDomainId("default");
+        df.setQuery("default", queryString);
+        getEditorModel().getReportDefinition().setDataFactory(df);
+        setCurrentQuery("default");
+      } catch (ReportDataFactoryException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
       }
-      SwtMqlEditor editor = new SwtMqlEditor(repo);
-      editor.show();
-      System.out.println("In 'doCreateQuery()'");
     }
     
     public void doEditQuery() {
@@ -150,7 +150,8 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   private static final String DATA_SOURCE_NAME_LABEL_ID = "data_source_name_label";  //$NON-NLS-1$
 
   private DatasourceModelNode dataSourcesRoot;
-  private CompoundDataFactory cdf;
+//  private CompoundDataFactory cdf;
+  PmdDataFactory df;
   private ModelerWorkspace model;
   private File modelFile;
 
@@ -163,21 +164,9 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   {
   }
 
-  public void editQuery(String queryName)
-  {
-    DataFactory dataFactory = getOwnerDataFactory(queryName);
-  }
-
-
-  private DataFactory getOwnerDataFactory(String queryName)
-  {
-    return cdf.getDataFactoryForQuery(queryName);
-  }
-
   public void stepActivating()
   {
     super.stepActivating();
-    cdf = (CompoundDataFactory) getEditorModel().getReportDefinition().getDataFactory();
     if (model != null) {
       // Populate a PmdDataFactoryClass for the report definition to use
       File modelsDir = new File("models"); //$NON-NLS-1$
@@ -205,35 +194,17 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
         // TODO Auto-generated catch block
         e1.printStackTrace();
       }
-
-      PmdDataFactory dataFactory = new PmdDataFactory();
-      dataFactory.setConnectionProvider(new PmdConnectionProvider());
-      dataFactory.setXmiFile(fileName);
-      dataFactory.setDomainId(fileName);
-      
-      try {
-        cdf.add(dataFactory);
-      } catch (ReportDataFactoryException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
     }
     
-    DataFactory df = null;
-    try {
-      df = cdf.get(0);
-      XulLabel datasourceLabel = (XulLabel) getDocument().getElementById(DATA_SOURCE_NAME_LABEL_ID);
-      datasourceLabel.setValue(df.toString());
-    } catch (ReportDataFactoryException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    XulLabel datasourceLabel = (XulLabel) getDocument().getElementById(DATA_SOURCE_NAME_LABEL_ID);
+    datasourceLabel.setValue("default");
+
     setValid(validateStep());
   }
 
   public boolean stepDeactivating()
   {
-    getEditorModel().getReportDefinition().setDataFactory(cdf);
+//    getEditorModel().getReportDefinition().setDataFactory(cdf);
     return super.stepDeactivating();
   }
 
@@ -251,7 +222,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
 
     // if we have a DataFactory and a query make sure that they are contained in cdf.
     final String queryName = reportDefinition.getQuery();
-    if (cdf.isQueryExecutable(queryName, new StaticDataRow()) == false)
+    if (df.isQueryExecutable(queryName, new StaticDataRow()) == false)
     {
       return false;
     }
@@ -260,7 +231,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     {
       final AbstractReportDefinition abstractReportDefinition =
           (AbstractReportDefinition) reportDefinition.derive();
-      abstractReportDefinition.setDataFactory(cdf.derive());
+      abstractReportDefinition.setDataFactory(df);
       final DataSchemaModel schemaModel = WizardEditorModel.compileDataSchemaModel(abstractReportDefinition);
       return schemaModel.isValid();
     }
@@ -290,8 +261,13 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     if (!(currentQuery != null && currentQuery.equals(oldQuery))) {
       getEditorModel().getReportDefinition().setQuery(currentQuery);
       this.firePropertyChange(CURRENT_QUERY_PROPERTY_NAME, oldQuery, currentQuery);
-      this.setValid(validateStep());
     }
+    this.setValid(validateStep());
+  }
+
+  protected void setValid(final boolean valid) {
+    XulButton nextButton = (XulButton) getDocument().getElementById("next_btn");
+    nextButton.setDisabled(!valid);
   }
 
   public DatasourceModelNode getDataSourcesRoot()
