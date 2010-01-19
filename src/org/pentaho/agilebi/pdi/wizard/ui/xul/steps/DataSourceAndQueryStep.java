@@ -26,6 +26,7 @@ import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.commons.metadata.mqleditor.editor.SwtMqlEditor;
 import org.pentaho.metadata.repository.IMetadataDomainRepository;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
+import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
 import org.pentaho.reporting.engine.classic.core.ReportDataFactoryException;
 import org.pentaho.reporting.engine.classic.core.states.datarow.StaticDataRow;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaModel;
@@ -40,7 +41,6 @@ import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulButton;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
-import org.pentaho.ui.xul.util.AbstractModelNode;
 
 /**
  * TODO: Document Me
@@ -49,10 +49,10 @@ import org.pentaho.ui.xul.util.AbstractModelNode;
  */
 public class DataSourceAndQueryStep extends AbstractWizardStep
 {
-  private enum DATASOURCE_TYPE
-  {
-    ROOT, DATAFACTORY, CONNECTION, QUERY
-  }
+//  private enum DATASOURCE_TYPE
+//  {
+//    ROOT, DATAFACTORY, CONNECTION, QUERY
+//  }
 
   protected class DatasourceAndQueryStepHandler extends AbstractXulEventHandler
   {
@@ -67,6 +67,12 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
 
     public void doCreateQuery() {
       try {
+        if (getEditorModel().getReportDefinition().getDataFactory() != null && getEditorModel().getReportDefinition().getDataFactory() instanceof CompoundDataFactory) {
+          CompoundDataFactory cdf = (CompoundDataFactory) getEditorModel().getReportDefinition().getDataFactory();
+          for (int i=0; i<cdf.size(); i++) {
+            cdf.remove(i);
+          }
+        }
         df = new PmdDataFactory();
         PmdConnectionProvider connectionProvider = new PmdConnectionProvider();
         IMetadataDomainRepository repo = connectionProvider.getMetadataDomainRepository("default", getEditorModel().getReportDefinition().getResourceManager(), getEditorModel().getReportDefinition().getContentBase(), modelFile.getCanonicalPath());
@@ -94,53 +100,53 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   }
 
 
-  protected class DatasourceModelNode extends AbstractModelNode<DatasourceModelNode>
-  {
-    private DATASOURCE_TYPE type;
-
-    private String value;
-    private Object userObject;
-
-    public DatasourceModelNode(String value, Object userObject, DATASOURCE_TYPE type)
-    {
-      this.value = value;
-      this.userObject = userObject;
-      this.type = type;
-    }
-
-    public String getValue()
-    {
-      return value;
-    }
-
-    public void setValue(String value)
-    {
-      String oldValue = this.value;
-      this.value = value;
-
-      this.firePropertyChange(VALUE_PROPERTY_NAME, oldValue, value);
-    }
-
-    public DATASOURCE_TYPE getType()
-    {
-      return type;
-    }
-
-    public void setType(DATASOURCE_TYPE type)
-    {
-      this.type = type;
-    }
-
-    public Object getUserObject()
-    {
-      return userObject;
-    }
-
-    public void setUserObject(Object userObject)
-    {
-      this.userObject = userObject;
-    }
-  }
+//  protected class DatasourceModelNode extends AbstractModelNode<DatasourceModelNode>
+//  {
+//    private DATASOURCE_TYPE type;
+//
+//    private String value;
+//    private Object userObject;
+//
+//    public DatasourceModelNode(String value, Object userObject, DATASOURCE_TYPE type)
+//    {
+//      this.value = value;
+//      this.userObject = userObject;
+//      this.type = type;
+//    }
+//
+//    public String getValue()
+//    {
+//      return value;
+//    }
+//
+//    public void setValue(String value)
+//    {
+//      String oldValue = this.value;
+//      this.value = value;
+//
+//      this.firePropertyChange(VALUE_PROPERTY_NAME, oldValue, value);
+//    }
+//
+//    public DATASOURCE_TYPE getType()
+//    {
+//      return type;
+//    }
+//
+//    public void setType(DATASOURCE_TYPE type)
+//    {
+//      this.type = type;
+//    }
+//
+//    public Object getUserObject()
+//    {
+//      return userObject;
+//    }
+//
+//    public void setUserObject(Object userObject)
+//    {
+//      this.userObject = userObject;
+//    }
+//  }
 
   private static final String DATASOURCE_AND_QUERY_STEP_OVERLAY = "org/pentaho/agilebi/pdi/wizard/ui/xul/res/datasource_and_query_step_Overlay.xul"; //$NON-NLS-1$
   private static final String HANDLER_NAME = "datasource_and_query_step_handler"; //$NON-NLS-1$
@@ -149,7 +155,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   private static final String VALUE_PROPERTY_NAME = "value"; //$NON-NLS-1$
   private static final String DATA_SOURCE_NAME_LABEL_ID = "data_source_name_label";  //$NON-NLS-1$
 
-  private DatasourceModelNode dataSourcesRoot;
+//  private DatasourceModelNode dataSourcesRoot;
 //  private CompoundDataFactory cdf;
   PmdDataFactory df;
   private ModelerWorkspace model;
@@ -222,7 +228,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
 
     // if we have a DataFactory and a query make sure that they are contained in cdf.
     final String queryName = reportDefinition.getQuery();
-    if (df.isQueryExecutable(queryName, new StaticDataRow()) == false)
+    if (df == null || df.isQueryExecutable(queryName, new StaticDataRow()) == false)
     {
       return false;
     }
@@ -270,11 +276,11 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     nextButton.setDisabled(!valid);
   }
 
-  public DatasourceModelNode getDataSourcesRoot()
-  {
-    return dataSourcesRoot;
-  }
-
+//  public DatasourceModelNode getDataSourcesRoot()
+//  {
+//    return dataSourcesRoot;
+//  }
+//
   /* (non-Javadoc)
    * @see org.pentaho.reporting.engine.classic.wizard.ui.xul.components.WizardStep#getStepName()
    */
