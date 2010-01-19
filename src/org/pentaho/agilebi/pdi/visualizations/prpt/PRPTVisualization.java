@@ -80,7 +80,7 @@ public class PRPTVisualization extends AbstractVisualization {
       SwtXulLoader theXulLoader = new SwtXulLoader();
       theXulLoader.register("PRPT", "org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag");
       XulDomContainer theXulContainer = theXulLoader.loadXul("org/pentaho/agilebi/pdi/visualizations/prpt/prptVisualization.xul");
-      Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("prptViewer").getManagedObject();
+      Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainContainer").getManagedObject();
       SwtXulRunner theRunner = new SwtXulRunner();
       theRunner.addContainer(theXulContainer);
       theRunner.initialize();

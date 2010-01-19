@@ -1,8 +1,48 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
 <window id="label-test" title="Flow Test" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" 
+  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" onload="web_visualiztion.init()"
   xmlns:pen="http://www.pentaho.org/2008/xul">
 
-  <prpt id="prptViewer" flex="1"/>
+  <vbox id="mainContainer">
+    <toolbar id="nav-toolbar" parenttoouter="true" mode="icons">
+      <toolbarbutton value="prpt-file-save" image="images/save.png" tooltiptext="${save}" onclick="web_visualiztion.save()" disabled="true"/>
+      <toolbarbutton value="prpt-file-save-as" image="images/saveas.png" tooltiptext="${save_as}" onclick="web_visualiztion.saveAs()"/>
+      <toolbarseparator/>
+      <toolbarbutton value="prpt-reload-data" label="Refresh Data" image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="web_visualiztion.refreshData()"/>
+      <toolbarbutton value="prpt-reload-model" image="images/refresh_model.png" tooltiptext="${reload_model}" onclick="web_visualiztion.refreshModel()"/>
+      <toolbarseparator/>
+      <toolbarbutton value="prpt-model" image="images/modeler.png" onclick="web_visualiztion.editModel()" tooltiptext="${edit_model}" />
+      <toolbarseparator />
+      <toolbarbutton value="prpt-publish" label="${prpt-publish}" image="images/publish.png" onclick="browser.publishView()" tooltiptext="${prpt-publish}" />
+    </toolbar>
+    <hbox flex="1">
+      <prpt flex="1" id="prptViewer"/>
+      <editpanel width="250" collapsible="true">
+        <caption label="${visualization_properties}"/>
+        <groupbox>
+          <caption label="${model}"/>
+          <vbox>
+            <label value="${name}:" />
+            <label id="modelName" value="" />
+            <hbox>
+              <button label="${refresh}" onclick="web_visualiztion.refreshModel()"/>
+              <button label="${view}" onclick="web_visualiztion.editModel()"/>
+            </hbox>
+          </vbox>
+        </groupbox>
+        <groupbox>
+          <caption label="${data}"/>
+          <vbox>
+            <label value="${source}:" />
+            <label id="factTableName" value="" />
+            <hbox>
+              <button label="${refresh}" onclick="web_visualiztion.refreshData()"/>
+              <!--button label="${view}"/-->
+            </hbox>
+          </vbox>
+        </groupbox>
+      </editpanel>
+    </hbox>
+  </vbox>
 </window>

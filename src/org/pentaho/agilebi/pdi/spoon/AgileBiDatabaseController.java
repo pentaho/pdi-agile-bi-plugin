@@ -112,6 +112,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 		model.setFileName(fileName);
 		model.setModelName(modelName);
 		ModelerWorkspaceUtil.autoModelFlat(model);
+		ModelerWorkspaceUtil.populateDomain(model);
 		ModelerWorkspaceUtil.saveWorkspace(model, fileName);
 		VisualizationManager theManager = VisualizationManager.getInstance();
 		IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));
