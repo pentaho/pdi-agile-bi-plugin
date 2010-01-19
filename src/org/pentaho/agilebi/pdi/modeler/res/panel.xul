@@ -19,7 +19,7 @@
     <hbox flex="1">
       <vbox flex="1">
         <hbox>
-          <label value="Available:" />
+          <label value="${available}:" />
           <spacer flex="1" />
           <button onclick="modeler.refreshFields()" image="images/refresh.png" />
         </hbox>
@@ -34,8 +34,8 @@
           <listitem label="field" />
         </listbox>
         <hbox>
-          <button label="Add Measure" onclick="modeler.moveFieldsToMeasures()" />
-          <button label="Add Dimension" onclick="modeler.moveFieldsToDimensions()" />
+          <button label="${add_measure}" onclick="modeler.moveFieldsToMeasures()" />
+          <button label="${add_dimension}" onclick="modeler.moveFieldsToDimensions()" />
         </hbox>
       </vbox>
       <hbox flex="4">
@@ -69,14 +69,14 @@
         </vbox>
         <vbox flex="2">
           <groupbox flex="1">
-            <caption label="Properties" />
+            <caption label="${properties}" />
             <deck id="propertiesdeck" flex="1">
               <vbox/>
               <vbox id="mainprops" flex="1" spacing="4">
-                <label value="Name:" />
+                <label value="${name}:" />
                 <textbox id="modelname" />
              
-                <label value="Source:" />
+                <label value="${source}:" />
                 <label id="source_name" value="some source" />
              
               </vbox>
@@ -92,15 +92,15 @@
     <hbox bgcolor="#FFFFFF">
       <spacer flex="1" />
 
-      <label value="New:" />
+      <label value="${new}:" />
       <menulist id="visualizationlist" label="">
         <menupopup>
           <menuitem label="Dummy Visualization" />
         </menupopup>
       </menulist>
 
-      <button label="Go" id="exploreButton" onclick="modeler.visualize()" />
-      <button label="Publish" id="publishButton" onclick="modeler.publish()" />
+      <button label="${go}" id="exploreButton" onclick="modeler.visualize()" />
+      <button label="${publish}" id="publishButton" onclick="modeler.publish()" />
       
     </hbox>
   </vbox>

@@ -232,7 +232,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
     try {
       filenameBinding.fireSourceChanged();
     } catch (Exception e) {
-      logger.info(Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Xul.BindingError"), e); //$NON-NLS-1$
+      logger.info(Messages.getString("Spoon.Perspectives.AgileBi.Xul.BindingError"), e); //$NON-NLS-1$
     }
   }
 
@@ -240,7 +240,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
     try {
       serverNamesBinding.fireSourceChanged();
     } catch (Exception e) {
-      logger.info(Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Xul.BindingError"), e); //$NON-NLS-1$
+      logger.info(Messages.getString("Spoon.Perspectives.AgileBi.Xul.BindingError"), e); //$NON-NLS-1$
     }
   }
 
@@ -249,7 +249,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
       filesBinding.fireSourceChanged();
       updateButtonStatus();
     } catch (Exception e) {
-      logger.info(Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Xul.BindingError"), e); //$NON-NLS-1$
+      logger.info(Messages.getString("Spoon.Perspectives.AgileBi.Xul.BindingError"), e); //$NON-NLS-1$
     }
   }
 
@@ -258,7 +258,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
       foldersBinding.fireSourceChanged();
       updateButtonStatus();
     } catch (Exception e) {
-      logger.info(Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Xul.BindingError"), e); //$NON-NLS-1$
+      logger.info(Messages.getString("Spoon.Perspectives.AgileBi.Xul.BindingError"), e); //$NON-NLS-1$
     }
   }
   
@@ -280,7 +280,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
 
   private void createServerList() {
     serverNames = biServerConfig.getServerNames();
-    serverNames.add(0, Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.NullServerOption")); //$NON-NLS-1$
+    serverNames.add(0, Messages.getString("Spoon.Perspectives.AgileBi.Publish.NullServerOption")); //$NON-NLS-1$
   }
 
   protected List<CmisObject> getFiles( CmisObject folder, int depth, boolean foldersOnly ) {
@@ -289,8 +289,8 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
       return files;
     } catch (Exception e) {
       logger.error(e);
-      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.CouldNotGetFolders", e.getLocalizedMessage() ),  //$NON-NLS-1$
-          Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
+      SpoonFactory.getInstance().messageBox( Messages.getString("Spoon.Perspectives.AgileBi.Publish.CouldNotGetFolders", e.getLocalizedMessage() ),  //$NON-NLS-1$
+          Messages.getString("Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
     }
     return null;
   }
@@ -322,30 +322,30 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
         int result = publisher.compareDataSourceWithRemoteConnection(databaseMeta);
         switch (result) {
           case ModelServerPublish.REMOTE_CONNECTION_SAME : {
-            datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceSame") ); //$NON-NLS-1$
+            datasourceLabel.setValue( Messages.getString("Spoon.Perspectives.AgileBi.Publish.DatasourceSame") ); //$NON-NLS-1$
             noPublishDatasourceRadio.setSelected( true );
             publishDatasourceRadio.setSelected( false );
             break;
           }
           case ModelServerPublish.REMOTE_CONNECTION_MISSING : {
-            datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceMissing") ); //$NON-NLS-1$
+            datasourceLabel.setValue( Messages.getString("Spoon.Perspectives.AgileBi.Publish.DatasourceMissing") ); //$NON-NLS-1$
             break;
           }
           case ModelServerPublish.REMOTE_CONNECTION_MUST_BE_JNDI : {
-            datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceCannotPublish") ); //$NON-NLS-1$
+            datasourceLabel.setValue( Messages.getString("Spoon.Perspectives.AgileBi.Publish.DatasourceCannotPublish") ); //$NON-NLS-1$
             noPublishDatasourceRadio.setSelected( true );
             publishDatasourceRadio.setSelected( false );
             break;
           }
           case ModelServerPublish.REMOTE_CONNECTION_DIFFERENT : {
-            datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceDifferent") ); //$NON-NLS-1$
+            datasourceLabel.setValue( Messages.getString("Spoon.Perspectives.AgileBi.Publish.DatasourceDifferent") ); //$NON-NLS-1$
             break;
           }
         }
       } catch (Exception e) {
         logger.error(e);
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.CouldNotGetDataSources", e.getLocalizedMessage() ),  //$NON-NLS-1$
-            Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("Spoon.Perspectives.AgileBi.Publish.CouldNotGetDataSources", e.getLocalizedMessage() ),  //$NON-NLS-1$
+            Messages.getString("Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
       }      
     }
 
@@ -366,7 +366,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
     }
     fireFilesBinding();
     fireFoldersBinding();
-    datasourceLabel.setValue( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.DatasourceUnknown") ); //$NON-NLS-1$
+    datasourceLabel.setValue( Messages.getString("Spoon.Perspectives.AgileBi.Publish.DatasourceUnknown") ); //$NON-NLS-1$
     if ( serverMenuList.getSelectedIndex() > 0 ) {
       // try to connect
       connect();
@@ -389,8 +389,8 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
     
     } catch (XulException e) {
       logger.error(e);
-      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Xul.DialogError", e.getLocalizedMessage() ),  //$NON-NLS-1$
-          Messages.getInstance().getString("Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
+      SpoonFactory.getInstance().messageBox( Messages.getString("Spoon.Perspectives.AgileBi.Xul.DialogError", e.getLocalizedMessage() ),  //$NON-NLS-1$
+          Messages.getString("Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
     }
   }
 

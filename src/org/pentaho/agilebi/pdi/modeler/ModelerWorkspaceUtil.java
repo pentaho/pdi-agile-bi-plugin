@@ -96,20 +96,20 @@ public class ModelerWorkspaceUtil {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     TransMeta transMeta = spoon.getActiveTransformation();
     if( transMeta == null ) {
-      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen" ), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException(Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen")); //$NON-NLS-1$
+      SpoonFactory.getInstance().messageBox( Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen" ), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+      throw new IllegalStateException(Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen")); //$NON-NLS-1$
     }
     StepMeta steps[] = transMeta.getSelectedSteps();
     if( steps == null || steps.length > 1 ) {
-      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.OneStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException(Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.OneStepNeeded")); //$NON-NLS-1$
+      SpoonFactory.getInstance().messageBox( Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.OneStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+      throw new IllegalStateException(Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.OneStepNeeded")); //$NON-NLS-1$
     }
     
     // assume only one selected 
     StepMeta stepMeta = steps[0];
     if( !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
-      SpoonFactory.getInstance().messageBox( Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException(Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded")); //$NON-NLS-1$
+      SpoonFactory.getInstance().messageBox( Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+      throw new IllegalStateException(Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded")); //$NON-NLS-1$
     }
     
     TableOutputMeta tableOutputMeta = (TableOutputMeta) stepMeta.getStepMetaInterface();
@@ -120,10 +120,10 @@ public class ModelerWorkspaceUtil {
       rowMeta = transMeta.getStepFields(stepMeta);
     } catch (KettleException e) {
     	logger.info(e);
-      throw new ModelerException(Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta"), e); //$NON-NLS-1$
+      throw new ModelerException(Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta"), e); //$NON-NLS-1$
     }
     if(rowMeta == null){
-   	 throw new ModelerException(Messages.getInstance().getString( "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta")); //$NON-NLS-1$
+   	 throw new ModelerException(Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta")); //$NON-NLS-1$
     }
     
     
@@ -258,7 +258,7 @@ public class ModelerWorkspaceUtil {
       try{
         selectedAgg = AggregationType.valueOf(f.getAggTypeDesc());
       } catch(IllegalArgumentException e){
-        logger.info(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadAggType", f.getAggTypeDesc() ), e); //$NON-NLS-1$
+        logger.info(Messages.getString("ModelerWorkspaceUtil.Populate.BadAggType", f.getAggTypeDesc() ), e); //$NON-NLS-1$
         throw new ModelerException(e);
       }
       lCol.setAggregationType(selectedAgg);
@@ -292,8 +292,8 @@ public class ModelerWorkspaceUtil {
 //      pw.print(xmi);
 //      pw.close();
 //    } catch(IOException e){
-//      logger.info(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
-//      throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
+//      logger.info(Messages.getString("ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
+//      throw new ModelerException(Messages.getString("ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
 //    }
 //  
 
@@ -351,7 +351,7 @@ public class ModelerWorkspaceUtil {
       OlapCube cube = new OlapCube();
       cube.setLogicalTable(logicalTable);
       // TODO find a better way to generate default names
-      cube.setName( Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.CubeName", model.getModelName() ) ); //$NON-NLS-1$
+      cube.setName( Messages.getString("ModelerWorkspaceUtil.Populate.CubeName", model.getModelName() ) ); //$NON-NLS-1$
       cube.setOlapDimensionUsages(usages);
 
       for (MeasureMetaData f : model.getFields()) {
@@ -391,7 +391,7 @@ public class ModelerWorkspaceUtil {
 //        OutputStream out = new FileOutputStream(modelFile);
 //        out.write(schemaBytes);
 //      } catch(Exception e){
-//        throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadGenerateOLAP"),e); //$NON-NLS-1$
+//        throw new ModelerException(Messages.getString("ModelerWorkspaceUtil.Populate.BadGenerateOLAP"),e); //$NON-NLS-1$
 //      }
 
   }
@@ -411,8 +411,8 @@ public class ModelerWorkspaceUtil {
 	      pw.close();
 	      
 	    } catch(IOException e){
-	      logger.info(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadGenerateMetadata"),e); //$NON-NLS-1$
-	      throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadGenerateMetadata"),e); //$NON-NLS-1$
+	      logger.info(Messages.getString("ModelerWorkspaceUtil.Populate.BadGenerateMetadata"),e); //$NON-NLS-1$
+	      throw new ModelerException(Messages.getString("ModelerWorkspaceUtil.Populate.BadGenerateMetadata"),e); //$NON-NLS-1$
 	    }
 
   	} catch (Exception e) {
@@ -451,7 +451,7 @@ public class ModelerWorkspaceUtil {
     } catch (Exception e){
       logger.info(e);
       e.printStackTrace();
-      throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.LoadWorkspace.Failed"),e); //$NON-NLS-1$
+      throw new ModelerException(Messages.getString("ModelerWorkspaceUtil.LoadWorkspace.Failed"),e); //$NON-NLS-1$
     }
   }  
 }

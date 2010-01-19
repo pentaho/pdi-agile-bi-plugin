@@ -51,7 +51,7 @@ public class PRPTVisualization extends AbstractVisualization {
   }
 
   public String[] getFileTypeDisplayNames(Locale locale) {
-    return new String[]{Messages.getInstance().getString("prpt_file_type_name")};
+    return new String[]{Messages.getString("prpt_file_type_name")};
   }
 
   public String getRootNodeName() {

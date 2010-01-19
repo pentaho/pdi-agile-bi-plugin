@@ -90,7 +90,7 @@ public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataMod
     this.validationMessages.clear();
     if(this.children.size() != 2){
       valid = false;
-      this.validationMessages.add(Messages.getInstance().getString("model_structure_invalid"));
+      this.validationMessages.add(Messages.getString("model_structure_invalid"));
     }
     for(AbstractMetaDataModelNode child : children){
       valid &= child.isValid();

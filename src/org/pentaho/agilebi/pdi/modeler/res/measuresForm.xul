@@ -22,14 +22,14 @@
     </grid>
       <hbox flex="1">
       <spacer flex="1"/>
-        <button id="fixMeasuresColumnsBtn" label="Fix Missing Columns"
+        <button id="fixMeasuresColumnsBtn" label="${missing_column}"
           onclick="modeler.resolveMissingColumn()" visible="true" />
       <spacer flex="1"/>
       </hbox>
     </vbox>
-  <label value="Display Name:" />
+  <label value="${display_name}:" />
   <textbox id="displayname" />
-  <label value="Aggregation:" />
+  <label value="${aggregation}:" />
   <menulist id="aggregationtype">
     <menupopup>
       <menuitem label="SUM" />
@@ -38,7 +38,7 @@
       <menuitem label="MAXIMUM" />
     </menupopup>
   </menulist>
-  <label value="Format:" />
+  <label value="${format}:" />
   <menulist id="formatstring">
     <menupopup>
       <menuitem label="NONE" />

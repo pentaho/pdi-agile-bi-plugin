@@ -181,11 +181,11 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
     validationMessages.clear();
     // check name
     if (StringUtils.isEmpty(name)) {
-      validationMessages.add(Messages.getInstance().getString("measure_name_missing")); 
+      validationMessages.add(Messages.getString("measure_name_missing")); 
       valid = false;
     } 
     if(logicalColumn == null){
-      validationMessages.add(Messages.getInstance().getString("measure_column_missing"));
+      validationMessages.add(Messages.getString("measure_column_missing"));
       valid = false;
     }
   }

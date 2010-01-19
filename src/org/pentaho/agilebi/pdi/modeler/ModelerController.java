@@ -262,10 +262,10 @@ public class ModelerController extends AbstractXulEventHandler{
     if(workspace.isshowAutoPopulatePrompt()){
       try{
         XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
-        confirm.setTitle(Messages.getInstance().getString("auto_populate_title"));
-        confirm.setMessage(Messages.getInstance().getString("auto_populate_msg"));
-        confirm.setAcceptLabel(Messages.getInstance().getString("yes"));
-        confirm.setCancelLabel(Messages.getInstance().getString("no"));
+        confirm.setTitle(Messages.getString("auto_populate_title"));
+        confirm.setMessage(Messages.getString("auto_populate_msg"));
+        confirm.setAcceptLabel(Messages.getString("yes"));
+        confirm.setCancelLabel(Messages.getString("no"));
         confirm.addDialogCallback(new XulDialogCallback(){
 
           public void onClose(XulComponent sender, Status returnCode, Object retVal) {
@@ -372,7 +372,7 @@ public class ModelerController extends AbstractXulEventHandler{
       try {
       XulDialogPublish publishDialog = new XulDialogPublish( spoon.getShell() );
       publishDialog.setFolderTreeDepth(1);
-      publishDialog.setComment( Messages.getInstance().getString("ModelServerPublish.Publish.ModelPublishComment") ); //$NON-NLS-1$
+      publishDialog.setComment( Messages.getString("ModelServerPublish.Publish.ModelPublishComment") ); //$NON-NLS-1$
       DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
       publishDialog.setDatabaseMeta(databaseMeta);
       publishDialog.setFilename( workspace.getModelName() );

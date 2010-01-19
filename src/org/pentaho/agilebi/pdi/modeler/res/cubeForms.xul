@@ -21,7 +21,7 @@
     </grid>
     </vbox>
     <spacer height="10"/>
-    <label value="Dimension Name:" />
+    <label value="${dimension_name}:" />
     <textbox id="dimension_name" />
   </vbox>
   
@@ -49,10 +49,10 @@
       </hbox>
     </vbox>
     <spacer height="10"/>
-    <label value="Source Column:"/>
+    <label value="${source_column}:"/>
     <label id="level_source_col"/>
     <spacer height="10"/>
-    <label value="Level Name:" />
+    <label value="${level_name}:" />
     <textbox id="level_name" />
   </vbox>
   

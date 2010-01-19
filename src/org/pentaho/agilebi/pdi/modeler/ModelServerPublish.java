@@ -295,9 +295,9 @@ public class ModelServerPublish {
   }
   if (serviceClientStatus != HttpStatus.SC_OK) {
       if (serviceClientStatus == HttpStatus.SC_MOVED_TEMPORARILY) {
-          throw new Exception(Messages.getInstance().getString("ModelServerPublish.Errors.InvalidUser")); //$NON-NLS-1$
+          throw new Exception(Messages.getString("ModelServerPublish.Errors.InvalidUser")); //$NON-NLS-1$
       } else {
-          throw new Exception(Messages.getInstance().getString("ModelServerPublish.Errors.UnknownError", Integer.toString(serviceClientStatus)) ); //$NON-NLS-1$
+          throw new Exception(Messages.getString("ModelServerPublish.Errors.UnknownError", Integer.toString(serviceClientStatus)) ); //$NON-NLS-1$
       }
   } else {
       try {
@@ -407,43 +407,43 @@ public class ModelServerPublish {
 //    boolean same = (compare | ModelServerPublish.REMOTE_CONNECTION_SAME) > 0;
     
     if(missing && !nonJndi) {
-      if( !autoMode && !SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.OkToPublish" ),  //$NON-NLS-1$
-          Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), true, Const.INFO) ) { //$NON-NLS-1$
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.PublishCancelled" ),  //$NON-NLS-1$ 
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+      if( !autoMode && !SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Datasource.OkToPublish" ),  //$NON-NLS-1$
+          Messages.getString("ModelServerPublish.MessageBox.Title", serverName), true, Const.INFO) ) { //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Datasource.PublishCancelled" ),  //$NON-NLS-1$ 
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         return false;
       }
       boolean ok = publishDataSource(databaseMeta, false);
       if( !autoMode && ok ) {
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.Added" ),  //$NON-NLS-1$
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.INFO); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Datasource.Added" ),  //$NON-NLS-1$
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.INFO); //$NON-NLS-1$
       }
       return ok;
     }
     else if(missing && nonJndi) {
       if( !autoMode ) {
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.NonJNDI" ),  //$NON-NLS-1$
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Datasource.NonJNDI" ),  //$NON-NLS-1$
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
       }
       return false;
     }
     else if( different && !nonJndi ) {
-      if( !autoMode && !SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.IsDifferent" ),  //$NON-NLS-1$
-          Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), true, Const.INFO) ) { //$NON-NLS-1$
+      if( !autoMode && !SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Datasource.IsDifferent" ),  //$NON-NLS-1$
+          Messages.getString("ModelServerPublish.MessageBox.Title", serverName), true, Const.INFO) ) { //$NON-NLS-1$
         return false;
       }
       // replace the data source
       boolean ok = publishDataSource(databaseMeta, true);
       if( !autoMode && ok ) {
-          SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.Updated" ),  //$NON-NLS-1$
-              Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+          SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Datasource.Updated" ),  //$NON-NLS-1$
+              Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
       }
       return ok;
     }
     else if(different && nonJndi) {
       if( !autoMode ) {
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Datasource.CannotUpdate" ),  //$NON-NLS-1$
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Datasource.CannotUpdate" ),  //$NON-NLS-1$
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
       }
       return false;
     }
@@ -455,43 +455,43 @@ public class ModelServerPublish {
     String serverName = biServerConnection.getName();
     switch (result) {
       case ModelServerPublish.PUBLISH_CATALOG_EXISTS: {
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.CatalogExists" ),  //$NON-NLS-1$
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Publish.CatalogExists" ),  //$NON-NLS-1$
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_DATASOURCE_PROBLEM: {
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.DataSourceProblem" ),  //$NON-NLS-1$
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Publish.DataSourceProblem" ),  //$NON-NLS-1$
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_FAILED: {
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.Failed" ),  //$NON-NLS-1$  
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Publish.Failed" ),  //$NON-NLS-1$  
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_FILE_EXISTS: {
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.FileExists" ),  //$NON-NLS-1$  
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Publish.FileExists" ),  //$NON-NLS-1$  
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_INVALID_PASSWORD: {
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.BadPassword" ),  //$NON-NLS-1$  
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Publish.BadPassword" ),  //$NON-NLS-1$  
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_INVALID_USER_OR_PASSWORD: {
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Errors.InvalidUser" ),  //$NON-NLS-1$  
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Errors.InvalidUser" ),  //$NON-NLS-1$  
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_SUCCESS: {
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.Success" ),  //$NON-NLS-1$  
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Publish.Success" ),  //$NON-NLS-1$  
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_UNKNOWN_PROBLEM: {
-        SpoonFactory.getInstance().messageBox( Messages.getInstance().getString("ModelServerPublish.Publish.UnknownProblem" ),  //$NON-NLS-1$  
-            Messages.getInstance().getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Publish.UnknownProblem" ),  //$NON-NLS-1$  
+            Messages.getString("ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
     }  }
