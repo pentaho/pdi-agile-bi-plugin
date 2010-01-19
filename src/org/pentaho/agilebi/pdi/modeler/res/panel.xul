@@ -38,7 +38,7 @@
           <button label="Add Dimension" onclick="modeler.moveFieldsToDimensions()" />
         </hbox>
       </vbox>
-      <hbox flex="2">
+      <hbox flex="4">
         <vbox flex="3">
           <hbox>
             <spacer flex="1" />
@@ -101,6 +101,7 @@
 
       <button label="Go" id="exploreButton" onclick="modeler.visualize()" />
       <button label="Publish" id="publishButton" onclick="modeler.publish()" />
+      
     </hbox>
   </vbox>
 

@@ -41,11 +41,17 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
       valid &= measure.isValid();
       validationMessages.addAll(measure.getValidationMessages());
     }
+    this.firePropertyChange("valid", null, valid);
   }
 
   @Override
   public void onAdd(MeasureMetaData field) {
     field.setParent(this);
+    field.addPropertyChangeListener("valid",validListener); //$NON-NLS-1$
+  }
+  
+  public void onRemove(MeasureMetaData child){
+    child.removePropertyChangeListener(validListener);
   }
   
   public boolean isEditingDisabled(){

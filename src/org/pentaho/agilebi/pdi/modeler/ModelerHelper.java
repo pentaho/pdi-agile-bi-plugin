@@ -65,10 +65,12 @@ public class ModelerHelper extends AbstractXulEventHandler {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
 
     ModelerWorkspace model = new ModelerWorkspace();
+    model.setShowAutoPopulatePrompt(true);
     
     ModelerWorkspaceUtil.populateModelFromOutputStep(model);
     
     AgileBiPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
+    
   }
   
   public void createModelerTabFromSource( IModelerSource source ) throws ModelerException {
@@ -77,6 +79,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
 
     ModelerWorkspace model = new ModelerWorkspace();
     model.setModelSource(source);
+    model.setShowAutoPopulatePrompt(true);
     ModelerWorkspaceUtil.populateModelFromSource(model, source);
     
     // create unique name
@@ -203,6 +206,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     model.setFileName(fileName);
     model.setModelName(modelName);
     ModelerWorkspaceUtil.autoModelFlat(model);
+    ModelerWorkspaceUtil.populateDomain(model);
     ModelerWorkspaceUtil.saveWorkspace( model, fileName);
     VisualizationManager theManager = VisualizationManager.getInstance();
     IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));
@@ -229,6 +233,8 @@ public class ModelerHelper extends AbstractXulEventHandler {
         TableModelerSource source = new TableModelerSource( databaseMeta, std.getTableName(), std.getSchemaName());
         try{
           ModelerWorkspace model = new ModelerWorkspace();
+
+          model.setShowAutoPopulatePrompt(true);
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
 
           AgileBiPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));

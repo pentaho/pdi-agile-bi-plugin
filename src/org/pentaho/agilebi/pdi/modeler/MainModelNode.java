@@ -53,11 +53,13 @@ public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataMod
   @Override
   public void onAdd(AbstractMetaDataModelNode<?> child) {
     child.addPropertyChangeListener("children", listener); //$NON-NLS-1$
+    child.addPropertyChangeListener("valid",validListener); //$NON-NLS-1$
   }
 
   @Override
   public void onRemove(AbstractMetaDataModelNode<?> child) {
     child.removePropertyChangeListener(listener);
+    child.removePropertyChangeListener(validListener);
   }
   
   public DimensionMetaDataCollection getDimensions(){

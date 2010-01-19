@@ -152,20 +152,19 @@ public class ModelerWorkspaceUtil {
    * @param user
    * @param tableName
    */
-  public static void autoModelFlat( ModelerWorkspace model ) throws ModelerException {
-    
-    List<AvailableField> fields = model.getAvailableFields();
+  public static void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
+    workspace.getModel().getMeasures().clear();
+    workspace.getModel().getDimensions().clear();
+    List<AvailableField> fields = workspace.getAvailableFields();
     for( AvailableField field : fields ) {
       DataType dataType = field.getLogicalColumn().getDataType();
       if( dataType == DataType.NUMERIC) {
         // create a measure
-        model.addFieldIntoPlay(field.getName());
+        workspace.addFieldIntoPlay(field.getName());
       }
       // create a dimension
-      model.addDimension(field.getDisplayName());
+      workspace.addDimension(field.getDisplayName());
     }
-    
-    populateDomain( model );
     
     /*
     // 
@@ -279,24 +278,24 @@ public class ModelerWorkspaceUtil {
         }
       }
     }
-
-    XmiParser parser = new XmiParser();
-    String xmi = parser.generateXmi(model.getDomain());
-  
-    // write the XMI to a tmp file
-    // models was created earlier.
-    try{
-      File dir = new File( "models"); //$NON-NLS-1$
-      dir.mkdirs();
-      File file = new File("models/" + model.getModelName() + ".xmi"); //$NON-NLS-1$ //$NON-NLS-2$
-      PrintWriter pw = new PrintWriter(new FileWriter(file));
-      pw.print(xmi);
-      pw.close();
-    } catch(IOException e){
-      logger.info(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
-      throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
-    }
-  
+//
+//    XmiParser parser = new XmiParser();
+//    String xmi = parser.generateXmi(model.getDomain());
+//  
+//    // write the XMI to a tmp file
+//    // models was created earlier.
+//    try{
+//      File dir = new File( "models"); //$NON-NLS-1$
+//      dir.mkdirs();
+//      File file = new File("models/" + model.getModelName() + ".xmi"); //$NON-NLS-1$ //$NON-NLS-2$
+//      PrintWriter pw = new PrintWriter(new FileWriter(file));
+//      pw.print(xmi);
+//      pw.close();
+//    } catch(IOException e){
+//      logger.info(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
+//      throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
+//    }
+//  
 
     // =========================== OLAP ===================================== //
 
@@ -376,31 +375,24 @@ public class ModelerWorkspaceUtil {
       cubes.add(cube);
       lModel.setProperty("olap_cubes", cubes); //$NON-NLS-1$
 
-      try{
-        MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
-        String mondrianSchema = exporter.createMondrianModelXML();
-  
-        logger.info(mondrianSchema);
-  
-        // run it thru the parser to be safe and get a doc type node
-        Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
-        byte schemaBytes[] = schemaDoc.asXML().getBytes();
-        // write out the file
-        File modelFile = new File("models"); //$NON-NLS-1$
-        modelFile.mkdirs();
-        modelFile = new File("models/" + model.getModelName() + ".mondrian.xml"); //$NON-NLS-1$ //$NON-NLS-2$
-        OutputStream out = new FileOutputStream(modelFile);
-        out.write(schemaBytes);
-      } catch(Exception e){
-        throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadGenerateOLAP"),e); //$NON-NLS-1$
-      }
-      // now add to the schema catalog
-      /*
-       * String baseUrl = PentahoSystem.getApplicationContext().getBaseUrl(); boolean enableXmla = true; String
-       * schemaSolutionPath = modelId+"/"+schemaFileName; //$NON-NLS-1$ MondrianCatalogHelper.addToCatalog(baseUrl,
-       * enableXmla, schemaSolutionPath, session, jndi, true);
-       * AggregationManager.instance().getCacheControl(null).flushSchemaCache();
-       */
+//      try{
+//        MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
+//        String mondrianSchema = exporter.createMondrianModelXML();
+//  
+//        logger.info(mondrianSchema);
+//  
+//        // run it thru the parser to be safe and get a doc type node
+//        Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
+//        byte schemaBytes[] = schemaDoc.asXML().getBytes();
+//        // write out the file
+//        File modelFile = new File("models"); //$NON-NLS-1$
+//        modelFile.mkdirs();
+//        modelFile = new File("models/" + model.getModelName() + ".mondrian.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+//        OutputStream out = new FileOutputStream(modelFile);
+//        out.write(schemaBytes);
+//      } catch(Exception e){
+//        throw new ModelerException(Messages.getInstance().getString("ModelerWorkspaceUtil.Populate.BadGenerateOLAP"),e); //$NON-NLS-1$
+//      }
 
   }
   

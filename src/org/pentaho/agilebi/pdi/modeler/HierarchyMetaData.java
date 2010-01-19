@@ -91,12 +91,14 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
   public void onAdd(LevelMetaData child) {
     child.addPropertyChangeListener("children", listener); //$NON-NLS-1$
     validate();
+    child.addPropertyChangeListener("valid",validListener); //$NON-NLS-1$
   }
 
   @Override
   public void onRemove(LevelMetaData child) {
     child.removePropertyChangeListener(listener);
     validate();
+    child.removePropertyChangeListener(validListener);
   }
 
   public boolean isUiExpanded(){

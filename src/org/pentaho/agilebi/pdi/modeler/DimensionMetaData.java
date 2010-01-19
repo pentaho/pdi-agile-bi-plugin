@@ -92,12 +92,14 @@ public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaDa
   public void onAdd(HierarchyMetaData child) {
     child.addPropertyChangeListener("children", listener); //$NON-NLS-1$
     validateNode();
+    child.addPropertyChangeListener("valid",validListener); //$NON-NLS-1$
   }
 
   @Override
   public void onRemove(HierarchyMetaData child) {
     child.removePropertyChangeListener(listener);
     validateNode();
+    child.removePropertyChangeListener(validListener);
   }
   
   public boolean isTime() {

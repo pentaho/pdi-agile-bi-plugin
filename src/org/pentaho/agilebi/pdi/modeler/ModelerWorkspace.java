@@ -73,6 +73,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   // full path to file
   private String fileName;
   
+  private boolean autoPopulatePrompt;
+  
   public ModelerWorkspace() {
     
     model.addPropertyChangeListener("children", new PropertyChangeListener(){
@@ -425,7 +427,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
           }
         }
       }
-      //fireDimensionsChanged();
+      model.validateTree();
   }
 
   
@@ -569,5 +571,14 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     // TODO: update domain with changes
     return domain;
   }
+  
+  public void setShowAutoPopulatePrompt(boolean prompt){
+    this.autoPopulatePrompt = prompt;
+  }
+  
+  public boolean isshowAutoPopulatePrompt(){
+    return this.autoPopulatePrompt;
+  }
+  
 
 }

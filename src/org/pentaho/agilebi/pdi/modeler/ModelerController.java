@@ -43,6 +43,7 @@ import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.binding.Binding.Type;
+import org.pentaho.ui.xul.components.XulConfirmBox;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMenuList;
 import org.pentaho.ui.xul.components.XulMessageBox;
@@ -257,6 +258,32 @@ public class ModelerController extends AbstractXulEventHandler{
     modelNameBinding = bf.createBinding(workspace, MODEL_NAME_PROPERTY, MODEL_NAME_FIELD_ID, VALUE_PROPERTY);
     
     fireBindings();
+    
+    if(workspace.isshowAutoPopulatePrompt()){
+      try{
+        XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
+        confirm.setTitle(Messages.getInstance().getString("auto_populate_title"));
+        confirm.setMessage(Messages.getInstance().getString("auto_populate_msg"));
+        confirm.setAcceptLabel(Messages.getInstance().getString("yes"));
+        confirm.setCancelLabel(Messages.getInstance().getString("no"));
+        confirm.addDialogCallback(new XulDialogCallback(){
+
+          public void onClose(XulComponent sender, Status returnCode, Object retVal) {
+            if(returnCode == Status.ACCEPT){
+              autoPopulate();
+            }
+          }
+
+          public void onError(XulComponent sender, Throwable t) {}
+          
+        });
+        confirm.open();
+        
+      } catch(XulException e){
+        logger.error(e);
+      }
+    }
+    
   }
   
   private void fireBindings() throws ModelerException{
@@ -337,7 +364,7 @@ public class ModelerController extends AbstractXulEventHandler{
   public void publish() throws ModelerException{
     try{
       ModelerWorkspaceUtil.populateDomain(workspace);
-    
+      
       ModelServerPublish publisher = new ModelServerPublish();
       publisher.setModel( workspace );
 
@@ -579,5 +606,17 @@ public class ModelerController extends AbstractXulEventHandler{
   public void setColResolver(ColResolverController controller){
     this.colController = controller;
   }
+  
+  public void autoPopulate(){
+
+    try {
+      ModelerWorkspaceUtil.autoModelFlat(this.workspace);
+      this.dimensionTree.expandAll();
+    } catch (ModelerException e) {
+      logger.error(e.getLocalizedMessage());
+    }
+  }
+  
+  
   
 }

@@ -39,11 +39,13 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
   public void onAdd(DimensionMetaData child) {
     child.setParent(this);
     child.addPropertyChangeListener("children", listener); //$NON-NLS-1$
+    child.addPropertyChangeListener("valid",validListener); //$NON-NLS-1$
   }
 
   @Override
   public void onRemove(DimensionMetaData child) {
     child.removePropertyChangeListener(listener);
+    child.removePropertyChangeListener(validListener);
   }
 
   @Override
@@ -63,6 +65,7 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
       valid &= dim.isValid();
       validationMessages.addAll(dim.getValidationMessages());
     }
+    this.firePropertyChange("valid", null, valid);
   }
   
   public boolean isEditingDisabled(){

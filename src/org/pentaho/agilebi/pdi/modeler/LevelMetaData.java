@@ -22,7 +22,8 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.pentaho.metadata.model.LogicalColumn;
 
-public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements Serializable, ColumnBackedNode {
+@SuppressWarnings("unchecked")
+public class LevelMetaData extends AbstractMetaDataModelNode implements Serializable, ColumnBackedNode {
 
   private static final long serialVersionUID = -8026104295937064671L;
   String name;
@@ -95,6 +96,7 @@ public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements 
 
   @Override
   public void validate() {
+    String prevMessages = getValidationMessagesString();
     valid = true;
     validationMessages.clear();
     // check name
@@ -106,7 +108,6 @@ public class LevelMetaData extends AbstractMetaDataModelNode<Object> implements 
       validationMessages.add("Column is missing");
       valid = false;
     }
-    this.firePropertyChange("valid", null, valid);
   }
   
   public boolean isUiExpanded() {

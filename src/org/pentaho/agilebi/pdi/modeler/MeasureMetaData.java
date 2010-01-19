@@ -28,7 +28,8 @@ import org.pentaho.reporting.libraries.base.util.StringUtils;
  * @author wseyler
  *
  */
-public class MeasureMetaData extends AbstractMetaDataModelNode<Object> implements Serializable, ColumnBackedNode {
+@SuppressWarnings("unchecked")
+public class MeasureMetaData extends AbstractMetaDataModelNode implements Serializable, ColumnBackedNode {
   
   public static final String FORMAT_NONE = "NONE"; //$NON-NLS-1$
   
@@ -187,7 +188,6 @@ public class MeasureMetaData extends AbstractMetaDataModelNode<Object> implement
       validationMessages.add(Messages.getInstance().getString("measure_column_missing"));
       valid = false;
     }
-    this.firePropertyChange("valid", null, valid);
   }
   
   public boolean isEditingDisabled(){

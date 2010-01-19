@@ -1,11 +1,13 @@
 package org.pentaho.agilebi.pdi.modeler;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.pentaho.ui.xul.util.AbstractModelNode;
 
-public abstract class AbstractMetaDataModelNode<T> extends AbstractModelNode<T> {
+public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelNode> extends AbstractModelNode<T> {
 
   private static final long serialVersionUID = 1547202580713108254L;
 
@@ -13,8 +15,25 @@ public abstract class AbstractMetaDataModelNode<T> extends AbstractModelNode<T> 
   protected List<String> validationMessages = new ArrayList<String>();
   protected String image;
   
+  protected PropertyChangeListener validListener = new PropertyChangeListener(){
+    public void propertyChange(PropertyChangeEvent arg0) {
+      validateNode();
+    }
+  };
+  
+
   public AbstractMetaDataModelNode() {
     this.image = getValidImage();
+  }
+  
+
+  @Override
+  public void onAdd(T child) {
+  }
+
+  @Override
+  public void onRemove(T child) {
+    child.removePropertyChangeListener(validListener);
   }
   
   public String getValidationMessagesString() {
@@ -58,7 +77,10 @@ public abstract class AbstractMetaDataModelNode<T> extends AbstractModelNode<T> 
   public abstract void validate();
   
   public void validateNode() {
+    String prevMessages = getValidationMessagesString();
     validate();
+    this.firePropertyChange("valid", null, valid);
+    this.firePropertyChange("validationMessagesString", prevMessages, getValidationMessagesString());
     if (valid) {
       setImage(getValidImage());
     } else {
@@ -72,7 +94,7 @@ public abstract class AbstractMetaDataModelNode<T> extends AbstractModelNode<T> 
     for (T t : this) {
       ((AbstractMetaDataModelNode)t).validateTree();
     }
-    validate();
+    validateNode();
   };
   
   @SuppressWarnings("unchecked")
@@ -91,6 +113,7 @@ public abstract class AbstractMetaDataModelNode<T> extends AbstractModelNode<T> 
   public boolean isValid() {
     return valid;
   }
+  
   
   public abstract Class<? extends ModelerNodePropertiesForm> getPropertiesForm();
   
