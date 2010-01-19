@@ -88,6 +88,8 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
 				LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
 
 				FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell(), SWT.SAVE);
+				String[] theExtensions = { "*.xml" };
+				fileDialog.setFilterExtensions(theExtensions);
 				String theFile = fileDialog.open();
 				if(theFile != null) {
 					MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
