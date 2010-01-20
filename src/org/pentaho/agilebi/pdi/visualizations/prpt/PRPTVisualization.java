@@ -15,6 +15,7 @@ import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
+import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.libraries.fonts.LibFontBoot;
 import org.pentaho.reporting.libraries.resourceloader.LibLoaderBoot;
 import org.pentaho.ui.xul.XulDomContainer;
@@ -107,6 +108,51 @@ public class PRPTVisualization extends AbstractVisualization {
     
   }
   
+  public void createVisualizationFromMasterReport(MasterReport rpt){
+try{
+      
+      if(ClassicEngineBoot.getInstance().isBootDone() == false){
+        LibLoaderBoot.getInstance().start();
+        LibFontBoot.getInstance().start();
+        ClassicEngineBoot.getInstance().start();
+      }
+      
+      XulTabAndPanel tabAndPanel = AgileBiVisualizationPerspective.getInstance().createTab();
+      
+      AgileBiVisualizationPerspective.getInstance().setNameForTab(tabAndPanel.tab, "Untitled Report");
+      AgileBiVisualizationPerspective.getInstance().setMetaForTab(tabAndPanel.tab, null);
+      
   
+      try {
+        SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiVisualizationPerspective.class);
+      } catch (KettleException e) {
+        logger.error(e);
+        return;
+      }
+      SwtXulLoader theXulLoader = new SwtXulLoader();
+      theXulLoader.register("PRPT", "org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag");
+      XulDomContainer theXulContainer = theXulLoader.loadXul("org/pentaho/agilebi/pdi/visualizations/prpt/prptVisualization.xul");
+      Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainContainer").getManagedObject();
+      
+      PRPTVisualizationController controller = new PRPTVisualizationController(null, rpt);
+      theXulContainer.addEventHandler(controller);
+      
+      SwtXulRunner theRunner = new SwtXulRunner();
+      theRunner.addContainer(theXulContainer);
+      theRunner.initialize();
+      theMainBox.setParent((Composite) tabAndPanel.panel.getManagedObject());
+      
+      ((PrptViewerTag) theXulContainer.getDocumentRoot().getElementById("prptViewer")).setMasterReport(rpt);
+      ((Composite) tabAndPanel.panel.getManagedObject()).layout(true);
+
+      try {
+        SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiVisualizationPerspective.class);
+      } catch (KettleException e) {
+        logger.error(e);
+      }
+    } catch(Exception e){
+      e.printStackTrace();
+    }
+  }
 	
 }

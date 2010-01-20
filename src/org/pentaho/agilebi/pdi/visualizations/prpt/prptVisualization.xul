@@ -6,28 +6,33 @@
 
   <vbox id="mainContainer" flex="1">
     <toolbar id="nav-toolbar" parenttoouter="true" mode="icons">
-      <toolbarbutton value="prpt-file-save" image="images/save.png" tooltiptext="${save}" onclick="web_visualiztion.save()" disabled="true"/>
-      <toolbarbutton value="prpt-file-save-as" image="images/saveas.png" tooltiptext="${save_as}" onclick="web_visualiztion.saveAs()"/>
+      <toolbarbutton value="prpt-file-save" image="images/save.png" tooltiptext="${save}" onclick="prpt.save()" disabled="true"/>
+      <toolbarbutton value="prpt-file-save-as" image="images/saveas.png" tooltiptext="${save_as}" onclick="prpt.saveAs()"/>
       <toolbarseparator/>
-      <toolbarbutton value="prpt-reload-data" label="Refresh Data" image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="web_visualiztion.refreshData()"/>
-      <toolbarbutton value="prpt-reload-model" image="images/refresh_model.png" tooltiptext="${reload_model}" onclick="web_visualiztion.refreshModel()"/>
+      <toolbarbutton value="prpt-reload-data" label="Refresh Data" image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="prpt.refresh()"/>
       <toolbarseparator/>
-      <toolbarbutton value="prpt-model" image="images/modeler.png" onclick="web_visualiztion.editModel()" tooltiptext="${edit_model}" />
+      <toolbarbutton value="prpt-model" image="images/modeler.png" onclick="prpt.editModel()" tooltiptext="${edit_model}" />
       <toolbarseparator />
-      <toolbarbutton value="prpt-publish" label="${prpt-publish}" image="images/publish.png" onclick="browser.publishView()" tooltiptext="${prpt-publish}" />
+      <toolbarbutton value="prpt-publish" label="${prpt-publish}" image="images/publish.png" onclick="prpt.publish()" tooltiptext="${prpt-publish}" />
     </toolbar>
     <hbox flex="1">
       <prpt flex="1" id="prptViewer"/>
-      <editpanel width="250" collapsible="true">
+      <editpanel width="250" collapsible="true" padding="2" spacing="2">
         <caption label="${visualization_properties}"/>
+        <groupbox>
+          <caption label="${report}"/>
+          <vbox>
+              <button label="${view}" onclick="prpt.editReport()"/>
+          </vbox>
+        </groupbox>
+        
         <groupbox>
           <caption label="${model}"/>
           <vbox>
             <label value="${name}:" />
             <label id="modelName" value="" />
             <hbox>
-              <button label="${refresh}" onclick="web_visualiztion.refreshModel()"/>
-              <button label="${view}" onclick="web_visualiztion.editModel()"/>
+              <button label="${view}" onclick="prpt.editModel()"/>
             </hbox>
           </vbox>
         </groupbox>
@@ -37,7 +42,7 @@
             <label value="${source}:" />
             <label id="factTableName" value="" />
             <hbox>
-              <button label="${refresh}" onclick="web_visualiztion.refreshData()"/>
+              <button label="${refresh}" onclick="prpt.refresh()"/>
               <!--button label="${view}"/-->
             </hbox>
           </vbox>

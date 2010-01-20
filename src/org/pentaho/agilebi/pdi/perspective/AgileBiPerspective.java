@@ -130,8 +130,7 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
 
   public boolean save(EngineMetaInterface meta, String fname, boolean isExport) {
     try {
-      ((ModelerEngineMeta) meta).getController().saveWorkspace(fname);
-      return true;
+      return ((ModelerEngineMeta) meta).getController().saveWorkspace(fname);
     } catch (ModelerException e) {
       e.printStackTrace();
     } 

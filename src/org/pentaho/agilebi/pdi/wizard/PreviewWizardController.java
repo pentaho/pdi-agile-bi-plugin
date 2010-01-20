@@ -2,6 +2,9 @@ package org.pentaho.agilebi.pdi.wizard;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.pentaho.agilebi.pdi.visualizations.IVisualization;
+import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
+import org.pentaho.agilebi.pdi.visualizations.prpt.PRPTVisualization;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.AttributeNames;
@@ -52,4 +55,32 @@ public class PreviewWizardController extends LinearWizardController {
 			logger.error(e);
 		}
 	}
+
+  @Override
+  public void finish() {
+    try {
+      AbstractReportDefinition reportDefinition = getEditorModel().getReportDefinition();
+      MasterReport element = (MasterReport) reportDefinition.derive();
+      final WizardSpecification spec = getEditorModel().getReportSpec();
+      element.setAttribute(AttributeNames.Wizard.NAMESPACE, "enable", Boolean.TRUE);
+      WizardProcessorUtil.applyWizardSpec(element, (WizardSpecification) spec.clone());
+      WizardProcessorUtil.ensureWizardProcessorIsAdded(element, null);
+      
+      VisualizationManager theManager = VisualizationManager.getInstance();
+      PRPTVisualization theVisualization = (PRPTVisualization) theManager.getVisualization("PRPT Viewer");
+      if(theVisualization != null) {
+        theVisualization.createVisualizationFromMasterReport(element);
+        
+      }
+      
+      ((XulDialog) document.getElementById("main_wizard_window")).hide();
+      
+    } catch (CloneNotSupportedException e) {
+      e.printStackTrace();
+      logger.error(e);
+    }
+    
+  }
+	
+	
 }
