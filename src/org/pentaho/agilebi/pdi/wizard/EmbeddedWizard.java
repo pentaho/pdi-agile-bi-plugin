@@ -21,11 +21,8 @@ import java.awt.HeadlessException;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 
-import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.wizard.ui.xul.DefaultWizardDesignTimeContext;
 import org.pentaho.agilebi.pdi.wizard.ui.xul.steps.DataSourceAndQueryStep;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
@@ -34,13 +31,10 @@ import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
 import org.pentaho.reporting.engine.classic.core.SubReport;
 import org.pentaho.reporting.engine.classic.core.designtime.DesignTimeContext;
-import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdConnectionProvider;
-import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdDataFactory;
 import org.pentaho.reporting.engine.classic.wizard.WizardProcessor;
 import org.pentaho.reporting.engine.classic.wizard.WizardProcessorUtil;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.WizardEditorModel;
-import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.LinearWizardController;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.WizardContentPanel;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.WizardController;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.steps.FormatStep;
@@ -68,7 +62,7 @@ public class EmbeddedWizard
   private ModelerWorkspace model;
   private XulDialog dialog;
 
-  private LinearWizardController wizardController;
+  private PreviewWizardController wizardController;
 
   public EmbeddedWizard() {
     this(null, null);
@@ -94,7 +88,7 @@ public class EmbeddedWizard
   private void init()
   {
 
-    wizardController = new LinearWizardController(new WizardEditorModel(), new DefaultBindingFactory());
+    wizardController = new PreviewWizardController(new WizardEditorModel(), new DefaultBindingFactory());
 
     // add the steps ..
     wizardController.addStep(new LookAndFeelStep());

@@ -36,6 +36,8 @@ public class PrptViewerTag extends SwtElement{
   
   private PreviewPane viewer;
   
+  private MasterReport masterReport;
+  
   private static Log log = LogFactory.getLog(PrptViewerTag.class);
 
   
@@ -81,20 +83,24 @@ public class PrptViewerTag extends SwtElement{
     }
   }
   
+  public void setMasterReport(MasterReport aMasterRerport) {
+    this.masterReport = aMasterRerport;
+    if(this.initialized){
+      loadPRPT();
+    }
+  }
+  
   
   private void loadPRPT(){
-    try{
-
-      ResourceManager theResourceManager = new ResourceManager();
-      theResourceManager.registerDefaults();
-  
-      File theReportFile = new File(src);
-      Resource theResource = theResourceManager.createDirectly(theReportFile, MasterReport.class);
-      
-      MasterReport theReport = (MasterReport) theResource.getResource();
-  
-
-      viewer.setReportJob(theReport);
+    try {
+    	if (this.masterReport == null) {
+	      ResourceManager theResourceManager = new ResourceManager();
+	      theResourceManager.registerDefaults();
+	      File theReportFile = new File(src);
+	      Resource theResource = theResourceManager.createDirectly(theReportFile, MasterReport.class);
+	      this.masterReport = (MasterReport) theResource.getResource();
+    	}
+      viewer.setReportJob(this.masterReport);
     } catch(Exception e){
       log.error(e);
     }
