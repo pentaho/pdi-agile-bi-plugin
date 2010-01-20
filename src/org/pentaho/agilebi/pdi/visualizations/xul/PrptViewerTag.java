@@ -38,9 +38,6 @@ public class PrptViewerTag extends SwtElement{
   private static Log log = LogFactory.getLog(PrptViewerTag.class);
   
   static{
-    LibLoaderBoot.getInstance().start();
-    LibFontBoot.getInstance().start();
-    ClassicEngineBoot.getInstance().start();
     System.setProperty("org.jpedal.suppressViewerPopups", "true");
     //System.setProperty("org.jpedal.bundleLocation", "org.pentaho.agilebi.pdi.modeler.messages.messages");
     
