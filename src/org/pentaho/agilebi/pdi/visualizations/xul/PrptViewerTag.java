@@ -42,7 +42,7 @@ public class PrptViewerTag extends SwtElement{
     LibFontBoot.getInstance().start();
     ClassicEngineBoot.getInstance().start();
     System.setProperty("org.jpedal.suppressViewerPopups", "true");
-    System.setProperty("org.jpedal.bundleLocation", "org.pentaho.agilebi.pdi.modeler.messages");
+    //System.setProperty("org.jpedal.bundleLocation", "org.pentaho.agilebi.pdi.modeler.messages.messages");
     
   }
   
