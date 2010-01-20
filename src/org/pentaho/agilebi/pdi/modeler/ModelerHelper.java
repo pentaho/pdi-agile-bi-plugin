@@ -173,8 +173,12 @@ public class ModelerHelper extends AbstractXulEventHandler {
     try {
       ModelerWorkspace model = new ModelerWorkspace();
       ModelerWorkspaceUtil.populateModelFromOutputStep(model);
-      ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
-      engineBoot.start();
+
+      
+      if(ClassicEngineBoot.getInstance().isBootDone() == false){
+        ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
+        engineBoot.start();
+      }
       EmbeddedWizard wizard = new EmbeddedWizard(model);
       wizard.run(null);
     } catch (Exception e) {

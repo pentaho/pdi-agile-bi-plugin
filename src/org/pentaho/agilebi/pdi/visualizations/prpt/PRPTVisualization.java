@@ -23,9 +23,10 @@ import org.pentaho.ui.xul.swt.SwtXulRunner;
 import org.w3c.dom.Node;
 
 public class PRPTVisualization extends AbstractVisualization {
-
+  
   public PRPTVisualization(){
     super();
+    System.setProperty("org.jpedal.suppressViewerPopups", "true");
   }
   
   private static Log logger = LogFactory.getLog(PRPTVisualization.class);
@@ -57,10 +58,12 @@ public class PRPTVisualization extends AbstractVisualization {
 
   public boolean open(Node transNode, String fname, boolean importfile) {
     try{
-
-      LibLoaderBoot.getInstance().start();
-      LibFontBoot.getInstance().start();
-      ClassicEngineBoot.getInstance().start();
+      
+      if(ClassicEngineBoot.getInstance().isBootDone() == false){
+        LibLoaderBoot.getInstance().start();
+        LibFontBoot.getInstance().start();
+        ClassicEngineBoot.getInstance().start();
+      }
       
       XulTabAndPanel tabAndPanel = AgileBiVisualizationPerspective.getInstance().createTab();
       
