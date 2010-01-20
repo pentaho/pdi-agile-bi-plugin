@@ -11,7 +11,6 @@
     <dependencies defaultconf="default->default">
 
         <dependency org="commons-vfs"        name="commons-vfs"         rev="1.0" conf="default->default"/>
-        <dependency org="org.jpedal" name="jpedal" rev="3.9.1" />
 
         <dependency org="pentaho"        name="pentaho-metadata"         rev="${dependency.pentaho-metadata.revision}" conf="default->default" changing="true"/>
         <dependency org="pentaho.kettle" name="kettle-engine"            rev="${dependency.kettle.revision}" conf="default->default" changing="true"/>
