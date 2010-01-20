@@ -2,8 +2,6 @@ package org.pentaho.agilebi.pdi.visualizations.xul;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import javax.swing.JPanel;
@@ -14,15 +12,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.jpedal.examples.simpleviewer.Commands;
-import org.jpedal.examples.simpleviewer.SimpleViewer;
-import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.modules.gui.base.PreviewPane;
-import org.pentaho.reporting.engine.classic.core.modules.output.pageable.base.PageableReportProcessor;
-import org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.PdfOutputProcessor;
-import org.pentaho.reporting.libraries.fonts.LibFontBoot;
-import org.pentaho.reporting.libraries.resourceloader.LibLoaderBoot;
 import org.pentaho.reporting.libraries.resourceloader.Resource;
 import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 import org.pentaho.ui.xul.XulComponent;
