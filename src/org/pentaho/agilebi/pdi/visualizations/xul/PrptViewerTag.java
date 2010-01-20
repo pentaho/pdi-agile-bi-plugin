@@ -18,6 +18,7 @@ import org.jpedal.examples.simpleviewer.Commands;
 import org.jpedal.examples.simpleviewer.SimpleViewer;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
+import org.pentaho.reporting.engine.classic.core.modules.gui.base.PreviewPane;
 import org.pentaho.reporting.engine.classic.core.modules.output.pageable.base.PageableReportProcessor;
 import org.pentaho.reporting.engine.classic.core.modules.output.pageable.pdf.PdfOutputProcessor;
 import org.pentaho.reporting.libraries.fonts.LibFontBoot;
@@ -33,15 +34,10 @@ public class PrptViewerTag extends SwtElement{
 
   private String src;
   
-  private SimpleViewer viewer;
+  private PreviewPane viewer;
   
   private static Log log = LogFactory.getLog(PrptViewerTag.class);
-  
-  static{
-    System.setProperty("org.jpedal.suppressViewerPopups", "true");
-    //System.setProperty("org.jpedal.bundleLocation", "org.pentaho.agilebi.pdi.modeler.messages.messages");
-    
-  }
+
   
   public PrptViewerTag(Element self, XulComponent parent, XulDomContainer container, String tagName) {
     super("prpt");
@@ -58,7 +54,8 @@ public class PrptViewerTag extends SwtElement{
     
     swingFrame.add(browserPanel);
     
-    this.viewer = new SimpleViewer(browserPanel, "plugins/spoon/agile-bi/visualizations/prpt/jPedalPrefs.xml");
+    this.viewer = new PreviewPane();
+    browserPanel.add(viewer, BorderLayout.CENTER);
     
     parentComposite.layout(true);
     setManagedObject(swingComposite);
@@ -66,32 +63,11 @@ public class PrptViewerTag extends SwtElement{
   }
   
   public void layout(){
-    viewer.setupViewer();
+
     this.initialized = true;
     if(src != null){
       loadPRPT();
     }
-  }
-
-  public void forward(){
-    viewer.executeCommand(Commands.FORWARDPAGE, null);
-  }
-  
-  public void back(){
-    viewer.executeCommand(Commands.BACKPAGE, null);
-    
-  }
-  
-  public void start(){
-    viewer.executeCommand(Commands.GOTO, new Integer[]{0});
-    
-  }
-  
-  public void end(){
-  }
-  
-  public void go(int page){
-    
   }
   
   public String getSrc() {
@@ -117,16 +93,8 @@ public class PrptViewerTag extends SwtElement{
       
       MasterReport theReport = (MasterReport) theResource.getResource();
   
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      BufferedOutputStream theOutputBuffer = new BufferedOutputStream(out);
-      PdfOutputProcessor theOutputProcessor = new PdfOutputProcessor(theReport.getConfiguration(), theOutputBuffer, theReport.getResourceManager());
-      PageableReportProcessor theReportProcessor = new PageableReportProcessor(theReport, theOutputProcessor);
-      
-      
-      theReportProcessor.processReport();
-      theReportProcessor.close();
-      theOutputBuffer.flush();
-      viewer.executeCommand(Commands.OPENFILE, new Object[]{out.toByteArray(), src});
+
+      viewer.setReportJob(theReport);
     } catch(Exception e){
       log.error(e);
     }
