@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
 <window id="label-test" title="Flow Test" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" onload="web_visualiztion.init()"
+  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" 
   xmlns:pen="http://www.pentaho.org/2008/xul">
 
-  <vbox id="mainContainer">
+  <vbox id="mainContainer" flex="1">
     <toolbar id="nav-toolbar" parenttoouter="true" mode="icons">
       <toolbarbutton value="prpt-file-save" image="images/save.png" tooltiptext="${save}" onclick="web_visualiztion.save()" disabled="true"/>
       <toolbarbutton value="prpt-file-save-as" image="images/saveas.png" tooltiptext="${save_as}" onclick="web_visualiztion.saveAs()"/>
