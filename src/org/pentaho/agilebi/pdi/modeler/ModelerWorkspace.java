@@ -206,15 +206,25 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   	return this.selectedVisualization;
   }
 
-  public DimensionMetaData createDimension(Object obj) {
-    DimensionMetaData dimension = new DimensionMetaData(obj.toString());
+  public DimensionMetaData createDimension(ColumnBackedNode obj) {
+    DimensionMetaData dimension = new DimensionMetaData(obj.getName());
     HierarchyMetaData hierarchy = createHierarchy(dimension, obj);
     hierarchy.setParent(dimension);
     dimension.add(hierarchy);
     return dimension;
   }
   
-  public void addDimension(Object obj) {
+
+  public DimensionMetaData createDimension(String dimName) {
+    DimensionMetaData dimension = new DimensionMetaData(dimName);
+    HierarchyMetaData hierarchy = createHierarchy(dimension, null);
+    hierarchy.setParent(dimension);
+    dimension.add(hierarchy);
+    return dimension;
+  }
+  
+  
+  public void addDimension(ColumnBackedNode obj) {
     addDimension(createDimension(obj));
   }
 
@@ -244,24 +254,31 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return null;
   }
 
-  public LevelMetaData createLevel(HierarchyMetaData parent, Object obj) {
-    LevelMetaData level = new LevelMetaData(parent, obj.toString());
+  public LevelMetaData createLevel(HierarchyMetaData parent, ColumnBackedNode obj) {
+    LevelMetaData level = new LevelMetaData(parent, obj.getName());
     level.setParent(parent);
-    // TODO: remove lookup
-    LogicalColumn col = findLogicalColumn(obj.toString());
-    level.setLogicalColumn(col);
+    level.setLogicalColumn(obj.getLogicalColumn());
+    return level;
+  }
+
+  public LevelMetaData createLevel(HierarchyMetaData parent, String name) {
+    LevelMetaData level = new LevelMetaData(parent, name);
+    level.setParent(parent);
+    level.setLogicalColumn(findLogicalColumn(name));
     return level;
   }
   
-  public HierarchyMetaData createHierarchy(DimensionMetaData parent, Object obj) {
-    HierarchyMetaData hier = new HierarchyMetaData(obj.toString());
+  public HierarchyMetaData createHierarchy(DimensionMetaData parent, ColumnBackedNode obj) {
+    HierarchyMetaData hier = new HierarchyMetaData(obj.getName());
     hier.setParent(parent);
-    LevelMetaData level = createLevel(hier, obj.toString());
-    hier.add(level);
+    if(obj != null){
+      LevelMetaData level = createLevel(hier, obj);
+      hier.add(level);
+    }
     return hier;
   }
   
-  public void addToHeirarchy(Object selectedItem, Object newItem) {
+  public void addToHeirarchy(Object selectedItem, ColumnBackedNode newItem) {
     if (selectedItem instanceof LevelMetaData) {
       LevelMetaData sib = (LevelMetaData)selectedItem;
       LevelMetaData level = createLevel(sib.getParent(), newItem);
@@ -300,15 +317,15 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     setDirty(true);
   }
 
-  public MeasureMetaData createMeasure(Object selectedField) {
-    MeasureMetaData meta = new MeasureMetaData(selectedField.toString(), "", selectedField.toString());
-    // TODO: replace this terrible resolution with better model code.
-    LogicalColumn col = findLogicalColumn(selectedField.toString());
-    meta.setLogicalColumn(col);
+  public MeasureMetaData createMeasure(AvailableField selectedField) {
+    
+    MeasureMetaData meta = new MeasureMetaData(selectedField.getName(), "", selectedField.getDisplayName());
+    meta.setLogicalColumn(selectedField.getLogicalColumn());
+    
     return meta;
   }
   
-  public MeasureMetaData addFieldIntoPlay(Object selectedField) {
+  public MeasureMetaData addFieldIntoPlay(AvailableField selectedField) {
     MeasureMetaData meta = createMeasure(selectedField);
     this.model.getMeasures().add(meta); //$NON-NLS-1$
     return meta;

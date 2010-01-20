@@ -6,6 +6,8 @@ package org.pentaho.agilebi.pdi.modeler;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<DimensionMetaData> implements Serializable {
 
@@ -61,9 +63,16 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
       validationMessages.add("Model requires at least one Dimension");
       valid = false;
     }
+    List<String> usedNames = new ArrayList<String>();
+    
     for(DimensionMetaData dim: children){
       valid &= dim.isValid();
       validationMessages.addAll(dim.getValidationMessages());
+      if(usedNames.contains(dim.getName())){
+        valid = false;
+        validationMessages.add(Messages.getString("duplicate_dimension_names"));
+      }
+      usedNames.add(dim.getName());
     }
     this.firePropertyChange("valid", null, valid);
   }

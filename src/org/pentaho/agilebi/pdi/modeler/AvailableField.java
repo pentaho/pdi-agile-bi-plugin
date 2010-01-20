@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.pentaho.metadata.model.LogicalColumn;
 
-public class AvailableField implements Serializable {
+public class AvailableField implements Serializable, ColumnBackedNode {
 
   private static final long serialVersionUID = -4430951279551589688L;
   

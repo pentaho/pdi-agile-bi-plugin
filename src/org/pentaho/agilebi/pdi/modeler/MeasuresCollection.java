@@ -3,13 +3,12 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
-import java.awt.Image;
 import java.io.Serializable;
-
-import org.pentaho.ui.xul.util.AbstractModelNode;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaData>  implements Serializable {
-  private String name = "Measures";
+  private String name = Messages.getString("measures");
   
   public String getName() {
     return name;
@@ -34,12 +33,20 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
     validationMessages.clear();
 
     if (size() == 0) {
-      validationMessages.add("Model requires at least one Measure");
+      validationMessages.add(Messages.getString("need_one_measure"));
       valid = false;
     }
+    List<String> usedNames = new ArrayList<String>();
     for(MeasureMetaData measure : children){
       valid &= measure.isValid();
       validationMessages.addAll(measure.getValidationMessages());
+      if(usedNames.contains(measure.getName())){
+        valid = false;
+        validationMessages.add(Messages.getString("duplicate_measure_name"));
+      }
+      
+      usedNames.add(measure.getName());
+      
     }
     this.firePropertyChange("valid", null, valid);
   }

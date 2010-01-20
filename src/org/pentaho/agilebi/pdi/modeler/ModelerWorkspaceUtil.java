@@ -160,10 +160,10 @@ public class ModelerWorkspaceUtil {
       DataType dataType = field.getLogicalColumn().getDataType();
       if( dataType == DataType.NUMERIC) {
         // create a measure
-        workspace.addFieldIntoPlay(field.getName());
+        workspace.addFieldIntoPlay(field);
       }
       // create a dimension
-      workspace.addDimension(field.getDisplayName());
+      workspace.addDimension(field);
     }
     
     /*

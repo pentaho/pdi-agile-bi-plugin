@@ -22,7 +22,10 @@ import java.util.List;
 import java.util.Vector;
 
 import org.pentaho.metadata.model.LogicalColumn;
+import org.pentaho.metadata.model.concept.types.DataType;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * @author wseyler
@@ -38,16 +41,19 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
   String displayName;
   String fieldTypeDesc = "---";
   String levelTypeDesc = "---";
-  String aggTypeDesc = "SUM";
+  String aggTypeDesc = null;
   transient LogicalColumn logicalColumn;
   
-  private List<String> aggTypes = new ArrayList<String>();
+  private List<String> numericAggTypes = new ArrayList<String>();
   {
-    aggTypes.add("SUM");
-    aggTypes.add("AVERAGE");
-    aggTypes.add("MINIMUM");
-    aggTypes.add("MAXIMUM");
+    numericAggTypes.add("SUM");
+    numericAggTypes.add("AVERAGE");
+    numericAggTypes.add("MINIMUM");
+    numericAggTypes.add("MAXIMUM");
+    numericAggTypes.add("COUNT");
   }
+  
+  private List<String> textAggTypes = Collections.singletonList("COUNT");
   
   public MeasureMetaData(){
     
@@ -115,7 +121,13 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
 
   public String getAggTypeDesc() {
     if(StringUtils.isEmpty(aggTypeDesc)){
-      aggTypeDesc = aggTypes.get(0);
+      switch(logicalColumn.getDataType()){
+        case NUMERIC:
+          aggTypeDesc = "SUM";
+          break;
+        default:
+            aggTypeDesc = "COUNT";
+      }
     }
     return aggTypeDesc;
   }
@@ -126,7 +138,11 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
   
   // TODO: generate this based on field type
   public Vector getAggTypeDescValues() {
-    return new Vector<String>(aggTypes);
+    if(logicalColumn.getDataType() == DataType.NUMERIC){
+      return new Vector<String>(numericAggTypes);
+    } else {
+      return new Vector<String>(textAggTypes);
+    }
   }
   
   public LogicalColumn getLogicalColumn(){

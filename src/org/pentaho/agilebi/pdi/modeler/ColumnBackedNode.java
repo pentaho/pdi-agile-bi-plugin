@@ -5,4 +5,5 @@ import org.pentaho.metadata.model.LogicalColumn;
 public interface ColumnBackedNode {
   void setLogicalColumn(LogicalColumn col);
   LogicalColumn getLogicalColumn();
+  String getName();
 }

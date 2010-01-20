@@ -19,6 +19,8 @@ package org.pentaho.agilebi.pdi.modeler;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -73,9 +75,15 @@ public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaDa
       validationMessages.add("Dimension must have at least one hierarchy.");
       valid = false;
     }
+    List<String> usedNames = new ArrayList<String>();
     for(HierarchyMetaData hier: children){
       valid &= hier.isValid();
       validationMessages.addAll(hier.getValidationMessages());
+      if(usedNames.contains(hier.getName())){
+        valid = false;
+        validationMessages.add(Messages.getString("duplicate_hier_names"));
+      }
+      usedNames.add(hier.getName());
     }
   }
   

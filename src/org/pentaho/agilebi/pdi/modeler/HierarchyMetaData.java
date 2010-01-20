@@ -19,6 +19,7 @@ package org.pentaho.agilebi.pdi.modeler;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -72,9 +73,16 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
       validationMessages.add("Hierarchy must have at least one level");
       valid = false;
     }
+    List<String> usedNames = new ArrayList<String>();
+    
     for(LevelMetaData level: children){
       valid &= level.isValid();
       validationMessages.addAll(level.getValidationMessages());
+      if(usedNames.contains(level.getName())){
+        valid = false;
+        validationMessages.add(Messages.getString("duplicate_level_names"));
+      }
+      usedNames.add(level.getName());
     }
   }
   

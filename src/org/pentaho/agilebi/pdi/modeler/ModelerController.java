@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.swt.SWT;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.Const;
@@ -57,7 +56,6 @@ import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.util.AbstractModelNode;
 import org.pentaho.ui.xul.util.XulDialogCallback;
-import org.pentaho.ui.xul.util.XulDialogCallback.Status;
 
 /**
  * XUL Event Handler for the modeling interface. This class interacts with a ModelerModel to store state.
@@ -135,21 +133,22 @@ public class ModelerController extends AbstractXulEventHandler{
     List<Object> newdata = new ArrayList<Object>();
     for (Object obj : data) {
       if (obj instanceof AvailableField) {
+        AvailableField availableField = (AvailableField) obj;
         // depending on the parent
         if (event.getDropParent() == null) {
           // null - cannot add fields at this level
         } else if (event.getDropParent() instanceof MeasuresCollection) {
           // measure collection - add as a measure
-          newdata.add(workspace.createMeasure(obj));
+          newdata.add(workspace.createMeasure(availableField));
         } else if (event.getDropParent() instanceof DimensionMetaDataCollection) {
           // dimension collection - add as a dimension
-          newdata.add(workspace.createDimension(obj));
+          newdata.add(workspace.createDimension(availableField));
         } else if (event.getDropParent() instanceof DimensionMetaData) {
           // dimension - add as a hierarchy
-          newdata.add(workspace.createHierarchy(workspace.findDimension((DimensionMetaData)event.getDropParent()), obj));
+          newdata.add(workspace.createHierarchy(workspace.findDimension((DimensionMetaData)event.getDropParent()), availableField));
         } else if (event.getDropParent() instanceof HierarchyMetaData) {
           // hierarchy - add as a level
-          newdata.add(workspace.createLevel(workspace.findHierarchy((HierarchyMetaData)event.getDropParent()), obj));
+          newdata.add(workspace.createLevel(workspace.findHierarchy((HierarchyMetaData)event.getDropParent()), availableField));
         } else if (event.getDropParent() instanceof LevelMetaData) {
           // level - cannot drop into a level
           event.setAccepted(false);
@@ -159,13 +158,11 @@ public class ModelerController extends AbstractXulEventHandler{
         LevelMetaData level = (LevelMetaData)obj;
         if (event.getDropParent() instanceof HierarchyMetaData) {
           // rebind to workspace, including logical column and actual parent
-          LogicalColumn col = workspace.findLogicalColumn(obj.toString());
-          level.setLogicalColumn(col);
           level.setParent(workspace.findHierarchy((HierarchyMetaData)event.getDropParent()));
           newdata.add(level);
         } else if (event.getDropParent() instanceof DimensionMetaData) {
           // add as a new hierarchy
-          HierarchyMetaData hier = workspace.createHierarchy(workspace.findDimension((DimensionMetaData)event.getDropParent()), level.getColumnName());
+          HierarchyMetaData hier = workspace.createHierarchy(workspace.findDimension((DimensionMetaData)event.getDropParent()), level);
           hier.setName(level.getName());
           hier.getChildren().get(0).setName(level.getName());
           newdata.add(hier);
@@ -312,7 +309,7 @@ public class ModelerController extends AbstractXulEventHandler{
     Object[] selectedItems = fieldsList.getSelectedItems();
     List<MeasureMetaData> generatedFields = new ArrayList<MeasureMetaData>();
     for (Object obj : selectedItems) {
-      MeasureMetaData field = workspace.addFieldIntoPlay(obj);
+      MeasureMetaData field = workspace.addFieldIntoPlay((AvailableField) obj);
     }
   }
   
@@ -323,9 +320,9 @@ public class ModelerController extends AbstractXulEventHandler{
     // otherwise add a new dimension
     for (Object obj : selectedItems) {
       if (selectedTreeItem == null) {
-        workspace.addDimension(obj);
+        workspace.addDimension((AvailableField) obj);
       } else {
-        workspace.addToHeirarchy(selectedTreeItem, obj);
+        workspace.addToHeirarchy(selectedTreeItem,(AvailableField) obj);
       }
     }
   }
@@ -548,6 +545,12 @@ public class ModelerController extends AbstractXulEventHandler{
       }
       return;
     }
+    workspace.getModel().validateTree();
+    if(workspace.isValid() == false){
+      showValidationMessages();
+      return;
+    }
+    
   	VisualizationManager theManager = VisualizationManager.getInstance();
   	IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
   	if(theVisualization != null) {
@@ -560,10 +563,34 @@ public class ModelerController extends AbstractXulEventHandler{
   	}
   }
   
-  public void saveWorkspace(String fileName) throws ModelerException {
+  private void showValidationMessages(){
+
+    StringBuffer validationErrors = new StringBuffer();
+    for (String msg : workspace.getValidationMessages()) {
+      validationErrors.append(msg);
+      validationErrors.append("\n");
+      logger.info(msg);
+    }
+    try{
+      XulMessageBox msg = (XulMessageBox) document.createElement("messagebox");
+      msg.setTitle(Messages.getString("model_not_valid"));
+      msg.setMessage(validationErrors.toString());
+      msg.open();
+    } catch(XulException e){
+      logger.error(e);
+    }
+  }
+  
+  public boolean saveWorkspace(String fileName) throws ModelerException {
+    workspace.getModel().validateTree();
+    if(workspace.isValid() == false){
+      showValidationMessages();
+      return false;
+    }
   	ModelerWorkspaceUtil.saveWorkspace(workspace, fileName);
     workspace.setFileName(fileName);
     workspace.setDirty(false);
+    return true;
   }
   
   public void resolveMissingColumn() {
