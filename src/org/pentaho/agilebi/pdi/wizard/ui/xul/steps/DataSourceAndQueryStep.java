@@ -32,6 +32,7 @@ import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
 import org.pentaho.reporting.engine.classic.core.ReportDataFactoryException;
 import org.pentaho.reporting.engine.classic.core.states.datarow.StaticDataRow;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaModel;
+import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.IPmdConnectionProvider;
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdConnectionProvider;
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdDataFactory;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.WizardEditorModel;
@@ -71,25 +72,21 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       return HANDLER_NAME;
     }
 
+    private IMetadataDomainRepository setupDataFactory() throws ReportDataFactoryException, IOException{
+
+      IPmdConnectionProvider connectionProvider = ((PmdDataFactory) getEditorModel().getReportDefinition().getDataFactory()).getConnectionProvider();
+      IMetadataDomainRepository repo = connectionProvider.getMetadataDomainRepository(DEFAULT, getEditorModel().getReportDefinition().getResourceManager(), getEditorModel().getReportDefinition().getContentBase(), df.getXmiFile());
+      
+      return repo;
+    }
+    
     public void doCreateQuery() {   
       try {
-        if (getEditorModel().getReportDefinition().getDataFactory() != null && getEditorModel().getReportDefinition().getDataFactory() instanceof CompoundDataFactory) {
-          CompoundDataFactory cdf = (CompoundDataFactory) getEditorModel().getReportDefinition().getDataFactory();
-          for (int i=0; i<cdf.size(); i++) {
-            cdf.remove(i);
-          }
-        }
-        df = new PmdDataFactory();
-        PmdConnectionProvider connectionProvider = new PmdConnectionProvider();
-        IMetadataDomainRepository repo = connectionProvider.getMetadataDomainRepository(DEFAULT, getEditorModel().getReportDefinition().getResourceManager(), getEditorModel().getReportDefinition().getContentBase(), modelFile.getCanonicalPath());
+        IMetadataDomainRepository repo = setupDataFactory();
         SwtMqlEditor editor = new SwtMqlEditor(repo);
         editor.show();
         String queryString = editor.getQuery();
-        df.setConnectionProvider(connectionProvider);
-        df.setXmiFile(modelFile.getCanonicalPath());
-        df.setDomainId(DEFAULT);
         df.setQuery(DEFAULT, queryString);
-        getEditorModel().getReportDefinition().setDataFactory(df);
         setCurrentQuery(DEFAULT);
       } catch (ReportDataFactoryException e) {
         // TODO Auto-generated catch block
@@ -101,12 +98,10 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     }
     
     public void doEditQuery() {
-      if (getEditorModel().getReportDefinition().getDataFactory() != null && getEditorModel().getReportDefinition().getDataFactory() instanceof CompoundDataFactory) {
-        CompoundDataFactory cdf = (CompoundDataFactory) getEditorModel().getReportDefinition().getDataFactory();
-        df = (PmdDataFactory) cdf.getDataFactoryForQuery(getCurrentQuery());
-      }
       try {
-        IMetadataDomainRepository repo = df.getConnectionProvider().getMetadataDomainRepository(DEFAULT, getEditorModel().getReportDefinition().getResourceManager(), getEditorModel().getReportDefinition().getContentBase(), modelFile.getCanonicalPath());
+
+        IMetadataDomainRepository repo = setupDataFactory();
+        
         SwtMqlEditor editor = new SwtMqlEditor(repo);
         String queryString = df.getQuery(DEFAULT);
         editor.setQuery(queryString);
@@ -151,6 +146,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   {
     super.stepActivating();
     if (model != null) {
+      
       // Populate a PmdDataFactoryClass for the report definition to use
       File modelsDir = new File("models"); //$NON-NLS-1$
       modelsDir.mkdirs();
@@ -177,6 +173,27 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
         // TODO Auto-generated catch block
         e1.printStackTrace();
       }
+      
+      if (getEditorModel().getReportDefinition().getDataFactory() != null && getEditorModel().getReportDefinition().getDataFactory() instanceof CompoundDataFactory) {
+        CompoundDataFactory cdf = (CompoundDataFactory) getEditorModel().getReportDefinition().getDataFactory();
+        for (int i=0; i<cdf.size(); i++) {
+          cdf.remove(i);
+        }
+      }
+
+      df = new PmdDataFactory();
+      PmdConnectionProvider connectionProvider = new PmdConnectionProvider();
+      df.setConnectionProvider(connectionProvider);
+      try {
+        df.setXmiFile(modelFile.getCanonicalPath());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      df.setDomainId(DEFAULT);
+      getEditorModel().getReportDefinition().setDataFactory(df);
+      
+    } else { // editing existing
+      df = (PmdDataFactory) getEditorModel().getReportDefinition().getDataFactory();
     }
     
     updateGui();
