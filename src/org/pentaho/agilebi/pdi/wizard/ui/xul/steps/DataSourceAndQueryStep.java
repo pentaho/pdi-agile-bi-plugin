@@ -72,7 +72,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       return HANDLER_NAME;
     }
 
-    private IMetadataDomainRepository setupDataFactory() throws ReportDataFactoryException, IOException{
+    private IMetadataDomainRepository getDomainRepo() throws ReportDataFactoryException, IOException{
 
       IPmdConnectionProvider connectionProvider = ((PmdDataFactory) getEditorModel().getReportDefinition().getDataFactory()).getConnectionProvider();
       IMetadataDomainRepository repo = connectionProvider.getMetadataDomainRepository(DEFAULT, getEditorModel().getReportDefinition().getResourceManager(), getEditorModel().getReportDefinition().getContentBase(), df.getXmiFile());
@@ -82,7 +82,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     
     public void doCreateQuery() {   
       try {
-        IMetadataDomainRepository repo = setupDataFactory();
+        IMetadataDomainRepository repo = getDomainRepo();
         SwtMqlEditor editor = new SwtMqlEditor(repo);
         editor.show();
         String queryString = editor.getQuery();
@@ -100,7 +100,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     public void doEditQuery() {
       try {
 
-        IMetadataDomainRepository repo = setupDataFactory();
+        IMetadataDomainRepository repo = getDomainRepo();
         
         SwtMqlEditor editor = new SwtMqlEditor(repo);
         String queryString = df.getQuery(DEFAULT);
