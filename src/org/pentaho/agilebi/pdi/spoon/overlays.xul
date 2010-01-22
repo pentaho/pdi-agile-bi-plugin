@@ -6,8 +6,8 @@
     xmlns:pen="http://www.pentaho.org/2008/xul" >
 
 	<menupopup id="trans-graph-entry">
-      <menuitem id="trans-graph-entry-model" label="Model" command="agileBi.openModeler()" />
-      <menuitem id="trans-graph-entry-visualize" label="Quick Visualize" command="agileBi.quickVisualizeTableOutputStep()" />
+      <menuitem id="trans-graph-entry-model" label="${model}" command="agileBi.openModeler()" />
+      <menuitem id="trans-graph-entry-visualize" label="${visualize}" command="agileBi.quickVisualizeTableOutputStep()" />
       <menuitem id="trans-graph-entry-wizard" label="Report Wizard" command="agileBi.reportWizard()" />
     </menupopup>
     

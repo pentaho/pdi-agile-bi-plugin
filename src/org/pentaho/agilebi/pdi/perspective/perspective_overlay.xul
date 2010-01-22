@@ -12,7 +12,7 @@
     <menu id="file-export" disabled="false"/>
         
     <menupopup id="file-export-popup">
-        <menuitem id="file-export-xmi" label="Mondrian Schema"
+        <menuitem id="file-export-xmi" label="${mondrian_schema}"
 	      command="agileBiPerspective.exportSchema()" />	      
     </menupopup>
 </overlay>
