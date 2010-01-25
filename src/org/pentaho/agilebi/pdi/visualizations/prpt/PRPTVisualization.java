@@ -9,10 +9,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.pdi.modeler.Messages;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;
 import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.XulTabAndPanel;
 import org.pentaho.agilebi.pdi.visualizations.AbstractVisualization;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
+import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
+import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
@@ -142,7 +145,18 @@ public class PRPTVisualization extends AbstractVisualization {
   }
 
   public void createVisualizationFromModel(ModelerWorkspace model) {
-    // TODO Auto-generated method stub
+
+    try {
+      if(ClassicEngineBoot.getInstance().isBootDone() == false){
+        ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
+        engineBoot.start();
+      }
+      EmbeddedWizard wizard = new EmbeddedWizard(model);
+      wizard.run(null);
+    } catch (Exception e) {
+      e.printStackTrace();
+      SpoonFactory.getInstance().messageBox( "Could not create a report: "+e.getLocalizedMessage(), "Report Error", false, Const.ERROR);
+    }
     
   }
   
