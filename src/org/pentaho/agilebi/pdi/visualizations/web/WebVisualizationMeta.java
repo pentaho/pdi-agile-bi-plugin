@@ -8,10 +8,12 @@ import org.pentaho.di.core.ProgressMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.repository.RepositoryDirectory;
+import org.pentaho.ui.xul.components.XulTab;
 
 public class WebVisualizationMeta implements EngineMetaInterface {
 
   WebVisualizationController browser;
+  XulTab tab;
   
   public WebVisualizationMeta(WebVisualizationController browser) {
     this.browser = browser;
@@ -144,5 +146,15 @@ public class WebVisualizationMeta implements EngineMetaInterface {
     // TODO Auto-generated method stub
     return false;
   }
+
+  public XulTab getTab() {
+    return tab;
+  }
+
+  public void setTab(XulTab tab) {
+    this.tab = tab;
+  }
+  
+  
 
 }

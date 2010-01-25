@@ -155,7 +155,7 @@ public class WebVisualizationController extends AbstractXulEventHandler implemen
 		this.modelId = modelId;
 	}
 
-	public EngineMetaInterface getMeta() {
+	public WebVisualizationMeta getMeta() {
 		return meta;
 	}
 

@@ -164,6 +164,7 @@ public class WebVisualization extends AbstractVisualization {
     Composite parentComposite = (Composite) tabAndPanel.panel.getManagedObject();
     composite.setParent(parentComposite);
     parentComposite.layout(true);
+    controller.getMeta().setTab(tabAndPanel.tab);
     AgileBiVisualizationPerspective.getInstance().setNameForTab(tabAndPanel.tab, controller.getMeta().getName());
     AgileBiVisualizationPerspective.getInstance().setMetaForTab(tabAndPanel.tab, controller.getMeta());
     AgileBiVisualizationPerspective.getInstance().setModel(model);    
@@ -263,6 +264,7 @@ public class WebVisualization extends AbstractVisualization {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
     spoon.addMenuLast();
+    AgileBiVisualizationPerspective.getInstance().setNameForTab(wvmeta.getTab(), fname);
 
     return true;
   }

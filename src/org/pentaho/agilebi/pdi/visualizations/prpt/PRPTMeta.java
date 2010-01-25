@@ -3,21 +3,34 @@ package org.pentaho.agilebi.pdi.visualizations.prpt;
 import java.io.File;
 import java.util.Date;
 
+import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.ProgressMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.repository.RepositoryDirectory;
+import org.pentaho.ui.xul.components.XulTab;
 
 public class PRPTMeta implements EngineMetaInterface {
 
   PRPTVisualizationController controller;
-
+  XulTab tab;
+  
+  public PRPTMeta(){
+    
+  }
+  
   public PRPTMeta(PRPTVisualizationController controller) {
     this.controller = controller;
   }
+  
+  public void setController(PRPTVisualizationController controller){
+    this.controller = controller;
+  }
 
-  public void save(String filename) {
+  public void save(String filename) throws ModelerException{
+    controller.save(filename);
+    
   }
 
   public void clearChanged() {
@@ -144,4 +157,13 @@ public class PRPTMeta implements EngineMetaInterface {
     return false;
   }
 
+  public XulTab getTab() {
+    return tab;
+  }
+
+  public void setTab(XulTab tab) {
+    this.tab = tab;
+  }
+
+  
 }
