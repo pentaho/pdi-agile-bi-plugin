@@ -10,6 +10,10 @@ import java.util.List;
 public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaData>  implements Serializable {
   private String name = Messages.getString("measures");
   
+  public MeasuresCollection(){
+    this.valid = false;
+  }
+  
   public String getName() {
     return name;
   }
@@ -67,6 +71,6 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
   
   @Override
   public Class<? extends ModelerNodePropertiesForm> getPropertiesForm() {
-    return null;
+    return GenericPropertiesForm.class;
   }
 }

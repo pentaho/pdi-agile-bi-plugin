@@ -567,6 +567,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    	}
 	    }
     }
+    model.validateTree();
     
   }
 

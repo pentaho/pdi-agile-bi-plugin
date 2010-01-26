@@ -14,6 +14,10 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
   private static final long serialVersionUID = -6327799582519270107L;
   
   private String name = "Dimensions";
+
+  public DimensionMetaDataCollection(){
+    this.valid = false;
+  }
   
   public String getName() {
     return name;
@@ -33,8 +37,10 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
     }
   };
 
+  //TODO: investigate using "this" form of notification in super-class
   protected void fireCollectionChanged() {
     this.changeSupport.firePropertyChange("children", null, this); //$NON-NLS-1$
+    validateNode();
   }
 
   @Override
@@ -83,7 +89,7 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
   
   @Override
   public Class<? extends ModelerNodePropertiesForm> getPropertiesForm() {
-    return null;
+    return GenericPropertiesForm.class;
   }
   
 }

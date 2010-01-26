@@ -71,7 +71,7 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
     return "images/warning.png"; //$NON-NLS-1$
   }  
   public String getImage() {
-    return image;
+    return (this.valid)? getValidImage():getInvalidImage();
   }
   
   public abstract void validate();

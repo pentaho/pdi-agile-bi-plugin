@@ -138,6 +138,9 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
   
   // TODO: generate this based on field type
   public Vector getAggTypeDescValues() {
+    if(logicalColumn == null){
+      return null;
+    }
     if(logicalColumn.getDataType() == DataType.NUMERIC){
       return new Vector<String>(numericAggTypes);
     } else {
@@ -197,11 +200,11 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
     validationMessages.clear();
     // check name
     if (StringUtils.isEmpty(name)) {
-      validationMessages.add(Messages.getString("measure_name_missing")); 
+      validationMessages.add(Messages.getString("measure_name_missing", getName())); 
       valid = false;
     } 
     if(logicalColumn == null){
-      validationMessages.add(Messages.getString("measure_column_missing"));
+      validationMessages.add(Messages.getString("measure_column_missing", getName()));
       valid = false;
     }
   }

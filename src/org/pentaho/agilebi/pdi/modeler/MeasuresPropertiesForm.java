@@ -2,12 +2,14 @@ package org.pentaho.agilebi.pdi.modeler;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Vector;
 
 import org.pentaho.ui.xul.binding.BindingConvertor;
 
 public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaData> {
 
   private MeasureMetaData fieldMeta;
+  private Vector aggTypes;
 
   private PropertyChangeListener propListener = new PropertyChangeListener(){
 
@@ -27,6 +29,7 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     bf.createBinding(this, "notValid", "messages2", "visible");
     bf.createBinding(this, "validMessages", "messages2label", "value");
     bf.createBinding(this, "displayName", "displayname", "value");
+    bf.createBinding(this, "aggTypes", "aggregationtype", "elements");
     bf.createBinding(this, "aggTypeDesc", "aggregationtype", "selectedItem");
     bf.createBinding(this, "format", "formatstring", "selectedItem", new FormatStringConverter());
     bf.createBinding(this, "notValid", "fixMeasuresColumnsBtn", "visible");
@@ -43,6 +46,7 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     setDisplayName(fieldMeta.getDisplayName());
     setFormat(fieldMeta.getFormat());
     setAggTypeDesc(fieldMeta.getAggTypeDesc());
+    setAggTypes(fieldMeta.getAggTypeDescValues());
     setValidMessages(fieldMeta.getValidationMessagesString());
     setNotValid(!fieldMeta.isValid());
   }
@@ -112,6 +116,20 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     fieldMeta.setAggTypeDesc(aggTypeDesc);
     this.firePropertyChange("aggTypeDesc", null, aggTypeDesc);
   }
+  
+  
+
+  public Vector getAggTypes() {
+    return aggTypes;
+  }
+
+
+  public void setAggTypes(Vector aggTypes) {
+    this.aggTypes = aggTypes;
+    this.firePropertyChange("aggTypes", null, aggTypes);
+  }
+
+
 
   /**
    * @author wseyler

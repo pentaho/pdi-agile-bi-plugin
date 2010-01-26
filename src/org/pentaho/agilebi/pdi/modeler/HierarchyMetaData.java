@@ -119,7 +119,7 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
 
   @Override
   public Class<? extends ModelerNodePropertiesForm> getPropertiesForm() {
-    return null;
+    return GenericPropertiesForm.class;
   }
   
 

@@ -76,6 +76,12 @@ public class XulUI implements TabItemInterface {
       controller.addPropertyForm(propController);
       propController.init();
       
+
+      propController = new GenericPropertiesForm();
+      container.addEventHandler(propController);
+      controller.addPropertyForm(propController);
+      propController.init();
+      
       ColResolverController colController = new ColResolverController();
       container.addEventHandler(colController);
       controller.setColResolver(colController);

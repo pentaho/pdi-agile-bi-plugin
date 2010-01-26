@@ -218,7 +218,7 @@ public class ModelerController extends AbstractXulEventHandler{
     dimensionTree = (XulTree) document.getElementById("dimensionTree");
     visualizationList = (XulMenuList)document.getElementById("visualizationlist");
     propDeck = (XulDeck) document.getElementById("propertiesdeck");
-
+    
     XulLabel sourceLabel = (XulLabel) document.getElementById(SOURCE_NAME_LABEL_ID);
     String connectionName = "";
     String tableName = "";
@@ -256,6 +256,8 @@ public class ModelerController extends AbstractXulEventHandler{
     
     fireBindings();
     
+    dimensionTree.expandAll();
+    
     if(workspace.isshowAutoPopulatePrompt()){
       try{
         XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
@@ -268,7 +270,7 @@ public class ModelerController extends AbstractXulEventHandler{
           public void onClose(XulComponent sender, Status returnCode, Object retVal) {
             if(returnCode == Status.ACCEPT){
               autoPopulate();
-            }
+            } 
           }
 
           public void onError(XulComponent sender, Throwable t) {}
@@ -565,7 +567,7 @@ public class ModelerController extends AbstractXulEventHandler{
   
   private void showValidationMessages(){
 
-    StringBuffer validationErrors = new StringBuffer();
+    StringBuffer validationErrors = new StringBuffer(Messages.getString("model_contains_errors"));
     for (String msg : workspace.getValidationMessages()) {
       validationErrors.append(msg);
       validationErrors.append("\n");
