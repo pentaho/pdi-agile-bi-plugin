@@ -2,7 +2,6 @@ package org.pentaho.agilebi.pdi.wizard;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.agilebi.pdi.visualizations.prpt.PRPTVisualization;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;

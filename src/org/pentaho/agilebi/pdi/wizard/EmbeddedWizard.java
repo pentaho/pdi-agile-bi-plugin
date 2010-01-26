@@ -17,8 +17,7 @@
 
 package org.pentaho.agilebi.pdi.wizard;
 
-import java.awt.HeadlessException;
-import java.awt.Window;
+//import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -58,32 +57,20 @@ public class EmbeddedWizard
 {
   private final static String MAIN_WIZARD_PANEL = "org/pentaho/reporting/engine/classic/wizard/ui/xul/res/main_wizard_panel.xul"; //$NON-NLS-1$
 
-  private Window owner;
   private ModelerWorkspace model;
   private XulDialog dialog;
 
   private PreviewWizardController wizardController;
 
   public EmbeddedWizard() {
-    this(null, null);
+    this(null);
   }
   
-  public EmbeddedWizard(final Window owner) {
-    this(owner, null);
-  }
-  
-  public EmbeddedWizard(ModelerWorkspace model) throws HeadlessException
+  public EmbeddedWizard(ModelerWorkspace model)
   {
-    this(null, model);
-  }
-
-  public EmbeddedWizard(final Window owner, final ModelerWorkspace model) throws HeadlessException
-  {
-    this.owner = owner;
     this.model = model;
     init();
   }
-
 
   private void init()
   {
@@ -121,11 +108,11 @@ public class EmbeddedWizard
     try
     {
       final SwtXulLoader loader = new SwtXulLoader();
-      loader.setOuterContext(owner);
+      loader.setOuterContext(null);
 
       XulDomContainer mainWizardContainer = loader.loadXul(MAIN_WIZARD_PANEL);
       new WizardContentPanel(wizardController).addContent(mainWizardContainer);
-      mainWizardContainer.setOuterContext(this.owner);
+      mainWizardContainer.setOuterContext(null);
       wizardController.registerMainXULContainer(mainWizardContainer);
       wizardController.onLoad();
 
