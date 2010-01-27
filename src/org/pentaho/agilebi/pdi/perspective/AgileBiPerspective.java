@@ -49,18 +49,6 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
     super("org/pentaho/agilebi/pdi/perspective/agileBiPerspective.xul");
     setDefaultExtension("xmi");
     
-    //Boot reporting engine.
-    ((Spoon) SpoonFactory.getInstance()).getDisplay().asyncExec(new Runnable(){
-      public void run(){
-        if(ClassicEngineBoot.getInstance().isBootDone() == false){
-          LibLoaderBoot.getInstance().start();
-          LibFontBoot.getInstance().start();
-          ClassicEngineBoot.getInstance().start();
-        }
-      }
-    });
-    
-    
   }
   
   public static AgileBiPerspective getInstance() {
