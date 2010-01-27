@@ -8,6 +8,7 @@ import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.AttributeNames;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
+import org.pentaho.reporting.engine.classic.wizard.WizardProcessor;
 import org.pentaho.reporting.engine.classic.wizard.WizardProcessorUtil;
 import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.WizardEditorModel;
@@ -28,13 +29,7 @@ public class PreviewWizardController extends LinearWizardController {
 
 	public void preview() {
 		try {
-			AbstractReportDefinition reportDefinition = getEditorModel().getReportDefinition();
-			AbstractReportDefinition element = (AbstractReportDefinition) reportDefinition.derive();
-			final WizardSpecification spec = getEditorModel().getReportSpec();
-			element.setAttribute(AttributeNames.Wizard.NAMESPACE, "enable", Boolean.TRUE);
-			WizardProcessorUtil.applyWizardSpec(element, (WizardSpecification) spec.clone());
-			WizardProcessorUtil.ensureWizardProcessorIsAdded(element, null);
-
+			AbstractReportDefinition element = processWizardSpecification();
 			SwtXulLoader theXulLoader = new SwtXulLoader();
 			theXulLoader.register("PRPT", "org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag");
 			XulDomContainer theXulContainer = theXulLoader.loadXul("org/pentaho/agilebi/pdi/wizard/prptPreview.xul");
@@ -55,31 +50,31 @@ public class PreviewWizardController extends LinearWizardController {
 		}
 	}
 
-  @Override
-  public void finish() {
-    try {
-      AbstractReportDefinition reportDefinition = getEditorModel().getReportDefinition();
-      MasterReport element = (MasterReport) reportDefinition.derive();
-      final WizardSpecification spec = getEditorModel().getReportSpec();
-      element.setAttribute(AttributeNames.Wizard.NAMESPACE, "enable", Boolean.TRUE);
-      WizardProcessorUtil.applyWizardSpec(element, (WizardSpecification) spec.clone());
-      WizardProcessorUtil.ensureWizardProcessorIsAdded(element, null);
-      
-      VisualizationManager theManager = VisualizationManager.getInstance();
-      PRPTVisualization theVisualization = (PRPTVisualization) theManager.getVisualization("PRPT Viewer");
-      if(theVisualization != null) {
-        theVisualization.createVisualizationFromMasterReport(element);
-        
-      }
-      
-      ((XulDialog) document.getElementById("main_wizard_window")).hide();
-      
-    } catch (CloneNotSupportedException e) {
-      e.printStackTrace();
-      logger.error(e);
-    }
-    
-  }
-	
-	
+	public void finish() {
+		try {
+
+			MasterReport element = (MasterReport) processWizardSpecification();
+			element = WizardProcessorUtil.materialize(element, new WizardProcessor());
+			VisualizationManager theManager = VisualizationManager.getInstance();
+			PRPTVisualization theVisualization = (PRPTVisualization) theManager.getVisualization("PRPT Viewer");
+			if (theVisualization != null) {
+				theVisualization.createVisualizationFromMasterReport(element);
+			}
+			((XulDialog) document.getElementById("main_wizard_window")).hide();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e);
+		}
+	}
+
+	private AbstractReportDefinition processWizardSpecification() throws Exception {
+
+		AbstractReportDefinition reportDefinition = getEditorModel().getReportDefinition();
+		AbstractReportDefinition element = (AbstractReportDefinition) reportDefinition.derive();
+		final WizardSpecification spec = getEditorModel().getReportSpec();
+		element.setAttribute(AttributeNames.Wizard.NAMESPACE, "enable", Boolean.TRUE);
+		WizardProcessorUtil.applyWizardSpec(element, (WizardSpecification) spec.clone());
+		WizardProcessorUtil.ensureWizardProcessorIsAdded(element, null);
+		return element;
+	}
 }

@@ -151,36 +151,7 @@ public class EmbeddedWizard
       DebugLog.log("Failed to initialze the wizard", e);
       return null;
     }
-
-    // -----------------------------------
-    if (!wizardController.isFinished())
-    {
-      return null;
-    }
-    AbstractReportDefinition reportDefinition = wizardController.getEditorModel().getReportDefinition();
-    try
-    {
-      final WizardSpecification spec = wizardController.getEditorModel().getReportSpec();
-      WizardProcessorUtil.applyWizardSpec(reportDefinition, spec);
-      WizardProcessorUtil.ensureWizardProcessorIsAdded(reportDefinition, null);
-    }
-    catch (Exception ex)
-    {
-      throw new IllegalStateException();
-    }
-
-    if (reportDefinition instanceof MasterReport)
-    {
-      return WizardProcessorUtil.materialize((MasterReport) reportDefinition, new WizardProcessor());
-    }
-    else if (reportDefinition instanceof SubReport)
-    {
-      return WizardProcessorUtil.materialize((SubReport) reportDefinition, new WizardProcessor());
-    }
-    else
-    {
-      throw new IllegalStateException();
-    }
+    return null;
   }
 
   private class CancelHandler implements PropertyChangeListener
