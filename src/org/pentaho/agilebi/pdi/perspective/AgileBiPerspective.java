@@ -26,6 +26,9 @@ import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
+import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
+import org.pentaho.reporting.libraries.fonts.LibFontBoot;
+import org.pentaho.reporting.libraries.resourceloader.LibLoaderBoot;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.binding.Binding;
@@ -45,6 +48,19 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
   private AgileBiPerspective() {
     super("org/pentaho/agilebi/pdi/perspective/agileBiPerspective.xul");
     setDefaultExtension("xmi");
+    
+    //Boot reporting engine.
+    ((Spoon) SpoonFactory.getInstance()).getDisplay().asyncExec(new Runnable(){
+      public void run(){
+        if(ClassicEngineBoot.getInstance().isBootDone() == false){
+          LibLoaderBoot.getInstance().start();
+          LibFontBoot.getInstance().start();
+          ClassicEngineBoot.getInstance().start();
+        }
+      }
+    });
+    
+    
   }
   
   public static AgileBiPerspective getInstance() {
