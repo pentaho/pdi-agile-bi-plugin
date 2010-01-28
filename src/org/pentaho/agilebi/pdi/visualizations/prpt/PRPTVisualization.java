@@ -128,6 +128,9 @@ public class PRPTVisualization extends AbstractVisualization {
       PRPTMeta prptMeta = (PRPTMeta) meta;
       prptMeta.save(fname);
 
+      if(fname.endsWith(".prpt") == false){
+        fname +=".prpt";
+      }
       File f = new File(fname);
       String fullPath = f.getAbsolutePath();
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
