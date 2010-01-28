@@ -34,6 +34,8 @@ public class PreviewWizardController extends LinearWizardController {
 			theXulLoader.register("PRPT", "org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag");
 			XulDomContainer theXulContainer = theXulLoader.loadXul("org/pentaho/agilebi/pdi/wizard/prptPreview.xul");
 
+			theXulContainer.addEventHandler(this);
+			
 			SwtXulRunner theRunner = new SwtXulRunner();
 			theRunner.addContainer(theXulContainer);
 			theRunner.initialize();
@@ -48,6 +50,10 @@ public class PreviewWizardController extends LinearWizardController {
 			e.printStackTrace();
 			logger.error(e);
 		}
+	}
+	
+	public void close(){
+	  ((XulDialog) document.getElementById("prpt-preview")).hide();
 	}
 
 	public void finish() {
@@ -77,4 +83,7 @@ public class PreviewWizardController extends LinearWizardController {
 		WizardProcessorUtil.ensureWizardProcessorIsAdded(element, null);
 		return element;
 	}
+
+	
+	
 }

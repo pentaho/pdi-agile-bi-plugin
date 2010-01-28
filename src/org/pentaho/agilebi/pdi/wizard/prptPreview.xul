@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
-<dialog id="prpt-preview" width="550" height="700" title="Prpt Preview" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+<dialog id="prpt-preview" width="550" height="700" title="Prpt Preview" buttons="accept" buttonlabelaccept="close" ondialogaccept="wizard_controller.close()" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" 
   xmlns:pen="http://www.pentaho.org/2008/xul">
   <prpt id="prptViewer" flex="1"/>
