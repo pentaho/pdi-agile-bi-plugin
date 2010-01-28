@@ -80,9 +80,11 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
         IMetadataDomainRepository repo = getDomainRepo();
         SwtMqlEditor editor = new SwtMqlEditor(repo);
         editor.show();
-        String queryString = editor.getQuery();
-        df.setQuery(DEFAULT, queryString);
-        setCurrentQuery(DEFAULT);
+        if (editor.getOkClicked()) {
+          String queryString = editor.getQuery();
+          df.setQuery(DEFAULT, queryString);
+          setCurrentQuery(DEFAULT);
+        }
       } catch (ReportDataFactoryException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -101,8 +103,11 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
         String queryString = df.getQuery(DEFAULT);
         editor.setQuery(queryString);
         editor.show();
-        queryString = editor.getQuery();
-        df.setQuery(DEFAULT, queryString);
+        if (editor.getOkClicked()) {
+          queryString = editor.getQuery();
+          df.setQuery(DEFAULT, queryString);
+          setValid(validateStep());
+        }
       } catch (ReportDataFactoryException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
