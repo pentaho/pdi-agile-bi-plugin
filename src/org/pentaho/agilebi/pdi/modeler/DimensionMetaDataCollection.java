@@ -46,16 +46,20 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
   @Override
   public void onAdd(DimensionMetaData child) {
     child.setParent(this);
-    child.addPropertyChangeListener("children", listener); //$NON-NLS-1$
-    child.addPropertyChangeListener("valid",validListener); //$NON-NLS-1$
+    child.addPropertyChangeListener("name", nameListener);
+    child.addPropertyChangeListener("valid", validListener);
+    child.addPropertyChangeListener("children", childrenListener);
+    validateNode();
   }
 
   @Override
   public void onRemove(DimensionMetaData child) {
-    child.removePropertyChangeListener(listener);
     child.removePropertyChangeListener(validListener);
+    child.removePropertyChangeListener(nameListener);
+    child.removePropertyChangeListener(childrenListener);
+    validateNode();
   }
-
+  
   @Override
   public String getValidImage() {
     return "images/sm_folder_icon.png"; //$NON-NLS-1$

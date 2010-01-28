@@ -56,14 +56,22 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
   }
 
   @Override
-  public void onAdd(MeasureMetaData field) {
-    field.setParent(this);
-    field.addPropertyChangeListener("valid",validListener); //$NON-NLS-1$
+  public void onAdd(MeasureMetaData child) {
+    child.setParent(this);
+    child.addPropertyChangeListener("name", nameListener);
+    child.addPropertyChangeListener("valid", validListener);
+    child.addPropertyChangeListener("children", childrenListener);
+    validateNode();
   }
   
   public void onRemove(MeasureMetaData child){
     child.removePropertyChangeListener(validListener);
+    child.removePropertyChangeListener(nameListener);
+    child.removePropertyChangeListener(childrenListener);
+    validateNode();
   }
+  
+
   
   public boolean isEditingDisabled(){
     return true;

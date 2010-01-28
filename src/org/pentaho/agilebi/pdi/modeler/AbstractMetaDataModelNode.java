@@ -20,8 +20,19 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
       validateNode();
     }
   };
-  
 
+  protected PropertyChangeListener nameListener = new PropertyChangeListener(){
+    public void propertyChange(PropertyChangeEvent arg0) {
+      validateNode();
+    }
+  };
+  
+  protected transient PropertyChangeListener childrenListener = new PropertyChangeListener(){
+    public void propertyChange(PropertyChangeEvent evt) {
+      fireCollectionChanged();
+    }
+  };
+  
   public AbstractMetaDataModelNode() {
     this.image = getValidImage();
   }
@@ -29,11 +40,18 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
 
   @Override
   public void onAdd(T child) {
+    child.addPropertyChangeListener("name", nameListener);
+    child.addPropertyChangeListener("valid", validListener);
+    child.addPropertyChangeListener("children", childrenListener);
+    validateNode();
   }
 
   @Override
   public void onRemove(T child) {
     child.removePropertyChangeListener(validListener);
+    child.removePropertyChangeListener(nameListener);
+    child.removePropertyChangeListener(childrenListener);
+    validateNode();
   }
   
   public String getValidationMessagesString() {

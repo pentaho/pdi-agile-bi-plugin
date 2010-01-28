@@ -175,7 +175,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     int v = 0;
     for (DimensionMetaData dim : model.getDimensions()) {
       for (HierarchyMetaData hier : dim) {
-        for (LevelMetaData lvl : hier.getChildren()) {
+        for (LevelMetaData lvl : hier) {
           v++;
         }
       }
@@ -427,7 +427,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       
       for(DimensionMetaData dm : model.getDimensions()) {
         for(HierarchyMetaData hm : dm){
-          for(LevelMetaData lm : hm.getChildren()){
+          for(LevelMetaData lm : hm){
             boolean found = false;
             if(lm.getLogicalColumn() != null){
               inner:

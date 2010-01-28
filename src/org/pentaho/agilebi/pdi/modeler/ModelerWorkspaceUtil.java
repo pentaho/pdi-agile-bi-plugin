@@ -268,8 +268,8 @@ public class ModelerWorkspaceUtil {
     // Add levels
     for (DimensionMetaData dim : model.getModel().getDimensions()) {
       for (HierarchyMetaData hier : dim) {
-        for (int j = 0; j < hier.getChildren().size(); j++) {
-          LevelMetaData level = hier.getChildren().get(j);
+        for (int j = 0; j < hier.size(); j++) {
+          LevelMetaData level = hier.get(j);
           LogicalColumn lCol = level.getLogicalColumn();
           lCol.setName(new LocalizedString(Locale.getDefault().toString(), level.getName()));
           if (cat.findLogicalColumn(lCol.getId()) == null) {
@@ -320,7 +320,7 @@ public class ModelerWorkspaceUtil {
           hierarchy.setLogicalTable(logicalTable);
           List<OlapHierarchyLevel> levels = new ArrayList<OlapHierarchyLevel>();
 
-          for (LevelMetaData lvl : hier.getChildren()) {
+          for (LevelMetaData lvl : hier) {
             // System.out.println( "level "+child.getId() );
             OlapHierarchyLevel level = new OlapHierarchyLevel(hierarchy);
             level.setName(lvl.getName());

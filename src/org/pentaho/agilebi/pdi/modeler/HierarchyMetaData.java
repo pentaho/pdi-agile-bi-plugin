@@ -31,12 +31,6 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
 
   private static final long serialVersionUID = 7063031303948537101L;
 
-  private transient PropertyChangeListener listener = new PropertyChangeListener() {
-    public void propertyChange(PropertyChangeEvent evt) {
-      fireCollectionChanged();
-    }
-  };
-
   String name;
 
   public HierarchyMetaData(String name) {
@@ -56,9 +50,6 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
     }
   }
   
-  public List<LevelMetaData> getChildren() {
-    return children;
-  }
   
   @Override
   public void validate() {
@@ -95,20 +86,6 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
     return "images/sm_hierarchy_icon.png"; //$NON-NLS-1$
   }
   
-  @Override
-  public void onAdd(LevelMetaData child) {
-    child.addPropertyChangeListener("children", listener); //$NON-NLS-1$
-    validate();
-    child.addPropertyChangeListener("valid",validListener); //$NON-NLS-1$
-  }
-
-  @Override
-  public void onRemove(LevelMetaData child) {
-    child.removePropertyChangeListener(listener);
-    validate();
-    child.removePropertyChangeListener(validListener);
-  }
-
   public boolean isUiExpanded(){
     return true;
   }
@@ -122,5 +99,19 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
     return GenericPropertiesForm.class;
   }
   
+  @Override
+  public void onAdd(LevelMetaData child) {
+    child.addPropertyChangeListener("name", nameListener);
+    child.addPropertyChangeListener("valid", validListener);
+    child.addPropertyChangeListener("children", childrenListener);
+    validateNode();
+  }
 
+  @Override
+  public void onRemove(LevelMetaData child) {
+    child.removePropertyChangeListener(validListener);
+    child.removePropertyChangeListener(nameListener);
+    child.removePropertyChangeListener(childrenListener);
+    validateNode();
+  }
 }

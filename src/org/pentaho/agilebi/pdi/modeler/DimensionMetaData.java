@@ -30,12 +30,6 @@ import org.apache.commons.lang.StringUtils;
 public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaData> implements Serializable {
   
   private static final long serialVersionUID = -891901735974255178L;
-
-  private transient PropertyChangeListener listener = new PropertyChangeListener(){
-    public void propertyChange(PropertyChangeEvent evt) {
-      fireCollectionChanged();
-    }
-  };
   
   String name;
   
@@ -96,20 +90,6 @@ public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaDa
     }
   }
 
-  @Override
-  public void onAdd(HierarchyMetaData child) {
-    child.addPropertyChangeListener("children", listener); //$NON-NLS-1$
-    validateNode();
-    child.addPropertyChangeListener("valid",validListener); //$NON-NLS-1$
-  }
-
-  @Override
-  public void onRemove(HierarchyMetaData child) {
-    child.removePropertyChangeListener(listener);
-    validateNode();
-    child.removePropertyChangeListener(validListener);
-  }
-  
   public boolean isTime() {
     // TODO: make time dimension real
     return false;
@@ -127,5 +107,17 @@ public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaDa
     return DimensionPropertiesForm.class;
   }
   
-  
+  public void onAdd(HierarchyMetaData child) {
+    child.addPropertyChangeListener("name", nameListener);
+    child.addPropertyChangeListener("valid", validListener);
+    child.addPropertyChangeListener("children", childrenListener);
+    validateNode();
+  }
+
+  public void onRemove(HierarchyMetaData child) {
+    child.removePropertyChangeListener(validListener);
+    child.removePropertyChangeListener(nameListener);
+    child.removePropertyChangeListener(childrenListener);
+    validateNode();
+  }
 }

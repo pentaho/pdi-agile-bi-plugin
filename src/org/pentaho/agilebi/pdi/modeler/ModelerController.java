@@ -164,7 +164,7 @@ public class ModelerController extends AbstractXulEventHandler{
           // add as a new hierarchy
           HierarchyMetaData hier = workspace.createHierarchy(workspace.findDimension((DimensionMetaData)event.getDropParent()), level);
           hier.setName(level.getName());
-          hier.getChildren().get(0).setName(level.getName());
+          hier.get(0).setName(level.getName());
           newdata.add(hier);
         } else if (event.getDropParent() == null) {
           DimensionMetaData dim = workspace.createDimension(level.getColumnName());
