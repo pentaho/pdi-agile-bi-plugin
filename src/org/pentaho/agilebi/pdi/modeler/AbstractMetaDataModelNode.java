@@ -95,9 +95,10 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
   public abstract void validate();
   
   public void validateNode() {
+    boolean prevValid = valid;
     String prevMessages = getValidationMessagesString();
     validate();
-    this.firePropertyChange("valid", null, valid);
+    this.firePropertyChange("valid", prevValid, valid);
     this.firePropertyChange("validationMessagesString", prevMessages, getValidationMessagesString());
     if (valid) {
       setImage(getValidImage());
