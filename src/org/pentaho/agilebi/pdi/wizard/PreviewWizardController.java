@@ -28,16 +28,6 @@ public class PreviewWizardController extends LinearWizardController {
 		super(aModel, aFactory);
 	}
 
-	public AbstractXulEventHandler closeHandler = new AbstractXulEventHandler(){
-	  public String getName(){
-	    return "controller";
-	  }
-
-	  public void close(){
-	    ((XulDialog) document.getElementById("prpt-preview")).hide();
-	  }
-
-	};
 	
 	public void preview() {
 		try {
@@ -45,7 +35,7 @@ public class PreviewWizardController extends LinearWizardController {
 			SwtXulLoader theXulLoader = new SwtXulLoader();
 			theXulLoader.register("PRPT", "org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag");
 			theXulContainer = theXulLoader.loadXul("org/pentaho/agilebi/pdi/wizard/prptPreview.xul");
-			theXulContainer.addEventHandler(closeHandler);
+			theXulContainer.addEventHandler(new PreviewCloseHandler());
 			
 			SwtXulRunner theRunner = new SwtXulRunner();
 			theRunner.addContainer(theXulContainer);
@@ -91,6 +81,15 @@ public class PreviewWizardController extends LinearWizardController {
 		return element;
 	}
 
-	
+	public static class PreviewCloseHandler extends AbstractXulEventHandler{
+    public String getName(){
+      return "controller";
+    }
+
+    public void close(){
+      ((XulDialog) document.getElementById("prpt-preview")).hide();
+    }
+
+  }
 	
 }
