@@ -48,11 +48,11 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 		int num = 1;
 		String tabName = title + " " + num; //$NON-NLS-1$
 		// TODO: Add new plugin object type to spoon
-		TabItem tabItem = spoon.delegates.tabs.findTabItem(tabName, TabMapEntry.OBJECT_TYPE_BROWSER);
+		TabItem tabItem = spoon.delegates.tabs.findTabMapEntry(tabName, TabMapEntry.ObjectType.BROWSER).getTabItem();
 		while (tabItem != null) {
 			tabName = title + " " + (++num); //$NON-NLS-1$
 			// TODO: Add new plugin object type to spoon
-			tabItem = spoon.delegates.tabs.findTabItem(tabName, TabMapEntry.OBJECT_TYPE_BROWSER);
+			tabItem = spoon.delegates.tabs.findTabMapEntry(tabName, TabMapEntry.ObjectType.BROWSER).getTabItem();
 		}
 		return tabName;
 	}

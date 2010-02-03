@@ -3,17 +3,31 @@ package org.pentaho.agilebi.pdi.visualizations.xul;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.TreeMap;
 
 import javax.swing.JPanel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.modules.gui.base.PreviewPane;
+import org.pentaho.reporting.engine.classic.core.modules.gui.base.internal.PreviewPaneUtilities;
+import org.pentaho.reporting.libraries.base.config.ModifiableConfiguration;
 import org.pentaho.reporting.libraries.resourceloader.Resource;
 import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 import org.pentaho.ui.xul.XulComponent;
@@ -24,22 +38,167 @@ import org.pentaho.ui.xul.swt.SwtElement;
 public class PrptViewerTag extends SwtElement{
 
   private String src;
-  
   private PreviewPane viewer;
-  
+  private Composite viewerComposite;
   private MasterReport masterReport;
+  private Composite mainPanel;
+  private boolean showToolbar = true;
+  private ToolBar toolbar;
+  private Composite toolbarPanel;
+  private Combo combo;
   
   private static Log log = LogFactory.getLog(PrptViewerTag.class);
 
+  private TreeMap<Double, String> zoomMap = new TreeMap<Double, String>();
+  {
+    zoomMap.put(0.5, "50%");
+    zoomMap.put(0.75, "75%");
+    zoomMap.put(1.0, "100%");
+    zoomMap.put(1.25, "125%");
+    zoomMap.put(1.5, "150%");
+    zoomMap.put(2.0, "200%");
+  }
   
   public PrptViewerTag(Element self, XulComponent parent, XulDomContainer container, String tagName) {
     super("prpt");
  
+    
+    
     Composite parentComposite = (Composite) parent.getManagedObject();
+    
+    mainPanel = new Composite(parentComposite, SWT.BORDER);
+    GridLayout layout = new GridLayout();
+    layout.marginHeight = 0;
+    layout.marginWidth = 0;
+    
+    mainPanel.setLayout(layout);
+    
 
-    Composite swingComposite = new Composite(parentComposite, SWT.EMBEDDED);
-    GridData gData = new GridData(GridData.FILL_BOTH);
-    swingComposite .setLayoutData(gData);
+    parentComposite.layout(true);
+    
+    setManagedObject(mainPanel);
+  }
+  
+  @Override
+  public void layout() {
+    if(!initialized){
+      toolbarPanel = new Composite(mainPanel, SWT.NONE);
+      GridData data = new GridData();
+      data.horizontalAlignment = SWT.FILL;
+      data.verticalIndent = 0;
+      data.horizontalIndent = 0;
+      data.grabExcessHorizontalSpace = true;
+      toolbarPanel.setLayoutData(data);
+  
+      toolbarPanel.setLayout(new FillLayout());
+      
+      toolbar = new ToolBar(toolbarPanel, SWT.HORIZONTAL);
+      ToolItem item = new ToolItem(toolbar, SWT.PUSH);
+      item.setText("<<");
+      item.addSelectionListener(new SelectionAdapter(){
+        public void widgetSelected(SelectionEvent se) {
+          viewer.setPageNumber(1);
+        }
+      });
+      
+      item = new ToolItem(toolbar, SWT.PUSH);
+      item.setText("<");
+      item.addSelectionListener(new SelectionAdapter(){
+        public void widgetSelected(SelectionEvent se) {
+          viewer.setPageNumber(Math.max(1, viewer.getPageNumber() - 1));
+        }
+      });
+      
+      item = new ToolItem(toolbar, SWT.PUSH);
+      item.setText(">");
+      item.addSelectionListener(new SelectionAdapter(){
+        public void widgetSelected(SelectionEvent se) {
+          viewer.setPageNumber(Math.min
+              (viewer.getNumberOfPages(), viewer.getPageNumber() + 1));
+        }
+      });
+      
+      item = new ToolItem(toolbar, SWT.PUSH);
+      item.setText(">>");
+      item.addSelectionListener(new SelectionAdapter(){
+        public void widgetSelected(SelectionEvent se) {
+          viewer.setPageNumber(viewer.getNumberOfPages());
+        }
+      });
+
+      new ToolItem(toolbar, SWT.SEPARATOR);
+      
+      item = new ToolItem(toolbar, SWT.PUSH);
+      item.setText("-");
+      item.addSelectionListener(new SelectionAdapter(){
+        public void widgetSelected(SelectionEvent se) {
+
+          final double nextZoomOut = PreviewPaneUtilities.getNextZoomOut(viewer.getZoom(), viewer.getZoomFactors());
+          if (nextZoomOut < 0.5){
+            return;
+          }
+          viewer.setZoom(nextZoomOut);
+          
+        }
+      });
+      
+
+      item = new ToolItem(toolbar, SWT.PUSH);
+      item.setText("+");
+      item.addSelectionListener(new SelectionAdapter(){
+        public void widgetSelected(SelectionEvent se) {
+
+          final double nextZoomIn = PreviewPaneUtilities.getNextZoomIn(viewer.getZoom(), viewer.getZoomFactors());
+          if (nextZoomIn > 2.0){
+            return;
+          }
+          viewer.setZoom(nextZoomIn);
+          
+        }
+      });
+
+      
+      item = new ToolItem(toolbar, SWT.SEPARATOR);
+      combo = new Combo(toolbar, SWT.DROP_DOWN);
+      combo.setItems(new String[]{"50%","75%", "100%", "125%", "150%", "200%"});
+      combo.addSelectionListener(new SelectionAdapter(){
+        public void widgetSelected(SelectionEvent e) {
+          int idx = ((Combo) e.widget).getSelectionIndex();
+          switch(idx){
+            case 5:       // 200%
+              viewer.setZoom(2.0);
+            default:      // Others are increments of 25
+              viewer.setZoom(0.5 + (0.25 *  idx));
+          }
+        }
+      });
+      combo.select(2);
+      combo.pack();
+      item.setControl(combo);
+      item.setWidth(80);
+      
+
+      new ToolItem(toolbar, SWT.SEPARATOR);
+      
+      createViewer();
+      
+
+      GridData gData = new GridData(GridData.FILL_BOTH);
+      viewerComposite .setLayoutData(gData);
+      
+      setShowtoolbar(getShowtoolbar());
+      mainPanel.layout(true);
+
+      if(src != null){
+        loadPRPT();
+      }
+    }
+    initialized = true;
+  }
+  
+  private void createViewer(){
+
+    Composite swingComposite = new Composite(mainPanel, SWT.EMBEDDED);
     Frame swingFrame = SWT_AWT.new_Frame(swingComposite);
 
     JPanel browserPanel = new JPanel();
@@ -49,19 +208,27 @@ public class PrptViewerTag extends SwtElement{
     
     this.viewer = new PreviewPane();
     browserPanel.add(viewer, BorderLayout.CENTER);
-    
-    parentComposite.layout(true);
-    setManagedObject(swingComposite);
+    viewerComposite = swingComposite;
     
   }
   
-  public void layout(){
+  protected Browser createBrowser(Composite parent){
+    return new Browser(parent, SWT.None);
+  }
 
-    this.initialized = true;
-    if(src != null){
-      loadPRPT();
+  public boolean getShowtoolbar() {
+    return showToolbar;
+  }
+
+  public void setShowtoolbar(boolean flag) {
+    this.showToolbar = flag;
+    if(toolbarPanel != null){
+      toolbarPanel.setVisible(flag);
+      ((GridData) toolbarPanel.getLayoutData()).exclude = !showToolbar;
+      mainPanel.layout(true);
     }
   }
+  
   
   public String getSrc() {
     return src;
@@ -91,7 +258,21 @@ public class PrptViewerTag extends SwtElement{
 	      Resource theResource = theResourceManager.createDirectly(theReportFile, MasterReport.class);
 	      this.masterReport = (MasterReport) theResource.getResource();
     	}
+    	
+    	ModifiableConfiguration cfg = (ModifiableConfiguration) masterReport.getConfiguration();
+    	
+    	cfg.setConfigProperty("org.pentaho.reporting.engine.classic.core.modules.gui.base.ToolbarAvailable", "false");
       viewer.setReportJob(this.masterReport);
+      viewer.getZoomModel().addListDataListener(new ListDataListener(){
+
+        public void contentsChanged(ListDataEvent arg0) {
+          combo.select(new ArrayList(zoomMap.keySet()).indexOf(viewer.getZoom()));
+        }
+
+        public void intervalAdded(ListDataEvent arg0) {}
+        public void intervalRemoved(ListDataEvent arg0) {}
+        
+      });
     } catch(Exception e){
       log.error(e);
     }

@@ -7,8 +7,12 @@ import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.ProgressMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.repository.ObjectId;
+import org.pentaho.di.repository.ObjectRevision;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.repository.RepositoryDirectory;
+import org.pentaho.di.repository.RepositoryLock;
+import org.pentaho.di.repository.RepositoryObjectType;
 import org.pentaho.ui.xul.components.XulTab;
 
 public class PRPTMeta implements EngineMetaInterface {
@@ -113,9 +117,8 @@ public class PRPTMeta implements EngineMetaInterface {
 
   }
 
-  public boolean saveSharedObjects() {
+  public void saveSharedObjects() {
     // TODO Auto-generated method stub
-    return false;
   }
 
   public void setCreatedDate(Date arg0) {
@@ -165,5 +168,61 @@ public class PRPTMeta implements EngineMetaInterface {
     this.tab = tab;
   }
 
+  public String getDescription() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public ObjectId getObjectId() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public ObjectRevision getObjectRevision() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public RepositoryLock getRepositoryLock() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public void setDescription(String description) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public void setName(String name) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public void setObjectRevision(ObjectRevision objectRevision) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public void setRepositoryDirectory(RepositoryDirectory repositoryDirectory) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public RepositoryDirectory getRepositoryDirectory() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public void setObjectId(ObjectId id) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public RepositoryObjectType getRepositoryElementType() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  
   
 }

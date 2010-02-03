@@ -84,7 +84,7 @@ public class JettyServer {
         server.stop();
       }
     } catch (Exception e) {
-      log.logError(toString(), "WebServer.Error.FailedToStop.Title");
+      LogWriter.getInstance(LogWriter.LOG_LEVEL_ERROR).logBasic(toString(), "WebServer.Error.FailedToStop.Title", null);
     }
   }
 
@@ -93,7 +93,8 @@ public class JettyServer {
     connector.setPort(port);
     connector.setHost(hostname);
     connector.setName(hostname);
-    log.logBasic(toString(), "WebServer.Log.CreateListener" + hostname + ":" + port);
+
+    LogWriter.getInstance(LogWriter.LOG_LEVEL_ERROR).logBasic(toString(), "WebServer.Log.CreateListener" + hostname + ":" + port, null);
 
     server.setConnectors(new Connector[] { connector });
   }

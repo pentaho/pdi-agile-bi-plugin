@@ -9,20 +9,24 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Composite;
+import org.pentaho.agilebi.pdi.modeler.Messages;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
 import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
+import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.binding.Binding.Type;
 import org.pentaho.ui.xul.components.XulBrowser;
+import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.w3c.dom.Node;
 
@@ -117,12 +121,35 @@ public class WebVisualizationController extends AbstractXulEventHandler implemen
 	}
 
 	public void save() {
-		spoon.saveToFile(meta);
+		try {
+      spoon.saveToFile(meta);
+    } catch (KettleException e) {
+      logger.error(e);
+      showErrorDialog(Messages.getString("error_saving"));
+    }
 	}
 
 	public void saveAs() {
-		spoon.saveFileAs(meta);
-	}
+	  try{
+	    spoon.saveFileAs(meta);
+    } catch (KettleException e) {
+      logger.error(e);
+      showErrorDialog(Messages.getString("error_saving"));
+    }
+  }
+
+  private void showErrorDialog(String msg){
+    XulMessageBox dlg;
+    try {
+      dlg = (XulMessageBox) document.createElement("messagebox");
+      dlg.setTitle(Messages.getString("error_title"));
+      dlg.setMessage(msg);
+      dlg.open();
+    } catch (XulException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
 
 	public void editModel() {
 		AgileBiPerspective.getInstance().open(null, xmiFileLocation, false);

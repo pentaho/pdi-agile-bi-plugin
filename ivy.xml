@@ -1,58 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-    <info organisation="pentaho" module="${ivy.artifact.id}" revision="${project.revision}" />
+  <info organisation="pentaho" module="${ivy.artifact.id}" revision="${project.revision}" />
+
+  <configurations>
+    <conf name="default" />
+    <conf name="test" visibility="private" />
+    <conf name="source" />
+  </configurations>
+
+  <dependencies defaultconf="default->default">
+
+    <dependency org="commons-vfs" name="commons-vfs" rev="1.0" conf="default->default" />
+
+    <dependency org="pentaho" name="pentaho-metadata" rev="${dependency.pentaho-metadata.revision}" conf="default->default"
+      changing="true" />
+    <dependency org="pentaho.kettle" name="kettle-engine" rev="${dependency.kettle.revision}" conf="default->default"
+      changing="true" />
+    <dependency org="pentaho.kettle" name="kettle-core" rev="${dependency.kettle.revision}" conf="default->default"
+      changing="true" />
+    <dependency org="pentaho.kettle" name="kettle-db" rev="${dependency.kettle.revision}" conf="default->default"
+      changing="true" />
+    <dependency org="pentaho.kettle" name="kettle-ui-swt" rev="${dependency.kettle.revision}" conf="default->default"
+      changing="true" />
+
+    <!--    exclude jetty's version of servlet api. it's checksum fails-->
+    <dependency org="org.mortbay.jetty" name="jetty-plus" rev="6.1.21" transitive="false" conf="default->default" />
+    <dependency org="org.mortbay.jetty" name="jetty" rev="6.1.21" conf="default->default">
+      <exclude org="org.mortbay.jetty" name="servlet-api-2.5" />
+    </dependency>
+    <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="default->default" />
+
+    <!-- pentaho-database and pentaho-xul-framework must match JARs required by kettle-ui-swt
+-->
+    <!-- this manual sync should go away once this project is propertly ivy-ized
+-->
+
+    <dependency org="pentaho" name="pentaho-database" rev="${dependency.pentaho-database.revision}" conf="default->default"
+      changing="true" />
+    <dependency org="pentaho" name="pentaho-database-model" rev="${dependency.pentaho-database.revision}"
+      conf="default->default" changing="true" />
+
+    <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default"
+      changing="true" />
+    <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default"
+      changing="true" />
+    <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul" rev="TRUNK-SNAPSHOT"
+      conf="default->default" changing="true" />
+    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-extensions-pmd" rev="TRUNK-SNAPSHOT"
+      conf="default->default" changing="true" />
+
+    <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="TRUNK-SNAPSHOT" changing="true"
+      conf="default->default" />
+    <dependency org="pentaho" name="pentaho-bi-platform-engine-core" rev="TRUNK-SNAPSHOT" changing="true"
+      conf="default->default" />
+    <dependency org="pentaho" name="pentaho-bi-platform-engine-services" rev="TRUNK-SNAPSHOT" changing="true"
+      conf="default->default" />
+    <dependency org="pentaho" name="pentaho-bi-platform-repository" rev="TRUNK-SNAPSHOT" changing="true"
+      conf="default->default" />
+    <dependency org="pentaho" name="pentaho-bi-platform-util" rev="TRUNK-SNAPSHOT" changing="true"
+      conf="default->default" />
+
+    <!-- Pentaho -->
+    <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="TRUNK-SNAPSHOT" changing="true"
+      conf="default->default" />
+    <dependency org="pentaho" name="pentaho-bi-platform-security-userroledao" rev="TRUNK-SNAPSHOT" changing="true"
+      conf="default->default" />
+    <dependency org="pentaho" name="pentaho-bi-platform-legacy" rev="TRUNK-SNAPSHOT" changing="true"
+      conf="default->default" />
+    <dependency org="pentaho" name="mantle" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default" />
+    <dependency org="org.json" name="json" rev="${dependency.json.revision}" changing="true" conf="default->default" />
+    <!-- test dependencies -->
+    <dependency org="junit" name="junit" rev="4.4" conf="test->default" />
+
+    <exclude org="xerces" module="xerces" conf="default->default" />
+    <exclude org="xml-apis" module="xml-apis" conf="default->default" />
+    <exclude org="org.olap4j" module="olap4j" conf="default->default" />
+
+    <!-- Remove once Platform is on Kettle 4.0 -->
+    <exclude org="pentaho.kettle" module="kettle-engine" conf="*" />
+    <exclude org="pentaho.kettle" module="kettle-core" conf="*" />
+    <exclude org="pentaho.kettle" module="kettle-db" conf="*" />
+    <exclude org="pentaho.kettle" module="kettle-ui-swt" conf="*" />
+    <!-- END Remove once Platform is on Kettle 4.0 -->
     
-    <configurations>
-    	<conf name="default"/>
-    	<conf name="test" visibility="private"/>
-    	<conf name="source"/>
-    </configurations>
-    
-    <dependencies defaultconf="default->default">
-
-        <dependency org="commons-vfs"        name="commons-vfs"         rev="1.0" conf="default->default"/>
-
-        <dependency org="pentaho"        name="pentaho-metadata"         rev="${dependency.pentaho-metadata.revision}" conf="default->default" changing="true"/>
-        <dependency org="pentaho.kettle" name="kettle-engine"            rev="${dependency.kettle.revision}" conf="default->default" changing="true"/>
-        <dependency org="pentaho.kettle" name="kettle-core"              rev="${dependency.kettle.revision}" conf="default->default" changing="true"/>
-        <dependency org="pentaho.kettle" name="kettle-db"                rev="${dependency.kettle.revision}" conf="default->default" changing="true"/>
-        <dependency org="pentaho.kettle" name="kettle-ui-swt"            rev="${dependency.kettle.revision}" conf="default->default" changing="true"/>
-
-        <!--    exclude jetty's version of servlet api. it's checksum fails-->
-        <dependency org="org.mortbay.jetty"   name="jetty-plus" rev="6.1.21" transitive="false"/>
-        <dependency org="org.mortbay.jetty"   name="jetty" rev="6.1.21">
-            <exclude org="org.mortbay.jetty" name="servlet-api-2.5" />
-        </dependency>        
-        <dependency org="javax.servlet"       name="servlet-api" rev="2.5" conf="default->default" />
-        
-        <!-- pentaho-database and pentaho-xul-framework must match JARs required by kettle-ui-swt -->
-        <!-- this manual sync should go away once this project is propertly ivy-ized -->
-        
-        <dependency org="pentaho" name="pentaho-database" rev="${dependency.pentaho-database.revision}" conf="default->default" changing="true" />        
-        <dependency org="pentaho" name="pentaho-database-model" rev="${dependency.pentaho-database.revision}" conf="default->default" changing="true" />        
-
-        <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default" changing="true"/>
-        <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default" changing="true"/>
-        <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul" rev="TRUNK-SNAPSHOT" conf="default->default" changing="true"/>
-        <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-extensions-pmd" rev="TRUNK-SNAPSHOT" conf="default->default" changing="true"/>
-        
-        <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default"/>
-        <dependency org="pentaho" name="pentaho-bi-platform-engine-core" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default"/>
-        <dependency org="pentaho" name="pentaho-bi-platform-engine-services" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default"/>
-        <dependency org="pentaho" name="pentaho-bi-platform-repository" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default"/>
-        <dependency org="pentaho" name="pentaho-bi-platform-util" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default"/>
-        
-        <!-- Pentaho -->
-        <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="TRUNK-SNAPSHOT" changing="true" />
-        <dependency org="pentaho" name="pentaho-bi-platform-security-userroledao" rev="TRUNK-SNAPSHOT" changing="true" />
-        <dependency org="pentaho" name="pentaho-bi-platform-legacy" rev="TRUNK-SNAPSHOT" changing="true" />
-        <dependency org="pentaho" name="mantle" rev="TRUNK-SNAPSHOT" changing="true" />
-        <dependency org="org.json" name="json" rev="${dependency.json.revision}" changing="true"/>
-        <!-- test dependencies -->
-        <dependency org="junit"              name="junit"              rev="4.4" conf="test->default"/>
-        
-        <exclude org="xerces" module="xerces"/>
-        <exclude org="xml-apis" module="xml-apis"/>
-        <exclude org="org.olap4j" module="olap4j"/>
-    </dependencies>
+  </dependencies>
 </ivy-module>

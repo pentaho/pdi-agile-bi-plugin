@@ -14,6 +14,7 @@ import org.pentaho.agilebi.pdi.visualizations.web.WebVisualizationController;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
 import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.Domain;
@@ -139,12 +140,35 @@ public class PRPTVisualizationController extends AbstractXulEventHandler{
   }
 
   public void save(){
-    spoon.saveToFile(meta);
+    try {
+      spoon.saveToFile(meta);
+    } catch (KettleException e) {
+      logger.error(e);
+      showErrorDialog(Messages.getString("error_saving"));
+    }
     
   }
   
   public void saveAs(){
-    spoon.saveFileAs(meta);
+    try {
+      spoon.saveFileAs(meta);
+    } catch (KettleException e) {
+      logger.error(e);
+      showErrorDialog(Messages.getString("error_saving"));
+    }
+  }
+  
+  private void showErrorDialog(String msg){
+    XulMessageBox dlg;
+    try {
+      dlg = (XulMessageBox) document.createElement("messagebox");
+      dlg.setTitle(Messages.getString("error_title"));
+      dlg.setMessage(msg);
+      dlg.open();
+    } catch (XulException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
   
   public void editReport(){

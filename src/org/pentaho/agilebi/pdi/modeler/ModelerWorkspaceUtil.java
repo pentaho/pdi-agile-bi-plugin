@@ -99,14 +99,14 @@ public class ModelerWorkspaceUtil {
       SpoonFactory.getInstance().messageBox( Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen" ), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
       throw new IllegalStateException(Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen")); //$NON-NLS-1$
     }
-    StepMeta steps[] = transMeta.getSelectedSteps();
-    if( steps == null || steps.length > 1 ) {
+    List<StepMeta> steps = transMeta.getSelectedSteps();
+    if( steps == null || steps.size() > 1 ) {
       SpoonFactory.getInstance().messageBox( Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.OneStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
       throw new IllegalStateException(Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.OneStepNeeded")); //$NON-NLS-1$
     }
     
     // assume only one selected 
-    StepMeta stepMeta = steps[0];
+    StepMeta stepMeta = steps.get(0);
     if( !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
       SpoonFactory.getInstance().messageBox( Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
       throw new IllegalStateException(Messages.getString( "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded")); //$NON-NLS-1$

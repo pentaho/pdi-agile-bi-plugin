@@ -155,5 +155,11 @@ public class XulUI implements TabItemInterface {
     // TODO Auto-generated method stub
     return 0;
   }
+
+  public void setControlStates() {
+    // TODO Auto-generated method stub
+    
+  }
+  
   
 }

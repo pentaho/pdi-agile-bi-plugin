@@ -6,8 +6,12 @@ import java.util.Date;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.ProgressMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.repository.ObjectId;
+import org.pentaho.di.repository.ObjectRevision;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.repository.RepositoryDirectory;
+import org.pentaho.di.repository.RepositoryLock;
+import org.pentaho.di.repository.RepositoryObjectType;
 import org.pentaho.ui.xul.components.XulTab;
 
 public class WebVisualizationMeta implements EngineMetaInterface {
@@ -103,9 +107,7 @@ public class WebVisualizationMeta implements EngineMetaInterface {
     
   }
 
-  public boolean saveSharedObjects() {
-    // TODO Auto-generated method stub
-    return false;
+  public void saveSharedObjects() {
   }
 
   public void setCreatedDate(Date arg0) {
@@ -154,7 +156,62 @@ public class WebVisualizationMeta implements EngineMetaInterface {
   public void setTab(XulTab tab) {
     this.tab = tab;
   }
-  
-  
 
+  public RepositoryDirectory getRepositoryDirectory() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public void setObjectId(ObjectId id) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public String getDescription() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public ObjectId getObjectId() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public ObjectRevision getObjectRevision() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public RepositoryLock getRepositoryLock() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public void setDescription(String description) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public void setName(String name) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public void setObjectRevision(ObjectRevision objectRevision) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public void setRepositoryDirectory(RepositoryDirectory repositoryDirectory) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public RepositoryObjectType getRepositoryElementType() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
+  
+  
 }
