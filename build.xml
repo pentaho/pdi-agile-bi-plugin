@@ -31,11 +31,11 @@
 	            description="Location of platform assembly zip" />
 	
 	<property name="kettle.dist.dir"
-				value="../Kettle 3.2.3 Agile BI"
+				value="../Kettle trunk"
     			description="Location of kettle spoon zip" />
 	
 	<property name="analyzer.dist.dir"
-				value="../pentaho-analyzer/dist"
+				value="."
 				description="Location of Analyzer Agile BI plugin" />
 	
 	<property name="pdiwithagilebi"
@@ -50,9 +50,9 @@
 	<target name="dist" depends="resolve, copy-kettle-jars, jar,package" description="Builds and packages the application" />
 	
 	<target name="copy-kettle-jars" description="Temporary task to grab latest Kettle Jars">
-		<get dest="lib/kettle-core.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-engine/TRUNK-SNAPSHOT/kettle-engine-TRUNK-SNAPSHOT.jar"/>
-		<get dest="lib/kettle-db.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-engine/TRUNK-SNAPSHOT/kettle-engine-TRUNK-SNAPSHOT.jar"/>
-		<get dest="lib/kettle-engine.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-engine/TRUNK-SNAPSHOT/kettle-engine-TRUNK-SNAPSHOT.jar"/>
+		<get dest="${lib.dir}/kettle-core.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-engine/TRUNK-SNAPSHOT/kettle-engine-TRUNK-SNAPSHOT.jar"/>
+		<get dest="${lib.dir}/kettle-db.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-engine/TRUNK-SNAPSHOT/kettle-engine-TRUNK-SNAPSHOT.jar"/>
+		<get dest="${lib.dir}/kettle-engine.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-engine/TRUNK-SNAPSHOT/kettle-engine-TRUNK-SNAPSHOT.jar"/>
 				
 	</target>
 	
