@@ -31,11 +31,11 @@
 	            description="Location of platform assembly zip" />
 	
 	<property name="kettle.dist.dir"
-				value="../Kettle 3.2.3 Agile BI"
+				value="../Kettle trunk"
     			description="Location of kettle spoon zip" />
 	
 	<property name="analyzer.dist.dir"
-				value="../pentaho-analyzer/dist"
+				value="."
 				description="Location of Analyzer Agile BI plugin" />
 	
 	<property name="pdiwithagilebi"
@@ -47,7 +47,16 @@
 	          description="Retrieves all the dependent libraries" />
 
 	<target name="dist-noresolve" depends="jar,package" description="Builds and packages the application" />
-	<target name="dist" depends="resolve,jar,package" description="Builds and packages the application" />
+	<target name="dist" depends="resolve, copy-kettle-jars, jar,package" description="Builds and packages the application" />
+	
+	<target name="copy-kettle-jars" description="Temporary task to grab latest Kettle Jars">
+
+	    <copy todir="${lib.dir}" overwrite="true">
+	      <fileset dir="${kettle.dist.dir}/distrib/lib">
+				<include name="*.jar"/>
+	    	</fileset>
+	    </copy>
+	</target>
 	
 	<target name="clean-dist">
 		<delete dir="${dist.dir}" />
@@ -187,7 +196,7 @@
 		<!-- Step 1: Unzip a platform zip into staging dir -->
 		<mkdir dir="${platform.unzip.dir}"/>
 		<unzip dest="${platform.unzip.dir}">
-			<fileset dir="${platform.dist.dir}">
+			<fileset dir=".">
 			        <include name="biserver-ce-*.zip"/>
 		    </fileset>
 		</unzip>
