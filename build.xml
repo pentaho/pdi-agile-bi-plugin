@@ -195,7 +195,7 @@
 		<!-- Step 1: Unzip a platform zip into staging dir -->
 		<mkdir dir="${platform.unzip.dir}"/>
 		<unzip dest="${platform.unzip.dir}">
-			<fileset dir=".">
+			<fileset dir="${platform.dist.dir}">
 			        <include name="biserver-ce-*.zip"/>
 		    </fileset>
 		</unzip>
