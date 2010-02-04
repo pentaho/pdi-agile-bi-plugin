@@ -50,8 +50,8 @@
 	<target name="dist" depends="resolve, copy-kettle-jars, jar,package" description="Builds and packages the application" />
 	
 	<target name="copy-kettle-jars" description="Temporary task to grab latest Kettle Jars">
-		<get dest="${lib.dir}/kettle-core.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-engine/TRUNK-SNAPSHOT/kettle-engine-TRUNK-SNAPSHOT.jar"/>
-		<get dest="${lib.dir}/kettle-db.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-engine/TRUNK-SNAPSHOT/kettle-engine-TRUNK-SNAPSHOT.jar"/>
+		<get dest="${lib.dir}/kettle-core.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-core/TRUNK-SNAPSHOT/kettle-core-TRUNK-SNAPSHOT.jar"/>
+		<get dest="${lib.dir}/kettle-db.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-db/TRUNK-SNAPSHOT/kettle-db-TRUNK-SNAPSHOT.jar"/>
 		<get dest="${lib.dir}/kettle-engine.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-engine/TRUNK-SNAPSHOT/kettle-engine-TRUNK-SNAPSHOT.jar"/>
 		<get dest="${lib.dir}/kettle-ui-swt.jar" src="http://repo.pentaho.org/artifactory/repo/pentaho/kettle/kettle-ui-swt/TRUNK-SNAPSHOT/kettle-ui-swt-TRUNK-SNAPSHOT.jar"/>
 						
