@@ -80,7 +80,6 @@
     <exclude org="pentaho.kettle" module="kettle-engine" conf="*" />
     <exclude org="pentaho.kettle" module="kettle-core" conf="*" />
     <exclude org="pentaho.kettle" module="kettle-db" conf="*" />
-    <exclude org="pentaho.kettle" module="kettle-ui-swt" conf="*" />
     <!-- END Remove once Platform is on Kettle 4.0 -->
     
   </dependencies>
