@@ -31,11 +31,11 @@
 	            description="Location of platform assembly zip" />
 	
 	<property name="kettle.dist.dir"
-				value="../Kettle trunk"
+				value="../Kettle"
     			description="Location of kettle spoon zip" />
 	
 	<property name="analyzer.dist.dir"
-				value="."
+				value="../pentaho-analyzer/dist"
 				description="Location of Analyzer Agile BI plugin" />
 	
 	<property name="pdiwithagilebi"
