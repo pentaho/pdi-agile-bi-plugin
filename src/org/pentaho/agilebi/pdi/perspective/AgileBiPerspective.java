@@ -101,6 +101,7 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
       document.addBinding(bind);
       models.add(aModel);
     	model = aModel;
+    	model.setModelName(name);
       
       SpoonPerspectiveManager.getInstance().activatePerspective(getClass());
    } catch(KettleException e){

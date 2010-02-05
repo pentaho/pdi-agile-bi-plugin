@@ -4,16 +4,6 @@
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" height="600" width="800" onload="modeler.init()"
     xmlns:pen="http://www.pentaho.org/2008/xul" >
-
-	<menupopup id="trans-graph-entry">
-      <menuitem id="trans-graph-entry-model" label="${model}" command="agileBi.openModeler()" />
-      <menuitem id="trans-graph-entry-visualize" label="${visualize}" command="agileBi.quickVisualizeTableOutputStep()" />
-      <menuitem id="trans-graph-entry-wizard" label="Report Wizard" command="agileBi.reportWizard()" />
-    </menupopup>
-    
-    <!-- menupopup id="file-new-popup">
-		<menuitem value="file-new-model" acceltext="CTRL-M"  accesskey="ctrl-m" label="Model" command="agileBi.fileNewModel()"/>
-    </menupopup -->
     
     <menupopup id="view-perspectives-popup">
 	    <menuitem label="${Spoon.Perspectives.AgileBi.MenuItem.Label}"

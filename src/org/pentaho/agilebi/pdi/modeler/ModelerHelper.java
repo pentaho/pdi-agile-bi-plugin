@@ -69,7 +69,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     
     ModelerWorkspaceUtil.populateModelFromOutputStep(model);
     
-    AgileBiPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
+    AgileBiPerspective.getInstance().createTabForModel(model, MODELER_NAME);
     
   }
   
