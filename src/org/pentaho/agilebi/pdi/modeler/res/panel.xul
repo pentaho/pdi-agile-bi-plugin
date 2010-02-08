@@ -16,35 +16,54 @@
 
   <vbox flex="1" id="mainVBox" spacing="0" padding="0">
 
+    <hbox>
+      <label value="${new}:" />
+      <menulist id="visualizationlist" label="">
+        <menupopup>
+          <menuitem label="Dummy Visualization" />
+        </menupopup>
+      </menulist>
+      <button label="${go}" id="exploreButton" onclick="modeler.visualize()" />
+      <button label="${publish}" id="publishButton" onclick="modeler.publish()" />
+    </hbox>
+
     <hbox flex="1">
-      <vbox flex="1">
-        <hbox>
-          <label value="${available}:" />
-          <spacer flex="1" />
-          <button onclick="modeler.refreshFields()" image="images/refresh.png" />
-        </hbox>
-        <listbox id="fieldList" flex="1" seltype="multi"
-          pen:binding="name" ondrag="modeler.onFieldListDrag()"
-          pen:drageffect="copy">
-          <listitem label="field" />
-          <listitem label="field" />
-          <listitem label="field" />
-          <listitem label="field" />
-          <listitem label="field" />
-          <listitem label="field" />
-        </listbox>
-        <hbox>
-          <button label="${add_measure}" onclick="modeler.moveFieldsToMeasures()" />
-          <button label="${add_dimension}" onclick="modeler.moveFieldsToDimensions()" />
-        </hbox>
+      <vbox>
+
+        <groupbox flex="1" width="250">
+	        <caption label="Data" />
+	        <hbox>
+		      <label value="${available}:" />
+		      <spacer flex="1" />
+		      <button onclick="modeler.refreshFields()" image="images/refresh.png" />
+	        </hbox>
+	        <listbox id="fieldList" flex="1" seltype="multi"
+	          pen:binding="name" ondrag="modeler.onFieldListDrag()"
+	          pen:drageffect="copy">
+	          <listitem label="field" />
+	          <listitem label="field" />
+	          <listitem label="field" />
+	          <listitem label="field" />
+	          <listitem label="field" />
+	          <listitem label="field" />
+	        </listbox>
+	        <hbox>
+	          <button label="${add_measure}" onclick="modeler.moveFieldsToMeasures()" />
+	          <button label="${add_dimension}" onclick="modeler.moveFieldsToDimensions()" />
+	        </hbox>
+        </groupbox>
+        
       </vbox>
       <hbox flex="4">
         <vbox flex="3">
           <hbox>
             <spacer flex="1" />
+            <button image="images/sm_measure_icon.png" />
+            <button image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()" />
+            <button image="images/sm_hierarchy_icon.png" />
+            <button image="images/sm_level_icon.png" />
             <button image="images/16x16_down.png" onclick="modeler.moveFieldDown()" />
             <button image="images/16x16_Up.png" onclick="modeler.moveFieldUp()" />
-            <button image="images/Add.png" onclick="modeler.showNewDimensionDialog()" />
             <button image="images/remove.png" onclick="modeler.removeField()" />
           </hbox>
           <tree id="dimensionTree" flex="1" editable="true"
@@ -67,41 +86,26 @@
             </treechildren>
           </tree>
         </vbox>
-        <vbox flex="2">
-          <groupbox flex="1">
-            <caption label="${properties}" />
+
+        <vbox>
+          
+           <editpanel type="closable">
+           <caption label="${properties}" />
             <deck id="propertiesdeck" flex="1">
               <vbox/>
               <vbox id="mainprops" flex="1" spacing="4">
                 <label value="${name}:" />
                 <textbox id="modelname" />
-             
                 <label value="${source}:" />
                 <label id="source_name" value="some source" />
-             
               </vbox>
               <pen:include src="measuresForm.xul" />
-
               <pen:include src="cubeForms.xul" ignoreroot="true" />
-
             </deck>
-          </groupbox>
+           </editpanel>
+          
         </vbox>
       </hbox>
-    </hbox>
-    <hbox bgcolor="#FFFFFF">
-      <spacer flex="1" />
-
-      <label value="${new}:" />
-      <menulist id="visualizationlist" label="">
-        <menupopup>
-          <menuitem label="Dummy Visualization" />
-        </menupopup>
-      </menulist>
-
-      <button label="${go}" id="exploreButton" onclick="modeler.visualize()" />
-      <button label="${publish}" id="publishButton" onclick="modeler.publish()" />
-      
     </hbox>
   </vbox>
 
