@@ -120,6 +120,9 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
   }
 
   public String getAggTypeDesc() {
+    if(logicalColumn == null){
+      return null;
+    }
     if(StringUtils.isEmpty(aggTypeDesc)){
       switch(logicalColumn.getDataType()){
         case NUMERIC:
