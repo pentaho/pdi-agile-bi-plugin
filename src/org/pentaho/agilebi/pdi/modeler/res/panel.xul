@@ -56,16 +56,28 @@
       </vbox>
       <hbox flex="4">
         <vbox flex="3">
-          <hbox>
+            <toolbar id="schema-toolbar" mode="icons">
+                <toolbarspacer flex="1"/>
+                <toolbarseparator/>
+    			<toolbarbutton id="measure" image="images/sm_measure_icon.png" onclick="modeler.showNewMeasureDialog()"/>
+    			<toolbarbutton id="dimension" image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()"/>
+    			<toolbarbutton id="hierarchy" image="images/sm_hierarchy_icon.png" onclick="modeler.showNewHierarchyDialog()"/>
+    			<toolbarbutton id="level" image="images/sm_level_icon.png" onclick="modeler.showNewLevelDialog()"/>
+                <toolbarseparator/>
+    			<toolbarbutton image="images/16x16_down.png" onclick="modeler.moveFieldDown()"/>
+    			<toolbarbutton image="images/16x16_Up.png" onclick="modeler.moveFieldUp()"/>
+    			<toolbarbutton image="images/remove.png" onclick="modeler.removeField()"/>
+    		</toolbar>
+    	  <!--hbox>	 
             <spacer flex="1" />
-            <button image="images/sm_measure_icon.png" />
-            <button image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()" />
-            <button image="images/sm_hierarchy_icon.png" />
-            <button image="images/sm_level_icon.png" />
+            <button id="measure" image="images/sm_measure_icon.png" onclick="modeler.showNewMeasureDialog()"/>
+            <button id="dimension" image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()" />
+            <button id="hierarchy" image="images/sm_hierarchy_icon.png" onclick="modeler.showNewHierarchyDialog()"/>
+            <button id="level" image="images/sm_level_icon.png" onclick="modeler.showNewLevelDialog()"/>
             <button image="images/16x16_down.png" onclick="modeler.moveFieldDown()" />
             <button image="images/16x16_Up.png" onclick="modeler.moveFieldUp()" />
             <button image="images/remove.png" onclick="modeler.removeField()" />
-          </hbox>
+          </hbox-->
           <tree id="dimensionTree" flex="1" editable="true"
             ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move"
             ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false" pen:preserveexpandedstate="true">
