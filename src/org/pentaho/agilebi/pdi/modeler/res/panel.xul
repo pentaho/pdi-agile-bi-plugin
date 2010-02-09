@@ -68,16 +68,6 @@
     			<toolbarbutton image="images/16x16_Up.png" onclick="modeler.moveFieldUp()"/>
     			<toolbarbutton image="images/remove.png" onclick="modeler.removeField()"/>
     		</toolbar>
-    	  <!--hbox>	 
-            <spacer flex="1" />
-            <button id="measure" image="images/sm_measure_icon.png" onclick="modeler.showNewMeasureDialog()"/>
-            <button id="dimension" image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()" />
-            <button id="hierarchy" image="images/sm_hierarchy_icon.png" onclick="modeler.showNewHierarchyDialog()"/>
-            <button id="level" image="images/sm_level_icon.png" onclick="modeler.showNewLevelDialog()"/>
-            <button image="images/16x16_down.png" onclick="modeler.moveFieldDown()" />
-            <button image="images/16x16_Up.png" onclick="modeler.moveFieldUp()" />
-            <button image="images/remove.png" onclick="modeler.removeField()" />
-          </hbox-->
           <tree id="dimensionTree" flex="1" editable="true"
             ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move"
             ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false" pen:preserveexpandedstate="true">
