@@ -39,6 +39,7 @@ import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
+import org.pentaho.ui.xul.binding.BindingConvertor;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.binding.Binding.Type;
@@ -251,6 +252,46 @@ public class ModelerController extends AbstractXulEventHandler{
     modelTreeBinding = bf.createBinding(workspace, "model", dimensionTree, "elements");
     bf.createBinding(dimensionTree, "selectedItem", this, "dimTreeSelectionChanged");
     
+    bf.createBinding(dimensionTree, "selectedItem", "measure", "disabled", new BindingConvertor<Object, Boolean>() {
+    	public Boolean sourceToTarget(Object value) {
+    		return !(value instanceof MeasuresCollection);
+    	}
+
+      public Object targetToSource(Boolean value) {
+      	return null;
+      }
+    });    
+    
+    bf.createBinding(dimensionTree, "selectedItem", "dimension", "disabled", new BindingConvertor<Object, Boolean>() {
+    	public Boolean sourceToTarget(Object value) {
+    		return !(value instanceof DimensionMetaDataCollection);
+    	}
+
+      public Object targetToSource(Boolean value) {
+      	return null;
+      }
+    });
+    
+    bf.createBinding(dimensionTree, "selectedItem", "hierarchy", "disabled", new BindingConvertor<Object, Boolean>() {
+    	public Boolean sourceToTarget(Object value) {
+    		return !(value instanceof DimensionMetaData);
+    	}
+
+      public Object targetToSource(Boolean value) {
+      	return null;
+      }
+    });
+    
+    bf.createBinding(dimensionTree, "selectedItem", "level", "disabled", new BindingConvertor<Object, Boolean>() {
+    	public Boolean sourceToTarget(Object value) {
+    		return !(value instanceof HierarchyMetaData);
+    	}
+
+      public Object targetToSource(Boolean value) {
+      	return null;
+      }
+    });
+    
     bf.setBindingType(Type.BI_DIRECTIONAL);
     modelNameBinding = bf.createBinding(workspace, MODEL_NAME_PROPERTY, MODEL_NAME_FIELD_ID, VALUE_PROPERTY);
     
@@ -433,6 +474,87 @@ public class ModelerController extends AbstractXulEventHandler{
   }
   
 
+  
+  public void showNewMeasureDialog() {
+    try {
+      XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox");
+      prompt.setTitle("New Measure");
+      prompt.setMessage("Enter new Measure name");
+      prompt.addDialogCallback(new XulDialogCallback(){
+  
+        public void onClose(XulComponent sender, Status returnCode, Object retVal) {
+          if(returnCode == Status.ACCEPT){
+          	MeasuresCollection theMesaures = (MeasuresCollection) selectedTreeItem;
+          	MeasureMetaData theMeasure = new MeasureMetaData("" + retVal, "", "" + retVal);
+          	theMeasure.setParent(theMesaures);
+          	theMesaures.add(theMeasure);
+          }
+        }
+  
+        public void onError(XulComponent sender, Throwable t) {
+          logger.error(t);
+        }
+        
+      });
+      prompt.open();
+    } catch (XulException e) {
+      logger.error(e);
+    }
+  }
+  
+  public void showNewHierarchyDialog() {
+  	 try {
+       XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox");
+       prompt.setTitle("New Hierarchy");
+       prompt.setMessage("Enter new Hierarcy name");
+       prompt.addDialogCallback(new XulDialogCallback(){
+
+      	 public void onClose(XulComponent sender, Status returnCode, Object retVal) {
+           if(returnCode == Status.ACCEPT){
+          	DimensionMetaData theDimension = (DimensionMetaData) selectedTreeItem;
+          	HierarchyMetaData theHieararchy = new HierarchyMetaData("" + retVal);
+          	theHieararchy.setParent(theDimension);
+          	theDimension.add(theHieararchy);
+           }
+         }
+   
+         public void onError(XulComponent sender, Throwable t) {
+           logger.error(t);
+         }
+       });
+       prompt.open();
+     } catch (XulException e) {
+       logger.error(e);
+     }
+  }
+  
+  public void showNewLevelDialog() {
+  	
+  	try {
+      XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox");
+      prompt.setTitle("New Level");
+      prompt.setMessage("Enter new Level name");
+      prompt.addDialogCallback(new XulDialogCallback(){
+
+     	 public void onClose(XulComponent sender, Status returnCode, Object retVal) {
+          if(returnCode == Status.ACCEPT){
+          	HierarchyMetaData theHierarchy = (HierarchyMetaData) selectedTreeItem;
+          	LevelMetaData theLevel = new LevelMetaData(theHierarchy, "" + retVal);
+          	theHierarchy.add(theLevel);
+          }
+        }
+  
+        public void onError(XulComponent sender, Throwable t) {
+          logger.error(t);
+        }
+      });
+      prompt.open();
+    } catch (XulException e) {
+      logger.error(e);
+    }
+  	
+  }
+  
   public void showNewDimensionDialog(){
     
     try {
