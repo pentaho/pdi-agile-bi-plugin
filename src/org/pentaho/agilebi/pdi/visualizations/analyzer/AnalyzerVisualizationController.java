@@ -1,4 +1,4 @@
-package org.pentaho.agilebi.pdi.visualizations.web;
+package org.pentaho.agilebi.pdi.visualizations.analyzer;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,14 +30,14 @@ import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.w3c.dom.Node;
 
-public class WebVisualizationController extends AbstractXulEventHandler implements FileListener {
+public class AnalyzerVisualizationController extends AbstractXulEventHandler implements FileListener {
 
 	public static final String XUL_FILE_ANALYZER_TOOLBAR_PROPERTIES = "plugins/spoon/agile-bi/ui/analyzer-toolbar.properties"; //$NON-NLS-1$
 
 	private String xmiFileLocation = null;
 	private String modelId = null;
-	private WebVisualization visualization;
-	private WebVisualizationMeta meta;
+	private AnalyzerVisualization visualization;
+	private AnalyzerVisualizationMeta meta;
 	private String visFileLocation = null;
 	private XulBrowser browser;
 	private Spoon spoon;
@@ -47,14 +47,14 @@ public class WebVisualizationController extends AbstractXulEventHandler implemen
 	private Binding factTableNameBinding;
 	private String factTableName;
 
-	private static Log logger = LogFactory.getLog(WebVisualizationController.class);
+	private static Log logger = LogFactory.getLog(AnalyzerVisualizationController.class);
 
-	public WebVisualizationController(Composite parent, final WebVisualization visualization, String xmiFileLocation, String modelId, String aVisFileLocaiton) throws SWTError {
+	public AnalyzerVisualizationController(Composite parent, final AnalyzerVisualization visualization, String xmiFileLocation, String modelId, String aVisFileLocaiton) throws SWTError {
 		this.visualization = visualization;
 		this.xmiFileLocation = xmiFileLocation;
 		this.modelId = modelId;
 		this.visFileLocation = aVisFileLocaiton;
-		this.meta = new WebVisualizationMeta(this);
+		this.meta = new AnalyzerVisualizationMeta(this);
 		this.spoon = ((Spoon) SpoonFactory.getInstance());
 		this.location = visualization.generateNewUrl(xmiFileLocation, modelId);
 		this.bf = new DefaultBindingFactory();
@@ -107,7 +107,7 @@ public class WebVisualizationController extends AbstractXulEventHandler implemen
 		this.factTableName = aFactTableName;
 	}
 
-	public WebVisualization getVisualization() {
+	public AnalyzerVisualization getVisualization() {
 		return visualization;
 	}
 
@@ -182,7 +182,7 @@ public class WebVisualizationController extends AbstractXulEventHandler implemen
 		this.modelId = modelId;
 	}
 
-	public WebVisualizationMeta getMeta() {
+	public AnalyzerVisualizationMeta getMeta() {
 		return meta;
 	}
 

@@ -10,7 +10,6 @@ import org.pentaho.agilebi.pdi.modeler.Messages;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
-import org.pentaho.agilebi.pdi.visualizations.web.WebVisualizationController;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
 import org.pentaho.di.core.EngineMetaInterface;

@@ -1,6 +1,7 @@
 package org.pentaho.agilebi.pdi.spoon;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;
@@ -12,16 +13,16 @@ import org.pentaho.ui.xul.impl.XulEventHandler;
 
 public class AgileBiSpoonVisualizationPlugin implements SpoonPlugin{
 
-  public Map<String, XulEventHandler> getEventHandlers() {
-    HashMap<String, XulEventHandler> hash = new HashMap<String, XulEventHandler>();
+  public Map<String, List<XulEventHandler>> getEventHandlers() {
+    HashMap<String, List<XulEventHandler>> hash = new HashMap<String, List<XulEventHandler>>();
 //    hash.put("spoon", ModelerHelper.getInstance());
 //    hash.put("databaseDialog", ModelerHelper.getInstance());
     return hash;
   }
 
-  public Map<String, XulOverlay> getOverlays() {
+  public Map<String, List<XulOverlay>> getOverlays() {
 //    XulOverlay overlay = new DefaultXulOverlay("spoon.agilebi", "org/pentaho/agilebi/pdi/spoon/overlays.xul", null, null); //$NON-NLS-1$  //$NON-NLS-2$
-    HashMap<String, XulOverlay> hash = new HashMap<String, XulOverlay>();
+    HashMap<String, List<XulOverlay>> hash = new HashMap<String, List<XulOverlay>>();
 //    hash.put("spoon", overlay);
     return hash;
   }

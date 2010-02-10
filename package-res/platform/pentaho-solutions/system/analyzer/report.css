@@ -1,0 +1,1352 @@
+/******** NEW SKIN STYLES *************/
+
+/* Hide browser scroll bar */
+body {
+	overflow-x: hidden;
+	overflow-y: hidden;
+	height: 100%;
+	width: 100%;
+	min-width: 600px;
+	background-color: #FFF;
+}
+
+.statusIcon {
+	vertical-align: middle;
+	padding-right: 6px;
+	width: 15px;
+	height: 15px;
+}
+
+.disabled {
+	color: #999999 !important;
+	cursor: default;
+}
+
+div.active {
+	background-color: #ffdc8a;
+}
+
+/* Message bar padding */
+#commonMsgText, #commonMsgBarBackground {
+	margin-left:256px;
+}
+	
+/* Measures and Attributes Panel */
+#fieldList {
+	position: relative;
+	float: left;
+	clear: left;
+	width: 258px;
+	height: 400px;
+	font-size: 85%;
+	border: 1px solid #848484;
+}
+
+#fieldList #fieldListTop {
+	width: 100%;
+	border-top: 10px solid #BDBDBD;
+}
+
+#fieldList #fieldListTop #fieldListHeading {
+	width: 244px;
+	float: left;
+	clear: left;
+	background-color: #D3D3D3;
+	padding: 7px 7px 5px 7px;
+}
+
+#fieldList #fieldListHeading #availableFields{
+	color: #333333;
+	float: left;
+}
+
+#fieldList #fieldListHeading #analysisArea {
+	font-size: 107%;
+	font-weight: bold;
+	color: black;
+}
+
+#fieldList #fieldListHeading IMG {
+	display: block;
+	float: right;
+	cursor: pointer;
+}
+
+#fieldList #hideFieldList {
+	float: right;
+}
+
+#fieldList #fieldListTop .fieldListOptions {
+	width: 244px;
+	float: left;
+	clear: left;
+	background-color: #D3D3D3;
+	border-bottom: 1px solid #848484;
+	padding: 5px 7px 5px 7px;
+}
+
+#fieldList #fieldListTop .searchBox {
+	height: 18px;
+	width: 130px;
+	float: left;
+	padding: 0 3px;
+}
+
+#fieldList #fieldListTop #searchField {
+	width: 110px;
+	background: white;
+	border: 1px solid #848484;
+}
+
+#fieldList #fieldListTop #clearSearchField {
+	height: 14px;
+	width: 14px;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+#fieldList #fieldListTop .fieldListStatus {
+	display: none;
+	width: 244px;
+	float: left;
+	clear: left;
+	background-color: white;
+	border-bottom: 1px solid #d7d7d7;
+	padding: 5px 7px 5px 7px;
+}
+
+#fieldList #fieldListTop #viewFieldOptions {
+	border-top: 1px solid white;
+	border-left: 1px solid white;
+	border-bottom: 1px solid gray;
+	border-right: 1px solid gray;
+	float: right;
+	height: 15px;
+	padding: 1px 3px 0 3px;
+	cursor: pointer;
+}
+
+#fieldList #fieldListTop #fieldListCount {
+	font-style: italic;
+}
+
+#fieldList #fieldListTree {
+	position: relative;
+	width: 255px;
+	overflow-y: scroll;
+	overflow-x: auto;
+	background-color: white;
+	padding-left: 3px;
+}
+
+#fieldList #fieldListTree.trashActive {
+	background: url(../images/report/trashcan_open.jpg) white no-repeat 110px 300px fixed;
+}
+
+#fieldList .commonView .uncommon {
+	display: none;
+}
+
+#fieldListTree .folder {
+	position: relative;
+	float: left;
+	clear: left;
+	white-space: nowrap;
+	margin: 2px 2px 2px 0;
+	padding-left: 10px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#fieldListTree .folderContent {
+	float: left;
+	clear: left;
+	width: 100%;
+}
+
+#fieldListTree .field {
+	position: relative;
+	float: left;
+	clear: left;
+	white-space: nowrap;
+	padding: 0 0 0 15px;
+	cursor: move;
+	margin: 2px;
+	background-color: white;
+	background-position: 4px 2px;
+	background-repeat: no-repeat;
+	background-image: none;
+}
+
+#fieldListTree .attribute {
+	background-image: url(../images/report/dims_and_measures_icon_attr.png);
+}
+
+#fieldListTree .measure {
+	background-image: url(../images/report/dims_and_measures_icon_metric.png);
+}
+
+#fieldListTree .sourceSalesForce {
+	background-image: url(../images/report/source_SF.gif);
+}
+
+#fieldListTree .sourceExcel {
+	background-image: url(../images/report/source_EX.gif);
+}
+
+#fieldListTree .sourceNetSuite {
+	background-image: url(../images/report/source_NS.gif);
+}
+
+#fieldListTree .sourceMultiple {
+	background-image: url(../images/report/source_MS.gif);
+}
+
+#fieldListTree .sourceNone {
+	background-image: url(../images/report/dims_and_measures_icon_attr.png);
+}
+
+.cvTooltip {
+	width: 200px;
+	border: solid #999999 1px;
+	background: white;
+	color: black;
+	position: absolute;
+	font-size: 85%;
+	padding: 2px;
+	z-index: 10;
+	display: block;
+}
+
+.fieldTooltipTitle {
+	width: 100%;
+	background-color: #b3c4ff;
+	font-weight: bold;
+	color: white;
+}
+
+.fieldTooltipFooter {
+	width: 100%;
+}
+
+/* End measures and attributes bar */
+
+#reportContent {
+	float: right;
+	position: relative;
+}
+
+/* Report Buttons Bar */
+
+.reportBtns {
+	margin: 0;
+	padding: 5px 10px 5px 8px;
+	z-index: 2;
+	overflow: none;
+}
+
+.btnContainer {
+	position: relative;
+	float: left;
+}
+	
+.btnContainer .reportBtn {
+	background-color: white;
+	border:1px #848484 solid;
+	cursor: pointer;
+	float: left;
+	text-align: center;
+	z-index: 100;
+	overflow: hidden;
+	position: relative;
+	white-space: nowrap;
+}
+
+.btnContainer .btnPressed {
+	top: 2px;
+	left: 1px;
+}
+
+.btnContainer .btnActive {
+	background: url("../images/report/button_bg_over.png") repeat-x !important;
+	border-color: #999999;
+}
+
+.reportBtns .main {
+	float: left;
+	display:none;
+}
+
+.reportBtns .main .btnContainer {
+	margin-right: 0px;
+}
+
+.reportBtns .main .reportBtn {
+	background: url("../images/report/button_bg.png") repeat-x;
+	font-size: 85%;
+	width: 103px;
+	height: 19px;
+	padding-top: 4px;
+	letter-spacing: -0.025em;
+}
+
+.reportBtns .additional {
+	background-color: #c8c7c7;
+	height: 23px;
+	padding: 3px;
+	float: right;
+	display:none;
+	
+}
+
+.reportBtns .additional .standard {
+	margin-right: 2px;
+}
+
+.reportBtns .additional .reportBtn {
+	font-size: 92%;
+	padding: 2px 5px 0 5px;
+	height: 19px;
+}
+
+.reportBtns .additional IMG.reportBtn {
+	padding: 1px;
+}
+
+.reportBtns .additional IMG.downArrow {
+	width: 11px;
+	height: 9px;
+	padding: 6px 0;
+}
+
+.reportBtns A {
+	color: black;
+/*	text-decoration: none; */
+}
+
+.reportBtns A:visited {
+	color: black;
+}
+
+.reportBtns A:hover {
+	text-decoration: underline;
+}
+
+/* End Report Buttons Bar */
+/* Glow styles */
+
+.glow {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+}
+
+.glow .tl {background: url(../images/report/glow/tl.png) 0px 0px no-repeat;height:11px;font-size:1px;}
+.glow .t  {background: url(../images/report/glow/top.png) top repeat-x;height:11px;font-size:1px;}
+.glow .tr {background: url(../images/report/glow/tr.png) -15px 0px no-repeat;height:11px;font-size:1px;} 
+.glow .l  {background: url(../images/report/glow/left.png) -4px 0px repeat-y;}
+.glow .r  {background: url(../images/report/glow/right.png) repeat-y; width:165x;}
+.glow .bl {background: url(../images/report/glow/bl.png) -7px -17px no-repeat;height:12px;font-size:1px;}
+.glow .b  {background: url(../images/report/glow/bottom.png) bottom repeat-x;height:12px;font-size:1px;}
+.glow .br {background: url(../images/report/glow/br.png) -16px -16px no-repeat;height:12px;font-size:1px;}
+
+/* End glow styles */
+
+.reportMain {
+	position: relative;
+	top: 0;
+	left: 0;
+	z-index: 2;
+	border: 1px solid #848484;
+}
+
+.VIEW .EDIT_Only {
+	display: none;
+}
+
+.MINI .EDIT_Only {
+    display: none;
+}
+
+/* Title bar */
+.reportTitle {
+	border-top: 10px solid #BDBDBD;
+	border-bottom: 1px solid #B9B9B9;
+	background-color: #D3D3D3;
+	padding: 5px 10px 5px 0px;
+}
+
+.reportTitle H2 {
+	font-size: 136%;
+	display: inline;
+	cursor: pointer;
+}
+
+.reportTitle A {
+	color: #000;
+	text-decoration: none;
+}
+
+.VIEW .reportTitle A {
+    cursor: default;
+}
+
+.VIEW .reportTitle .titleLink {
+    padding-left: 5px;
+}
+
+.reportTitle .titleLink IMG {
+	float: left;
+	vertical-align: middle;
+  padding-left: 5px;
+	padding-top: 4px;
+	padding-right: 2px;
+}
+
+.reportFormatDiv {
+	height: 24px; 
+	width: 240px;
+	overflow: hidden;
+	float: right;
+}
+
+.reportFormatShowDiv {
+	height: 21px; 
+	width: 100px;
+	overflow: hidden;
+	float: right;
+}
+
+.reportDisplayFormat {
+	float: right;
+    cursor: pointer;
+}
+
+.pressed {
+	background-color: #D3D3D3;
+	border-top: 1px solid #a1b0e5;
+	border-left: 1px solid #a1b0e5;
+	border-right: none;
+	border-bottom: none;
+}	
+
+.reportDisplayFormat IMG {
+	float: left;
+	margin-right: 5px;
+	width: 19px;
+	height: 15px;
+}
+
+.selectChartType {
+	display: block;
+	float: right;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+/* End title bar */
+
+/* Report summary bar */
+.reportSummary {
+	background-color: #D3D3D3;
+	border-bottom: 1px solid #848484;
+	border-top: 1px solid #F0F0F0;
+	font-size: 85%;
+}
+
+.filterSummary {
+	float: left;
+	cursor: pointer;
+}
+
+.filterSummary SPAN {
+	float: left;
+	height: 20px;
+	padding: 3px 3px 0 3px;
+}
+
+.filterPaneToggle {
+	height: 20px;
+	width: 22px;
+	float: left;
+	margin: 5px 2px 0 5px;
+	cursor: pointer;
+	background-image: url(../images/report/icon_filters_fold.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.filterPaneToggle:hover {
+	/*background-position: 0 -20px;*/
+	/*background-image: url(../images/report/icon_filters_foldH.png);*/
+}
+
+.filterSummary .hide {
+	/*background-position: 0 -40px;*/
+	background-image: url(../images/report/icon_filters_unfold.png);
+}
+
+.filterSummary .hide:hover {
+	/*background-position: 0 -60px;*/
+	/*background-image: url(../images/report/icon_filters_unfoldH.png);*/
+}
+
+.statusBar {
+	float: right;
+	padding: 6px 10px 0 0;
+}
+
+#reportActions {
+    float: right;
+    margin: 4px 7px 0 0;
+}
+
+/* End report summary bar */
+
+/* Field zones */
+.commonDragObject {
+	border: 1px solid gray;
+	font-size: 77%;
+	padding: 3px 5px;
+	white-space: nowrap;
+}
+
+.filterDragObject {
+	background-color: #fff4ca;
+}
+
+.metricDragObject {
+	background-color: #d1dcff;
+}
+
+.attributeDragObject {
+	background-color: #ffeeab;
+}
+
+.dropZoneAttributes {
+	vertical-align: top;
+	width: 98%;
+	min-height: 24px;
+	height: auto !important;
+	height: 24px;
+	overflow: auto;
+	border: 1px solid silver;
+	background: url(../images/report/attribute_metric_outline.png) white no-repeat 4px 2px;
+	background-color: #fff7d6;
+}
+
+.dropZoneMeasures {
+	vertical-align: top;
+	width: 98%;
+	min-height: 24px;
+	height: auto !important;
+	height: 24px;
+	overflow: auto;
+	border: 1px solid silver;
+	background: url(../images/report/attribute_metric_outline.png) white no-repeat 4px 2px;
+	background-color: #e9efff;
+}
+
+.reportLayout {
+	border: 1px solid #B3B3B3;
+	border-left: 0px;
+	border-right: 0px;
+}
+
+.reportLayout .attributeItem {
+	background: url(../images/report/gem_attribute.png) no-repeat;
+	margin: 2px 0 2px 2px;
+	width: 120px;
+}
+
+.reportLayout .attributeItemHover {
+	background: url(../images/report/gem_attribute_hover.png) no-repeat;
+}
+
+.reportLayout .metricItem {
+	background: url(../images/report/gem_metric.png) no-repeat;
+	margin: 2px 0 2px 2px;
+	width: 120px;
+}
+
+.reportLayout .metricItemHover {
+	background: url(../images/report/gem_metric_hover.png) no-repeat;
+}
+
+.reportLayout .metricDisabled {
+	background: url(../images/report/gem_metric_disabled.gif) no-repeat !important;
+}
+
+.reportLayout TABLE {
+	width: 100%;
+	float: left;
+	table-layout: fixed;
+	border: 0;
+}
+
+.reportLayout .hideLayoutPane {
+	width: 12px;
+	height: 12px;
+	margin: 5px;
+	cursor: pointer;
+	float: right;
+}
+
+TD.dropZoneLabel {
+	width: 112px;
+	text-align: right;
+	font-weight: bold;
+	font-size: 92%;
+}
+
+.dropZoneItem {
+	cursor: move;
+	font-size: 77%;
+	float: left;
+	overflow: hidden;
+	white-space: nowrap;
+	height: 20px;
+}
+
+.gemLabel {
+	width: 114px;
+	height: 17px;
+	overflow: hidden;
+	padding-top: 3px;
+	padding-left: 6px;
+}
+
+/* End fields stuff */
+
+/* Filter related styles */
+
+.reportFilter {
+	background-color: white;
+	border: 1px solid #B3B3B3;
+	border-left: 0px;
+	border-right: 0px;
+	border-top: 0px;
+}
+
+.filters {
+	vertical-align: top;
+	height: 82px;
+	width: 92%;
+	margin: 2px 0 2px 8px;
+	overflow: auto;
+}
+
+.filterPaneHint {
+	font-size: 122%;
+	color: #666666;
+	width: 100%;
+	text-align: center;
+	margin-top: 25px;
+}
+
+.filterGroup {
+	font-size: 85%;
+    overflow: auto;
+    float: left;
+	width: 97%;
+	border-bottom: 1px solid white;
+}
+
+.lockImg {
+	width: 11px;
+	height: 16px;
+	margin-left: 5px;
+	vertical-align: top;
+}
+
+.unlocked .lockImg, .lockedForUser .filterAction {
+	display: none;
+}
+
+.filterItem {
+	width: 100%;
+	overflow: auto;
+	min-height: 17px;
+}
+
+.filterItem IMG {
+	cursor: pointer;
+	margin: 0 5px 0 2px;
+}
+ 
+.filterItemList {
+	float: left;
+	clear: left;
+	width: 100%;
+}
+
+.filterLine {
+	height: 17px;
+}
+
+.filterIndent {
+	float: left;
+	width: 50px;
+	overflow: hidden;
+}
+
+.filterIndent2 {
+	float: left;
+	width: 60px;
+}
+
+.filters .filterItemMouseOver {
+	background-color: #fff4ca;
+	cursor: move;
+}
+
+.filterText {
+	width: 70%;
+	padding: 3px 0;
+	vertical-align: middle;
+	float: left;
+}
+
+.optionItem {
+	float: left;
+	clear: left;
+	width: 90%;
+}
+	
+	
+/******** END NEW SKIN STYLES *************/
+/******** TEMP STYLES *************/
+.timePresets {display:none;}
+
+/******** END TEMP STYLES *************/
+.closeBox {
+	width: 12px;
+	height: 12px;
+	margin: 5px;
+	cursor: pointer;
+}
+
+.helpIcon {
+	margin-top: 5px;
+}
+
+/* Main Report Content */
+.reportArea {
+	height: 300px;
+	background-color: #fff;
+	position: relative;
+	overflow: hidden;
+}
+
+.reportArea .reportEmpty, .reportArea .noData {
+	padding-top: 100px;
+	vertical-align: center;
+	text-align: center;
+	color: #666666;
+}
+
+.reportArea .reportEmpty, .reportArea .noData .noDataHeader {
+	font-size: 152%;
+}
+
+.reportArea .noData .noDataHint {
+	float: left;
+	clear: left;
+	width: 100%;
+	margin-top: 20px;
+	text-align: center;
+}
+
+.reportArea IMG {
+	display: block;
+	margin: auto;
+}
+
+.reportArea PRE {
+	overflow: auto;
+	float: left;
+	clear: left;
+	width: 95%;
+	height: 80%;
+}
+
+.reportArea IMG.reportMsgIcon {
+	vertical-align: top;
+	float: left;
+	padding-right: 10px;
+}
+
+.reportArea .reportMsgText {
+	overflow: none;
+	width: 85%;
+	float: left;
+	padding-top: 10px;
+}
+
+/* Pivot Table Styles */
+.pivotTable {
+	margin: 10px;
+	vertical-align: middle;
+	overflow: hidden;
+	-moz-user-select:none;
+	cursor:default;
+	padding: 0 0 0 0;
+	font-size: 85%;
+}
+
+.pivotTable TABLE {
+	border-spacing: 0px;
+	vertical-align: middle;
+	margin: 0;
+	_border-collapse: collapse;  /* show to IE only */
+}
+
+.pivotTable .pivotTableRowLabelHeaderSection {
+	vertical-align: bottom;
+}
+
+.pivotTable .pivotTableRowLabelHeaderContainer {
+	border-right: 2px solid rgb(153,153,153);
+	vertical-align: bottom;
+}
+
+.pivotTable .pivotTableRowLabelHeaderContainer TABLE {
+	border-collapse: collapse;
+	border-bottom: 2px solid rgb(153,153,153);
+	cursor: pointer;
+}
+
+.pivotTable .pivotTableColumnHeaderSection {
+	vertical-align: bottom;
+}
+
+.pivotTable .pivotTableColumnHeaderContainer {
+	overflow: hidden;
+	vertical-align: bottom;
+}
+
+.pivotTable .pivotTableColumnHeaderContainer TABLE {
+	border-collapse: collapse;
+	border-bottom: 2px solid rgb(153,153,153);
+	table-layout: fixed;
+	cursor: pointer;
+}
+	
+.pivotTable .pivotTableDataSection {
+	vertical-align: top;
+}
+
+.pivotTable .pivotTableDataContainer {
+	overflow: hidden;
+}
+
+.pivotTable .pivotTableDataContainer TABLE {
+	border-right: 1px solid rgb(153,153,153);
+	table-layout: fixed;
+}
+
+.pivotTable .pivotTableRowLabelSection {
+	vertical-align: top;
+}
+
+.pivotTable .pivotTableRowLabelContainer {
+	overflow: hidden;
+	border-right: 2px solid rgb(153,153,153);
+	vertical-align: top;
+}
+
+.pivotTable .pivotTableRowLabelContainer TABLE {
+	border-collapse: collapse;
+	cursor: pointer;
+}
+
+.pivotTable .pivotTableScrollbars {
+	overflow: scroll;
+	position: relative;
+	z-index: 100;
+}
+
+.pivotTable .pivotTableContent {
+	position: relative;
+	z-index: 101;
+	overflow: hidden;
+}
+
+.pivotTable .pivotTableContent TABLE {
+	border-collapse: collapse;
+}
+
+.pivotTable .slicer {
+	background-color: white;
+}
+
+.pivotTable .columnHeaders TD {
+	color: #000000;
+	padding: 0 0 0 0;
+	vertical-align: top;
+	border: 1px solid #999;
+	border-left: none;
+	border-bottom: none;
+}
+
+.pivotTable .columnHeaders .columnheading {
+	background-color: #fce52d;
+}
+
+.pivotTable .columnHeaders .columnheading:hover {
+	background-color: #fbbb12;
+}
+
+.pivotTable .columnHeaders .member {
+	background-color: #f5f5f5;
+	text-align: center;
+}
+
+.pivotTable .columnHeaders .member:hover {
+	background-color: #d1d1d1;
+}
+
+.pivotTable .columnHeaders .memberSubTotal {
+	background-color: #f5f5f5;
+	font-weight: bold;
+	text-align: center;
+}
+
+.pivotTable .columnHeaders .memberSubTotal:hover {
+	background-color: #d1d1d1;
+}
+
+.pivotTable .columnHeaders .metricNoData {
+	background-color: #d1dcff;
+	text-align: center;
+}
+
+.pivotTable .columnHeaders .metric {
+	background-color: #BCE9F9;
+	text-align: center;
+}
+
+.pivotTable .columnHeaders .metric:hover {
+	background-color: #4AC3F0;
+}
+
+.pivotTable .columnHeaders .metricHover {
+	background-color: #85a1ff !important;
+}
+
+.pivotTable .columnHeaders DIV {
+	overflow: hidden;
+	margin: 2px 4px 2px 4px;
+}
+
+.pivotTable .columnHeaders .grandTotal:hover {
+	background-color: #d1dcff;
+}
+
+.pivotTable .rowLabelHeaders TD {
+	color: #000000;
+	background-color: #FCE52D;
+	vertical-align: top;
+	border: 1px solid #999;
+	border-right: none;
+	_border-bottom: none;  /* show to IE only */	
+}
+
+.pivotTable .rowLabelHeaders TD:hover {
+	background-color: #FBBB12;
+}
+
+
+.pivotTable .rowLabelHeaders TD DIV {
+	white-space: nowrap;
+ 	margin: 2px 4px;
+}
+
+.pivotTable .rowHeaders TD {
+	border: 1px solid #999;
+	border-top: none;
+	border-right: none;
+}
+
+.pivotTable .rowHeaders TD DIV {
+	white-space: nowrap;
+ 	padding: 2px 4px;
+}
+
+.pivotTable .hideOverflow TD DIV {
+	overflow: hidden;
+}
+
+.pivotTable .rowHeaders .subTotal {
+	background-color: #e5e5e5;
+	font-weight: bold;
+}
+
+.pivotTable .rowHeaders .subTotal:hover {
+	background-color: #c2c2c2;
+}
+
+.pivotTable .rowHeaders .inner {
+	background-color: #f5f5f5;
+}
+
+.pivotTable .rowHeaders .inner:hover {
+	background-color: #d1d1d1;
+}
+
+.pivotTable .rowHeaders .outer {
+	background-color: #f5f5f5;
+}
+
+.pivotTable .rowHeaders .outer:hover {
+	background-color: #d1d1d1;
+}
+
+.pivotTable .cells TD {
+	padding: 0 0 0 0;
+	text-align: right;
+	border-bottom: 1px solid #999;
+	cursor: move;
+}
+
+.pivotTable .cells DIV {
+	overflow: hidden;
+	white-space: nowrap;
+	margin: 2px 4px 2px 4px;
+}
+
+.pivotTable .cells .rowSubTotal {
+	background-color: #e5e5e5;
+	font-weight: bold;
+}
+
+.pivotTable .cells .colSubTotal {
+	background-color: #e5e5e5;
+}
+
+.pivotTable .cells .colGrandTotal {
+	font-weight: bold;
+	background-color:#d3d3d3;
+}
+
+.pivotTable .highlightedCell {
+	background-color: #CCCCCC !important;
+}
+
+.pivotTable .highlightedRow {
+	background-color: #999999 !important;
+}
+
+.pivotTable .highlightedColumn {
+	background-color: #999999 !important;
+}
+
+.pivotTable .highlighted {
+	background-color: #AAAAAA !important;
+}
+
+.pivotTable .rowHeaders .highlighted {
+	color: #FFFFFF !important;
+}
+
+.pivotTable .columnHeaders .highlighted {
+	color: #FFFFFF !important;
+}
+
+.rowTruncate {
+	position: absolute;
+	left: 10px;
+	padding: 5px;
+	width: 600px;
+	background-color: #999999;
+	color: white;
+	z-Index: 200;
+}
+
+.colTruncate {
+	position: absolute;
+	padding: 5px;
+	width: 300px;
+	background-color: #999999;
+	color: white;
+	z-Index: 200;
+}
+
+.reportMain .trashcan {
+	position: absolute;
+	width: 150px;
+	height: 126px;
+	z-index: 300;
+	background: url(../images/report/trash_closed.gif) no-repeat 4px 2px;
+}
+
+.reportMain .trashActive {
+	background: url(../images/report/trash_open.gif) no-repeat 4px 2px;
+}
+
+/* Dojo widget styles */
+
+/* Dojo popup menus */
+body .dojoPopupMenu2 {
+	border: 1px solid #ccc;
+	background:white !important;
+}
+
+body .dojoMenuItem2 {
+	height: 25px;
+}
+
+body .dojoMenuItem2Hover {
+	background-color: #ccc;
+}
+
+body .dojoMenuItem2Disabled .dojoMenuItem2Label,
+body .dojoMenuItem2Disabled .dojoMenuItem2Accel {
+	color: #ddd;
+	font-size: 11px;
+}
+
+body .dojoMenuItem2 .dojoMenuItem2Label,
+body .dojoMenuItem2 .dojoMenuItem2Accel {
+    font-size: 11px;
+}
+
+body .dojoMenuSeparator2Top {
+	border-bottom: 1px solid #ccc;
+}
+
+body .dojoMenuSeparator2Bottom {
+	border: none;
+}
+
+#progressPane .dojoFloatingPaneClient {
+	background-color: white;
+	overflow: hidden;
+}
+
+#progressPane .dojoFloatingPaneTitleBar {
+	cursor: move;
+	background-color: #9dace0;
+}
+
+#progressPane #progressPaneActions div {
+	width: 100%;
+	clear: both;
+}
+
+.pivotTable .rowLabelHeaders .resize {
+	margin-left: 0;
+	padding-left: 5px;	
+	padding-right: 0;
+	margin-right:0; 
+	height:100%;
+}
+.pivotTable .columnHeaders .resize {
+	margin-left: 0;
+	padding-left: 5px;
+	padding-right: 0;
+	margin-right:0; 
+	height:100%;
+}
+
+.pivotTable .rowLabelHeaders .resizeHandle{
+    cursor:col-resize;
+    line-height: 0px;
+    position: absolute;
+    width: 0px;
+    bottom: 0px;
+    height: 118px; 
+    margin:0;
+    padding:0;
+    border: transparent  solid 2px;
+}
+/*IE6 doesn't support transparent border, do IE6 hack here*/
+*html .pivotTable .rowLabelHeaders .resizeHandle
+{
+    border-color: pink;
+    filter: chroma(color=pink);
+}
+
+.pivotTable .columnHeaders .resizeHandle{
+    cursor:col-resize;
+    line-height: 0px;
+    position: absolute;
+    width: 0px;
+    bottom: 0px;
+    height: 118px; 
+    margin:0;
+    padding:0;
+    border: transparent solid 2px;
+}
+
+*html .pivotTable .columnHeaders .resizeHandle
+{
+    border-color: pink;
+    filter: chroma(color=pink);
+}
+
+.pivotTable .resizeIndicator{
+    float: top;
+    position: absolute;
+    top: 0px;
+    width: 0px;
+    height: 1000px;
+    border: 2px gray solid;
+    cursor: col-resize;
+}
+
+.rptInfoTitle {
+	color:#9dace0;
+}
+.rptInfo {
+	width: 460px;
+	border: 2px solid #848484;
+	background-color: #ffffff;
+	2px solid #848484;
+}
+.rptInfoContent {
+	width: 460px;
+	background-color: #FFFFFF;
+		
+	font-size:85%;
+	font-family: verdana, geneva, arial, helvetica, sans-serif;
+}
+
+.cvRptInfoTooltip{
+		padding: 5px;
+}
+
+.cvRptInfoTooltipHeader {
+	height: 25px;
+	background-color: #DFDFDF;
+	width: 460px;
+	font-family: verdana, geneva, arial, helvetica, sans-serif;
+	font-size:100%;
+	background-image: url('../images/report/about.png');
+	background-repeat: no-repeat;
+	background-position: 2px 6px;
+}
+
+.cvRptInfoTooltipTitle {
+	font-size:100%;
+	font-family: verdana, geneva, arial, helvetica, sans-serif;
+	padding: 10px 1px 5px 10px;
+}
+
+.cvRptInfoTooltipBody_2 {
+	height: 102px;
+	width: 460px;
+	font-size:100%; 
+	padding-top:8px;
+}
+
+.cvRptInfoTooltipFooter {
+	height: 10px;
+	width: 460px;
+	font-size:100%;
+}
+
+.buttonOK {
+	margin-right: 0px;
+	align: right;
+}
+.buttonCancel {
+	margin-right:0px;
+}
+.fieldLabel {
+	font-weight: bold;
+	text-align: right;
+	padding-right: 5px;
+	vertical-align: top;
+}
+
+.refreshPaneComplete {
+	background-image:url(../images/report/icon_refreshing_done.png);
+	background-repeat:no-repeat;
+	background-position:0%;
+	padding-top: 3px;
+	padding-bottom:0px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+*html refreshPaneComplete
+{
+border-color: pink;
+filter: chroma(color=pink);
+}
+
+.refreshPaneCanceledMode {
+	padding-top: 3px;
+	padding-bottom:0px;
+	padding-right:5px;
+	height: 18px;
+}
+
+.progressPaneUp {
+    width: 240px;
+    height:66px;
+    background-image:url(../images/report/refreshingHeader.gif);
+    background-repeat:no-repeat;
+    z-index: 1100;
+    top:105px;
+    right:5%;
+}
+
+.progressPaneContent {
+    width: 220px;
+    font-size:85%;
+    font-family: verdana, geneva, arial, helvetica, sans-serif;
+    background-image:url(../images/report/refreshingMiddle.gif);
+    background-repeat:repeat-y;
+    padding-left:10px;
+    z-index: 1100;
+    word-wrap: break-word;
+    white-space-collapse:collapse;
+}
+
+.progressPaneDown {
+    width: 240px;
+    height:20px;
+    background-image:url(../images/report/refreshingFooter.gif);
+    background-repeat:no-repeat;
+    z-index: 1100;
+}
+
+.progressPaneHeaderLabel {
+    padding-top:40px;
+    padding-left:15px;
+}
+
+.progressPaneDiv {
+    float:right;
+    margin-top:3px;
+    height:18px;
+}
+
+.reportTooltipTextArea {
+    padding-top: 5px;
+    padding-left: 10px;
+}
+
+#refreshDates{
+	border-top: 1px solid #ced3e5;
+}
+
+.cmdActionsBtn{
+	border: 1px solid #848484;
+	margin:2px 10px 0px 25px;
+	padding-right: 10px;
+	padding-left 6px;
+	height: 19px;
+	display:block;
+	background: url(../images/report/9x9_arrow_down.png) 50px center no-repeat;
+	background-color:#E6E6E6;
+	color:black;
+}
+
+.cmdActionsBtn span{
+	line-height: 19px;
+	margin-left: 6px;
+	cursor: pointer;
+}

@@ -16,7 +16,9 @@
  */
 package org.pentaho.agilebi.pdi.spoon;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
@@ -30,27 +32,27 @@ import org.pentaho.ui.xul.impl.XulEventHandler;
 
 public class AgileBISpoonPlugin implements SpoonPlugin{
 
-  public Map<String, XulEventHandler> getEventHandlers() {
-    HashMap<String, XulEventHandler> hash = new HashMap<String, XulEventHandler>();
-    hash.put("spoon", ModelerHelper.getInstance()); //$NON-NLS-1$
-    hash.put("trans-graph", ModelerHelper.getInstance()); //$NON-NLS-1$
-    hash.put("database_dialog", new AgileBiDatabaseController()); //$NON-NLS-1$
+  public Map<String, List<XulEventHandler>> getEventHandlers() {
+    HashMap<String, List<XulEventHandler>> hash = new HashMap<String, List<XulEventHandler>>();
+    hash.put("spoon", Collections.singletonList((XulEventHandler) ModelerHelper.getInstance())); //$NON-NLS-1$
+    hash.put("trans-graph", Collections.singletonList((XulEventHandler) ModelerHelper.getInstance())); //$NON-NLS-1$
+    hash.put("database_dialog", Collections.singletonList((XulEventHandler) new AgileBiDatabaseController())); //$NON-NLS-1$
     return hash;
   }
 
-  public Map<String, XulOverlay> getOverlays() {
+  public Map<String, List<XulOverlay>> getOverlays() {
    
-  	HashMap<String, XulOverlay> hash = new HashMap<String, XulOverlay>();
+  	HashMap<String, List<XulOverlay>> hash = new HashMap<String, List<XulOverlay>>();
   	
   	XulOverlay overlay = new DefaultXulOverlay("org/pentaho/agilebi/pdi/spoon/spoon_overlays.xul"); //$NON-NLS-1$ 
-    hash.put("spoon", overlay); //$NON-NLS-1$
+    hash.put("spoon", Collections.singletonList((XulOverlay) overlay)); //$NON-NLS-1$
     
 
     overlay = new DefaultXulOverlay("org/pentaho/agilebi/pdi/spoon/trans_overlay.xul"); //$NON-NLS-1$ 
-    hash.put("trans-graph", overlay); //$NON-NLS-1$
+    hash.put("trans-graph", Collections.singletonList((XulOverlay) overlay)); //$NON-NLS-1$
     
     overlay = new DefaultXulOverlay("org/pentaho/agilebi/pdi/spoon/database_dialog_overlay.xul"); //$NON-NLS-1$  
-    hash.put("database_dialog", overlay); //$NON-NLS-1$
+    hash.put("database_dialog", Collections.singletonList((XulOverlay) overlay)); //$NON-NLS-1$
     
     return hash;
   }

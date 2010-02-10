@@ -1,4 +1,4 @@
-package org.pentaho.agilebi.pdi.visualizations.web;
+package org.pentaho.agilebi.pdi.visualizations.analyzer;
 
 import java.io.File;
 import java.util.Date;
@@ -14,12 +14,12 @@ import org.pentaho.di.repository.RepositoryLock;
 import org.pentaho.di.repository.RepositoryObjectType;
 import org.pentaho.ui.xul.components.XulTab;
 
-public class WebVisualizationMeta implements EngineMetaInterface {
+public class AnalyzerVisualizationMeta implements EngineMetaInterface {
 
-  WebVisualizationController browser;
+  AnalyzerVisualizationController browser;
   XulTab tab;
   
-  public WebVisualizationMeta(WebVisualizationController browser) {
+  public AnalyzerVisualizationMeta(AnalyzerVisualizationController browser) {
     this.browser = browser;
   }
   

@@ -1,4 +1,4 @@
-package org.pentaho.agilebi.pdi.visualizations.web;
+package org.pentaho.agilebi.pdi.visualizations.analyzer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,9 +32,9 @@ import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
 import org.w3c.dom.Node;
 
-public class WebVisualization extends AbstractVisualization {
+public class AnalyzerVisualization extends AbstractVisualization {
 	
-	public static final String WEB_VISUALIZATION = "org/pentaho/agilebi/pdi/visualizations/web/web_visualization_browser.xul";
+	public static final String WEB_VISUALIZATION = "org/pentaho/agilebi/pdi/visualizations/analyzer/analyzer_visualization_browser.xul";
 
 	private String newUrl;
 	private String openUrl;
@@ -135,7 +135,7 @@ public class WebVisualization extends AbstractVisualization {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
     	SwtXulLoader theXulLoader = new SwtXulLoader();
-      WebVisualizationController theController = new WebVisualizationController(spoon.tabfolder.getSwtTabset(), this, model.getFileName(), model.getModelName() + " Cube", null);
+      AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, model.getFileName(), model.getModelName() + " Cube", null);
     	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION);
 			theXulContainer.addEventHandler(theController);
 			Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject();
@@ -148,7 +148,7 @@ public class WebVisualization extends AbstractVisualization {
     }
   }
 
-	private void createTabForBrowser(Composite composite, WebVisualizationController controller, ModelerWorkspace model) throws KettleException {
+	private void createTabForBrowser(Composite composite, AnalyzerVisualizationController controller, ModelerWorkspace model) throws KettleException {
 
     XulTabAndPanel tabAndPanel = AgileBiVisualizationPerspective.getInstance().createTab();
 
@@ -233,7 +233,7 @@ public class WebVisualization extends AbstractVisualization {
       String modelId = node2.getText();            
       
       SwtXulLoader theXulLoader = new SwtXulLoader();
-      WebVisualizationController theController = new WebVisualizationController(spoon.tabfolder.getSwtTabset(), this, modelFileName, modelId, null);
+      AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, modelFileName, modelId, null);
     	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION);
 			theXulContainer.addEventHandler(theController);
 			Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject();
@@ -257,7 +257,7 @@ public class WebVisualization extends AbstractVisualization {
   }
 
   public boolean save(EngineMetaInterface meta, String fname, boolean isExport) {
-    WebVisualizationMeta wvmeta = (WebVisualizationMeta)meta;
+    AnalyzerVisualizationMeta wvmeta = (AnalyzerVisualizationMeta)meta;
     wvmeta.save(fname);
     File f = new File(fname);
     String fullPath = f.getAbsolutePath();

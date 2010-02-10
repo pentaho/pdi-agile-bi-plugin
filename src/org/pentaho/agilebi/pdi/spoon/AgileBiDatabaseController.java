@@ -64,7 +64,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 			ModelerWorkspace model = new ModelerWorkspace();
 			ModelerWorkspaceUtil.populateModelFromSource(model, source);
 
-			AgileBiPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName((Spoon) SpoonFactory.getInstance(), MODELER_NAME));
+			AgileBiPerspective.getInstance().createTabForModel(model, MODELER_NAME);
 
 		} catch (Exception e) {
 			e.printStackTrace();

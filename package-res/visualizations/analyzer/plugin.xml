@@ -4,7 +4,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
            <!--  Analyzer Web Visualization -->
-  <bean id="visualizationBean" class="org.pentaho.agilebi.pdi.visualizations.web.WebVisualization">
+  <bean id="visualizationBean" class="org.pentaho.agilebi.pdi.visualizations.analyzer.AnalyzerVisualization">
     <property name="title" value="Analyzer"/>
     <property name="extension" value="xanalyzer"/>
     <property name="newUrl" value="http://localhost:9999/pentaho/content/analyzer/editor?catalog=${modelLocation}&amp;cube=${modelId}&amp;showFieldList=true&amp;fieldListView=cmdViewType"/>
@@ -15,6 +15,5 @@
     <property name="refreshDataJavascript" value="cv.getActiveReport().refreshReport()"/>
     <property name="refreshModelJavascript" value="cv.rptEditor.clearCache(); gCtrlr.repositoryBrowserController.remoteSave('tmpview','${basedir}', '', 'xanalyzer', true); 
     document.location.href='editor?command=open&amp;showFieldList=true&amp;fieldListView=cmdViewType&amp;solution=${basedir}&amp;path=&amp;action=tmpview.xanalyzer';"/>
-
   </bean>
 </beans>
