@@ -36,6 +36,9 @@
     <!-- this manual sync should go away once this project is propertly ivy-ized
 -->
 
+    <dependency org="metro" name="metro-webservices-api" rev="2.0" />
+    <dependency org="metro" name="metro-webservices-rt" rev="2.0" />
+
     <dependency org="pentaho" name="pentaho-database" rev="${dependency.pentaho-database.revision}" conf="default->default"
       changing="true" />
     <dependency org="pentaho" name="pentaho-database-model" rev="${dependency.pentaho-database.revision}"
