@@ -34,6 +34,8 @@ import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaModel;
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.IPmdConnectionProvider;
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdConnectionProvider;
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdDataFactory;
+import org.pentaho.reporting.engine.classic.wizard.model.DetailFieldDefinition;
+import org.pentaho.reporting.engine.classic.wizard.model.GroupDefinition;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.WizardEditorModel;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.AbstractWizardStep;
 import org.pentaho.reporting.libraries.base.util.DebugLog;
@@ -145,7 +147,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   public void stepActivating()
   {
     super.stepActivating();
-    if (model != null) {
+    if (model != null && df == null) {
       
       // Populate a PmdDataFactoryClass for the report definition to use
       File modelsDir = new File("models"); //$NON-NLS-1$
@@ -266,10 +268,16 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     String oldQuery = getCurrentQuery();
     if (!(currentQuery != null && currentQuery.equals(oldQuery))) {
       getEditorModel().getReportDefinition().setQuery(currentQuery);
+      clearGroupsAndFields();
       this.firePropertyChange(CURRENT_QUERY_PROPERTY_NAME, oldQuery, currentQuery);
     }
     updateGui();
     this.setValid(validateStep());
+  }
+  
+  private void clearGroupsAndFields() {
+    getEditorModel().getReportSpec().setGroupDefinitions(new GroupDefinition[0]);
+    getEditorModel().getReportSpec().setDetailFieldDefinitions(new DetailFieldDefinition[0]);
   }
 
   protected void setValid(final boolean valid) {
