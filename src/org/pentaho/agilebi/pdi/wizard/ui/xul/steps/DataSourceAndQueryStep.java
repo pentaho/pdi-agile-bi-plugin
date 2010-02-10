@@ -23,6 +23,7 @@ import java.io.IOException;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.pdi.wizard.ui.xul.res.Messages;
 import org.pentaho.commons.metadata.mqleditor.editor.SwtMqlEditor;
 import org.pentaho.metadata.repository.IMetadataDomainRepository;
 import org.pentaho.pms.core.exception.PentahoMetadataException;
@@ -208,7 +209,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     datasourceLabel.setValue(DEFAULT);
     
     String currentQuery = getCurrentQuery();
-    boolean queryExists = (currentQuery != null && currentQuery.length() > 0 && !currentQuery.equalsIgnoreCase("Sample Query"));
+    boolean queryExists = (currentQuery != null && currentQuery.length() > 0 && !currentQuery.equalsIgnoreCase("Sample Query")); //$NON-NLS-1$
     XulButton createQueryBtn = (XulButton) getDocument().getElementById(CREATE_QUERY_BTN_ID);
     createQueryBtn.setDisabled(queryExists);
 
@@ -223,8 +224,8 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     if (reportDefinition.getDataFactory() == null ||
         StringUtils.isEmpty(reportDefinition.getQuery()))
     {
-      DebugLog.log("Have no query or no datafactory " +
-          reportDefinition.getDataFactory() + " " + reportDefinition.getQuery());
+      DebugLog.log("Have no query or no datafactory " + //$NON-NLS-1$
+          reportDefinition.getDataFactory() + " " + reportDefinition.getQuery()); //$NON-NLS-1$
       return false;
     }
 
@@ -281,7 +282,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   }
 
   protected void setValid(final boolean valid) {
-    XulButton nextButton = (XulButton) getDocument().getElementById("next_btn");
+    XulButton nextButton = (XulButton) getDocument().getElementById("next_btn"); //$NON-NLS-1$
     nextButton.setDisabled(!valid);
   }
 
@@ -290,7 +291,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
    */
   public String getStepName()
   {
-    return messages.getString("DATASOURCE_AND_QUERY_STEP.Step_Name"); //$NON-NLS-1$
+    return Messages.getString("DataSourceAndQueryStep.name"); //$NON-NLS-1$
   }
 
   public void setModel(ModelerWorkspace model) {
