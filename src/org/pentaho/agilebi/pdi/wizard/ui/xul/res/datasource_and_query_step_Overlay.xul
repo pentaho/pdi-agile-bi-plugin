@@ -7,9 +7,9 @@ there.is.only.xul" xmlns:pen="http://www.pentaho.org/2008/xul">
         <label value="Data Source:" />
         <label id="data_source_name_label" value=" " />
         <label value="Query:" />
-        <hbox>
+        <hbox><!--
           <button id="create_query_btn" label="Create..." onclick="datasource_and_query_step_handler.doCreateQuery()" />
-          <button id="edit_query_btn" label="Edit..." onclick="datasource_and_query_step_handler.doEditQuery()" />
+          --><button id="edit_query_btn" label="Edit..." onclick="datasource_and_query_step_handler.doEditQuery()" />
         </hbox>
       </vbox>     
     </hbox>

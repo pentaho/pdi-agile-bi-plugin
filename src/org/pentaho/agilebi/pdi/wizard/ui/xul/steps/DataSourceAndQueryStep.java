@@ -78,38 +78,22 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       return repo;
     }
     
-    public void doCreateQuery() {   
-      try {
-        IMetadataDomainRepository repo = getDomainRepo();
-        SwtMqlEditor editor = new SwtMqlEditor(repo);
-        editor.show();
-        if (editor.getOkClicked()) {
-          String queryString = editor.getQuery();
-          df.setQuery(DEFAULT, queryString);
-          setCurrentQuery(DEFAULT);
-        }
-      } catch (ReportDataFactoryException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
-    
     public void doEditQuery() {
       try {
 
         IMetadataDomainRepository repo = getDomainRepo();
         
         SwtMqlEditor editor = new SwtMqlEditor(repo);
-        String queryString = df.getQuery(DEFAULT);
-        editor.setQuery(queryString);
+        String queryString = null;
+        if (df != null && df.getQuery(DEFAULT) != null) {
+          queryString = df.getQuery(DEFAULT);
+          editor.setQuery(queryString);
+        }
         editor.show();
         if (editor.getOkClicked()) {
           queryString = editor.getQuery();
           df.setQuery(DEFAULT, queryString);
-          setValid(validateStep());
+          setCurrentQuery(DEFAULT);
         }
       } catch (ReportDataFactoryException e) {
         // TODO Auto-generated catch block
@@ -129,7 +113,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
 
   private static final String CURRENT_QUERY_PROPERTY_NAME = "currentQuery"; //$NON-NLS-1$
   private static final String DATA_SOURCE_NAME_LABEL_ID = "data_source_name_label";  //$NON-NLS-1$
-  private static final String CREATE_QUERY_BTN_ID = "create_query_btn"; //$NON-NLS-1$
+//  private static final String CREATE_QUERY_BTN_ID = "create_query_btn"; //$NON-NLS-1$
   private static final String EDIT_QUERY_BTN_ID = "edit_query_btn"; //$NON-NLS-1$
 
   private static final String DEFAULT = "default"; //$NON-NLS-1$
@@ -206,15 +190,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
 
   private void updateGui() {
     XulLabel datasourceLabel = (XulLabel) getDocument().getElementById(DATA_SOURCE_NAME_LABEL_ID);
-    datasourceLabel.setValue(DEFAULT);
-    
-    String currentQuery = getCurrentQuery();
-    boolean queryExists = (currentQuery != null && currentQuery.length() > 0 && !currentQuery.equalsIgnoreCase("Sample Query")); //$NON-NLS-1$
-    XulButton createQueryBtn = (XulButton) getDocument().getElementById(CREATE_QUERY_BTN_ID);
-    createQueryBtn.setDisabled(queryExists);
-
-    XulButton editQueryBtn = (XulButton) getDocument().getElementById(EDIT_QUERY_BTN_ID);
-    editQueryBtn.setDisabled(!queryExists);
+    datasourceLabel.setValue(modelFile.getName().substring(0, modelFile.getName().lastIndexOf('.')));
   }
   
   protected boolean validateStep()
@@ -267,11 +243,9 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   public void setCurrentQuery(String currentQuery)
   {
     String oldQuery = getCurrentQuery();
-    if (!(currentQuery != null && currentQuery.equals(oldQuery))) {
-      getEditorModel().getReportDefinition().setQuery(currentQuery);
-      clearGroupsAndFields();
-      this.firePropertyChange(CURRENT_QUERY_PROPERTY_NAME, oldQuery, currentQuery);
-    }
+    getEditorModel().getReportDefinition().setQuery(currentQuery);
+    clearGroupsAndFields();
+    this.firePropertyChange(CURRENT_QUERY_PROPERTY_NAME, oldQuery, currentQuery);
     updateGui();
     this.setValid(validateStep());
   }
