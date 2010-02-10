@@ -48,24 +48,23 @@
           <listitem label="field" />
         </listbox>
         <hbox>
-          <button label="${add_measure}" onclick="modeler.moveFieldsToMeasures()" />
-          <button label="${add_dimension}" onclick="modeler.moveFieldsToDimensions()" />
+			<button id="addField" label="${add}" onclick="modeler.addField()" />
         </hbox>
       </editpanel>
       
       <editpanel flex="1">
         <caption label="Model" />
-          <toolbar id="schema-toolbar" mode="icons">
+        <toolbar id="schema-toolbar" mode="icons">
               <toolbarspacer flex="1"/>
               <toolbarseparator/>
-  			<toolbarbutton id="measure" image="images/sm_measure_icon.png" onclick="modeler.showNewMeasureDialog()"/>
-  			<toolbarbutton id="dimension" image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()"/>
-  			<toolbarbutton id="hierarchy" image="images/sm_hierarchy_icon.png" onclick="modeler.showNewHierarchyDialog()"/>
-  			<toolbarbutton id="level" image="images/sm_level_icon.png" onclick="modeler.showNewLevelDialog()"/>
-              <toolbarseparator/>
-  			<toolbarbutton image="images/16x16_down.png" onclick="modeler.moveFieldDown()"/>
-  			<toolbarbutton image="images/16x16_Up.png" onclick="modeler.moveFieldUp()"/>
-  			<toolbarbutton image="images/remove.png" onclick="modeler.removeField()"/>
+              <toolbarbutton id="measureBtn" image="images/sm_measure_icon.png" onclick="modeler.showNewMeasureDialog()"/>
+    		  <toolbarbutton id="dimensionBtn" image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()"/>
+    		  <toolbarbutton id="hierarchyBtn" image="images/sm_hierarchy_icon.png" onclick="modeler.showNewHierarchyDialog()"/>
+    		  <toolbarbutton id="levelBtn" image="images/sm_level_icon.png" onclick="modeler.showNewLevelDialog()"/>
+    		  <toolbarseparator/>
+  			  <toolbarbutton image="images/16x16_down.png" onclick="modeler.moveFieldDown()"/>
+  			  <toolbarbutton image="images/16x16_Up.png" onclick="modeler.moveFieldUp()"/>
+  			  <toolbarbutton image="images/remove.png" onclick="modeler.removeField()"/>
   		</toolbar>
         <tree id="dimensionTree" flex="1" editable="false"
           ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move"

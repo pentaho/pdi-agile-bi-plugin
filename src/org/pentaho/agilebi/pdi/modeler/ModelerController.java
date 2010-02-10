@@ -213,6 +213,44 @@ public class ModelerController extends AbstractXulEventHandler{
     }
   }
 
+  public void addField() {
+  	XulListbox fieldsList = (XulListbox) document.getElementById(FIELD_LIST_ID);
+    Object[] selectedItems = fieldsList.getSelectedItems();
+    for (Object obj : selectedItems) {
+      if (obj instanceof AvailableField) {
+        AvailableField availableField = (AvailableField) obj;
+        // depending on the parent
+        if (selectedTreeItem == null) {
+          // null - cannot add fields at this level
+        } else if (selectedTreeItem instanceof MeasuresCollection) {
+          // measure collection - add as a measure
+        	MeasuresCollection theMesaures = (MeasuresCollection) selectedTreeItem;
+        	MeasureMetaData theMeasure = workspace.createMeasure(availableField);
+        	theMeasure.setParent(theMesaures);
+        	theMesaures.add(theMeasure);
+        } else if (selectedTreeItem instanceof DimensionMetaDataCollection) {
+          // dimension collection - add as a dimension
+        	DimensionMetaData theDimension = workspace.createDimension(availableField);
+        	DimensionMetaDataCollection theDimensions = (DimensionMetaDataCollection) selectedTreeItem;
+        	theDimension.setParent(theDimensions);
+        	theDimensions.add(theDimension);
+        } else if (selectedTreeItem instanceof DimensionMetaData) {
+          // dimension - add as a hierarchy
+        	HierarchyMetaData theHierarchy = workspace.createHierarchy(workspace.findDimension((DimensionMetaData)selectedTreeItem), availableField);
+        	DimensionMetaData theDimension = (DimensionMetaData) selectedTreeItem;
+        	theHierarchy.setParent(theDimension);
+        	theDimension.add(theHierarchy);
+        } else if (selectedTreeItem instanceof HierarchyMetaData) {
+          // hierarchy - add as a level
+        	LevelMetaData theLevel = workspace.createLevel(workspace.findHierarchy((HierarchyMetaData)selectedTreeItem), availableField);
+        	HierarchyMetaData theHierarchy = (HierarchyMetaData) selectedTreeItem;
+        	theLevel.setParent(theHierarchy);
+        	theHierarchy.add(theLevel);
+        } 
+      } 
+    }
+  }
+  
   public void init() throws ModelerException{
 
     bf.setDocument(document);
@@ -254,9 +292,33 @@ public class ModelerController extends AbstractXulEventHandler{
     visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements");
     
     modelTreeBinding = bf.createBinding(workspace, "model", dimensionTree, "elements");
-    bf.createBinding(dimensionTree, "selectedItem", this, "dimTreeSelectionChanged");
+    bf.createBinding(dimensionTree, "selectedItem", this, "dimTreeSelectionChanged");    
     
-    bf.createBinding(dimensionTree, "selectedItem", "measure", "disabled", new BindingConvertor<Object, Boolean>() {
+    bf.createBinding("fieldList", "selectedItem", "addField", "disabled", new BindingConvertor<Object, Boolean>() {
+    	public Boolean sourceToTarget(Object value) {
+      	XulListbox fieldsList = (XulListbox) document.getElementById(FIELD_LIST_ID);
+        Object[] selectedItems = fieldsList.getSelectedItems();
+    		return selectedItems.length == 0 || selectedTreeItem == null || selectedTreeItem instanceof LevelMetaData || selectedTreeItem instanceof MainModelNode;
+    	}
+
+      public Object targetToSource(Boolean value) {
+      	return null;
+      }
+    });
+    
+    bf.createBinding(dimensionTree, "selectedItem", "addField", "disabled", new BindingConvertor<Object, Boolean>() {
+    	public Boolean sourceToTarget(Object value) {
+      	XulListbox fieldsList = (XulListbox) document.getElementById(FIELD_LIST_ID);
+        Object[] selectedItems = fieldsList.getSelectedItems();
+    		return selectedItems.length == 0 || value == null || value instanceof LevelMetaData  || selectedTreeItem instanceof MainModelNode;
+    	}
+
+      public Object targetToSource(Boolean value) {
+      	return null;
+      }
+    });      
+    
+    bf.createBinding(dimensionTree, "selectedItem", "measureBtn", "disabled", new BindingConvertor<Object, Boolean>() {
     	public Boolean sourceToTarget(Object value) {
     		return !(value instanceof MeasuresCollection);
     	}
@@ -266,7 +328,7 @@ public class ModelerController extends AbstractXulEventHandler{
       }
     });    
     
-    bf.createBinding(dimensionTree, "selectedItem", "dimension", "disabled", new BindingConvertor<Object, Boolean>() {
+    bf.createBinding(dimensionTree, "selectedItem", "dimensionBtn", "disabled", new BindingConvertor<Object, Boolean>() {
     	public Boolean sourceToTarget(Object value) {
     		return !(value instanceof DimensionMetaDataCollection);
     	}
@@ -276,7 +338,7 @@ public class ModelerController extends AbstractXulEventHandler{
       }
     });
     
-    bf.createBinding(dimensionTree, "selectedItem", "hierarchy", "disabled", new BindingConvertor<Object, Boolean>() {
+    bf.createBinding(dimensionTree, "selectedItem", "hierarchyBtn", "disabled", new BindingConvertor<Object, Boolean>() {
     	public Boolean sourceToTarget(Object value) {
     		return !(value instanceof DimensionMetaData);
     	}
@@ -286,7 +348,7 @@ public class ModelerController extends AbstractXulEventHandler{
       }
     });
     
-    bf.createBinding(dimensionTree, "selectedItem", "level", "disabled", new BindingConvertor<Object, Boolean>() {
+    bf.createBinding(dimensionTree, "selectedItem", "levelBtn", "disabled", new BindingConvertor<Object, Boolean>() {
     	public Boolean sourceToTarget(Object value) {
     		return !(value instanceof HierarchyMetaData);
     	}
@@ -298,8 +360,6 @@ public class ModelerController extends AbstractXulEventHandler{
     
     bf.setBindingType(Type.BI_DIRECTIONAL);
     modelNameBinding = bf.createBinding(workspace, MODEL_NAME_PROPERTY, MODEL_NAME_FIELD_ID, VALUE_PROPERTY);
-    
-    bf.createBinding(this.propPanel, "visible", this, "propVisible");
     
     fireBindings();
     
@@ -351,29 +411,6 @@ public class ModelerController extends AbstractXulEventHandler{
     }
     // this.selectedColumns = selectedColumns;
     // this.firePropertyChange("selectedColumns", prevSelected , selectedColumns);
-  }
-  
-  public void moveFieldsToMeasures() {
-    XulListbox fieldsList = (XulListbox) document.getElementById(FIELD_LIST_ID);
-    Object[] selectedItems = fieldsList.getSelectedItems();
-    List<MeasureMetaData> generatedFields = new ArrayList<MeasureMetaData>();
-    for (Object obj : selectedItems) {
-      MeasureMetaData field = workspace.addFieldIntoPlay((AvailableField) obj);
-    }
-  }
-  
-  public void moveFieldsToDimensions() {
-    XulListbox fieldsList = (XulListbox) document.getElementById(FIELD_LIST_ID);
-    Object[] selectedItems = fieldsList.getSelectedItems();
-    // if a dimension or hierarchy is selected, add the field as a level
-    // otherwise add a new dimension
-    for (Object obj : selectedItems) {
-      if (selectedTreeItem == null) {
-        workspace.addDimension((AvailableField) obj);
-      } else {
-        workspace.addToHeirarchy(selectedTreeItem,(AvailableField) obj);
-      }
-    }
   }
   
 //  public void moveFieldIntoPlay() {
