@@ -18,6 +18,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.pentaho.agilebi.pdi.modeler.ModelerController;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.di.core.EngineMetaInterface;
@@ -32,7 +33,10 @@ import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.XulRunner;
+import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingConvertor;
+import org.pentaho.ui.xul.binding.BindingFactory;
+import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.components.XulTab;
 import org.pentaho.ui.xul.components.XulTabpanel;
 import org.pentaho.ui.xul.containers.XulTabbox;
@@ -59,6 +63,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   private ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective"); //$NON-NLS-1$
   private String defaultExtension = "";
   protected ModelerWorkspace model;
+  protected EngineMetaInterface selectedMeta;
   
   protected Map<XulTab, EngineMetaInterface> metas = new HashMap<XulTab, EngineMetaInterface>();
   
@@ -76,6 +81,22 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
       tabs = (XulTabs) document.getElementById("tabs");
       panels = (XulTabpanels) document.getElementById("tabpanels");
       tabbox = (XulTabbox) tabs.getParent();
+      BindingFactory bf = new DefaultBindingFactory();
+      bf.setDocument(document);
+      bf.createBinding(tabbox, "selectedIndex", this, "selectedMeta", new BindingConvertor<Integer, EngineMetaInterface>(){
+        public EngineMetaInterface sourceToTarget(Integer value) {
+          return metas.get(tabs.getTabByIndex(value));
+        }
+        public Integer targetToSource(EngineMetaInterface value) {
+          for(XulTab tab : metas.keySet()){
+            if(metas.get(tab) == value){
+              return tab.getParent().getChildNodes().indexOf(tab);
+            }
+          }
+          return null;
+        }
+      });
+      
     } catch(Exception e){
       logger.error(e);
     }
@@ -314,4 +335,15 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
     }
     return metas.get(tabbox.getTabs().getChildNodes().get( idx ));
   }
+  
+  public void setSelectedMeta(EngineMetaInterface meta){
+    EngineMetaInterface prevVal = this.selectedMeta;
+    this.selectedMeta = meta;
+    firePropertyChange("selectedMeta", prevVal, meta);
+  }
+  
+  public EngineMetaInterface getSelectedMeta(){
+    return selectedMeta;
+  }
+  
 }

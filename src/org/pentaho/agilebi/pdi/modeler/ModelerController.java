@@ -51,6 +51,7 @@ import org.pentaho.ui.xul.components.XulPromptBox;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDeck;
 import org.pentaho.ui.xul.containers.XulDialog;
+import org.pentaho.ui.xul.containers.XulEditpanel;
 import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.dnd.DropEvent;
@@ -108,6 +109,8 @@ public class ModelerController extends AbstractXulEventHandler{
   private Map<Class<? extends ModelerNodePropertiesForm>, ModelerNodePropertiesForm> propertiesForms = new HashMap<Class<? extends ModelerNodePropertiesForm>, ModelerNodePropertiesForm>();
   
   private ColResolverController colController;
+  
+  private XulEditpanel propPanel;
   
   public ModelerController(){
     workspace = new ModelerWorkspace();
@@ -219,6 +222,7 @@ public class ModelerController extends AbstractXulEventHandler{
     dimensionTree = (XulTree) document.getElementById("dimensionTree");
     visualizationList = (XulMenuList)document.getElementById("visualizationlist");
     propDeck = (XulDeck) document.getElementById("propertiesdeck");
+    propPanel = (XulEditpanel) document.getElementById("propertiesPanel");
     
     XulLabel sourceLabel = (XulLabel) document.getElementById(SOURCE_NAME_LABEL_ID);
     String connectionName = "";
@@ -294,6 +298,8 @@ public class ModelerController extends AbstractXulEventHandler{
     
     bf.setBindingType(Type.BI_DIRECTIONAL);
     modelNameBinding = bf.createBinding(workspace, MODEL_NAME_PROPERTY, MODEL_NAME_FIELD_ID, VALUE_PROPERTY);
+    
+    bf.createBinding(this.propPanel, "visible", this, "propVisible");
     
     fireBindings();
     
@@ -768,6 +774,21 @@ public class ModelerController extends AbstractXulEventHandler{
     }
   }
   
+  public void togglePropertiesPanel(){
+    setPropVisible(! isPropVisible());
+  }
+  
+  
+  private boolean propVisible = true;
+  public boolean isPropVisible(){
+    return propVisible;
+  }
+  
+  public void setPropVisible(boolean vis){
+    boolean prevVal = propVisible;
+    this.propVisible = vis;
+    this.firePropertyChange("propVisible", prevVal, vis);
+  }
   
   
 }

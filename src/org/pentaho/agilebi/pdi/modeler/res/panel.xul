@@ -28,86 +28,86 @@
     </hbox>
 
     <hbox flex="1">
-      <vbox>
 
-        <groupbox flex="1" width="250">
-	        <caption label="Data" />
-	        <hbox>
-		      <label value="${available}:" />
-		      <spacer flex="1" />
-		      <button onclick="modeler.refreshFields()" image="images/refresh.png" />
-	        </hbox>
-	        <listbox id="fieldList" flex="1" seltype="multi"
-	          pen:binding="name" ondrag="modeler.onFieldListDrag()"
-	          pen:drageffect="copy">
-	          <listitem label="field" />
-	          <listitem label="field" />
-	          <listitem label="field" />
-	          <listitem label="field" />
-	          <listitem label="field" />
-	          <listitem label="field" />
-	        </listbox>
-	        <hbox>
-	          <button label="${add_measure}" onclick="modeler.moveFieldsToMeasures()" />
-	          <button label="${add_dimension}" onclick="modeler.moveFieldsToDimensions()" />
-	        </hbox>
-        </groupbox>
         
-      </vbox>
-      <hbox flex="4">
-        <vbox flex="3">
-            <toolbar id="schema-toolbar" mode="icons">
-                <toolbarspacer flex="1"/>
-                <toolbarseparator/>
-    			<toolbarbutton id="measure" image="images/sm_measure_icon.png" onclick="modeler.showNewMeasureDialog()"/>
-    			<toolbarbutton id="dimension" image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()"/>
-    			<toolbarbutton id="hierarchy" image="images/sm_hierarchy_icon.png" onclick="modeler.showNewHierarchyDialog()"/>
-    			<toolbarbutton id="level" image="images/sm_level_icon.png" onclick="modeler.showNewLevelDialog()"/>
-                <toolbarseparator/>
-    			<toolbarbutton image="images/16x16_down.png" onclick="modeler.moveFieldDown()"/>
-    			<toolbarbutton image="images/16x16_Up.png" onclick="modeler.moveFieldUp()"/>
-    			<toolbarbutton image="images/remove.png" onclick="modeler.removeField()"/>
-    		</toolbar>
-          <tree id="dimensionTree" flex="1" editable="true"
-            ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move"
-            ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false" pen:preserveexpandedstate="true">
-            <treecols>
-              <treecol flex="1" label="" primary="true"
-                pen:binding="name" pen:childrenbinding="children"
-                pen:imagebinding="image" editable="true"
-                 pen:disabledbinding="editingDisabled"
-                pen:tooltipbinding="validationMessagesString" />
-            </treecols>
-            <treechildren>
-              <treeitem container="true" open="true">
-                <treerow>
-                  <treecell label="" />
-                </treerow>
-                <treechildren></treechildren>
-              </treeitem>
-            </treechildren>
-          </tree>
-        </vbox>
+      <editpanel width="250">
+        <caption label="Data" />
+        <hbox>
+	      <label value="${available}:" />
+	      <spacer flex="1" />
+	      <button onclick="modeler.refreshFields()" image="images/refresh.png" />
+        </hbox>
+        <listbox id="fieldList" flex="1" seltype="multi"
+          pen:binding="name" ondrag="modeler.onFieldListDrag()"
+          pen:drageffect="copy">
+          <listitem label="field" />
+          <listitem label="field" />
+          <listitem label="field" />
+          <listitem label="field" />
+          <listitem label="field" />
+          <listitem label="field" />
+        </listbox>
+        <hbox>
+          <button label="${add_measure}" onclick="modeler.moveFieldsToMeasures()" />
+          <button label="${add_dimension}" onclick="modeler.moveFieldsToDimensions()" />
+        </hbox>
+      </editpanel>
+      
+      <editpanel flex="1">
+        <caption label="Model" />
+          <toolbar id="schema-toolbar" mode="icons">
+              <toolbarspacer flex="1"/>
+              <toolbarseparator/>
+  			<toolbarbutton id="measure" image="images/sm_measure_icon.png" onclick="modeler.showNewMeasureDialog()"/>
+  			<toolbarbutton id="dimension" image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()"/>
+  			<toolbarbutton id="hierarchy" image="images/sm_hierarchy_icon.png" onclick="modeler.showNewHierarchyDialog()"/>
+  			<toolbarbutton id="level" image="images/sm_level_icon.png" onclick="modeler.showNewLevelDialog()"/>
+              <toolbarseparator/>
+  			<toolbarbutton image="images/16x16_down.png" onclick="modeler.moveFieldDown()"/>
+  			<toolbarbutton image="images/16x16_Up.png" onclick="modeler.moveFieldUp()"/>
+  			<toolbarbutton image="images/remove.png" onclick="modeler.removeField()"/>
+  		</toolbar>
+        <tree id="dimensionTree" flex="1" editable="true"
+          ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move"
+          ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false" pen:preserveexpandedstate="true">
+          <treecols>
+            <treecol flex="1" label="" primary="true"
+              pen:binding="name" pen:childrenbinding="children"
+              pen:imagebinding="image" editable="true"
+               pen:disabledbinding="editingDisabled"
+              pen:tooltipbinding="validationMessagesString" />
+          </treecols>
+          <treechildren>
+            <treeitem container="true" open="true">
+              <treerow>
+                <treecell label="" />
+              </treerow>
+              <treechildren></treechildren>
+            </treeitem>
+          </treechildren>
+        </tree>
+      </editpanel>
 
-        <vbox>
+        
+      <editpanel type="closable" width="250" id="propertiesPanel">
+        <caption label="${properties}" />
+        <deck id="propertiesdeck" flex="1">
+          <vbox/>
+          <vbox id="mainprops" flex="1" spacing="4">
+            <label value="${name}:" />
+            <textbox id="modelname" />
+         
+            <label value="${source}:" />
+            <label id="source_name" value="some source" />
+         
+          </vbox>
+          <pen:include src="measuresForm.xul" />
+
+          <pen:include src="cubeForms.xul" ignoreroot="true" />
+
+        </deck>
+      </editpanel>
           
-           <editpanel type="closable">
-           <caption label="${properties}" />
-            <deck id="propertiesdeck" flex="1">
-              <vbox/>
-              <vbox id="mainprops" flex="1" spacing="4">
-                <label value="${name}:" />
-                <textbox id="modelname" />
-                <label value="${source}:" />
-                <label id="source_name" value="some source" />
-              </vbox>
-              <pen:include src="measuresForm.xul" />
-              <pen:include src="cubeForms.xul" ignoreroot="true" />
-            </deck>
-           </editpanel>
-          
-        </vbox>
-      </hbox>
     </hbox>
   </vbox>
 

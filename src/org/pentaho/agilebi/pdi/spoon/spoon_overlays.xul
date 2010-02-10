@@ -16,5 +16,5 @@
 	    <menuitem label="${Spoon.Edit.EditBiServerConfig.MenuItem.Label}"
 	      command="agileBi.editBiServerConfig()" />
 	</menupopup>
-	
+  
 </overlay>

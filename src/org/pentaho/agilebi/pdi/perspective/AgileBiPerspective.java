@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,14 +27,14 @@ import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
-import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
-import org.pentaho.reporting.libraries.fonts.LibFontBoot;
-import org.pentaho.reporting.libraries.resourceloader.LibLoaderBoot;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.binding.Binding;
+import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBinding;
+import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.components.XulConfirmBox;
+import org.pentaho.ui.xul.components.XulMenuitem;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.w3c.dom.Node;
 
@@ -44,11 +45,16 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
   private static final AgileBiPerspective INSTANCE = new AgileBiPerspective();
   private ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective"); //$NON-NLS-1$
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
-    
+  private XulMenuitem modelPropItem;
+  
+  private AgileBiPerspectiveController perspectiveController = new AgileBiPerspectiveController();
+
+  BindingFactory bf = new DefaultBindingFactory();
+  
   private AgileBiPerspective() {
     super("org/pentaho/agilebi/pdi/perspective/agileBiPerspective.xul");
     setDefaultExtension("xmi");
-    
+    bf.setDocument(document);
   }
   
   public static AgileBiPerspective getInstance() {
@@ -84,10 +90,15 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
   public void createTabForModel(final ModelerWorkspace aModel, String name) throws ModelerException {
 
     try {
+      SpoonPerspectiveManager.getInstance().activatePerspective(getClass());
+      
       XulTabAndPanel tabAndPanel = createTab();
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       XulUI xul = new XulUI(spoon.getShell(), aModel);
       metas.put(tabAndPanel.tab, xul.getMeta());
+      if(selectedMeta != xul.getMeta()){
+        setSelectedMeta(xul.getMeta());
+      }
   
       Composite parentComposite = (Composite) tabAndPanel.panel.getManagedObject();
       xul.getMainPanel().setParent(parentComposite);
@@ -103,7 +114,6 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
     	model = aModel;
     	model.setModelName(name);
       
-      SpoonPerspectiveManager.getInstance().activatePerspective(getClass());
    } catch(KettleException e){
       throw new ModelerException(e);
     }
@@ -146,7 +156,7 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
   }
 
   public List<XulEventHandler> getEventHandlers() {
-    return Collections.singletonList( (XulEventHandler) this);
+    return Collections.singletonList( (XulEventHandler) perspectiveController);
   }
 
   public List<XulOverlay> getOverlays() {
@@ -206,5 +216,12 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
     }
     return true;
   }
- 
+
+  @Override
+  public void setSelectedMeta(EngineMetaInterface meta) {
+    super.setSelectedMeta(meta);
+    perspectiveController.setSelectedModelerMeta((ModelerEngineMeta) meta);
+  }
+  
+  
 }

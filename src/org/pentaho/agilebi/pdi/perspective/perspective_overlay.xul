@@ -15,4 +15,9 @@
         <menuitem id="file-export-xmi" label="${mondrian_schema}"
 	      command="agileBiPerspective.exportSchema()" />	      
     </menupopup>
+    
+  <menupopup id="view-popup">
+        <menuitem id="view-modeler-props" label="${view.modeler.props}"
+          command="agileBiPerspective.toggleProperties()" type="checkbox"/>
+  </menupopup>
 </overlay>
