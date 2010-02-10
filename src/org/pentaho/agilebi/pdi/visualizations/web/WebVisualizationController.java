@@ -249,4 +249,32 @@ public class WebVisualizationController extends AbstractXulEventHandler implemen
 	public String getFileLocation() {
 		return this.xmiFileLocation;
 	}
+	
+	private boolean showFields = true;
+	private boolean showFilters = false;
+	private boolean showFieldLayout = false;
+  public void  toggleFieldList(){
+	  showFields = !showFields;
+	  browser.execute("window.cv.rptEditor._toggleReportPane(window.cv.rptEditor.fieldList, "+showFields+", false, true)");
+	}
+	
+	public void  toggleFilters(){
+	  showFilters = !showFilters;
+    browser.execute("window.cv.rptEditor._toggleReportPane(window.cv.rptEditor.report.nodeFilter,"+showFilters+",true,true)");
+  }
+	
+	public void toggleFieldLayout(){
+	  showFieldLayout = !showFieldLayout;
+    browser.execute("window.cv.rptEditor._toggleReportPane(window.cv.rptEditor.report.nodeLayout,"+showFieldLayout+",true,true)");
+  
+	}
+	
+	public void undo(){
+	  browser.execute("window.cv.rptEditor.report.history.undo()");
+	}
+
+  public void redo(){
+    browser.execute("window.cv.rptEditor.report.history.redo()");
+  }
+  
 }
