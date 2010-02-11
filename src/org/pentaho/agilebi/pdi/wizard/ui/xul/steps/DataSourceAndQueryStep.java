@@ -19,6 +19,7 @@ package org.pentaho.agilebi.pdi.wizard.ui.xul.steps;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -29,14 +30,16 @@ import org.pentaho.metadata.repository.IMetadataDomainRepository;
 import org.pentaho.pms.core.exception.PentahoMetadataException;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
+import org.pentaho.reporting.engine.classic.core.MetaAttributeNames;
 import org.pentaho.reporting.engine.classic.core.ReportDataFactoryException;
 import org.pentaho.reporting.engine.classic.core.states.datarow.StaticDataRow;
+import org.pentaho.reporting.engine.classic.core.wizard.DataAttributes;
+import org.pentaho.reporting.engine.classic.core.wizard.DataSchema;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaModel;
+import org.pentaho.reporting.engine.classic.core.wizard.DefaultDataAttributeContext;
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.IPmdConnectionProvider;
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdConnectionProvider;
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdDataFactory;
-import org.pentaho.reporting.engine.classic.wizard.model.DetailFieldDefinition;
-import org.pentaho.reporting.engine.classic.wizard.model.GroupDefinition;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.WizardEditorModel;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.AbstractWizardStep;
 import org.pentaho.reporting.libraries.base.util.DebugLog;
@@ -45,7 +48,10 @@ import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulButton;
 import org.pentaho.ui.xul.components.XulLabel;
+import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * TODO: Document Me
@@ -113,14 +119,10 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
 
   private static final String CURRENT_QUERY_PROPERTY_NAME = "currentQuery"; //$NON-NLS-1$
   private static final String DATA_SOURCE_NAME_LABEL_ID = "data_source_name_label";  //$NON-NLS-1$
-//  private static final String CREATE_QUERY_BTN_ID = "create_query_btn"; //$NON-NLS-1$
-  private static final String EDIT_QUERY_BTN_ID = "edit_query_btn"; //$NON-NLS-1$
 
   private static final String DEFAULT = "default"; //$NON-NLS-1$
 
-//  private DatasourceModelNode dataSourcesRoot;
-//  private CompoundDataFactory cdf;
-  PmdDataFactory df;
+  private PmdDataFactory df;
   private ModelerWorkspace model;
   private File modelFile;
 
@@ -180,7 +182,11 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       getEditorModel().getReportDefinition().setDataFactory(df);
       
     } else { // editing existing
-      df = (PmdDataFactory) getEditorModel().getReportDefinition().getDataFactory();
+      try {
+        df = (PmdDataFactory) getEditorModel().getReportDefinition().getDataFactory();
+      } catch (ClassCastException e) {
+        df = (PmdDataFactory)((CompoundDataFactory)getEditorModel().getReportDefinition().getDataFactory()).getDataFactoryForQuery(DEFAULT);
+      }
     }
     
     updateGui();
@@ -189,8 +195,34 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   }
 
   private void updateGui() {
+    // Set the datasource names
     XulLabel datasourceLabel = (XulLabel) getDocument().getElementById(DATA_SOURCE_NAME_LABEL_ID);
     datasourceLabel.setValue(modelFile.getName().substring(0, modelFile.getName().lastIndexOf('.')));
+    
+    // Set the available query fields;
+    final DataSchemaModel dataSchemaModel = getEditorModel().getDataSchema();
+    final DataSchema dataSchema = dataSchemaModel.getDataSchema();
+    final String[] names = dataSchema.getNames();
+    
+    XulListbox availableList = (XulListbox) getDocument().getElementById("query_result_list");
+    ArrayList<String> items = new ArrayList<String>();
+    if (names != null) {
+      for ( String name : names ) {
+        final DefaultDataAttributeContext dataAttributeContext = new DefaultDataAttributeContext();
+        final DataAttributes attributes = dataSchema.getAttributes(name);
+        final String source = (String) attributes.getMetaAttribute(MetaAttributeNames.Core.NAMESPACE, MetaAttributeNames.Core.SOURCE, String.class, dataAttributeContext);
+        if ( !source.equals("environment") && !source.equals("parameter") ) {
+          items.add((String) attributes.getMetaAttribute
+              (MetaAttributeNames.Formatting.NAMESPACE, MetaAttributeNames.Formatting.LABEL,
+                  String.class, dataAttributeContext));
+        }
+      }
+    }
+    if (items.size() < 1) {
+      items.add("NO FIELDS SELECTED! (Edit the query)");
+    }
+    Collections.sort(items);
+    availableList.setElements(items);
   }
   
   protected boolean validateStep()
@@ -243,18 +275,12 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   public void setCurrentQuery(String currentQuery)
   {
     String oldQuery = getCurrentQuery();
-    getEditorModel().getReportDefinition().setQuery(currentQuery);
-    clearGroupsAndFields();
+    getEditorModel().updateQuery(df, DEFAULT);
     this.firePropertyChange(CURRENT_QUERY_PROPERTY_NAME, oldQuery, currentQuery);
-    updateGui();
     this.setValid(validateStep());
+    updateGui();
   }
   
-  private void clearGroupsAndFields() {
-    getEditorModel().getReportSpec().setGroupDefinitions(new GroupDefinition[0]);
-    getEditorModel().getReportSpec().setDetailFieldDefinitions(new DetailFieldDefinition[0]);
-  }
-
   protected void setValid(final boolean valid) {
     XulButton nextButton = (XulButton) getDocument().getElementById("next_btn"); //$NON-NLS-1$
     nextButton.setDisabled(!valid);
