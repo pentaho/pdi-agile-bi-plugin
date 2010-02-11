@@ -113,6 +113,8 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
       models.add(aModel);
     	model = aModel;
     	model.setModelName(name);
+    	setSelectedMeta(xul.getMeta());
+    	
       
    } catch(KettleException e){
       throw new ModelerException(e);

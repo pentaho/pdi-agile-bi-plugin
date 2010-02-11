@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.pdi.modeler.Messages;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
+import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
@@ -27,10 +28,11 @@ import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.binding.Binding.Type;
 import org.pentaho.ui.xul.components.XulBrowser;
 import org.pentaho.ui.xul.components.XulMessageBox;
+import org.pentaho.ui.xul.containers.XulEditpanel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.w3c.dom.Node;
 
-public class AnalyzerVisualizationController extends AbstractXulEventHandler implements FileListener {
+public class AnalyzerVisualizationController extends AbstractXulEventHandler implements FileListener, PropertyPanelController {
 
 	public static final String XUL_FILE_ANALYZER_TOOLBAR_PROPERTIES = "plugins/spoon/agile-bi/ui/analyzer-toolbar.properties"; //$NON-NLS-1$
 
@@ -46,6 +48,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	private Binding modelNameBinding;
 	private Binding factTableNameBinding;
 	private String factTableName;
+	private XulEditpanel propPanel;
 
 	private static Log logger = LogFactory.getLog(AnalyzerVisualizationController.class);
 
@@ -62,6 +65,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 
 	public void init() {
 		this.browser = (XulBrowser) this.document.getElementById("web_visualization_browser");
+		this.propPanel = (XulEditpanel) document.getElementById("propPanel");
 		this.browser.setSrc(this.location);
 
 		this.bf.setDocument(super.document);
@@ -69,6 +73,8 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 
 		this.modelNameBinding = this.bf.createBinding(this, "modelId", "modelName", "value");
 		this.factTableNameBinding = this.bf.createBinding(this, "factTableName", "factTableName", "value");
+    this.bf.setBindingType(Type.BI_DIRECTIONAL);
+    bf.createBinding(this.propPanel, "visible", this, "propVisible");
 		fireBindings();
 	}
 
@@ -288,6 +294,22 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
   public void showReportOptions(){
     browser.execute("window.cv.rptEditor.report.rptDlg.showReportOptions()");
     
+  }
+
+  public void togglePropertiesPanel(){
+    setPropVisible(! isPropVisible());
+  }
+  
+  
+  private boolean propVisible = true;
+  public boolean isPropVisible(){
+    return propVisible;
+  }
+  
+  public void setPropVisible(boolean vis){
+    boolean prevVal = propVisible;
+    this.propVisible = vis;
+    this.firePropertyChange("propVisible", prevVal, vis);
   }
   
 }

@@ -150,6 +150,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 
 	private void createTabForBrowser(Composite composite, AnalyzerVisualizationController controller, ModelerWorkspace model) throws KettleException {
 
+    SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiVisualizationPerspective.class);
     XulTabAndPanel tabAndPanel = AgileBiVisualizationPerspective.getInstance().createTab();
 
     GridData layoutData = new GridData();
@@ -167,9 +168,10 @@ public class AnalyzerVisualization extends AbstractVisualization {
     controller.getMeta().setTab(tabAndPanel.tab);
     AgileBiVisualizationPerspective.getInstance().setNameForTab(tabAndPanel.tab, controller.getMeta().getName());
     AgileBiVisualizationPerspective.getInstance().setMetaForTab(tabAndPanel.tab, controller.getMeta());
+    
     AgileBiVisualizationPerspective.getInstance().setModel(model);    
+    AgileBiVisualizationPerspective.getInstance().setSelectedMeta(controller.getMeta());
 
-    SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiVisualizationPerspective.class);
 	}
 	
 	public static Document getXAnalyzerDocument( File file ) throws Exception {

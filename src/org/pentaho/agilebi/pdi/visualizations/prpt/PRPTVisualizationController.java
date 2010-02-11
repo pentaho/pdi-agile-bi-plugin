@@ -10,6 +10,7 @@ import org.pentaho.agilebi.pdi.modeler.Messages;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
+import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
 import org.pentaho.di.core.EngineMetaInterface;
@@ -28,9 +29,10 @@ import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.components.XulMessageBox;
+import org.pentaho.ui.xul.containers.XulEditpanel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
-public class PRPTVisualizationController extends AbstractXulEventHandler{
+public class PRPTVisualizationController extends AbstractXulEventHandler implements PropertyPanelController{
 
   private Spoon spoon;
   private EngineMetaInterface meta;
@@ -42,6 +44,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler{
   private static Log logger = LogFactory.getLog(PRPTVisualizationController.class);
   private String factTableName, modelId;
   private PrptViewerTag viewer;
+  private XulEditpanel propPanel;
   
   public PRPTVisualizationController(PRPTMeta meta, MasterReport rpt){
     spoon = (Spoon) SpoonFactory.getInstance();
@@ -58,6 +61,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler{
   public void init(){
     this.bf = new DefaultBindingFactory();
     bf.setDocument(document);
+    this.propPanel = (XulEditpanel) document.getElementById("propPanel");
 
     
     // try to find the model name
@@ -72,6 +76,9 @@ public class PRPTVisualizationController extends AbstractXulEventHandler{
     bf.setBindingType(Binding.Type.ONE_WAY);
     this.modelNameBinding = this.bf.createBinding(this, "modelId", "modelName", "value");
     this.factTableNameBinding = this.bf.createBinding(this, "factTableName", "factTableName", "value");
+
+    bf.setBindingType(Binding.Type.BI_DIRECTIONAL);
+    bf.createBinding(this.propPanel, "visible", this, "propVisible");
 
     viewer = (PrptViewerTag) document.getElementById("prptViewer");
     loadReport();
@@ -245,5 +252,22 @@ public class PRPTVisualizationController extends AbstractXulEventHandler{
   
   public void refresh(){
     loadReport();
+  }
+  
+
+  public void togglePropertiesPanel(){
+    setPropVisible(! isPropVisible());
+  }
+  
+  
+  private boolean propVisible = true;
+  public boolean isPropVisible(){
+    return propVisible;
+  }
+  
+  public void setPropVisible(boolean vis){
+    boolean prevVal = propVisible;
+    this.propVisible = vis;
+    this.firePropertyChange("propVisible", prevVal, vis);
   }
 }

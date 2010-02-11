@@ -40,6 +40,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   private ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective"); //$NON-NLS-1$
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
   private Map<ModelerWorkspace, EngineMetaInterface> metas = new HashMap<ModelerWorkspace, EngineMetaInterface>();
+  private AgileBiVisualizationPerspectiveController controller = new AgileBiVisualizationPerspectiveController();
   
   private AgileBiVisualizationPerspective(){
     super("org/pentaho/agilebi/pdi/perspective/perspective.xul");
@@ -82,6 +83,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   public void createTabForModel(final ModelerWorkspace model, String name){
 
     try {
+      SpoonPerspectiveManager.getInstance().activatePerspective(getClass());
       XulTabAndPanel tabAndPanel = createTab();
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       XulUI xul = new XulUI(spoon.getShell(), model);
@@ -90,14 +92,18 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
       Composite parentComposite = (Composite) tabAndPanel.panel.getManagedObject();
       xul.getMainPanel().setParent(parentComposite);
       parentComposite.layout(true);
+      if(selectedMeta != xul.getMeta()){
+        setSelectedMeta(xul.getMeta());
+      }
+  
       
       Binding bind = new DefaultBinding(model, "shortFileName", tabAndPanel.tab, "label"); //$NON-NLS-1$ //$NON-NLS-2$
       bind.setConversion(new NameBindingConvertor(this, tabAndPanel.tab));
       bind.setBindingType(Binding.Type.ONE_WAY);
       document.addBinding(bind);
       models.add(model);
+      setSelectedMeta(xul.getMeta());
       
-      SpoonPerspectiveManager.getInstance().activatePerspective(getClass());
     } catch (KettleException e) {
       logger.error(e);
     } catch (ModelerException e) {
@@ -141,7 +147,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   }
 
   public List<XulEventHandler> getEventHandlers() {
-    return Collections.singletonList((XulEventHandler)this);
+    return Collections.singletonList( (XulEventHandler) controller);
   }
 
   public List<XulOverlay> getOverlays() {
@@ -180,4 +186,12 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   public boolean onTabClose(final int pos) throws XulException{
     return true;
   }
+  
+
+  @Override
+  public void setSelectedMeta(EngineMetaInterface meta) {
+    super.setSelectedMeta(meta);
+    controller.setSelectedModelerMeta(meta);
+  }
+  
 }

@@ -3,6 +3,7 @@ package org.pentaho.agilebi.pdi.visualizations.analyzer;
 import java.io.File;
 import java.util.Date;
 
+import org.pentaho.agilebi.pdi.HasXulController;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.ProgressMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
@@ -13,8 +14,9 @@ import org.pentaho.di.repository.RepositoryDirectory;
 import org.pentaho.di.repository.RepositoryLock;
 import org.pentaho.di.repository.RepositoryObjectType;
 import org.pentaho.ui.xul.components.XulTab;
+import org.pentaho.ui.xul.impl.XulEventHandler;
 
-public class AnalyzerVisualizationMeta implements EngineMetaInterface {
+public class AnalyzerVisualizationMeta implements EngineMetaInterface, HasXulController {
 
   AnalyzerVisualizationController browser;
   XulTab tab;
@@ -210,6 +212,10 @@ public class AnalyzerVisualizationMeta implements EngineMetaInterface {
   public RepositoryObjectType getRepositoryElementType() {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  public XulEventHandler getController() {
+    return browser;
   }
   
   

@@ -116,6 +116,8 @@ public class PRPTVisualization extends AbstractVisualization {
       theMainBox.setParent((Composite) tabAndPanel.panel.getManagedObject());
 
       ((Composite) tabAndPanel.panel.getManagedObject()).layout(true);
+
+      AgileBiVisualizationPerspective.getInstance().setSelectedMeta(meta);
       return true;
     } catch(Exception e){
       e.printStackTrace();
@@ -202,12 +204,8 @@ try{
       theMainBox.setParent((Composite) tabAndPanel.panel.getManagedObject());
       
       ((Composite) tabAndPanel.panel.getManagedObject()).layout(true);
+      AgileBiVisualizationPerspective.getInstance().setSelectedMeta(meta);
 
-      try {
-        SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiVisualizationPerspective.class);
-      } catch (KettleException e) {
-        logger.error(e);
-      }
     } catch(Exception e){
       e.printStackTrace();
     }

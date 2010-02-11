@@ -27,7 +27,7 @@
     </toolbar>
     <hbox flex="1">
       <browser id="web_visualization_browser" flex="1" src="" showtoolbar="false"/>
-      <editpanel width="250" type="closable">
+      <editpanel width="250" type="closable" id="propPanel">
         <caption label="${visualization_properties}"/>
         <groupbox>
           <caption label="${model}"/>

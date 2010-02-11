@@ -17,7 +17,7 @@
     </toolbar>
     <hbox flex="1">
       <prpt flex="1" id="prptViewer"/>
-      <editpanel width="250" collapsible="true" padding="2" spacing="2">
+      <editpanel width="250" type="closable" padding="2" spacing="2" id="propPanel">
         <caption label="${visualization_properties}"/>
         <groupbox>
           <caption label="${report}"/>

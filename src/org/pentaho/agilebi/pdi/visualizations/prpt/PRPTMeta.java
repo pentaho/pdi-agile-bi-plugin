@@ -3,6 +3,7 @@ package org.pentaho.agilebi.pdi.visualizations.prpt;
 import java.io.File;
 import java.util.Date;
 
+import org.pentaho.agilebi.pdi.HasXulController;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.ProgressMonitorListener;
@@ -14,8 +15,9 @@ import org.pentaho.di.repository.RepositoryDirectory;
 import org.pentaho.di.repository.RepositoryLock;
 import org.pentaho.di.repository.RepositoryObjectType;
 import org.pentaho.ui.xul.components.XulTab;
+import org.pentaho.ui.xul.impl.XulEventHandler;
 
-public class PRPTMeta implements EngineMetaInterface {
+public class PRPTMeta implements EngineMetaInterface, HasXulController {
 
   PRPTVisualizationController controller;
   XulTab tab;
@@ -221,6 +223,10 @@ public class PRPTMeta implements EngineMetaInterface {
   public RepositoryObjectType getRepositoryElementType() {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  public XulEventHandler getController() {
+    return controller;
   }
 
   

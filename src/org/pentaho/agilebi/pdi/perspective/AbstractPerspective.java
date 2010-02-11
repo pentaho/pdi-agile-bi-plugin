@@ -83,6 +83,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
       tabbox = (XulTabbox) tabs.getParent();
       BindingFactory bf = new DefaultBindingFactory();
       bf.setDocument(document);
+//      bf.setBindingType(Binding.Type.ONE_WAY);
       bf.createBinding(tabbox, "selectedIndex", this, "selectedMeta", new BindingConvertor<Integer, EngineMetaInterface>(){
         public EngineMetaInterface sourceToTarget(Integer value) {
           return metas.get(tabs.getTabByIndex(value));
@@ -93,7 +94,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
               return tab.getParent().getChildNodes().indexOf(tab);
             }
           }
-          return null;
+          return -1;
         }
       });
       
@@ -262,7 +263,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
       
       tabs.addChild(tab);
       panels.addChild(panel);
-      tabbox.setSelectedIndex(panels.getChildNodes().indexOf(panel));
+      //tabbox.setSelectedIndex(panels.getChildNodes().indexOf(panel));
 
       return new XulTabAndPanel(tab, panel);
       
