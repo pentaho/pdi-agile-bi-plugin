@@ -17,6 +17,8 @@
   <vbox flex="1" id="mainVBox" spacing="0" padding="0">
 
     <hbox>
+      <button image="images/publish.png" id="publishButton" onclick="modeler.publish()" />
+      <label value="|"/>
       <label value="${new}:" />
       <menulist id="visualizationlist" label="">
         <menupopup>
@@ -24,7 +26,6 @@
         </menupopup>
       </menulist>
       <button label="${go}" id="exploreButton" onclick="modeler.visualize()" />
-      <button label="${publish}" id="publishButton" onclick="modeler.publish()" />
     </hbox>
 
     <hbox flex="1">

@@ -361,6 +361,8 @@ public class ModelerController extends AbstractXulEventHandler{
     bf.setBindingType(Type.BI_DIRECTIONAL);
     modelNameBinding = bf.createBinding(workspace, MODEL_NAME_PROPERTY, MODEL_NAME_FIELD_ID, VALUE_PROPERTY);
     
+    bf.createBinding(this.propPanel, "visible", this, "propVisible");
+    
     fireBindings();
     
     dimensionTree.expandAll();

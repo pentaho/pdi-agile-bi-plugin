@@ -1,20 +1,29 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
 <window id="label-test" title="Flow Test" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" onload="web_visualiztion.init()"
+  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" onload="analyzerVis.init()"
   xmlns:pen="http://www.pentaho.org/2008/xul">
 
   <vbox id="mainVBox">
-    <toolbar id="nav-toolbar" parenttoouter="true" mode="icons">
-      <toolbarbutton value="analyzer-file-save" image="images/save.png" tooltiptext="${save}" onclick="web_visualiztion.save()"/>
-      <toolbarbutton value="analyzer-file-save-as" image="images/saveas.png" tooltiptext="${save_as}" onclick="web_visualiztion.saveAs()"/>
+    <toolbar id="nav-toolbar" parenttoouter="true" mode="full">
+      <toolbarbutton label="&lt;" tooltiptext="${undo}" onclick="analyzerVis.undo()"/>
+      <toolbarbutton label="&gt;" tooltiptext="${redo}" onclick="analyzerVis.redo()"/>
+      <toolbarbutton label="Reset" tooltiptext="${reset}" onclick="analyzerVis.reset()"/>
+      
+      <toolbarbutton label="Options" tooltiptext="${reset}" onclick="analyzerVis.showReportOptions()"/>
       <toolbarseparator/>
-      <toolbarbutton value="analyzer-reload-data" label="Refresh Data" image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="web_visualiztion.refreshData()"/>
-      <toolbarbutton value="analyzer-reload-model" image="images/refresh_model.png" tooltiptext="${reload_model}" onclick="web_visualiztion.refreshModel()"/>
+      
+      <toolbarbutton label="Toggle Filters" tooltiptext="${toggle_filters}" onclick="analyzerVis.toggleFilters()"/>
+      <toolbarbutton label="Toggle Field List" tooltiptext="${toggle_fields}" onclick="analyzerVis.toggleFieldList()"/>
+      <toolbarbutton label="Toggle Field Layout" tooltiptext="${toggle_fields}" onclick="analyzerVis.toggleFieldLayout()"/>
+      
       <toolbarseparator/>
-      <toolbarbutton value="analyzer-model" image="images/modeler.png" onclick="web_visualiztion.editModel()" tooltiptext="${edit_model}" />
+      <toolbarbutton label="Refresh Data" image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="analyzerVis.refreshData()"/>
+      <toolbarbutton image="images/refresh_model.png" tooltiptext="${reload_model}" onclick="analyzerVis.refreshModel()"/>
+      <toolbarseparator/>
+      <toolbarbutton image="images/modeler.png" onclick="analyzerVis.editModel()" tooltiptext="${edit_model}" />
       <toolbarseparator />
-      <toolbarbutton value="analyzer-publish" label="${analyzer-publish}" image="images/publish.png" onclick="browser.publishView()" tooltiptext="${analyzer-publish}" />
+      <toolbarbutton label="${analyzer-publish}" image="images/publish.png" onclick="analyzerVis.publishView()" tooltiptext="${analyzer-publish}" />
     </toolbar>
     <hbox flex="1">
       <browser id="web_visualization_browser" flex="1" src="" showtoolbar="false"/>

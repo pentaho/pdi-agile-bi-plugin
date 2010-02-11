@@ -243,7 +243,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	}
 
 	public String getName() {
-		return "web_visualiztion";
+		return "analyzerVis";
 	}
 	
 	public String getFileLocation() {
@@ -275,6 +275,19 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 
   public void redo(){
     browser.execute("window.cv.rptEditor.report.history.redo()");
+  }
+  
+  public void reset(){
+    browser.execute("window.cv.rptEditor.report.onReset()");
+  }
+  
+  public void getReportPDF(){
+    browser.execute("window.cv.io.getReportInFormat(window.cv.rptEditor.report.getReportXml(), \"PDF\", null, null, window.cv.rptEditor.report.isDirty())");
+  }
+  
+  public void showReportOptions(){
+    browser.execute("window.cv.rptEditor.report.rptDlg.showReportOptions()");
+    
   }
   
 }
