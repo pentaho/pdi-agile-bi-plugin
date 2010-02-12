@@ -20,6 +20,7 @@ package org.pentaho.agilebi.pdi.wizard.ui.xul.steps;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -50,8 +51,6 @@ import org.pentaho.ui.xul.components.XulButton;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * TODO: Document Me
@@ -203,6 +202,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     final DataSchemaModel dataSchemaModel = getEditorModel().getDataSchema();
     final DataSchema dataSchema = dataSchemaModel.getDataSchema();
     final String[] names = dataSchema.getNames();
+    Arrays.sort(names);
     
     XulListbox availableList = (XulListbox) getDocument().getElementById("query_result_list");
     ArrayList<String> items = new ArrayList<String>();
@@ -221,7 +221,6 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     if (items.size() < 1) {
       items.add("NO FIELDS SELECTED! (Edit the query)");
     }
-    Collections.sort(items);
     availableList.setElements(items);
   }
   
