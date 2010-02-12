@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -49,7 +50,6 @@ import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulButton;
 import org.pentaho.ui.xul.components.XulLabel;
-import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
 /**
@@ -60,12 +60,32 @@ import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 public class DataSourceAndQueryStep extends AbstractWizardStep
 {
 
+  private static final String DATASOURCE_AND_QUERY_STEP_OVERLAY = "org/pentaho/agilebi/pdi/wizard/ui/xul/res/datasource_and_query_step_Overlay.xul"; //$NON-NLS-1$
+  private static final String HANDLER_NAME = "datasource_and_query_step_handler"; //$NON-NLS-1$
+
+  private static final String CURRENT_QUERY_PROPERTY_NAME = "currentQuery"; //$NON-NLS-1$
+  private static final String DATA_SOURCE_NAME_LABEL_ID = "data_source_name_label";  //$NON-NLS-1$
+  private static final String AVAILABLE_COLUMNS_PROPERTY_NAME = "availableColumns"; //$NON-NLS-1$
+  private static final String ELEMENTS_PROPERTY_NAME = "elements"; //$NON-NLS-1$
+  private static final String QUERY_RESULT_LIST_ID = "query_result_list"; //$NON-NLS-1$
+  private static final String NEXT_BTN_ID = "next_btn"; //$NON-NLS-1$
+
+  private static final String DEFAULT = "default"; //$NON-NLS-1$
+
+  private PmdDataFactory df;
+  private ModelerWorkspace model;
+  private File modelFile;
+  private List<String> availableColumns;
+
+  /**
+   * @author wseyler
+   * DatasourceAndQueryStepHandler
+   * A concrete implementation of AbstractXulEventHandler that defines a name for
+   * itself and contains methods that correspond to onClick and onCommand markups
+   * in the corresponding *.xul file.
+   */
   protected class DatasourceAndQueryStepHandler extends AbstractXulEventHandler
   {
-    /**
-     * 
-     */
-
     public DatasourceAndQueryStepHandler()
     {
     }
@@ -83,6 +103,10 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       return repo;
     }
     
+    /**
+     * doEditQuery()
+     * Updates (or creates) a query using the PME data source.
+     */
     public void doEditQuery() {
       try {
 
@@ -113,23 +137,21 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     }
   }
 
-  private static final String DATASOURCE_AND_QUERY_STEP_OVERLAY = "org/pentaho/agilebi/pdi/wizard/ui/xul/res/datasource_and_query_step_Overlay.xul"; //$NON-NLS-1$
-  private static final String HANDLER_NAME = "datasource_and_query_step_handler"; //$NON-NLS-1$
-
-  private static final String CURRENT_QUERY_PROPERTY_NAME = "currentQuery"; //$NON-NLS-1$
-  private static final String DATA_SOURCE_NAME_LABEL_ID = "data_source_name_label";  //$NON-NLS-1$
-
-  private static final String DEFAULT = "default"; //$NON-NLS-1$
-
-  private PmdDataFactory df;
-  private ModelerWorkspace model;
-  private File modelFile;
-
   public DataSourceAndQueryStep()
   {
     super();
   }
 
+  
+  /* (non-Javadoc)
+   * @see org.pentaho.reporting.engine.classic.wizard.ui.xul.components.AbstractWizardStep#stepActivating()
+   * 
+   * stepActivating()
+   * When this step activates we check to see if we've already been here and if we haven't then we
+   * creates the model 'n'.xmi file from the model.
+   * 
+   * If we're coming back in then we just get the current data source and manipulate that.
+   */
   public void stepActivating()
   {
     super.stepActivating();
@@ -193,18 +215,35 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     setValid(validateStep());
   }
 
+  
+  /**
+   * updateGui()
+   * 
+   * Updates the data source name label and populates the available columns list box.
+   */
   private void updateGui() {
-    // Set the datasource names
+    // Set the data source name
     XulLabel datasourceLabel = (XulLabel) getDocument().getElementById(DATA_SOURCE_NAME_LABEL_ID);
     datasourceLabel.setValue(modelFile.getName().substring(0, modelFile.getName().lastIndexOf('.')));
-    
+    createColumnsList();
+  }
+  
+  /**
+   * createColumnsList()
+   * 
+   * Get all the columns current defined by the query and creates a list of their friendly
+   * names for display in the available columns list box.
+   * 
+   * Additionally it removes any names whose source is not the query and then it sorts the
+   * final list.
+   */
+  private void createColumnsList() {
     // Set the available query fields;
     final DataSchemaModel dataSchemaModel = getEditorModel().getDataSchema();
     final DataSchema dataSchema = dataSchemaModel.getDataSchema();
     final String[] names = dataSchema.getNames();
     Arrays.sort(names);
     
-    XulListbox availableList = (XulListbox) getDocument().getElementById("query_result_list");
     ArrayList<String> items = new ArrayList<String>();
     if (names != null) {
       for ( String name : names ) {
@@ -221,9 +260,12 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     if (items.size() < 1) {
       items.add("NO FIELDS SELECTED! (Edit the query)");
     }
-    availableList.setElements(items);
+    setAvailableColumns(items);  
   }
   
+  /**
+   * @return true if the query can be executed.
+   */
   protected boolean validateStep()
   {
     // If we have no createdDataFactory and we don't have anything in the model then we can't continue
@@ -258,6 +300,11 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.pentaho.reporting.engine.classic.wizard.ui.xul.components.AbstractWizardStep#createPresentationComponent(org.pentaho.ui.xul.XulDomContainer)
+   * 
+   * Loads the overlay for this step and hooks up the event handler
+   */
   public void createPresentationComponent(XulDomContainer mainWizardContainer) throws XulException
   {
     super.createPresentationComponent(mainWizardContainer);
@@ -266,11 +313,18 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     mainWizardContainer.addEventHandler(new DatasourceAndQueryStepHandler());
   }
 
+  /**
+   * @return the currently defined query
+   */
   public String getCurrentQuery()
   {
     return getEditorModel().getReportDefinition().getQuery();
   }
 
+  /**
+   * @param currentQuery set the current query to the argument 'currentQuery' and fires
+   * a property change event for objects that have registered.
+   */
   public void setCurrentQuery(String currentQuery)
   {
     String oldQuery = getCurrentQuery();
@@ -280,13 +334,38 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     updateGui();
   }
   
+  /**
+   * @param availableColumns the availableColumns to set once set it fires and property
+   * change event.
+   */
+  public void setAvailableColumns(List<String> newValue) {
+    List<String> oldValue = this.availableColumns;
+    this.availableColumns = newValue;
+    this.firePropertyChange(AVAILABLE_COLUMNS_PROPERTY_NAME, oldValue, newValue);
+  }
+
+  /**
+   * @return the availableColumns
+   */
+  public List<String> getAvailableColumns() {
+    return availableColumns;
+  }
+
+  /* (non-Javadoc)
+   * @see org.pentaho.reporting.engine.classic.wizard.ui.xul.components.AbstractWizardStep#setValid(boolean)
+   * 
+   * sets the validity of this step.  If this is set to true the 'next' and preview button will
+   * be available.
+   */
   protected void setValid(final boolean valid) {
-    XulButton nextButton = (XulButton) getDocument().getElementById("next_btn"); //$NON-NLS-1$
+    XulButton nextButton = (XulButton) getDocument().getElementById(NEXT_BTN_ID);
     nextButton.setDisabled(!valid);
   }
 
   /* (non-Javadoc)
    * @see org.pentaho.reporting.engine.classic.wizard.ui.xul.components.WizardStep#getStepName()
+   * 
+   * returns the internationalized step name that appears in the step list.
    */
   public String getStepName()
   {
@@ -299,9 +378,11 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
 
   /* (non-Javadoc)
    * @see org.pentaho.reporting.engine.classic.wizard.ui.xul.components.WizardStep#setBindings()
+   * 
+   * Binds the available columns property to the query result list.
    */
   public void setBindings() {
-    // TODO Auto-generated method stub
-    
+    getBindingFactory().createBinding(this, AVAILABLE_COLUMNS_PROPERTY_NAME, QUERY_RESULT_LIST_ID, ELEMENTS_PROPERTY_NAME);
   }
+
 }
