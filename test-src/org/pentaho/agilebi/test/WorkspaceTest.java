@@ -5,6 +5,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.agilebi.pdi.modeler.AvailableField;
+import org.pentaho.agilebi.pdi.modeler.DimensionMetaDataCollection;
 import org.pentaho.agilebi.pdi.modeler.ModelerController;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -98,12 +99,56 @@ public class WorkspaceTest {
     
     ModelerWorkspaceUtil.populateDomain(work);
     
+    
     // one logicalColumn in the category
     Assert.assertEquals(1, work.getDomain().getLogicalModels().get(0).getCategories().get(0).getLogicalColumns().size());
     LogicalColumn col = work.getDomain().getLogicalModels().get(0).getCategories().get(0).getLogicalColumns().get(0);
     
     Assert.assertEquals(col, logicalColumn1);
+    
+    
+    
   }
+  
+  @Test
+  public void testMeasuresValidation(){
+    ModelerWorkspace work = new ModelerWorkspace();
+    work.setDomain(domain);
+    AvailableField field = new AvailableField();
+    field.setName("Test name");
+    field.setLogicalColumn(logicalColumn1);
+    work.getAvailableFields().add(field);
+    
+    work.addFieldIntoPlay(field);
+    Assert.assertTrue(work.getModel().getMeasures().isValid());
+    
+    work.getModel().getMeasures().get(0).setLogicalColumn(null);
+    
+    Assert.assertFalse(work.getModel().getMeasures().isValid());
+  }
+  
+
+  @Test
+  public void testDimensionPopulate(){
+    ModelerWorkspace work = new ModelerWorkspace();
+    work.setDomain(domain);
+    AvailableField field = new AvailableField();
+    field.setName("Test name");
+    field.setLogicalColumn(logicalColumn1);
+    work.getAvailableFields().add(field);
+    
+    work.addDimension(field);
+    
+    DimensionMetaDataCollection dims = work.getModel().getDimensions();
+    Assert.assertEquals(1, dims.size());
+    //check that the auto-created level is pointing to the same column
+    Assert.assertEquals(field.getLogicalColumn(), dims.get(0).get(0).get(0).getLogicalColumn());
+    
+    Assert.assertTrue(dims.isValid());
+    
+  }
+  
+  
   
   /*@Test
   public void testControllerMoveToMeasures(){
