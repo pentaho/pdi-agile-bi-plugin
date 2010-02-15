@@ -60,7 +60,12 @@ public class BiServerConfig {
    */
   public void refreshServerList() {
     try {
+      servers.clear();
+      
       File file = new File( CONFIG_FILE_LOCATION ); 
+      if(file.exists() == false){
+        return;
+      }
       InputStream in = new FileInputStream( file );
       Properties props = new Properties();
       props.load( in );
