@@ -5,7 +5,10 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.pentaho.agilebi.pdi.modeler.AvailableField;
+import org.pentaho.agilebi.pdi.modeler.DimensionMetaData;
 import org.pentaho.agilebi.pdi.modeler.DimensionMetaDataCollection;
+import org.pentaho.agilebi.pdi.modeler.HierarchyMetaData;
+import org.pentaho.agilebi.pdi.modeler.LevelMetaData;
 import org.pentaho.agilebi.pdi.modeler.ModelerController;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -145,22 +148,38 @@ public class WorkspaceTest {
     Assert.assertEquals(field.getLogicalColumn(), dims.get(0).get(0).get(0).getLogicalColumn());
     
     Assert.assertTrue(dims.isValid());
-    
   }
   
-  
-  
-  /*@Test
+  @Test
   public void testControllerMoveToMeasures(){
 
     ModelerWorkspace work = new ModelerWorkspace();
-    AvailableField field = new AvailableField();
-    field.setName("Test name");
-    field.setLogicalColumn(logicalColumn1);
-    work.getAvailableFields().add(field);
+    AvailableField availableField = new AvailableField();
+    availableField.setName("Available Field");
+    availableField.setLogicalColumn(logicalColumn2);
+    work.getAvailableFields().add(availableField);
     ModelerController controller = new ModelerController(work);
     
-    controller.setSelectedField(field);
+    Object[] selectedFields = new Object[1];
+    selectedFields[0] = availableField;
+    controller.setSelectedFields(selectedFields);
     
-  }*/
+    AvailableField dimensionTarget = new AvailableField();
+    dimensionTarget.setName("Dimension Target");
+    dimensionTarget.setLogicalColumn(logicalColumn1);
+    work.getAvailableFields().add(dimensionTarget);
+    work.addDimension(dimensionTarget);
+    
+    DimensionMetaDataCollection dimensions = work.getModel().getDimensions();
+    DimensionMetaData dimension = dimensions.get(0);
+    controller.setDimTreeSelectionChanged(dimension);
+
+    controller.addField();
+    
+    HierarchyMetaData theHierarchy = dimension.get(0);
+    Assert.assertEquals("Dimension Target", theHierarchy.getName());
+    
+    LevelMetaData theLevel = theHierarchy.get(0);
+    Assert.assertEquals(logicalColumn1, theLevel.getLogicalColumn());
+  }
 }

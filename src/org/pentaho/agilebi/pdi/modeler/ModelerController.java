@@ -102,6 +102,7 @@ public class ModelerController extends AbstractXulEventHandler{
   private XulTree dimensionTree;
   private XulMenuList visualizationList;
   private XulDeck propDeck;
+  private Object[] selectedFields;
   
   private BindingFactory bf = new DefaultBindingFactory();
  
@@ -215,8 +216,7 @@ public class ModelerController extends AbstractXulEventHandler{
 
   public void addField() {
   	AbstractMetaDataModelNode theNode = null;
-  	XulListbox fieldsList = (XulListbox) document.getElementById(FIELD_LIST_ID);
-    Object[] selectedItems = fieldsList.getSelectedItems();
+    Object[] selectedItems = getSelectedFields();
     for (Object obj : selectedItems) {
       if (obj instanceof AvailableField) {
         AvailableField availableField = (AvailableField) obj;
@@ -287,6 +287,7 @@ public class ModelerController extends AbstractXulEventHandler{
 
     bf.setBindingType(Type.ONE_WAY);
     fieldListBinding = bf.createBinding(workspace, "availableFields", FIELD_LIST_ID, ELEMENTS_PROPERTY);
+    selectedFieldsBinding = bf.createBinding(FIELD_LIST_ID, "selectedItems", this, "selectedFields");
     
     bf.createBinding(workspace, "selectedVisualization", visualizationList, "selectedItem");    
     visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements");
@@ -296,9 +297,7 @@ public class ModelerController extends AbstractXulEventHandler{
     
     bf.createBinding("fieldList", "selectedItem", "addField", "disabled", new BindingConvertor<Object, Boolean>() {
     	public Boolean sourceToTarget(Object value) {
-      	XulListbox fieldsList = (XulListbox) document.getElementById(FIELD_LIST_ID);
-        Object[] selectedItems = fieldsList.getSelectedItems();
-    		return selectedItems.length == 0 || selectedTreeItem == null || selectedTreeItem instanceof LevelMetaData || selectedTreeItem instanceof MainModelNode;
+    		return getSelectedFields().length == 0 || selectedTreeItem == null || selectedTreeItem instanceof LevelMetaData || selectedTreeItem instanceof MainModelNode;
     	}
 
       public Object targetToSource(Boolean value) {
@@ -308,9 +307,7 @@ public class ModelerController extends AbstractXulEventHandler{
     
     bf.createBinding(dimensionTree, "selectedItem", "addField", "disabled", new BindingConvertor<Object, Boolean>() {
     	public Boolean sourceToTarget(Object value) {
-      	XulListbox fieldsList = (XulListbox) document.getElementById(FIELD_LIST_ID);
-        Object[] selectedItems = fieldsList.getSelectedItems();
-    		return selectedItems.length == 0 || value == null || value instanceof LevelMetaData  || selectedTreeItem instanceof MainModelNode;
+    		return getSelectedFields().length == 0 || value == null || value instanceof LevelMetaData  || selectedTreeItem instanceof MainModelNode;
     	}
 
       public Object targetToSource(Boolean value) {
@@ -362,6 +359,7 @@ public class ModelerController extends AbstractXulEventHandler{
   private void fireBindings() throws ModelerException{
     try {
       fieldListBinding.fireSourceChanged();
+      selectedFieldsBinding.fireSourceChanged();
       modelTreeBinding.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
       visualizationsBinding.fireSourceChanged();
@@ -615,6 +613,7 @@ public class ModelerController extends AbstractXulEventHandler{
   Object selectedTreeItem;
 
   private Binding fieldListBinding;
+  private Binding selectedFieldsBinding;
 
   private Binding visualizationsBinding;
 
@@ -633,9 +632,11 @@ public class ModelerController extends AbstractXulEventHandler{
         return;
       }
     }
-    this.propDeck.setSelectedIndex(0);
-    
+    if(this.propDeck != null) {
+      this.propDeck.setSelectedIndex(0);
+    }
   }
+    
   
   public void removeField() {
     if(selectedTreeItem instanceof DimensionMetaDataCollection 
@@ -803,11 +804,22 @@ public class ModelerController extends AbstractXulEventHandler{
   	}
   	
   	public Boolean sourceToTarget(Object value) {
-  		return !(value.getClass() == type);
+  		return value == null || !(value.getClass() == type);
   	}
 
     public Object targetToSource(Boolean value) {
     	return null;
     }
   }
+  
+  public void setSelectedFields(Object[] aFields) {
+    selectedFields = aFields;
+  }
+  
+  public Object[] getSelectedFields() {
+    if(selectedFields == null) {
+      selectedFields = new Object[]{};
+    }
+    return selectedFields;
+  } 
 } 
