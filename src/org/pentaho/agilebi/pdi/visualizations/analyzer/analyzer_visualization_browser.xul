@@ -35,8 +35,8 @@
             <label value="${name}:" />
             <label id="modelName" value="" />
             <hbox>
-              <button label="${refresh}" onclick="web_visualiztion.refreshModel()"/>
-              <button label="${view}" onclick="web_visualiztion.editModel()"/>
+              <button label="${refresh}" onclick="analyzerVis.refreshModel()"/>
+              <button label="${view}" onclick="analyzerVis.editModel()"/>
             </hbox>
           </vbox>
         </groupbox>
@@ -46,7 +46,7 @@
             <label value="${source}:" />
             <label id="factTableName" value="" />
             <hbox>
-              <button label="${refresh}" onclick="web_visualiztion.refreshData()"/>
+              <button label="${refresh}" onclick="analyzerVis.refreshData()"/>
               <!--button label="${view}"/-->
             </hbox>
           </vbox>
