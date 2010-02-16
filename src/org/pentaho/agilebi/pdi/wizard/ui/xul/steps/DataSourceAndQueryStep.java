@@ -224,7 +224,9 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   private void updateGui() {
     // Set the data source name
     XulLabel datasourceLabel = (XulLabel) getDocument().getElementById(DATA_SOURCE_NAME_LABEL_ID);
-    datasourceLabel.setValue(modelFile.getName().substring(0, modelFile.getName().lastIndexOf('.')));
+    if(datasourceLabel != null && modelFile != null){
+      datasourceLabel.setValue(modelFile.getName().substring(0, modelFile.getName().lastIndexOf('.')));
+    }
     createColumnsList();
   }
   

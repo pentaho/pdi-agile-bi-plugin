@@ -97,8 +97,9 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
 
     bf.setBindingType(Binding.Type.BI_DIRECTIONAL);
     bf.createBinding(this.propPanel, "visible", this, "propVisible");
-    
-    bf.createBinding(viewer, "zoomLevel", zoomList, "selectedIndex", new BindingConvertor<Double, Integer>(){
+
+    viewer = (PrptViewerTag) document.getElementById("prptViewer");
+    bf.createBinding(viewer, "zoom", zoomList, "selectedIndex", new BindingConvertor<Double, Integer>(){
 
       @Override
       public Integer sourceToTarget(Double value) {
@@ -117,7 +118,6 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
      
     });
 
-    viewer = (PrptViewerTag) document.getElementById("prptViewer");
     loadReport();
     fireBindings();
   }
@@ -306,5 +306,32 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     boolean prevVal = propVisible;
     this.propVisible = vis;
     this.firePropertyChange("propVisible", prevVal, vis);
+  }
+  
+  
+
+  public void start(){
+    viewer.start();
+  }
+  
+  public void previous(){
+    viewer.previous();
+  }
+  
+  public void next(){
+    viewer.next();
+  }
+  
+  public void last(){
+    viewer.last();
+  }
+  
+  public void zoomOut(){
+    viewer.zoomOut();
+  }
+  
+  public void zoomIn(){
+    viewer.zoomIn();
+   
   }
 }

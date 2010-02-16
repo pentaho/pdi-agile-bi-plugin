@@ -276,9 +276,11 @@ public class PrptViewerTag extends SwtElement{
     return viewer.getZoom();
   }
   
-  public void setZoom(double val){
+  public void setZoom(Double val){
     viewer.setZoom(val);
   }
+  
+  private Double curZoom = 1.0;
   
   private void loadPRPT(){
     try {
@@ -298,7 +300,9 @@ public class PrptViewerTag extends SwtElement{
 
         public void contentsChanged(ListDataEvent arg0) {
           combo.select(new ArrayList(zoomMap.keySet()).indexOf(viewer.getZoom()));
-          PrptViewerTag.this.changeSupport.firePropertyChange("zoom", null, getZoom());
+          Double prevZoom = curZoom;
+          PrptViewerTag.this.changeSupport.firePropertyChange("zoom", prevZoom, getZoom());
+          curZoom = getZoom();
         }
 
         public void intervalAdded(ListDataEvent arg0) {}

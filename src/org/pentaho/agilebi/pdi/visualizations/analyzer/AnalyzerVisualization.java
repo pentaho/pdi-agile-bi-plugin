@@ -318,7 +318,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
   }
 
   public String[] getFileTypeDisplayNames(Locale locale) {
-    ResourceBundle bundle = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/visualizations/web/web_visualization_browser", locale);
+    ResourceBundle bundle = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/visualizations/analyzer/analyzer_visualization_browser", locale);
     return new String[]{bundle.getString("fileTypeName")};
   }
 

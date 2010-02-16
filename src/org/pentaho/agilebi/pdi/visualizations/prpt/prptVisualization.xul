@@ -5,7 +5,7 @@
   xmlns:pen="http://www.pentaho.org/2008/xul" onload="prpt.init()">
 
   <vbox id="mainContainer" flex="1">
-    <toolbar id="nav-toolbar" parenttoouter="true" mode="icons">
+    <toolbar id="nav-toolbar" parenttoouter="true" mode="full">
       <toolbarbutton image="images/save.png" tooltiptext="${save}" onclick="prpt.save()" disabled="true"/>
       <toolbarbutton image="images/saveas.png" tooltiptext="${save_as}" onclick="prpt.saveAs()"/>
       <toolbarseparator/>
@@ -25,7 +25,7 @@
       <toolbarbutton label="+" onclick="prpt.zoomIn()" tooltiptext="${prpt-zin}" />
       <toolbaritem>
         <hbox>
-          <label value="Zoom: "
+          <label value="Zoom: "/>
           <menulist id="zoomlist">
             <menupopup>
               <menuitem label="50%" />

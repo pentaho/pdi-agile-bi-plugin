@@ -180,7 +180,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
   @Override
   public String getName() {
-    return "agileBiVisPerspective"; //$NON-NLS-1$
+    return "agileBiPerspective"; //$NON-NLS-1$
   }
   
   public boolean onTabClose(final int pos) throws XulException{
