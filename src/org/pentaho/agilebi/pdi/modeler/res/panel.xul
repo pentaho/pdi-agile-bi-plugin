@@ -49,6 +49,7 @@
           <listitem label="field" />
         </listbox>
         <hbox>
+        <spacer flex="1"/>
 			<button id="addField" label="${add}" onclick="modeler.addField()" />
         </hbox>
       </editpanel>
