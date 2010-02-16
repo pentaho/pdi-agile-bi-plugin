@@ -19,7 +19,7 @@
 	<import file="build-res/subfloor-pkg.xml"/>
 
 	<property name="platform.dist.dir"
-	            value="../bi-platform-assembly/dist"
+	            value="."
 	            description="Location of platform assembly zip" />
 
 	<property name="report-designer-assembly.dir"
@@ -31,11 +31,11 @@
 	            description="Location of platform assembly zip" />
 	
 	<property name="kettle.dist.dir"
-				value="../Kettle"
+				value="../Kettle trunk"
     			description="Location of kettle spoon zip" />
 	
 	<property name="analyzer.dist.dir"
-				value="../pentaho-analyzer/dist"
+				value="."
 				description="Location of Analyzer Agile BI plugin" />
 	
 	<property name="pdiwithagilebi"
@@ -219,6 +219,14 @@
 				<include name="*.jar"/>
 			</fileset>
 		</delete>
+		
+		<replace 
+		    file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml"  
+		    token="com.sun.xml.ws.transport.http.servlet.WSServlet" 
+		    value="org.pentaho.platform.web.servlet.UIServlet"/>
+		<replace 
+		    file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml"  
+		    token="com.sun.xml.ws.transport.http.servlet.WSServletContextListener"/>
 
 		<!-- remove solution folders that aren't necessary -->
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/data-access-plugin"/>
