@@ -54,7 +54,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
 
   protected XulDomContainer container;
   protected XulRunner runner;
-  private Log logger = LogFactory.getLog(AgileBiPerspective.class);
+  private Log logger = LogFactory.getLog(AgileBiModelerPerspective.class);
   protected Document document;
   protected XulTabs tabs;
   protected XulTabpanels panels;
@@ -84,6 +84,8 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
       BindingFactory bf = new DefaultBindingFactory();
       bf.setDocument(document);
 //      bf.setBindingType(Binding.Type.ONE_WAY);
+      
+      
       bf.createBinding(tabbox, "selectedIndex", this, "selectedMeta", new BindingConvertor<Integer, EngineMetaInterface>(){
         public EngineMetaInterface sourceToTarget(Integer value) {
           return metas.get(tabs.getTabByIndex(value));
@@ -99,48 +101,11 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
       });
       
     } catch(Exception e){
+      // TODO: throw exception
       logger.error(e);
     }
   }
   
-	public void exportSchema() {
-		try {
-			if (this.model.isValid()) {
-				ModelerWorkspaceUtil.populateDomain(this.model);
-				LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
-
-				FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell(), SWT.SAVE);
-				String[] theExtensions = { "*.xml" };
-				fileDialog.setFilterExtensions(theExtensions);
-				String theFile = fileDialog.open();
-				if(theFile != null) {
-					MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
-					String mondrianSchema = exporter.createMondrianModelXML();
-					logger.info(mondrianSchema);
-	
-					org.dom4j.Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
-					byte schemaBytes[] = schemaDoc.asXML().getBytes();
-	
-					File modelFile = new File(theFile);
-					OutputStream out = new FileOutputStream(modelFile);
-					out.write(schemaBytes);
-					out.flush();
-					out.close();
-				}
-			} else {
-				StringBuffer validationErrors = new StringBuffer();
-				for (String msg : this.model.getValidationMessages()) {
-					validationErrors.append(msg);
-					validationErrors.append("\n");
-					logger.info(msg);
-				}
-				MessageDialog.openError(Spoon.getInstance().getShell(), "", validationErrors.toString());
-			}
-		} catch (Exception e) {
-			logger.error(e);
-			MessageDialog.openError(Spoon.getInstance().getShell(), "", e.getMessage());
-		}
-	}
 
 
   public abstract String getDisplayName(Locale l);

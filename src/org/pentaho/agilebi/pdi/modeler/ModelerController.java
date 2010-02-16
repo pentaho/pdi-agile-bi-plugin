@@ -144,16 +144,16 @@ public class ModelerController extends AbstractXulEventHandler{
           // null - cannot add fields at this level
         } else if (event.getDropParent() instanceof MeasuresCollection) {
           // measure collection - add as a measure
-          newdata.add(workspace.createMeasure(availableField));
+          newdata.add(workspace.createMeasureForNode(availableField));
         } else if (event.getDropParent() instanceof DimensionMetaDataCollection) {
           // dimension collection - add as a dimension
-          newdata.add(workspace.createDimension(availableField));
+          newdata.add(workspace.createDimensionFromNode(availableField));
         } else if (event.getDropParent() instanceof DimensionMetaData) {
           // dimension - add as a hierarchy
-          newdata.add(workspace.createHierarchy(workspace.findDimension((DimensionMetaData)event.getDropParent()), availableField));
+          newdata.add(workspace.createHierarchyForParentWithNode((DimensionMetaData)event.getDropParent(), availableField));
         } else if (event.getDropParent() instanceof HierarchyMetaData) {
           // hierarchy - add as a level
-          newdata.add(workspace.createLevel(workspace.findHierarchy((HierarchyMetaData)event.getDropParent()), availableField));
+          newdata.add(workspace.createLevelForParentWithNode((HierarchyMetaData)event.getDropParent(), availableField));
         } else if (event.getDropParent() instanceof LevelMetaData) {
           // level - cannot drop into a level
           event.setAccepted(false);
@@ -163,16 +163,16 @@ public class ModelerController extends AbstractXulEventHandler{
         LevelMetaData level = (LevelMetaData)obj;
         if (event.getDropParent() instanceof HierarchyMetaData) {
           // rebind to workspace, including logical column and actual parent
-          level.setParent(workspace.findHierarchy((HierarchyMetaData)event.getDropParent()));
+          level.setParent((HierarchyMetaData)event.getDropParent());
           newdata.add(level);
         } else if (event.getDropParent() instanceof DimensionMetaData) {
           // add as a new hierarchy
-          HierarchyMetaData hier = workspace.createHierarchy(workspace.findDimension((DimensionMetaData)event.getDropParent()), level);
+          HierarchyMetaData hier = workspace.createHierarchyForParentWithNode((DimensionMetaData)event.getDropParent(), level);
           hier.setName(level.getName());
           hier.get(0).setName(level.getName());
           newdata.add(hier);
         } else if (event.getDropParent() == null) {
-          DimensionMetaData dim = workspace.createDimension(level.getColumnName());
+          DimensionMetaData dim = workspace.createDimensionWithName(level.getColumnName());
           dim.setName(level.getName());
           dim.get(0).setName(level.getName());
           dim.get(0).get(0).setName(level.getName());
@@ -188,7 +188,7 @@ public class ModelerController extends AbstractXulEventHandler{
           newdata.add(dim);
         } else if (event.getDropParent() instanceof DimensionMetaData) {
           DimensionMetaData dim = (DimensionMetaData)event.getDropParent();
-          hierarchy.setParent(workspace.findDimension(dim));
+          hierarchy.setParent(dim);
           // TODO: this will also need to resolve the level LogicalColumns
           newdata.add(hierarchy);
         }
@@ -226,27 +226,27 @@ public class ModelerController extends AbstractXulEventHandler{
         } else if (selectedTreeItem instanceof MeasuresCollection) {
           // measure collection - add as a measure
         	MeasuresCollection theMesaures = (MeasuresCollection) selectedTreeItem;
-        	theNode = workspace.createMeasure(availableField);
+        	theNode = workspace.createMeasureForNode(availableField);
         	theMesaures.add((MeasureMetaData) theNode);
         } else if (selectedTreeItem instanceof DimensionMetaDataCollection) {
           // dimension collection - add as a dimension
-        	theNode = workspace.createDimension(availableField);
+        	theNode = workspace.createDimensionFromNode(availableField);
         	DimensionMetaDataCollection theDimensions = (DimensionMetaDataCollection) selectedTreeItem;
         	theDimensions.add((DimensionMetaData) theNode);
         } else if (selectedTreeItem instanceof DimensionMetaData) {
           // dimension - add as a hierarchy
-        	theNode = workspace.createHierarchy(workspace.findDimension((DimensionMetaData)selectedTreeItem), availableField);
+        	theNode = workspace.createHierarchyForParentWithNode((DimensionMetaData)selectedTreeItem, availableField);
         	DimensionMetaData theDimension = (DimensionMetaData) selectedTreeItem;
         	theDimension.add((HierarchyMetaData) theNode);
         } else if (selectedTreeItem instanceof HierarchyMetaData) {
           // hierarchy - add as a level
-        	theNode = workspace.createLevel(workspace.findHierarchy((HierarchyMetaData)selectedTreeItem), availableField);
+        	theNode = workspace.createLevelForParentWithNode((HierarchyMetaData)selectedTreeItem, availableField);
         	HierarchyMetaData theHierarchy = (HierarchyMetaData) selectedTreeItem;
         	theHierarchy.add((LevelMetaData) theNode);
         } 
         if(theNode != null) {
         	theNode.setParent((AbstractMetaDataModelNode) selectedTreeItem);
-        }
+        } 
       } 
     }
   }
@@ -314,7 +314,7 @@ public class ModelerController extends AbstractXulEventHandler{
       	return null;
       }
     });      
-        
+    
     bf.createBinding(dimensionTree, "selectedItem", "measureBtn", "disabled", new ButtonConvertor(MeasuresCollection.class));    
     bf.createBinding(dimensionTree, "selectedItem", "dimensionBtn", "disabled", new ButtonConvertor(DimensionMetaDataCollection.class));
     bf.createBinding(dimensionTree, "selectedItem", "hierarchyBtn", "disabled", new ButtonConvertor(DimensionMetaData.class));
@@ -329,7 +329,7 @@ public class ModelerController extends AbstractXulEventHandler{
     
     dimensionTree.expandAll();
     
-    if(workspace.isshowAutoPopulatePrompt()){
+    if(workspace.isShowAutoPopulatePrompt()){
       try{
         XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
         confirm.setTitle(Messages.getString("auto_populate_title"));
@@ -461,9 +461,6 @@ public class ModelerController extends AbstractXulEventHandler{
       
 //      publisher.publishToServer( workspace.getModelName() + ".mondrian.xml", workspace.getDatabaseName(), workspace.getModelName(), true );
     } catch(Exception e){
-      logger.info(e);
-      SpoonFactory.getInstance().messageBox( "Publish Failed: "+ e.getLocalizedMessage(), "Publish To Server: "+workspace.getSelectedServer(), false, Const.ERROR);
-
       throw new ModelerException(e);
     }
 
@@ -633,7 +630,7 @@ public class ModelerController extends AbstractXulEventHandler{
       }
     }
     if(this.propDeck != null) {
-      this.propDeck.setSelectedIndex(0);
+    this.propDeck.setSelectedIndex(0);
     }
   }
     
@@ -753,10 +750,6 @@ public class ModelerController extends AbstractXulEventHandler{
   	}
   }
   
-  public void setSelectedServer(String server){
-    workspace.setSelectedServer(server);
-  }
-  
   public void loadPerspective(String id){
    // document.loadPerspective(id);
   }
@@ -822,4 +815,4 @@ public class ModelerController extends AbstractXulEventHandler{
     }
     return selectedFields;
   } 
-} 
+}

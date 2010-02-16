@@ -24,7 +24,7 @@ import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.modeler.TableModelerSource;
-import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
+import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.Const;
@@ -64,7 +64,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 			ModelerWorkspace model = new ModelerWorkspace();
 			ModelerWorkspaceUtil.populateModelFromSource(model, source);
 
-			AgileBiPerspective.getInstance().createTabForModel(model, MODELER_NAME);
+			AgileBiModelerPerspective.getInstance().createTabForModel(model, MODELER_NAME);
 
 		} catch (Exception e) {
 			e.printStackTrace();

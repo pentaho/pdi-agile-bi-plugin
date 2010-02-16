@@ -35,7 +35,7 @@ import org.w3c.dom.Node;
 
 public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
-  private Log logger = LogFactory.getLog(AgileBiPerspective.class);
+  private Log logger = LogFactory.getLog(AgileBiModelerPerspective.class);
   private static final AgileBiVisualizationPerspective INSTANCE = new AgileBiVisualizationPerspective();
   private ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective"); //$NON-NLS-1$
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
@@ -115,7 +115,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
     try {
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       ModelerWorkspace model = new ModelerWorkspace();
-      createTabForModel(model,AgileBiPerspective.createShortName(fname));
+      createTabForModel(model,AgileBiModelerPerspective.createShortName(fname));
 
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
       ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);

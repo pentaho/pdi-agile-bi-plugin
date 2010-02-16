@@ -170,31 +170,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     this.dirty = dirty;
     this.firePropertyChange("dirty", prevVal, this.dirty);
   }
-
-  public int getNumberLevels() {
-    int v = 0;
-    for (DimensionMetaData dim : model.getDimensions()) {
-      for (HierarchyMetaData hier : dim) {
-        for (LevelMetaData lvl : hier) {
-          v++;
-        }
-      }
-    }
-    return v;
-  }
-  
   
   public AvailableFieldCollection getAvailableFields() {
     return availableFields;
-  }
-  
-  
-  public void setSelectedServer(String server) {
-    this.selectedServer = server;
-  }
-  
-  public String getSelectedServer() {
-    return selectedServer;
   }
   
 
@@ -206,108 +184,56 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   	return this.selectedVisualization;
   }
 
-  public DimensionMetaData createDimension(ColumnBackedNode obj) {
+  public DimensionMetaData createDimensionFromNode(ColumnBackedNode obj) {
     DimensionMetaData dimension = new DimensionMetaData(obj.getName());
-    HierarchyMetaData hierarchy = createHierarchy(dimension, obj);
+    HierarchyMetaData hierarchy = createHierarchyForParentWithNode(dimension, obj);
     hierarchy.setParent(dimension);
     dimension.add(hierarchy);
     return dimension;
   }
   
 
-  public DimensionMetaData createDimension(String dimName) {
+  public DimensionMetaData createDimensionWithName(String dimName) {
     DimensionMetaData dimension = new DimensionMetaData(dimName);
-    HierarchyMetaData hierarchy = createHierarchy(dimension, null);
+    HierarchyMetaData hierarchy = createHierarchyForParentWithNode(dimension, null);
     hierarchy.setParent(dimension);
     dimension.add(hierarchy);
     return dimension;
   }
   
   
-  public void addDimension(ColumnBackedNode obj) {
-    addDimension(createDimension(obj));
+  public void addDimensionFromNode(ColumnBackedNode obj) {
+    addDimension(createDimensionFromNode(obj));
   }
 
   public void addDimension(DimensionMetaData dim) {
     this.model.getDimensions().add(dim);
   }
-  
-  public DimensionMetaData findDimension(DimensionMetaData dim) {
-    for (DimensionMetaData d : model.getDimensions()) {
-      if (d.equals(dim)) {
-        return d;
-      }
-    }
-    return null;
-  }
 
-  public HierarchyMetaData findHierarchy(HierarchyMetaData hier) {
-    for (DimensionMetaData d : model.getDimensions()) {
-      if (d.equals(hier.getParent())) {
-        for (HierarchyMetaData h : d) {
-          if (h.equals(hier)) {
-            return h;
-          }
-        }
-      }
-    }
-    return null;
-  }
-
-  public LevelMetaData createLevel(HierarchyMetaData parent, ColumnBackedNode obj) {
+  public LevelMetaData createLevelForParentWithNode(HierarchyMetaData parent, ColumnBackedNode obj) {
     LevelMetaData level = new LevelMetaData(parent, obj.getName());
     level.setParent(parent);
     level.setLogicalColumn(obj.getLogicalColumn());
     return level;
   }
 
-  public LevelMetaData createLevel(HierarchyMetaData parent, String name) {
+  public LevelMetaData createLevelForParentWithNode(HierarchyMetaData parent, String name) {
     LevelMetaData level = new LevelMetaData(parent, name);
     level.setParent(parent);
     level.setLogicalColumn(findLogicalColumn(name));
     return level;
   }
   
-  public HierarchyMetaData createHierarchy(DimensionMetaData parent, ColumnBackedNode obj) {
+  public HierarchyMetaData createHierarchyForParentWithNode(DimensionMetaData parent, ColumnBackedNode obj) {
     HierarchyMetaData hier = new HierarchyMetaData(obj.getName());
     hier.setParent(parent);
     if(obj != null){
-      LevelMetaData level = createLevel(hier, obj);
+      LevelMetaData level = createLevelForParentWithNode(hier, obj);
       hier.add(level);
     }
     return hier;
   }
   
-  public void addToHeirarchy(Object selectedItem, ColumnBackedNode newItem) {
-    if (selectedItem instanceof LevelMetaData) {
-      LevelMetaData sib = (LevelMetaData)selectedItem;
-      LevelMetaData level = createLevel(sib.getParent(), newItem);
-      sib.getParent().add(level);
-      this.firePropertyChange("dimensions", null , model.getDimensions());
-    } else if (selectedItem instanceof HierarchyMetaData) {
-      HierarchyMetaData hier = (HierarchyMetaData) selectedItem;
-      LevelMetaData level = createLevel(hier, newItem);
-      hier.add(level);
-      this.firePropertyChange("dimensions", null , model.getDimensions());
-    } else if (selectedItem instanceof DimensionMetaData) {
-      DimensionMetaData dim = (DimensionMetaData)selectedItem;
-      HierarchyMetaData hier = null;
-
-      if (dim.size() > 0) {
-        hier = dim.get(0);
-      } else {
-        hier = new HierarchyMetaData(newItem.toString());
-        hier.setParent(dim);
-        dim.add(hier);
-      }
-      LevelMetaData level = createLevel(hier, newItem);
-      hier.add(level);
-      this.firePropertyChange("dimensions", null , model.getDimensions());
-    } else {
-      addDimension(newItem);
-    }
-  }
-
   private void fireFieldsChanged() {
     firePropertyChange("availableFields", null, this.availableFields);
   }
@@ -317,7 +243,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     setDirty(true);
   }
 
-  public MeasureMetaData createMeasure(AvailableField selectedField) {
+  public MeasureMetaData createMeasureForNode(AvailableField selectedField) {
     
     MeasureMetaData meta = new MeasureMetaData(selectedField.getName(), "", selectedField.getDisplayName());
     meta.setLogicalColumn(selectedField.getLogicalColumn());
@@ -325,10 +251,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return meta;
   }
   
-  public MeasureMetaData addFieldIntoPlay(AvailableField selectedField) {
-    MeasureMetaData meta = createMeasure(selectedField);
-    this.model.getMeasures().add(meta); //$NON-NLS-1$
-    return meta;
+  public void addMeasure(MeasureMetaData measure) {
+    this.model.getMeasures().add(measure); //$NON-NLS-1$
   }
   
   public LogicalColumn findLogicalColumn(String id) {
@@ -350,10 +274,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return source;
   }    
 
-  public List<MeasureMetaData> getFields() {
-    return model.getMeasures();
-  }
-  
   public void setFields(List<MeasureMetaData> fields) {
     this.model.getMeasures().clear();
     this.model.getMeasures().addAll(fields);
@@ -594,7 +514,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     this.autoPopulatePrompt = prompt;
   }
   
-  public boolean isshowAutoPopulatePrompt(){
+  public boolean isShowAutoPopulatePrompt(){
     return this.autoPopulatePrompt;
   }
   

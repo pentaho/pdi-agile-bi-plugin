@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
-import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
+import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.di.ui.spoon.SpoonLifecycleListener;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPlugin;
@@ -62,7 +62,7 @@ public class AgileBISpoonPlugin implements SpoonPlugin{
   }
 
   public SpoonPerspective getPerspective() {
-    return AgileBiPerspective.getInstance();
+    return AgileBiModelerPerspective.getInstance();
   }
   
   

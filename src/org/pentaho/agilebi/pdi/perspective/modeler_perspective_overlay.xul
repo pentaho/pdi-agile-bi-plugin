@@ -18,6 +18,6 @@
     
   <menupopup id="view-popup">
         <menuitem id="view-modeler-props" label="${view.modeler.props}"
-          command="agileBiVisualizationPerspective.toggleProperties()" type="checkbox"/>
+          command="agileBiPerspective.toggleProperties()" type="checkbox"/>
   </menupopup>
 </overlay>

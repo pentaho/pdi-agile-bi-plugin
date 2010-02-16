@@ -160,10 +160,11 @@ public class ModelerWorkspaceUtil {
       DataType dataType = field.getLogicalColumn().getDataType();
       if( dataType == DataType.NUMERIC) {
         // create a measure
-        workspace.addFieldIntoPlay(field);
+        MeasureMetaData measure = workspace.createMeasureForNode(field);
+        workspace.getModel().getMeasures().add(measure);
       }
       // create a dimension
-      workspace.addDimension(field);
+      workspace.addDimensionFromNode(field);
     }
     
     /*
@@ -230,7 +231,7 @@ public class ModelerWorkspaceUtil {
     cat.getLogicalColumns().clear();
 
     // Add all measures
-    for (MeasureMetaData f : model.getFields()) {
+    for (MeasureMetaData f : model.getModel().getMeasures()) {
       LogicalColumn lCol = f.getLogicalColumn();
       lCol.setName(new LocalizedString(Locale.getDefault().toString(), f.getDisplayName()));
       AggregationType type = AggregationType.valueOf(f.getAggTypeDesc());
@@ -354,7 +355,7 @@ public class ModelerWorkspaceUtil {
       cube.setName( Messages.getString("ModelerWorkspaceUtil.Populate.CubeName", model.getModelName() ) ); //$NON-NLS-1$
       cube.setOlapDimensionUsages(usages);
 
-      for (MeasureMetaData f : model.getFields()) {
+      for (MeasureMetaData f : model.getModel().getMeasures()) {
 
         OlapMeasure measure = new OlapMeasure();
         String n = f.getDisplayName() != null ? f.getDisplayName() : f.getName();

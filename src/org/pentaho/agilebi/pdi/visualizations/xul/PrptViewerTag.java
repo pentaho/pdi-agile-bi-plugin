@@ -79,6 +79,43 @@ public class PrptViewerTag extends SwtElement{
     setManagedObject(mainPanel);
   }
   
+  public void start(){
+    viewer.setPageNumber(1);
+  }
+  
+  public void previous(){
+    viewer.setPageNumber(Math.max(1, viewer.getPageNumber() - 1));
+  }
+  
+  public void next(){
+    viewer.setPageNumber(Math.min
+        (viewer.getNumberOfPages(), viewer.getPageNumber() + 1));
+  }
+  
+  public void last(){
+    viewer.setPageNumber(viewer.getNumberOfPages());
+  }
+  
+  public void zoomOut(){
+
+    final double nextZoomOut = PreviewPaneUtilities.getNextZoomOut(viewer.getZoom(), viewer.getZoomFactors());
+    if (nextZoomOut < 0.5){
+      return;
+    }
+    viewer.setZoom(nextZoomOut);
+    
+  }
+  
+  public void zoomIn(){
+
+    final double nextZoomIn = PreviewPaneUtilities.getNextZoomIn(viewer.getZoom(), viewer.getZoomFactors());
+    if (nextZoomIn > 2.0){
+      return;
+    }
+    viewer.setZoom(nextZoomIn);
+   
+  }
+  
   @Override
   public void layout() {
     if(!initialized){
@@ -97,7 +134,7 @@ public class PrptViewerTag extends SwtElement{
       item.setText("<<");
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
-          viewer.setPageNumber(1);
+          start();
         }
       });
       
@@ -105,7 +142,7 @@ public class PrptViewerTag extends SwtElement{
       item.setText("<");
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
-          viewer.setPageNumber(Math.max(1, viewer.getPageNumber() - 1));
+          previous();
         }
       });
       
@@ -113,8 +150,7 @@ public class PrptViewerTag extends SwtElement{
       item.setText(">");
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
-          viewer.setPageNumber(Math.min
-              (viewer.getNumberOfPages(), viewer.getPageNumber() + 1));
+          next();
         }
       });
       
@@ -122,7 +158,7 @@ public class PrptViewerTag extends SwtElement{
       item.setText(">>");
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
-          viewer.setPageNumber(viewer.getNumberOfPages());
+          last();
         }
       });
 
@@ -132,13 +168,7 @@ public class PrptViewerTag extends SwtElement{
       item.setText("-");
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
-
-          final double nextZoomOut = PreviewPaneUtilities.getNextZoomOut(viewer.getZoom(), viewer.getZoomFactors());
-          if (nextZoomOut < 0.5){
-            return;
-          }
-          viewer.setZoom(nextZoomOut);
-          
+          zoomOut();
         }
       });
       
@@ -147,13 +177,7 @@ public class PrptViewerTag extends SwtElement{
       item.setText("+");
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
-
-          final double nextZoomIn = PreviewPaneUtilities.getNextZoomIn(viewer.getZoom(), viewer.getZoomFactors());
-          if (nextZoomIn > 2.0){
-            return;
-          }
-          viewer.setZoom(nextZoomIn);
-          
+          zoomIn();
         }
       });
 
@@ -248,6 +272,13 @@ public class PrptViewerTag extends SwtElement{
     }
   }
   
+  public Double getZoom(){
+    return viewer.getZoom();
+  }
+  
+  public void setZoom(double val){
+    viewer.setZoom(val);
+  }
   
   private void loadPRPT(){
     try {
@@ -267,6 +298,7 @@ public class PrptViewerTag extends SwtElement{
 
         public void contentsChanged(ListDataEvent arg0) {
           combo.select(new ArrayList(zoomMap.keySet()).indexOf(viewer.getZoom()));
+          PrptViewerTag.this.changeSupport.firePropertyChange("zoom", null, getZoom());
         }
 
         public void intervalAdded(ListDataEvent arg0) {}
@@ -277,6 +309,7 @@ public class PrptViewerTag extends SwtElement{
       log.error(e);
     }
   }
+  
   
   
 }

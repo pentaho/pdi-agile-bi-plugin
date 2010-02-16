@@ -8,14 +8,14 @@ import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.components.XulMenuitem;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
-public class AgileBiPerspectiveController extends AbstractXulEventHandler {
+public class AgileBiModelerPerspectiveController extends AbstractXulEventHandler {
 
   private XulMenuitem modelPropItem;
   BindingFactory bf = new DefaultBindingFactory();
   
   @Override
   public String getName() {
-    return "agileBiVisualizationPerspective";
+    return "agileBiPerspective";
   }
 
   @Override

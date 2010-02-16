@@ -1,15 +1,17 @@
 package org.pentaho.agilebi.pdi.visualizations.prpt;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.agilebi.pdi.modeler.Messages;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
-import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
+import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
@@ -26,8 +28,10 @@ import org.pentaho.reporting.engine.classic.core.modules.parser.bundle.writer.Bu
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdDataFactory;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
+import org.pentaho.ui.xul.binding.BindingConvertor;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
+import org.pentaho.ui.xul.components.XulMenuList;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.containers.XulEditpanel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
@@ -45,6 +49,18 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   private String factTableName, modelId;
   private PrptViewerTag viewer;
   private XulEditpanel propPanel;
+  private XulMenuList zoomList;
+  
+
+  private TreeMap<Double, String> zoomMap = new TreeMap<Double, String>();
+  {
+    zoomMap.put(0.5, "50%");
+    zoomMap.put(0.75, "75%");
+    zoomMap.put(1.0, "100%");
+    zoomMap.put(1.25, "125%");
+    zoomMap.put(1.5, "150%");
+    zoomMap.put(2.0, "200%");
+  }
   
   public PRPTVisualizationController(PRPTMeta meta, MasterReport rpt){
     spoon = (Spoon) SpoonFactory.getInstance();
@@ -61,7 +77,9 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   public void init(){
     this.bf = new DefaultBindingFactory();
     bf.setDocument(document);
+    
     this.propPanel = (XulEditpanel) document.getElementById("propPanel");
+    this.zoomList = (XulMenuList) document.getElementById("zoomlist");
 
     
     // try to find the model name
@@ -79,6 +97,25 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
 
     bf.setBindingType(Binding.Type.BI_DIRECTIONAL);
     bf.createBinding(this.propPanel, "visible", this, "propVisible");
+    
+    bf.createBinding(viewer, "zoomLevel", zoomList, "selectedIndex", new BindingConvertor<Double, Integer>(){
+
+      @Override
+      public Integer sourceToTarget(Double value) {
+        return new ArrayList(zoomMap.keySet()).indexOf(viewer.getZoom());
+      }
+
+      @Override
+      public Double targetToSource(Integer value) {
+        switch(value){
+          case 5:       // 200%
+            return 2.0;
+          default:      // Others are increments of 25
+            return 0.5 + (0.25 *  value);
+        }
+      }
+     
+    });
 
     viewer = (PrptViewerTag) document.getElementById("prptViewer");
     loadReport();
@@ -207,7 +244,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     String xmiFileLocation = getXmiFileLocation();
     
     if(xmiFileLocation != null){
-      AgileBiPerspective.getInstance().open(null, xmiFileLocation, false);
+      AgileBiModelerPerspective.getInstance().open(null, xmiFileLocation, false);
     } else {
 
       XulMessageBox box;

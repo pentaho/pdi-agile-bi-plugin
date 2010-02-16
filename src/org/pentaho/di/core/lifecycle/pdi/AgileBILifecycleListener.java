@@ -16,7 +16,7 @@
  */
 package org.pentaho.di.core.lifecycle.pdi;
 
-import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
+import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.agilebi.platform.JettyServer;
@@ -37,7 +37,7 @@ public class AgileBILifecycleListener implements LifecycleListener {
       throw new LifecycleException("error starting embedded bi server", e, true);
     }
 
-    ((Spoon) SpoonFactory.getInstance()).addFileListener(AgileBiPerspective.getInstance());
+    ((Spoon) SpoonFactory.getInstance()).addFileListener(AgileBiModelerPerspective.getInstance());
     
     for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {
       ((Spoon) SpoonFactory.getInstance()).addFileListener(viz);

@@ -1,5 +1,8 @@
 package org.pentaho.agilebi.test;
 
+import javax.swing.JButton;
+import javax.swing.JComponent;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -97,7 +100,7 @@ public class WorkspaceTest {
     field.setLogicalColumn(logicalColumn1);
     work.getAvailableFields().add(field);
     
-    work.addFieldIntoPlay(field);
+    work.addMeasure(work.createMeasureForNode(field));
     Assert.assertEquals(1, work.getModel().getMeasures().size());
     
     ModelerWorkspaceUtil.populateDomain(work);
@@ -122,7 +125,7 @@ public class WorkspaceTest {
     field.setLogicalColumn(logicalColumn1);
     work.getAvailableFields().add(field);
     
-    work.addFieldIntoPlay(field);
+    work.addMeasure(work.createMeasureForNode(field));
     Assert.assertTrue(work.getModel().getMeasures().isValid());
     
     work.getModel().getMeasures().get(0).setLogicalColumn(null);
@@ -140,14 +143,19 @@ public class WorkspaceTest {
     field.setLogicalColumn(logicalColumn1);
     work.getAvailableFields().add(field);
     
-    work.addDimension(field);
+    work.addDimensionFromNode(field);
     
     DimensionMetaDataCollection dims = work.getModel().getDimensions();
     Assert.assertEquals(1, dims.size());
     //check that the auto-created level is pointing to the same column
     Assert.assertEquals(field.getLogicalColumn(), dims.get(0).get(0).get(0).getLogicalColumn());
-    
     Assert.assertTrue(dims.isValid());
+    
+    dims.get(0).get(0).get(0).setLogicalColumn(null);
+    
+    Assert.assertFalse(dims.isValid());
+    
+    
   }
   
   @Test
@@ -168,7 +176,7 @@ public class WorkspaceTest {
     dimensionTarget.setName("Dimension Target");
     dimensionTarget.setLogicalColumn(logicalColumn1);
     work.getAvailableFields().add(dimensionTarget);
-    work.addDimension(dimensionTarget);
+    work.addDimensionFromNode(dimensionTarget);
     
     DimensionMetaDataCollection dimensions = work.getModel().getDimensions();
     DimensionMetaData dimension = dimensions.get(0);
@@ -182,4 +190,36 @@ public class WorkspaceTest {
     LevelMetaData theLevel = theHierarchy.get(0);
     Assert.assertEquals(logicalColumn1, theLevel.getLogicalColumn());
   }
+  
+
+
+  @Test
+  public void testDimensionValidation(){
+    ModelerWorkspace work = new ModelerWorkspace();
+    work.setDomain(domain);
+    AvailableField field = new AvailableField();
+    field.setName("Test name");
+    field.setLogicalColumn(logicalColumn1);
+    work.getAvailableFields().add(field);
+    work.addDimensionFromNode(field);
+    
+    DimensionMetaDataCollection dims = work.getModel().getDimensions();
+    
+    Assert.assertTrue(dims.isValid());
+    dims.get(0).get(0).get(0).setLogicalColumn(null);
+    Assert.assertFalse(dims.isValid());
+    
+    
+  }
+  
+
+  @Test
+  public void testGetAvailableFields(){
+    ModelerWorkspace work = new ModelerWorkspace();
+    work.setDomain(domain);
+    
+    Assert.assertEquals(2, work.getAvailableFields().size());
+    
+  }
+  
 }

@@ -25,7 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
-import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
+import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
@@ -69,7 +69,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     
     ModelerWorkspaceUtil.populateModelFromOutputStep(model);
     
-    AgileBiPerspective.getInstance().createTabForModel(model, MODELER_NAME);
+    AgileBiModelerPerspective.getInstance().createTabForModel(model, MODELER_NAME);
     
   }
   
@@ -83,7 +83,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     ModelerWorkspaceUtil.populateModelFromSource(model, source);
     
     // create unique name
-    AgileBiPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
+    AgileBiModelerPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
   }
 
   // TODO: replace this code after M1
@@ -123,7 +123,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
 
     try{
       ModelerHelper.getInstance().createModelerTabFromOutputStep();
-      SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiPerspective.class);
+      SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiModelerPerspective.class);
       
     } catch(Exception e){
       e.printStackTrace();
@@ -241,7 +241,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
           model.setShowAutoPopulatePrompt(true);
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
 
-          AgileBiPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
+          AgileBiModelerPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
           
         } catch(Exception e){
           e.printStackTrace();

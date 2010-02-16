@@ -11,7 +11,7 @@ import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.pdi.modeler.Messages;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
-import org.pentaho.agilebi.pdi.perspective.AgileBiPerspective;
+import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
@@ -158,7 +158,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
   }
 
 	public void editModel() {
-		AgileBiPerspective.getInstance().open(null, xmiFileLocation, false);
+		AgileBiModelerPerspective.getInstance().open(null, xmiFileLocation, false);
 
 	}
 

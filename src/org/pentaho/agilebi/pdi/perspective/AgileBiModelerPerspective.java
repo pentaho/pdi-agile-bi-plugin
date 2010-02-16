@@ -2,8 +2,10 @@ package org.pentaho.agilebi.pdi.perspective;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +16,11 @@ import java.util.ResourceBundle;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.DocumentHelper;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.pentaho.agilebi.pdi.modeler.ModelerEngineMeta;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -27,6 +33,8 @@ import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
+import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.binding.Binding;
@@ -39,25 +47,25 @@ import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.w3c.dom.Node;
 
 
-public class AgileBiPerspective extends AbstractPerspective implements SpoonPerspective, FileListener{
+public class AgileBiModelerPerspective extends AbstractPerspective implements SpoonPerspective, FileListener{
 
-  private Log logger = LogFactory.getLog(AgileBiPerspective.class);
-  private static final AgileBiPerspective INSTANCE = new AgileBiPerspective();
+  private Log logger = LogFactory.getLog(AgileBiModelerPerspective.class);
+  private static final AgileBiModelerPerspective INSTANCE = new AgileBiModelerPerspective();
   private ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective"); //$NON-NLS-1$
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
   private XulMenuitem modelPropItem;
   
-  private AgileBiPerspectiveController perspectiveController = new AgileBiPerspectiveController();
+  private AgileBiModelerPerspectiveController perspectiveController = new AgileBiModelerPerspectiveController();
 
   BindingFactory bf = new DefaultBindingFactory();
   
-  private AgileBiPerspective() {
-    super("org/pentaho/agilebi/pdi/perspective/agileBiPerspective.xul");
+  private AgileBiModelerPerspective() {
+    super("org/pentaho/agilebi/pdi/perspective/perspective.xul");
     setDefaultExtension("xmi");
     bf.setDocument(document);
   }
   
-  public static AgileBiPerspective getInstance() {
+  public static AgileBiModelerPerspective getInstance() {
     return INSTANCE;
   }
   
@@ -128,7 +136,7 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
       ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);
       
-      createTabForModel(model,AgileBiPerspective.createShortName(fname));
+      createTabForModel(model,AgileBiModelerPerspective.createShortName(fname));
 
       File f = new File(fname);
       String fullPath = f.getAbsolutePath();
@@ -169,7 +177,7 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
       }
 
       public String getOverlayUri() {
-        return "org/pentaho/agilebi/pdi/perspective/perspective_overlay.xul"; //$NON-NLS-1$
+        return "org/pentaho/agilebi/pdi/perspective/modeler_perspective_overlay.xul"; //$NON-NLS-1$
         
       }
 
@@ -217,6 +225,45 @@ public class AgileBiPerspective extends AbstractPerspective implements SpoonPers
       metas.remove(pos);
     }
     return true;
+  }
+  
+  public void exportSchema() {
+    try {
+      if (this.model.isValid()) {
+        ModelerWorkspaceUtil.populateDomain(this.model);
+        LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
+
+        FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell(), SWT.SAVE);
+        String[] theExtensions = { "*.xml" };
+        fileDialog.setFilterExtensions(theExtensions);
+        String theFile = fileDialog.open();
+        if(theFile != null) {
+          MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
+          String mondrianSchema = exporter.createMondrianModelXML();
+          logger.info(mondrianSchema);
+  
+          org.dom4j.Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
+          byte schemaBytes[] = schemaDoc.asXML().getBytes();
+  
+          File modelFile = new File(theFile);
+          OutputStream out = new FileOutputStream(modelFile);
+          out.write(schemaBytes);
+          out.flush();
+          out.close();
+        }
+      } else {
+        StringBuffer validationErrors = new StringBuffer();
+        for (String msg : this.model.getValidationMessages()) {
+          validationErrors.append(msg);
+          validationErrors.append("\n");
+          logger.info(msg);
+        }
+        MessageDialog.openError(Spoon.getInstance().getShell(), "", validationErrors.toString());
+      }
+    } catch (Exception e) {
+      logger.error(e);
+      MessageDialog.openError(Spoon.getInstance().getShell(), "", e.getMessage());
+    }
   }
 
   @Override
