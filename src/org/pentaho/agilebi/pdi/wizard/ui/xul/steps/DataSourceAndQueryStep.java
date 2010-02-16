@@ -23,13 +23,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.pentaho.agilebi.pdi.modeler.Messages;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
-import org.pentaho.agilebi.pdi.wizard.ui.xul.res.Messages;
 import org.pentaho.commons.metadata.mqleditor.editor.SwtMqlEditor;
 import org.pentaho.metadata.repository.IMetadataDomainRepository;
-import org.pentaho.pms.core.exception.PentahoMetadataException;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
 import org.pentaho.reporting.engine.classic.core.MetaAttributeNames;
@@ -51,7 +50,6 @@ import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulButton;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
-
 /**
  * TODO: Document Me
  *
@@ -95,7 +93,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       return HANDLER_NAME;
     }
 
-    private IMetadataDomainRepository getDomainRepo() throws ReportDataFactoryException, IOException{
+    private IMetadataDomainRepository getDomainRepo() throws ReportDataFactoryException {
 
       IPmdConnectionProvider connectionProvider = ((PmdDataFactory) getEditorModel().getReportDefinition().getDataFactory()).getConnectionProvider();
       IMetadataDomainRepository repo = connectionProvider.getMetadataDomainRepository(DEFAULT, getEditorModel().getReportDefinition().getResourceManager(), getEditorModel().getReportDefinition().getContentBase(), df.getXmiFile());
@@ -124,15 +122,8 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
           df.setQuery(DEFAULT, queryString);
           setCurrentQuery(DEFAULT);
         }
-      } catch (ReportDataFactoryException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (PentahoMetadataException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+      } catch (Exception e) {
+        getDesignTimeContext().userError(e);
       }
     }
   }
@@ -180,8 +171,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
         ModelerWorkspaceUtil.autoModelFlat(model);
         ModelerWorkspaceUtil.saveWorkspace( model, fileName);
       } catch (ModelerException e1) {
-        // TODO Auto-generated catch block
-        e1.printStackTrace();
+        getDesignTimeContext().userError(e1);
       }
       
       if (getEditorModel().getReportDefinition().getDataFactory() != null && getEditorModel().getReportDefinition().getDataFactory() instanceof CompoundDataFactory) {
@@ -197,7 +187,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       try {
         df.setXmiFile(modelFile.getCanonicalPath());
       } catch (IOException e) {
-        e.printStackTrace();
+        getDesignTimeContext().userError(e);
       }
       df.setDomainId(DEFAULT);
       getEditorModel().getReportDefinition().setDataFactory(df);
@@ -260,7 +250,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       }
     }
     if (items.size() < 1) {
-      items.add("NO FIELDS SELECTED! (Edit the query)");
+      items.add(Messages.getString("DataSourceAndQueryStep.no_defined_fields")); //$NON-NLS-1$
     }
     setAvailableColumns(items);  
   }
@@ -276,7 +266,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
         StringUtils.isEmpty(reportDefinition.getQuery()))
     {
       DebugLog.log("Have no query or no datafactory " + //$NON-NLS-1$
-          reportDefinition.getDataFactory() + " " + reportDefinition.getQuery()); //$NON-NLS-1$
+      reportDefinition.getDataFactory() + " " + reportDefinition.getQuery()); //$NON-NLS-1$
       return false;
     }
 
