@@ -58,6 +58,7 @@
         <caption label="Model" />
         <toolbar id="schema-toolbar" mode="icons">
               <toolbarspacer flex="1"/>
+              <toolbarbutton image="images/autogen_model.png" onclick="modeler.showAutopopulatePrompt()"/>
               <toolbarseparator/>
               <toolbarbutton id="measureBtn" image="images/sm_measure_icon.png" onclick="modeler.showNewMeasureDialog()" disabled="true"/>
     		  <toolbarbutton id="dimensionBtn" image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()" disabled="true"/>
