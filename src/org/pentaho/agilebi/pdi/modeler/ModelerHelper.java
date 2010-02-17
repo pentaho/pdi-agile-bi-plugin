@@ -65,7 +65,6 @@ public class ModelerHelper extends AbstractXulEventHandler {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
 
     ModelerWorkspace model = new ModelerWorkspace();
-    model.setShowAutoPopulatePrompt(true);
     
     ModelerWorkspaceUtil.populateModelFromOutputStep(model);
     
@@ -79,7 +78,6 @@ public class ModelerHelper extends AbstractXulEventHandler {
 
     ModelerWorkspace model = new ModelerWorkspace();
     model.setModelSource(source);
-    model.setShowAutoPopulatePrompt(true);
     ModelerWorkspaceUtil.populateModelFromSource(model, source);
     
     // create unique name
@@ -237,12 +235,8 @@ public class ModelerHelper extends AbstractXulEventHandler {
         TableModelerSource source = new TableModelerSource( databaseMeta, std.getTableName(), std.getSchemaName());
         try{
           ModelerWorkspace model = new ModelerWorkspace();
-
-          model.setShowAutoPopulatePrompt(true);
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
-
           AgileBiModelerPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
-          
         } catch(Exception e){
           e.printStackTrace();
           SpoonFactory.getInstance().messageBox( "Could not create a modeler: "+e.getLocalizedMessage(), "Modeler Error", false, Const.ERROR);

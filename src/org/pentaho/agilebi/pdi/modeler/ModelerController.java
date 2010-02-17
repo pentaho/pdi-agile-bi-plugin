@@ -328,32 +328,31 @@ public class ModelerController extends AbstractXulEventHandler{
     fireBindings();
     
     dimensionTree.expandAll();
-    
-    if(workspace.isShowAutoPopulatePrompt()){
-      try{
-        XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
-        confirm.setTitle(Messages.getString("auto_populate_title"));
-        confirm.setMessage(Messages.getString("auto_populate_msg"));
-        confirm.setAcceptLabel(Messages.getString("yes"));
-        confirm.setCancelLabel(Messages.getString("no"));
-        confirm.addDialogCallback(new XulDialogCallback(){
+  }
+  
+  public void showAutopopulatePrompt() {
+    try{
+      XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
+      confirm.setTitle(Messages.getString("auto_populate_title"));
+      confirm.setMessage(Messages.getString("auto_populate_msg"));
+      confirm.setAcceptLabel(Messages.getString("yes"));
+      confirm.setCancelLabel(Messages.getString("no"));
+      confirm.addDialogCallback(new XulDialogCallback(){
 
-          public void onClose(XulComponent sender, Status returnCode, Object retVal) {
-            if(returnCode == Status.ACCEPT){
-              autoPopulate();
-            } 
-          }
+        public void onClose(XulComponent sender, Status returnCode, Object retVal) {
+          if(returnCode == Status.ACCEPT){
+            autoPopulate();
+          } 
+        }
 
-          public void onError(XulComponent sender, Throwable t) {}
-          
-        });
-        confirm.open();
+        public void onError(XulComponent sender, Throwable t) {}
         
-      } catch(XulException e){
-        logger.error(e);
-      }
+      });
+      confirm.open();
+      
+    } catch(XulException e){
+      logger.error(e);
     }
-    
   }
   
   private void fireBindings() throws ModelerException{

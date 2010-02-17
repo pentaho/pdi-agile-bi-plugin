@@ -73,7 +73,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   // full path to file
   private String fileName;
   
-  private boolean autoPopulatePrompt;
+
   
   public ModelerWorkspace() {
     
@@ -509,14 +509,4 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     // TODO: update domain with changes
     return domain;
   }
-  
-  public void setShowAutoPopulatePrompt(boolean prompt){
-    this.autoPopulatePrompt = prompt;
-  }
-  
-  public boolean isShowAutoPopulatePrompt(){
-    return this.autoPopulatePrompt;
-  }
-  
-
 }
