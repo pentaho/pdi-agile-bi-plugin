@@ -332,24 +332,25 @@ public class ModelerController extends AbstractXulEventHandler{
   
   public void showAutopopulatePrompt() {
     try{
-      XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
-      confirm.setTitle(Messages.getString("auto_populate_title"));
-      confirm.setMessage(Messages.getString("auto_populate_msg"));
-      confirm.setAcceptLabel(Messages.getString("yes"));
-      confirm.setCancelLabel(Messages.getString("no"));
-      confirm.addDialogCallback(new XulDialogCallback(){
-
-        public void onClose(XulComponent sender, Status returnCode, Object retVal) {
-          if(returnCode == Status.ACCEPT){
-            autoPopulate();
-          } 
-        }
-
-        public void onError(XulComponent sender, Throwable t) {}
-        
-      });
-      confirm.open();
-      
+      MainModelNode model = workspace.getModel();
+      if(model.getDimensions().isEmpty() && model.getMeasures().isEmpty()) {
+        autoPopulate();
+      } else {
+          XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
+          confirm.setTitle(Messages.getString("auto_populate_title"));
+          confirm.setMessage(Messages.getString("auto_populate_msg"));
+          confirm.setAcceptLabel(Messages.getString("yes"));
+          confirm.setCancelLabel(Messages.getString("no"));
+          confirm.addDialogCallback(new XulDialogCallback(){
+            public void onClose(XulComponent sender, Status returnCode, Object retVal) {
+              if(returnCode == Status.ACCEPT){
+                autoPopulate();
+              } 
+            }
+            public void onError(XulComponent sender, Throwable t) {}
+          });
+          confirm.open();
+      }
     } catch(XulException e){
       logger.error(e);
     }
@@ -762,7 +763,6 @@ public class ModelerController extends AbstractXulEventHandler{
   }
   
   public void autoPopulate(){
-
     try {
       ModelerWorkspaceUtil.autoModelFlat(this.workspace);
       this.dimensionTree.expandAll();
