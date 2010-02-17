@@ -25,6 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
@@ -33,6 +34,7 @@ import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.core.database.dialog.DatabaseExplorerDialog;
+import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.TabMapEntry;
@@ -124,8 +126,8 @@ public class ModelerHelper extends AbstractXulEventHandler {
       SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiModelerPerspective.class);
       
     } catch(Exception e){
-      e.printStackTrace();
-      SpoonFactory.getInstance().messageBox( "Could not create a modeler: "+e.getLocalizedMessage(), "Modeler Error", false, Const.ERROR);
+      logger.error(e);
+      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating modeler", e); 
     }
   }
   
@@ -148,8 +150,8 @@ public class ModelerHelper extends AbstractXulEventHandler {
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
           quickVisualize( model );
         } catch(Exception e){
-          e.printStackTrace();
-          SpoonFactory.getInstance().messageBox( "Could not create a modeler: "+e.getLocalizedMessage(), "Modeler Error", false, Const.ERROR);
+          logger.error(e);
+          new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error executing Quick Visualize", e);
         }
       }
     }
@@ -161,8 +163,8 @@ public class ModelerHelper extends AbstractXulEventHandler {
       ModelerWorkspaceUtil.populateModelFromOutputStep(model);
       quickVisualize( model );
     } catch(Exception e){
-      e.printStackTrace();
-      SpoonFactory.getInstance().messageBox( "Could not create a vizualizer: "+e.getLocalizedMessage(), "Vizualizer Error", false, Const.ERROR);
+      logger.error(e);
+      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
     }
 
   }
@@ -180,8 +182,8 @@ public class ModelerHelper extends AbstractXulEventHandler {
       EmbeddedWizard wizard = new EmbeddedWizard(model);
       wizard.run(null);
     } catch (Exception e) {
-      e.printStackTrace();
-      SpoonFactory.getInstance().messageBox( "Could not create a report: "+e.getLocalizedMessage(), "Report Error", false, Const.ERROR);
+      logger.error(e);
+      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
     }
   }
   
@@ -238,8 +240,8 @@ public class ModelerHelper extends AbstractXulEventHandler {
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
           AgileBiModelerPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
         } catch(Exception e){
-          e.printStackTrace();
-          SpoonFactory.getInstance().messageBox( "Could not create a modeler: "+e.getLocalizedMessage(), "Modeler Error", false, Const.ERROR);
+          logger.error(e);
+          new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating Modeler", e);
         }
       }
     }
@@ -252,8 +254,8 @@ public class ModelerHelper extends AbstractXulEventHandler {
     XulDialogBiServerList biServerConfigDialog = new XulDialogBiServerList( spoon.getShell() );
     biServerConfigDialog.showDialog();
     } catch (XulException e) {
-      e.printStackTrace();
-      SpoonFactory.getInstance().messageBox( "Could not create dialog: "+e.getLocalizedMessage(), "Dialog Error", false, Const.ERROR);
+      logger.error(e);
+      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Could not create dialog", e);
     }
   }
   
