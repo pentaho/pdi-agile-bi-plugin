@@ -154,8 +154,8 @@ public class ModelerWorkspaceUtil {
    */
   public static void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
     workspace.setModelIsChanging(true);
-    workspace.getModel().getMeasures().clear();
-    workspace.getModel().getDimensions().clear();
+    workspace.setModel(new MainModelNode());
+
     List<AvailableField> fields = workspace.getAvailableFields();
     for( AvailableField field : fields ) {
       DataType dataType = field.getLogicalColumn().getDataType();

@@ -52,7 +52,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   private AvailableFieldCollection availableFields = new AvailableFieldCollection();
   
-  private MainModelNode model = new MainModelNode();
+  private MainModelNode model;
   
   private String sourceName;
   
@@ -78,16 +78,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   public ModelerWorkspace() {
     
-    model.addPropertyChangeListener("children", new PropertyChangeListener(){
-
-      public void propertyChange(PropertyChangeEvent arg0) {  
-        if(!modelIsChanging){
-          fireModelChanged();
-        }
-      }
-      
-    });
-
+    setModel(new MainModelNode());
+   
     BiServerConfig biServerConfig = BiServerConfig.getInstance();
     List<String> serverNames = biServerConfig.getServerNames();
     if( serverNames.size() > 0 ) {
@@ -102,6 +94,16 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 
   public void setModel(MainModelNode model) {
     this.model = model;
+    model.addPropertyChangeListener("children", new PropertyChangeListener(){
+
+      public void propertyChange(PropertyChangeEvent arg0) {  
+        if(!modelIsChanging){
+          fireModelChanged();
+        }
+      }
+      
+    });
+
   }
 
   public void setFileName(String fileName) {
