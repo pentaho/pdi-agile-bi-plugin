@@ -44,7 +44,7 @@ div.active {
 
 #fieldList #fieldListTop {
 	width: 100%;
-	border-top: 10px solid #BDBDBD;
+	border-top: 10px solid #777;
 }
 
 #fieldList #fieldListTop #fieldListHeading {
@@ -370,7 +370,7 @@ div.active {
 
 /* Title bar */
 .reportTitle {
-	border-top: 10px solid #BDBDBD;
+	border-top: 10px solid #777;
 	border-bottom: 1px solid #B9B9B9;
 	background-color: #D3D3D3;
 	padding: 5px 10px 5px 0px;
