@@ -478,8 +478,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    		MeasureMetaData theMeasureMD = new MeasureMetaData();
 	    		theMeasureMD.setName(theMeasure.getName());
 	    		theMeasureMD.setFormat((String)theMeasure.getLogicalColumn().getProperty("mask"));
-	    		theMeasureMD.setName(theMeasure.getLogicalColumn().getPhysicalColumn().getName(Locale.getDefault().toString()));
-	    		theMeasureMD.setDisplayName(theMeasure.getLogicalColumn().getName(Locale.getDefault().toString()));
+	    		theMeasureMD.setName(theMeasure.getLogicalColumn().getName(Locale.getDefault().toString()));
           theMeasureMD.setAggTypeDesc(theMeasure.getLogicalColumn().getAggregationType().toString());
 	        
 	    		theMeasureMD.setLogicalColumn(theMeasure.getLogicalColumn());

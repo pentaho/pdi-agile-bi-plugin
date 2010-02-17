@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import org.pentaho.di.i18n.LanguageChoice;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.concept.types.DataType;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -80,6 +82,9 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
       this.name = name;
       this.firePropertyChange("name", oldName, name); //$NON-NLS-1$
       validateNode();
+      if(logicalColumn != null){
+        logicalColumn.setName(new LocalizedString(LanguageChoice.getInstance().getDefaultLocale().getDisplayLanguage(), name));
+      }
     }
   }
 
@@ -93,14 +98,6 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
   public void setFormat(String format) {
     
     this.format = format;
-  }
-
-  public String getDisplayName() {
-    return displayName;
-  }
-
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
   }
 
   public String getFieldTypeDesc() {
@@ -155,8 +152,10 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
     return logicalColumn;
   }
   public void setLogicalColumn(LogicalColumn col){
+    LogicalColumn prevVal = this.logicalColumn;
     this.logicalColumn = col;
     validateNode();
+    firePropertyChange("logicalColumn", prevVal, col);
   }
   
   @Override

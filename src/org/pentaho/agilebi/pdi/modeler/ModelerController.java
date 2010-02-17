@@ -734,8 +734,12 @@ public class ModelerController extends AbstractXulEventHandler{
   public void resolveMissingColumn() {
     if(selectedTreeItem instanceof ColumnBackedNode 
         && ((AbstractMetaDataModelNode) selectedTreeItem).isValid() == false){
-      colController.show(this.workspace, (ColumnBackedNode) selectedTreeItem); 
+        changeColumn();
     }
+  }
+  
+  public void changeColumn(){ 
+    colController.show(this.workspace, (ColumnBackedNode) selectedTreeItem); 
   }
   
   public void loadWorkspace() throws ModelerException {

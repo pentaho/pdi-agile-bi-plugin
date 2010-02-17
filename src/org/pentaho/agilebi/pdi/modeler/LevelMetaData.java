@@ -81,9 +81,11 @@ public class LevelMetaData extends AbstractMetaDataModelNode implements Serializ
     return logicalColumn;
   }
 
-  public void setLogicalColumn(LogicalColumn logicalColumn) {
-    this.logicalColumn = logicalColumn;
+  public void setLogicalColumn(LogicalColumn col){
+    LogicalColumn prevVal = this.logicalColumn;
+    this.logicalColumn = col;
     validateNode();
+    firePropertyChange("logicalColumn", prevVal, col);
   }
   
   public void setUniqueMembers(Boolean uniqueMembers) {

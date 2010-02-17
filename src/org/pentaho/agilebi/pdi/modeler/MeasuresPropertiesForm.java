@@ -4,12 +4,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Vector;
 
+import org.pentaho.di.i18n.LanguageChoice;
+import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.ui.xul.binding.BindingConvertor;
 
 public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaData> {
 
   private MeasureMetaData fieldMeta;
   private Vector aggTypes;
+  private String colName;
 
   private PropertyChangeListener propListener = new PropertyChangeListener(){
 
@@ -33,6 +36,7 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     bf.createBinding(this, "aggTypeDesc", "aggregationtype", "selectedItem");
     bf.createBinding(this, "format", "formatstring", "selectedItem", new FormatStringConverter());
     bf.createBinding(this, "notValid", "fixMeasuresColumnsBtn", "visible");
+    bf.createBinding(this, "columnName", "measure_column_name", "value");
 
   }
 
@@ -42,13 +46,25 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     }
     this.fieldMeta = t;
     t.addPropertyChangeListener("valid", propListener);
+    t.addPropertyChangeListener("logicalColumn", propListener);
     
-    setDisplayName(fieldMeta.getDisplayName());
+    setDisplayName(fieldMeta.getName());
     setFormat(fieldMeta.getFormat());
     setAggTypeDesc(fieldMeta.getAggTypeDesc());
     setAggTypes(fieldMeta.getAggTypeDescValues());
     setValidMessages(fieldMeta.getValidationMessagesString());
     setNotValid(!fieldMeta.isValid());
+    setColumnName(fieldMeta.getLogicalColumn());
+  }
+  
+  public void setColumnName(LogicalColumn col){
+    String prevName = this.colName;
+    this.colName = col != null ? col.getName(LanguageChoice.getInstance().getDefaultLocale().getDisplayLanguage()) : "";
+    this.firePropertyChange("columnName", prevName, colName);
+  }
+  
+  public String getColumnName(){
+    return colName;
   }
 
   public boolean isNotValid() {
@@ -84,11 +100,11 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     if (fieldMeta == null) {
       return null;
     }
-    return fieldMeta.getDisplayName();
+    return fieldMeta.getName();
   }
 
   public void setDisplayName(String displayName) {
-    fieldMeta.setDisplayName(displayName);
+    fieldMeta.setName(displayName);
     this.firePropertyChange("displayName", null, displayName);
 
   }

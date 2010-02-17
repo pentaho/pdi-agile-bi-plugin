@@ -6,22 +6,21 @@
 
   <vbox id="mainVBox">
     <toolbar id="nav-toolbar" parenttoouter="true" mode="full">
-      <toolbarbutton label="&lt;" tooltiptext="${undo}" onclick="analyzerVis.undo()"/>
-      <toolbarbutton label="&gt;" tooltiptext="${redo}" onclick="analyzerVis.redo()"/>
-      <toolbarbutton label="Reset" tooltiptext="${reset}" onclick="analyzerVis.reset()"/>
+      <toolbarbutton image="images/undo.png" tooltiptext="${undo}" onclick="analyzerVis.undo()"/>
+      <toolbarbutton image="images/redo.png" tooltiptext="${redo}" onclick="analyzerVis.redo()"/>
       
-      <toolbarbutton label="Options" tooltiptext="${options}" onclick="analyzerVis.showReportOptions()"/>
       <toolbarseparator/>
-      <toolbarbutton label="Toggle Filters" tooltiptext="${toggle_filters}" onclick="analyzerVis.toggleFilters()"/>
-      <toolbarbutton label="Toggle Field List" tooltiptext="${toggle_fields}" onclick="analyzerVis.toggleFieldList()"/>
-      <toolbarbutton label="Toggle Field Layout" tooltiptext="${toggle_layout}" onclick="analyzerVis.toggleFieldLayout()"/>
+      <toolbarbutton image="images/options.png" tooltiptext="${options}" onclick="analyzerVis.showReportOptions()"/>
+      <toolbarbutton image="images/filter.png" tooltiptext="${toggle_filters}" onclick="analyzerVis.toggleFilters()"/>
+      <toolbarbutton image="images/field_list.png" tooltiptext="${toggle_fields}" onclick="analyzerVis.toggleFieldList()"/>
+      <toolbarbutton image="images/field_layout.png" tooltiptext="${toggle_layout}" onclick="analyzerVis.toggleFieldLayout()"/>
       <toolbarseparator/>
-      <toolbarbutton label="Refresh Data" image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="analyzerVis.refreshData()"/>
+      <toolbarbutton image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="analyzerVis.refreshData()"/>
       <toolbarbutton image="images/refresh_model.png" tooltiptext="${reload_model}" onclick="analyzerVis.refreshModel()"/>
       <toolbarseparator/>
       <toolbarbutton image="images/modeler.png" onclick="analyzerVis.editModel()" tooltiptext="${edit_model}" />
       <toolbarseparator />
-      <toolbarbutton label="${analyzer-publish}" image="images/publish.png" onclick="analyzerVis.publishView()" tooltiptext="${analyzer-publish}" />
+      <toolbarbutton  image="images/publish.png" onclick="analyzerVis.publishView()" tooltiptext="${analyzer-publish}" />
     </toolbar>
     <hbox flex="1">
       <browser id="web_visualization_browser" flex="1" src="" showtoolbar="false"/>

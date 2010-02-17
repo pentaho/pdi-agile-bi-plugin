@@ -16,28 +16,47 @@
 
   <vbox flex="1" id="mainVBox" spacing="0" padding="0">
 
-    <hbox>
-      <button image="images/publish.png" id="publishButton" onclick="modeler.publish()" />
-      <label value="|"/>
-      <label value="${new}:" />
-      <menulist id="visualizationlist" label="">
-        <menupopup>
-          <menuitem label="Dummy Visualization" />
-        </menupopup>
-      </menulist>
-      <button label="${go}" id="exploreButton" onclick="modeler.visualize()" />
-    </hbox>
+    <toolbar mode="full">
+      <toolbaritem><label value="${new}:" /></toolbaritem>
+      <toolbaritem>
+        <menulist id="visualizationlist" label="">
+          <menupopup>
+            <menuitem label="Dummy Visualization" />
+          </menupopup>
+        </menulist>
+        </toolbaritem>
+      
+      <toolbarbutton label="${go}" id="exploreButton" onclick="modeler.visualize()" />
+              <toolbarseparator/>
+			  <toolbarbutton id="measureBtn" image="images/sm_measure_icon.png" onclick="modeler.showNewMeasureDialog()" disabled="true" tooltiptext="${add_measure}"/>
+    		  <toolbarbutton id="dimensionBtn" image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()" disabled="true" tooltiptext="${add_dimension}"/>
+    		  <toolbarbutton id="hierarchyBtn" image="images/sm_hierarchy_icon.png" onclick="modeler.showNewHierarchyDialog()" disabled="true" tooltiptext="${add_hiearchy}"/>
+    		  <toolbarbutton id="levelBtn" image="images/sm_level_icon.png" onclick="modeler.showNewLevelDialog()" disabled="true" tooltiptext="${add_level}"/>
+    		  
+          <toolbarseparator/>
+          
+       
+      <toolbarbutton image="images/publish.png" id="publishButton" onclick="modeler.publish()" />
+      
+    </toolbar>
 
     <hbox flex="1">
 
         
       <editpanel width="250">
         <caption label="Data" />
-        <hbox>
-	      <label value="${available}:" />
-	      <spacer flex="1" />
-	      <button onclick="modeler.refreshFields()" image="images/refresh.png" />
-        </hbox>
+        
+        <toolbar mode="icons">
+          <toolbaritem>
+            <label value="${available}:" />
+          </toolbaritem>
+          <toolbarspacer flex="1"/>
+          <toolbarbutton onclick="modeler.refreshFields()" image="images/refresh.png" />
+          <toolbarbutton image="images/autogen_model.png" onclick="modeler.showAutopopulatePrompt()" tooltiptext="${autopopulate_model}"/>
+          <toolbarbutton id="addField" image="images/insert_to_model.png" onclick="modeler.modeler.addField()" tooltiptext="${add}"/>
+          
+        </toolbar>
+      
         <listbox id="fieldList" flex="1" seltype="multi"
           pen:binding="name" ondrag="modeler.onFieldListDrag()"
           pen:drageffect="copy">
@@ -48,23 +67,12 @@
           <listitem label="field" />
           <listitem label="field" />
         </listbox>
-        <hbox>
-        <spacer flex="1"/>
-			<button id="addField" label="${add}" onclick="modeler.addField()" />
-        </hbox>
       </editpanel>
       
       <editpanel flex="1">
         <caption label="Model" />
         <toolbar id="schema-toolbar" mode="icons">
               <toolbarspacer flex="1"/>
-              <toolbarbutton image="images/autogen_model.png" onclick="modeler.showAutopopulatePrompt()" tooltiptext="${autopopulate_model}"/>
-              <toolbarseparator/>
-              <toolbarbutton id="measureBtn" image="images/sm_measure_icon.png" onclick="modeler.showNewMeasureDialog()" disabled="true" tooltiptext="${add_measure}"/>
-    		  <toolbarbutton id="dimensionBtn" image="images/sm_dim_icon.png" onclick="modeler.showNewDimensionDialog()" disabled="true" tooltiptext="${add_dimension}"/>
-    		  <toolbarbutton id="hierarchyBtn" image="images/sm_hierarchy_icon.png" onclick="modeler.showNewHierarchyDialog()" disabled="true" tooltiptext="${add_hiearchy}"/>
-    		  <toolbarbutton id="levelBtn" image="images/sm_level_icon.png" onclick="modeler.showNewLevelDialog()" disabled="true" tooltiptext="${add_level}"/>
-    		  <toolbarseparator/>
   			  <toolbarbutton image="images/16x16_down.png" onclick="modeler.moveFieldDown()" tooltiptext="${move_field_down}"/>
   			  <toolbarbutton image="images/16x16_Up.png" onclick="modeler.moveFieldUp()" tooltiptext="${move_field_up}"/>
   			  <toolbarbutton image="images/remove.png" onclick="modeler.removeField()" tooltiptext="${remove_field}"/>
@@ -96,12 +104,15 @@
         <deck id="propertiesdeck" flex="1">
           <vbox/>
           <vbox id="mainprops" flex="1" spacing="4">
-            <label value="${name}:" />
-            <textbox id="modelname" />
-         
-            <label value="${source}:" />
-            <label id="source_name" value="some source" />
-         
+                  
+            <groupbox>
+              <caption label="${details}"/>
+                <label value="${name}:" />
+                <textbox id="modelname" />
+             
+                <label value="${source}:" />
+                <label id="source_name" value="some source" />
+            </groupbox>
           </vbox>
           <pen:include src="measuresForm.xul" />
 

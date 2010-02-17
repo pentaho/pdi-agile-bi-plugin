@@ -27,26 +27,42 @@
       <spacer flex="1"/>
       </hbox>
     </vbox>
-  <label value="${display_name}:" />
-  <textbox id="displayname" />
-  <label value="${aggregation}:" />
-  <menulist id="aggregationtype">
-    <menupopup>
-      <menuitem label="SUM" />
-      <menuitem label="AVERAGE" />
-      <menuitem label="MINIMUM" />
-      <menuitem label="MAXIMUM" />
-    </menupopup>
-  </menulist>
-  <label value="${format}:" />
-  <menulist id="formatstring">
-    <menupopup>
-      <menuitem label="NONE" />
-      <menuitem label="#,###;(#,###)" />
-      <menuitem label="#,###.00;(#,###.00)" />
-      <menuitem label="\$ #,###;(\$ #,###)" />
-      <menuitem label="\$ #,###.00;(\$ #,###.00)" />
-      <menuitem label="#.#%;(#.#%)" />
-    </menupopup>
-  </menulist>
+    <groupbox>
+      <caption label="${source}"/>
+      <hbox flex="1">
+        <label id="measure_column_name" value="" flex="1"/>
+        <button image="images/edit.png"
+            onclick="modeler.changeColumn()"  />
+        
+      </hbox>
+    </groupbox>
+  
+    <spacer height="5"/>
+  
+    <groupbox>
+      <caption label="${details}"/>
+      
+      <label value="${display_name}:" />
+      <textbox id="displayname" />
+      <label value="${aggregation}:" />
+      <menulist id="aggregationtype">
+        <menupopup>
+          <menuitem label="SUM" />
+          <menuitem label="AVERAGE" />
+          <menuitem label="MINIMUM" />
+          <menuitem label="MAXIMUM" />
+        </menupopup>
+      </menulist>
+      <label value="${format}:" />
+      <menulist id="formatstring">
+        <menupopup>
+          <menuitem label="NONE" />
+          <menuitem label="#,###;(#,###)" />
+          <menuitem label="#,###.00;(#,###.00)" />
+          <menuitem label="\$ #,###;(\$ #,###)" />
+          <menuitem label="\$ #,###.00;(\$ #,###.00)" />
+          <menuitem label="#.#%;(#.#%)" />
+        </menupopup>
+      </menulist>
+    </groupbox>
 </vbox>

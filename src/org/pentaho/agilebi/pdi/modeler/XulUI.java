@@ -71,6 +71,12 @@ public class XulUI implements TabItemInterface {
       controller.addPropertyForm(propController);
       propController.init();
       
+
+      propController = new HierarchyPropertiesForm();
+      container.addEventHandler(propController);
+      controller.addPropertyForm(propController);
+      propController.init();
+      
       propController = new MainModelerNodePropertiesForm();
       container.addEventHandler(propController);
       controller.addPropertyForm(propController);

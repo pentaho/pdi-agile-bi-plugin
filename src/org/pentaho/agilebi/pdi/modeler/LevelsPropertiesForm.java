@@ -4,6 +4,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Locale;
 
+import org.pentaho.di.i18n.LanguageChoice;
+import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulHbox;
@@ -15,6 +17,7 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
   private XulLabel sourceLabel;
   private XulLabel level_message_label;
   private XulVbox messageBox;
+  private String colName;
   
 
   private PropertyChangeListener validListener = new PropertyChangeListener(){
@@ -43,16 +46,14 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
     
     this.dim = dim;
     this.dim.addPropertyChangeListener("valid", validListener);
+    this.dim.addPropertyChangeListener("logicalColumn", validListener);
     
     this.dim.addPropertyChangeListener("name", nameListener);
-    if(dim.getLogicalColumn() != null){
-      sourceLabel.setValue(dim.getLogicalColumn().getName(Locale.getDefault().toString()));
-    } else {
-      sourceLabel.setValue("");
-    }
+
     
     name.setValue(dim.getName());
     messageBox.setVisible(dim.getValidationMessages().size() > 0);
+    setColumnName(dim.getLogicalColumn());
     
     level_message_label.setValue(dim.getValidationMessagesString());
     setNotValid(!dim.isValid());
@@ -67,11 +68,24 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
     messageBox = (XulVbox) document.getElementById("level_message");
     bf.createBinding(this, "notValid", "fixLevelColumnsBtn", "visible");
     
+    bf.createBinding(this, "columnName", sourceLabel, "value");
+    
+    
     
     bf.createBinding(this, "name", name, "value");
 
   }
 
+  public void setColumnName(LogicalColumn col){
+    String prevName = this.colName;
+    this.colName = col != null ? col.getName(LanguageChoice.getInstance().getDefaultLocale().getDisplayLanguage()) : "";
+    this.firePropertyChange("columnName", prevName, colName);
+  }
+  
+  public String getColumnName(){
+    return colName;
+  }
+  
   public void setName(String name) {
     if (dim != null) {
       dim.setName(name);

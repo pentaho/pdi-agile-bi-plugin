@@ -5,24 +5,15 @@
   xmlns:pen="http://www.pentaho.org/2008/xul" onload="prpt.init()">
 
   <vbox id="mainContainer" flex="1">
-    <toolbar id="nav-toolbar" parenttoouter="true" mode="full">
-      <toolbarbutton image="images/save.png" tooltiptext="${save}" onclick="prpt.save()" disabled="true"/>
-      <toolbarbutton image="images/saveas.png" tooltiptext="${save_as}" onclick="prpt.saveAs()"/>
-      <toolbarseparator/>
-      <toolbarbutton label="Refresh Data" image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="prpt.refresh()"/>
-      <toolbarseparator/>
-      <toolbarbutton image="images/modeler.png" onclick="prpt.editModel()" tooltiptext="${edit_model}" />
-      <toolbarseparator />
-      <toolbarbutton label="${prpt-publish}" image="images/publish.png" onclick="prpt.publish()" tooltiptext="${prpt-publish}" />
-      <toolbarseparator />
+    <toolbar id="nav-toolbar" parenttoouter="true" mode="icons">
       
-      <toolbarbutton label="&lt;&lt;" onclick="prpt.start()" tooltiptext="${prpt-start}" />
-      <toolbarbutton label="&lt;" onclick="prpt.previous()" tooltiptext="${prpt-previous}" />
-      <toolbarbutton label="&gt;" onclick="prpt.next()" tooltiptext="${prpt-next}" />
-      <toolbarbutton label="&gt;&gt;" onclick="prpt.last()" tooltiptext="${prpt-last}" />      
+      <toolbarbutton image="images/back.png" onclick="prpt.start()" tooltiptext="${prpt-start}" />
+      <toolbarbutton image="images/back.png" onclick="prpt.previous()" tooltiptext="${prpt-previous}" />
+      <toolbarbutton image="images/forward.png" onclick="prpt.next()" tooltiptext="${prpt-next}" />
+      <toolbarbutton image="images/forward.png" onclick="prpt.last()" tooltiptext="${prpt-last}" />      
       <toolbarseparator />
-      <toolbarbutton label="-" onclick="prpt.zoomOut()" tooltiptext="${prpt-zout}" />
-      <toolbarbutton label="+" onclick="prpt.zoomIn()" tooltiptext="${prpt-zin}" />
+      <toolbarbutton image="images/minus.png" onclick="prpt.zoomOut()" tooltiptext="${prpt-zout}" />
+      <toolbarbutton image="images/plus.png" onclick="prpt.zoomIn()" tooltiptext="${prpt-zin}" />
       <toolbaritem>
         <hbox>
           <label value="Zoom: "/>
@@ -38,6 +29,12 @@
           </menulist>
         </hbox>
       </toolbaritem>
+      <toolbarseparator/>
+      <toolbarbutton image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="prpt.refresh()"/>
+      <toolbarseparator/>
+      <toolbarbutton image="images/modeler.png" onclick="prpt.editModel()" tooltiptext="${edit_model}" />
+      <toolbarseparator />
+      <toolbarbutton image="images/publish.png" onclick="prpt.publish()" tooltiptext="${prpt-publish}" />
             
       
       
@@ -52,9 +49,9 @@
         <caption label="${visualization_properties}"/>
         <groupbox>
           <caption label="${report}"/>
-          <vbox>
-              <button label="${view}" onclick="prpt.editReport()"/>
-          </vbox>
+          <hbox>
+            <button label="${edit}" onclick="prpt.editReport()"/>
+          </hbox>
         </groupbox>
         
         <groupbox>

@@ -233,7 +233,7 @@ public class ModelerWorkspaceUtil {
     // Add all measures
     for (MeasureMetaData f : model.getModel().getMeasures()) {
       LogicalColumn lCol = f.getLogicalColumn();
-      lCol.setName(new LocalizedString(Locale.getDefault().toString(), f.getDisplayName()));
+      lCol.setName(new LocalizedString(Locale.getDefault().toString(), f.getName()));
       AggregationType type = AggregationType.valueOf(f.getAggTypeDesc());
       if (type != AggregationType.NONE) {
         lCol.setAggregationType(type);
@@ -358,7 +358,7 @@ public class ModelerWorkspaceUtil {
       for (MeasureMetaData f : model.getModel().getMeasures()) {
 
         OlapMeasure measure = new OlapMeasure();
-        String n = f.getDisplayName() != null ? f.getDisplayName() : f.getName();
+        String n = f.getName();
         measure.setName(n);
         f.getLogicalColumn().setAggregationType(AggregationType.valueOf(f.getAggTypeDesc()));
         measure.setLogicalColumn(f.getLogicalColumn());
