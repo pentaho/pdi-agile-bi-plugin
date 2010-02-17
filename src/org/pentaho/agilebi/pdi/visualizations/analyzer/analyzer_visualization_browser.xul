@@ -10,7 +10,7 @@
       <toolbarbutton label="&gt;" tooltiptext="${redo}" onclick="analyzerVis.redo()"/>
       <toolbarbutton label="Reset" tooltiptext="${reset}" onclick="analyzerVis.reset()"/>
       
-      <toolbarbutton label="Options" tooltiptext="${reset}" onclick="analyzerVis.showReportOptions()"/>
+      <toolbarbutton label="Options" tooltiptext="${options}" onclick="analyzerVis.showReportOptions()"/>
       <toolbarseparator/>
       <toolbarbutton label="Toggle Filters" tooltiptext="${toggle_filters}" onclick="analyzerVis.toggleFilters()"/>
       <toolbarbutton label="Toggle Field List" tooltiptext="${toggle_fields}" onclick="analyzerVis.toggleFieldList()"/>
