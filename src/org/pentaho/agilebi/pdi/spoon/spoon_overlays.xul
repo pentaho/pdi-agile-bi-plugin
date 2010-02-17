@@ -7,7 +7,7 @@
     
     <menupopup id="view-perspectives-popup">
 	    <menuitem label="${Spoon.Perspectives.AgileBi.MenuItem.Label}"
-	      command="spoon.loadPerspective('org.pentaho.agilebi.pdi.perspective.AgileBiPerspective')" />
+	      command="spoon.loadPerspective('org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective')" />
 	    <menuitem label="${Spoon.Perspectives.AgileBiViz.MenuItem.Label}"
 	      command="spoon.loadPerspective('org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective')" />
 	</menupopup>
