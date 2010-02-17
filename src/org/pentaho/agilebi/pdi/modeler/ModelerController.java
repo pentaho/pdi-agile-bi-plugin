@@ -307,7 +307,7 @@ public class ModelerController extends AbstractXulEventHandler{
     
     bf.createBinding(dimensionTree, "selectedItem", "addField", "disabled", new BindingConvertor<Object, Boolean>() {
     	public Boolean sourceToTarget(Object value) {
-    		return getSelectedFields().length == 0 || value == null || value instanceof LevelMetaData  || selectedTreeItem instanceof MainModelNode;
+    		return getSelectedFields().length == 0 || selectedTreeItem == null || selectedTreeItem instanceof LevelMetaData  || selectedTreeItem instanceof MainModelNode;
     	}
 
       public Object targetToSource(Boolean value) {

@@ -53,7 +53,7 @@
           <toolbarspacer flex="1"/>
           <toolbarbutton onclick="modeler.refreshFields()" image="images/refresh.png" />
           <toolbarbutton image="images/autogen_model.png" onclick="modeler.showAutopopulatePrompt()" tooltiptext="${autopopulate_model}"/>
-          <toolbarbutton id="addField" image="images/insert_to_model.png" onclick="modeler.modeler.addField()" tooltiptext="${add}"/>
+          <toolbarbutton id="addField" image="images/insert_to_model.png" onclick="modeler.addField()" tooltiptext="${add}"/>
           
         </toolbar>
       
