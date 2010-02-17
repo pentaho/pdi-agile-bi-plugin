@@ -73,6 +73,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   // full path to file
   private String fileName;
   
+  private boolean modelIsChanging;
 
   
   public ModelerWorkspace() {
@@ -80,7 +81,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     model.addPropertyChangeListener("children", new PropertyChangeListener(){
 
       public void propertyChange(PropertyChangeEvent arg0) {  
-        fireModelChanged();
+        if(!modelIsChanging){
+          fireModelChanged();
+        }
       }
       
     });
@@ -507,5 +510,13 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   private Domain updateDomain() {
     // TODO: update domain with changes
     return domain;
+  }
+  
+  public void setModelIsChanging(boolean changing){
+    this.modelIsChanging = changing;
+    if(!changing){
+      fireFieldsChanged();
+      fireModelChanged();
+    }
   }
 }

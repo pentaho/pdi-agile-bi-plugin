@@ -153,6 +153,7 @@ public class ModelerWorkspaceUtil {
    * @param tableName
    */
   public static void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
+    workspace.setModelIsChanging(true);
     workspace.getModel().getMeasures().clear();
     workspace.getModel().getDimensions().clear();
     List<AvailableField> fields = workspace.getAvailableFields();
@@ -166,42 +167,8 @@ public class ModelerWorkspaceUtil {
       // create a dimension
       workspace.addDimensionFromNode(field);
     }
-    
-    /*
-    // 
-    List<ColumnProfile> profileList = new ArrayList<ColumnProfile>();
-    List<ValueMetaInterface> valueMetaList = rowMeta.getValueMetaList();
-    
-    for( ValueMetaInterface valueMeta : valueMetaList ) {
-      // create one or more profiles for each value meta
-      ColumnProfile profile = new ColumnProfile();
-      int dataType = valueMeta.getType();
-      if( dataType ==  ValueMetaInterface.TYPE_BIGNUMBER || 
-          dataType == ValueMetaInterface.TYPE_INTEGER ||
-          dataType == ValueMetaInterface.TYPE_NUMBER ) {
-        // create a measure
-        profile.setFieldType( ColumnProfile.FIELD_FACT );
-        profile.setType( valueMeta.getType() );
-        profile.setId( valueMeta.getName()+" (m)" );
-        profile.setColumnName( valueMeta.getName() );
-        profile.setTitle( valueMeta.getName()+"(m)" );
-        profile.setUsed(true);
-        profileList.add( profile );
-        profile.setFormat("#");
-      }
-      profile = new ColumnProfile();
-      profile.setFieldType( ColumnProfile.FIELD_DIMENSION );
-      profile.setType( valueMeta.getType() );
-      profile.setId( valueMeta.getName() );
-      profile.setColumnName( valueMeta.getName() );
-      profile.setDimensionTitle( valueMeta.getName() );
-      profile.setTitle( valueMeta.getName() );
-      profile.setUsed(true);
-      profileList.add( profile );
-    }
-    ColumnProfile profiles[] = profileList.toArray( new ColumnProfile[profileList.size()] );
-    generateModels( modelId, databaseMeta, locale, user, tableName, profiles );
-    */
+
+    workspace.setModelIsChanging(false);
   }
   
   public static void populateDomain(ModelerWorkspace model) throws ModelerException {
