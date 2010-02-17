@@ -12,11 +12,9 @@
       
       <toolbarbutton label="Options" tooltiptext="${reset}" onclick="analyzerVis.showReportOptions()"/>
       <toolbarseparator/>
-      
       <toolbarbutton label="Toggle Filters" tooltiptext="${toggle_filters}" onclick="analyzerVis.toggleFilters()"/>
       <toolbarbutton label="Toggle Field List" tooltiptext="${toggle_fields}" onclick="analyzerVis.toggleFieldList()"/>
-      <toolbarbutton label="Toggle Field Layout" tooltiptext="${toggle_fields}" onclick="analyzerVis.toggleFieldLayout()"/>
-      
+      <toolbarbutton label="Toggle Field Layout" tooltiptext="${toggle_layout}" onclick="analyzerVis.toggleFieldLayout()"/>
       <toolbarseparator/>
       <toolbarbutton label="Refresh Data" image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="analyzerVis.refreshData()"/>
       <toolbarbutton image="images/refresh_model.png" tooltiptext="${reload_model}" onclick="analyzerVis.refreshModel()"/>

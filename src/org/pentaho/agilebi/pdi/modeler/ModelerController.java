@@ -501,8 +501,11 @@ public class ModelerController extends AbstractXulEventHandler{
         }
         
       });
-      prompt.open();
-    } catch (XulException e) {
+      int theResult = prompt.open();
+      if(theResult == 0) {
+        refreshFields();
+      }
+    } catch (Exception e) {
       logger.error(e);
     }
   }
@@ -553,8 +556,11 @@ public class ModelerController extends AbstractXulEventHandler{
           logger.error(t);
         }
       });
-      prompt.open();
-    } catch (XulException e) {
+      int theResult = prompt.open();
+      if(theResult == 0) {
+        refreshFields();
+      }
+    } catch (Exception e) {
       logger.error(e);
     }
   	
