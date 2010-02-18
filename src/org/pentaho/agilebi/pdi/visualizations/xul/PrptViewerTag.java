@@ -159,7 +159,7 @@ public class PrptViewerTag extends SwtElement{
       });
       
       item = new ToolItem(toolbar, SWT.PUSH);
-      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/next.png", domContainer, d);
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/forward.png", domContainer, d);
       item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
