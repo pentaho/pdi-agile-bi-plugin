@@ -7,10 +7,10 @@
   <vbox id="mainContainer" flex="1">
     <toolbar id="nav-toolbar" parenttoouter="true" mode="icons">
       
-      <toolbarbutton image="images/back.png" onclick="prpt.start()" tooltiptext="${prpt-start}" />
+      <toolbarbutton image="images/begining.png" onclick="prpt.start()" tooltiptext="${prpt-start}" />
       <toolbarbutton image="images/back.png" onclick="prpt.previous()" tooltiptext="${prpt-previous}" />
       <toolbarbutton image="images/forward.png" onclick="prpt.next()" tooltiptext="${prpt-next}" />
-      <toolbarbutton image="images/forward.png" onclick="prpt.last()" tooltiptext="${prpt-last}" />      
+      <toolbarbutton image="images/end.png" onclick="prpt.last()" tooltiptext="${prpt-last}" />      
       <toolbarseparator />
       <toolbarbutton image="images/minus.png" onclick="prpt.zoomOut()" tooltiptext="${prpt-zout}" />
       <toolbarbutton image="images/plus.png" onclick="prpt.zoomIn()" tooltiptext="${prpt-zin}" />

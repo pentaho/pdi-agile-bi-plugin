@@ -17,11 +17,13 @@ import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
@@ -34,6 +36,7 @@ import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.dom.Element;
 import org.pentaho.ui.xul.swt.SwtElement;
+import org.pentaho.ui.xul.util.SwtXulUtil;
 
 public class PrptViewerTag extends SwtElement{
 
@@ -46,6 +49,7 @@ public class PrptViewerTag extends SwtElement{
   private ToolBar toolbar;
   private Composite toolbarPanel;
   private Combo combo;
+  private XulDomContainer domContainer;
   
   private static Log log = LogFactory.getLog(PrptViewerTag.class);
 
@@ -63,7 +67,7 @@ public class PrptViewerTag extends SwtElement{
     super("prpt");
  
     
-    
+    domContainer = container;
     Composite parentComposite = (Composite) parent.getManagedObject();
     
     mainPanel = new Composite(parentComposite, SWT.BORDER);
@@ -128,10 +132,17 @@ public class PrptViewerTag extends SwtElement{
       toolbarPanel.setLayoutData(data);
   
       toolbarPanel.setLayout(new FillLayout());
+
+      Display d = mainPanel.getDisplay();
+      if(d == null){
+        d = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+      }
+      Image img;
       
       toolbar = new ToolBar(toolbarPanel, SWT.HORIZONTAL);
       ToolItem item = new ToolItem(toolbar, SWT.PUSH);
-      item.setText("<<");
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/begining.png", domContainer, d);
+      item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
           start();
@@ -139,7 +150,8 @@ public class PrptViewerTag extends SwtElement{
       });
       
       item = new ToolItem(toolbar, SWT.PUSH);
-      item.setText("<");
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/back.png", domContainer, d);
+      item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
           previous();
@@ -147,7 +159,8 @@ public class PrptViewerTag extends SwtElement{
       });
       
       item = new ToolItem(toolbar, SWT.PUSH);
-      item.setText(">");
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/next.png", domContainer, d);
+      item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
           next();
@@ -155,7 +168,8 @@ public class PrptViewerTag extends SwtElement{
       });
       
       item = new ToolItem(toolbar, SWT.PUSH);
-      item.setText(">>");
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/end.png", domContainer, d);
+      item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
           last();
