@@ -34,7 +34,7 @@ public class WorkspaceModelTest {
   @Test
   public void testVizApi() {
     VisualizationManager mgr = new VisualizationManager("package-res/visualizations");
-    Assert.assertEquals(1, mgr.getVisualizations().size());
+    Assert.assertEquals(2, mgr.getVisualizations().size());
   }
   
   

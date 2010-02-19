@@ -16,7 +16,7 @@ public class VisualizationApiTest {
     TestVisualizationManager mgr = new TestVisualizationManager();
     mgr.loadVisualizationFile(new File("package-res/visualizations/analyzer/plugin.xml"));
     
-    Assert.assertEquals(1, mgr.getVisualizations().size());
+    Assert.assertEquals(2, mgr.getVisualizations().size());
     IVisualization vis = mgr.getVisualizations().get(0);
     Assert.assertEquals(0, vis.getOrder());
     Assert.assertEquals("Analyzer", vis.getTitle());
