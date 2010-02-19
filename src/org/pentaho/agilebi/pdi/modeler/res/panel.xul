@@ -36,7 +36,7 @@
           <toolbarseparator/>
           
        
-      <toolbarbutton image="images/publish.png" id="publishButton" onclick="modeler.publish()" />
+      <toolbarbutton image="images/publish.png" id="publishButton" onclick="modeler.publish()" tooltiptext="${publish}"/>
       
     </toolbar>
 
