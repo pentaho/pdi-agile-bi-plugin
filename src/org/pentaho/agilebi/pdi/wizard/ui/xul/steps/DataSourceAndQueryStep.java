@@ -238,8 +238,9 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     
     ArrayList<String> items = new ArrayList<String>();
     if (names != null) {
+    final DefaultDataAttributeContext dataAttributeContext = new DefaultDataAttributeContext();
+
       for ( String name : names ) {
-        final DefaultDataAttributeContext dataAttributeContext = new DefaultDataAttributeContext();
         final DataAttributes attributes = dataSchema.getAttributes(name);
         final String source = (String) attributes.getMetaAttribute(MetaAttributeNames.Core.NAMESPACE, MetaAttributeNames.Core.SOURCE, String.class, dataAttributeContext);
         if ( !source.equals("environment") && !source.equals("parameter") ) {
@@ -248,6 +249,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
                   String.class, dataAttributeContext));
         }
       }
+      
     }
     if (items.size() < 1) {
       items.add(Messages.getString("DataSourceAndQueryStep.no_defined_fields")); //$NON-NLS-1$
