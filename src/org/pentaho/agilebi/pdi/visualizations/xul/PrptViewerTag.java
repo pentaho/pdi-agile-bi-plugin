@@ -179,7 +179,8 @@ public class PrptViewerTag extends SwtElement{
       new ToolItem(toolbar, SWT.SEPARATOR);
       
       item = new ToolItem(toolbar, SWT.PUSH);
-      item.setText("-");
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/minus.png", domContainer, d);
+      item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
           zoomOut();
@@ -188,7 +189,8 @@ public class PrptViewerTag extends SwtElement{
       
 
       item = new ToolItem(toolbar, SWT.PUSH);
-      item.setText("+");
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/plus.png", domContainer, d);
+      item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
           zoomIn();
