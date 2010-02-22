@@ -16,21 +16,17 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
-import java.util.ResourceBundle;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.ui.spoon.ChangedWarningInterface;
 import org.pentaho.di.ui.spoon.TabItemInterface;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
-import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.XulRunner;
-import org.pentaho.ui.xul.impl.DefaultXulOverlay;
-import org.pentaho.ui.xul.impl.XulPerspectiveImpl;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
 
@@ -43,6 +39,11 @@ public class XulUI implements TabItemInterface {
   EngineMetaInterface meta;
 
   private static Log logger = LogFactory.getLog(XulUI.class);
+  
+  
+  public ChangedWarningInterface getChangedWarning() {
+    return null;
+  }
   
   public XulUI( Shell shell,  ModelerWorkspace model) throws ModelerException{
     try{
