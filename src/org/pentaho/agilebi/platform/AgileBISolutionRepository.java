@@ -54,8 +54,8 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
   
   public int publish(String baseUrl, String path, String fileName, byte[] data, boolean overwrite) throws PentahoAccessControlException {
     
-    path = cleanUpPath(path);
     path = URL.decode(path);
+    path = cleanUpPath(path);
 
     
     // Analyzer puts a "/" at the beginning of the path on windows, remove it.
