@@ -93,6 +93,8 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
   
   private boolean accepted = false;
   
+  private boolean datasourceExists = false;
+  
   private NamedCollection folderNames; 
   
   private CmisObject currentFolder;
@@ -325,20 +327,24 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
             datasourceLabel.setValue( Messages.getString("Spoon.Perspectives.AgileBi.Publish.DatasourceSame") ); //$NON-NLS-1$
             noPublishDatasourceRadio.setSelected( true );
             publishDatasourceRadio.setSelected( false );
+            datasourceExists = true;
             break;
           }
           case ModelServerPublish.REMOTE_CONNECTION_MISSING : {
             datasourceLabel.setValue( Messages.getString("Spoon.Perspectives.AgileBi.Publish.DatasourceMissing") ); //$NON-NLS-1$
+            datasourceExists = false;
             break;
           }
           case ModelServerPublish.REMOTE_CONNECTION_MUST_BE_JNDI : {
             datasourceLabel.setValue( Messages.getString("Spoon.Perspectives.AgileBi.Publish.DatasourceCannotPublish") ); //$NON-NLS-1$
             noPublishDatasourceRadio.setSelected( true );
             publishDatasourceRadio.setSelected( false );
+            datasourceExists = false;
             break;
           }
           case ModelServerPublish.REMOTE_CONNECTION_DIFFERENT : {
             datasourceLabel.setValue( Messages.getString("Spoon.Perspectives.AgileBi.Publish.DatasourceDifferent") ); //$NON-NLS-1$
+            datasourceExists = true;
             break;
           }
         }
@@ -349,6 +355,10 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
       }      
     }
 
+  }
+  
+  public boolean isExistentDatasource() {
+    return datasourceExists;
   }
   
   public void setSelectedServer(String server){

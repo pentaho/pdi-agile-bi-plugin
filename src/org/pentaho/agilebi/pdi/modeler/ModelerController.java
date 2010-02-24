@@ -36,6 +36,7 @@ import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.platform.api.repository.ISolutionRepository;
+import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
@@ -447,7 +448,12 @@ public class ModelerController extends AbstractXulEventHandler{
         .append( "metadata" ); //$NON-NLS-1$
         String repositoryPath = sb.toString();
         String filename = publishDialog.getFilename();
-        publisher.publishToServer( filename + ".mondrian.xml", workspace.getDatabaseName(), filename, repositoryPath, publishDatasource, true ); //$NON-NLS-1$
+        
+        if(StringUtils.isEmpty(workspace.getFileName())) {
+          SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Publish.UnsavedModel"), "Dialog Error", false, Const.ERROR);
+        } else { 
+          publisher.publishToServer( filename + ".mondrian.xml", workspace.getDatabaseName(), filename, repositoryPath, publishDatasource, true, publishDialog.isExistentDatasource()); //$NON-NLS-1$
+        }
       }
       } catch (XulException e) {
         e.printStackTrace();
