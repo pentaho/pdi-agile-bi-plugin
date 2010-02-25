@@ -39,8 +39,6 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.dom4j.DocumentHelper;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.FileDialog;
 import org.pentaho.commons.util.repository.type.CmisObject;
 import org.pentaho.commons.util.repository.type.PropertiesBase;
 import org.pentaho.commons.util.repository.type.TypesOfFileableObjects;
@@ -48,14 +46,13 @@ import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleDatabaseException;
 import org.pentaho.di.core.gui.SpoonFactory;
-import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.platform.api.repository.ISolutionRepository;
+import org.pentaho.platform.dataaccess.client.ConnectionServiceClient;
 import org.pentaho.platform.dataaccess.datasource.IConnection;
 import org.pentaho.platform.dataaccess.datasource.beans.Connection;
 import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServiceException;
-import org.pentaho.platform.dataaccess.client.ConnectionServiceClient;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClientNavigationService;
 import org.pentaho.platform.util.client.PublisherUtil;
@@ -385,21 +382,15 @@ public class ModelServerPublish {
    * @param showFeedback
    * @throws Exception
    */
-  public void publishToServer( String schemaName, String jndiName, String modelName, String repositoryPath, boolean publishDatasource, boolean showFeedback, boolean isExistentDatasource) throws Exception {
+  public void publishToServer( String schemaName, String jndiName, String modelName, String repositoryPath, boolean publishDatasource, boolean showFeedback, boolean isExistentDatasource, String fileName) throws Exception {
 
     if( publishDatasource ) {
       DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
       publishDataSource(databaseMeta, isExistentDatasource);    
     }
     publishOlapSchemaToServer( schemaName, jndiName , modelName, repositoryPath, showFeedback );
-    publishMetadataModel( modelName, repositoryPath );
-  }
-  
-  private int publishMetadataModel( String modelName, String repositoryPath ) {
-    String DEFAULT_PUBLISH_URL = biServerConnection.getUrl()+"RepositoryFilePublisher"; //$NON-NLS-1$
-    File files[] = {new File(this.model.getFileName())};
-    int result = PublisherUtil.publish(DEFAULT_PUBLISH_URL, repositoryPath, files, biServerConnection.getPublishPassword(), biServerConnection.getUserId(), biServerConnection.getPassword(), true, true); 
-    return result;
+    File files[] = { new File(fileName) };
+    publishFile(repositoryPath, files, false);
   }
   
   public boolean checkDataSource( boolean autoMode ) throws KettleDatabaseException, ConnectionServiceException {

@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.pentaho.agilebi.pdi.perspective.PublisherHelper;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.Const;
@@ -411,65 +412,7 @@ public class ModelerController extends AbstractXulEventHandler{
   }
   
   public void publish() throws ModelerException{
-    try{
-      ModelerWorkspaceUtil.populateDomain(workspace);
-      
-      ModelServerPublish publisher = new ModelServerPublish();
-      publisher.setModel( workspace );
-
-      Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-      try {
-      XulDialogPublish publishDialog = new XulDialogPublish( spoon.getShell() );
-      publishDialog.setFolderTreeDepth(1);
-      publishDialog.setComment( Messages.getString("ModelServerPublish.Publish.ModelPublishComment") ); //$NON-NLS-1$
-      DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
-      publishDialog.setDatabaseMeta(databaseMeta);
-      publishDialog.setFilename( workspace.getModelName() );
-      publishDialog.setCheckDatasources( true );
-      publishDialog.setShowLocation( true, true, false );
-      String template = "{path}"+ //$NON-NLS-1$
-      "resources"+ISolutionRepository.SEPARATOR+ //$NON-NLS-1$
-      "metadata"+ISolutionRepository.SEPARATOR+ //$NON-NLS-1$
-        "{file}.xmi"; //$NON-NLS-1$ 
-      publishDialog.setPathTemplate( template );
-      publishDialog.showDialog();
-      if( publishDialog.isAccepted() ) {
-        // now try to publish
-        String path = publishDialog.getPath();
-        // we always publish to {solution}/resources/metadata
-        StringBuilder sb = new StringBuilder();
-        BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
-        publisher.setBiServerConnection(biServerConnection);
-        boolean publishDatasource = publishDialog.isPublishDataSource();
-        sb.append( path )
-        .append(ISolutionRepository.SEPARATOR)
-        .append( "resources" ) //$NON-NLS-1$
-        .append(ISolutionRepository.SEPARATOR)
-        .append( "metadata" ); //$NON-NLS-1$
-        String repositoryPath = sb.toString();
-        String filename = publishDialog.getFilename();
-        
-        if(StringUtils.isEmpty(workspace.getFileName())) {
-          SpoonFactory.getInstance().messageBox( Messages.getString("ModelServerPublish.Publish.UnsavedModel"), "Dialog Error", false, Const.ERROR);
-        } else { 
-          publisher.publishToServer( filename + ".mondrian.xml", workspace.getDatabaseName(), filename, repositoryPath, publishDatasource, true, publishDialog.isExistentDatasource()); //$NON-NLS-1$
-        }
-      }
-      } catch (XulException e) {
-        e.printStackTrace();
-        SpoonFactory.getInstance().messageBox( "Could not create dialog: "+e.getLocalizedMessage(), "Dialog Error", false, Const.ERROR);
-      }
-
-//      BiServerConnection biServerConnection = BiServerConfig.getInstance().getServerByName( workspace.getSelectedServer() );
-//      publisher.setBiServerConnection(biServerConnection);
-      
-      // create the publish dialog
-      
-//      publisher.publishToServer( workspace.getModelName() + ".mondrian.xml", workspace.getDatabaseName(), workspace.getModelName(), true );
-    } catch(Exception e){
-      throw new ModelerException(e);
-    }
-
+    PublisherHelper.publish(workspace, workspace.getFileName());
   }
   
   /**

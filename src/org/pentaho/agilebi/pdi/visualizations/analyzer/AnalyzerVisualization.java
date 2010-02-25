@@ -136,6 +136,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
     try {
     	SwtXulLoader theXulLoader = new SwtXulLoader();
       AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, model.getFileName(), model.getModelName() + " Cube", null);
+      theController.setModel(model);
     	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION);
 			theXulContainer.addEventHandler(theController);
 			Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject();
@@ -247,7 +248,8 @@ public class AnalyzerVisualization extends AbstractVisualization {
 			ModelerWorkspace model = new ModelerWorkspace();
 			model.setDomain(domain);
 			model.setModelName(modelId);
-			model.setFileName(modelFileName);			
+			model.setFileName(modelFileName);	
+			theController.setModel(model);
       createTabForBrowser(theMainBox, theController, model);      
       
       String fullPath = f.getAbsolutePath();
