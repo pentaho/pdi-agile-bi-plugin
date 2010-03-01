@@ -50,6 +50,7 @@ import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.XulButton;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
+import org.pentaho.ui.xul.impl.DefaultXulOverlay;
 /**
  * TODO: Document Me
  *
@@ -116,6 +117,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
           queryString = df.getQuery(DEFAULT);
           editor.setQuery(queryString);
         }
+        editor.addOverlay(new DefaultXulOverlay("org/pentaho/agilebi/pdi/wizard/ui/xul/res/mqleditor-overlay.xul"));
         editor.show();
         if (editor.getOkClicked()) {
           queryString = editor.getQuery();
