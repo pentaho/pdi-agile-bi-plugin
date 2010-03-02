@@ -8,6 +8,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.ui.xul.util.AbstractModelNode;
 
 public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataModelNode<?>> implements Serializable {
@@ -90,7 +91,7 @@ public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataMod
     this.validationMessages.clear();
     if(this.children.size() != 2){
       valid = false;
-      this.validationMessages.add(Messages.getString("model_structure_invalid"));
+      this.validationMessages.add(BaseMessages.getString(this.getClass(), "model_structure_invalid"));
     }
     for(AbstractMetaDataModelNode child : children){
       valid &= child.isValid();

@@ -6,44 +6,44 @@
 
   <vbox id="mainVBox">
     <toolbar id="nav-toolbar" parenttoouter="true" mode="full">
-      <toolbarbutton image="images/undo.png" tooltiptext="${undo}" onclick="analyzerVis.undo()"/>
-      <toolbarbutton image="images/redo.png" tooltiptext="${redo}" onclick="analyzerVis.redo()"/>
+      <toolbarbutton image="images/undo.png" tooltiptext="${AnalyzerViz.undo}" onclick="analyzerVis.undo()"/>
+      <toolbarbutton image="images/redo.png" tooltiptext="${AnalyzerViz.redo}" onclick="analyzerVis.redo()"/>
       
       <toolbarseparator/>
-      <toolbarbutton image="images/options.png" tooltiptext="${options}" onclick="analyzerVis.showReportOptions()"/>
-      <toolbarbutton image="images/filter.png" tooltiptext="${toggle_filters}" onclick="analyzerVis.toggleFilters()"/>
-      <toolbarbutton image="images/field_list.png" tooltiptext="${toggle_fields}" onclick="analyzerVis.toggleFieldList()"/>
-      <toolbarbutton image="images/field_layout.png" tooltiptext="${toggle_layout}" onclick="analyzerVis.toggleFieldLayout()"/>
+      <toolbarbutton image="images/options.png" tooltiptext="${AnalyzerViz.options}" onclick="analyzerVis.showReportOptions()"/>
+      <toolbarbutton image="images/filter.png" tooltiptext="${AnalyzerViz.toggle_filters}" onclick="analyzerVis.toggleFilters()"/>
+      <toolbarbutton image="images/field_list.png" tooltiptext="${AnalyzerViz.toggle_fields}" onclick="analyzerVis.toggleFieldList()"/>
+      <toolbarbutton image="images/field_layout.png" tooltiptext="${AnalyzerViz.toggle_layout}" onclick="analyzerVis.toggleFieldLayout()"/>
       <toolbarseparator/>
-      <toolbarbutton image="images/refresh_data.png" tooltiptext="${refresh_view}" onclick="analyzerVis.refreshData()"/>
-      <toolbarbutton image="images/refresh_model.png" tooltiptext="${reload_model}" onclick="analyzerVis.refreshModel()"/>
+      <toolbarbutton image="images/refresh_data.png" tooltiptext="${AnalyzerViz.refresh_view}" onclick="analyzerVis.refreshData()"/>
+      <toolbarbutton image="images/refresh_model.png" tooltiptext="${AnalyzerViz.reload_model}" onclick="analyzerVis.refreshModel()"/>
       <toolbarseparator/>
-      <toolbarbutton image="images/modeler.png" onclick="analyzerVis.editModel()" tooltiptext="${edit_model}" />
+      <toolbarbutton image="images/modeler.png" onclick="analyzerVis.editModel()" tooltiptext="${AnalyzerViz.edit_model}" />
       <toolbarseparator />
-      <toolbarbutton  image="images/publish.png" onclick="analyzerVis.publish()" tooltiptext="${analyzer-publish}" />
+      <toolbarbutton  image="images/publish.png" onclick="analyzerVis.publish()" tooltiptext="${AnalyzerViz.analyzer-publish}" />
     </toolbar>
     <hbox flex="1">
       <browser id="web_visualization_browser" flex="1" src="" showtoolbar="false"/>
       <editpanel width="250" type="closable" id="propPanel">
-        <caption label="${visualization_properties}"/>
+        <caption label="${AnalyzerViz.visualization_properties}"/>
         <groupbox>
-          <caption label="${model}"/>
+          <caption label="${AnalyzerViz.model}"/>
           <vbox>
-            <label value="${name}:" />
+            <label value="${AnalyzerViz.name}:" />
             <label id="modelName" value="" />
             <hbox>
-              <button label="${refresh}" onclick="analyzerVis.refreshModel()"/>
-              <button label="${view}" onclick="analyzerVis.editModel()"/>
+              <button label="${AnalyzerViz.refresh}" onclick="analyzerVis.refreshModel()"/>
+              <button label="${AnalyzerViz.view}" onclick="analyzerVis.editModel()"/>
             </hbox>
           </vbox>
         </groupbox>
         <groupbox>
-          <caption label="${data}"/>
+          <caption label="${AnalyzerViz.data}"/>
           <vbox>
-            <label value="${source}:" />
+            <label value="${AnalyzerViz.source}:" />
             <label id="factTableName" value="" />
             <hbox>
-              <button label="${refresh}" onclick="analyzerVis.refreshData()"/>
+              <button label="${AnalyzerViz.refresh}" onclick="analyzerVis.refreshData()"/>
               <!--button label="${view}"/-->
             </hbox>
           </vbox>

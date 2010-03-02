@@ -1,15 +1,16 @@
 package org.pentaho.agilebi.pdi.perspective;
 
 import org.pentaho.agilebi.pdi.modeler.BiServerConnection;
-import org.pentaho.agilebi.pdi.modeler.Messages;
 import org.pentaho.agilebi.pdi.modeler.ModelServerPublish;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.modeler.XulDialogPublish;
+import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
@@ -21,7 +22,7 @@ public class PublisherHelper {
     try {
 
       if (StringUtils.isEmpty(publishingFile)) {
-        SpoonFactory.getInstance().messageBox(Messages.getString("ModelServerPublish.Publish.UnsavedModel"),
+        SpoonFactory.getInstance().messageBox(BaseMessages.getString(XulUI.class,"ModelServerPublish.Publish.UnsavedModel"),
             "Dialog Error", false, Const.ERROR);
         return;
       }
@@ -34,7 +35,7 @@ public class PublisherHelper {
       try {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
         publishDialog.setFolderTreeDepth(1);
-        publishDialog.setComment(Messages.getString("ModelServerPublish.Publish.ModelPublishComment")); //$NON-NLS-1$
+        publishDialog.setComment(BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment")); //$NON-NLS-1$
         DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
         publishDialog.setDatabaseMeta(databaseMeta);
         publishDialog.setFilename(workspace.getModelName());

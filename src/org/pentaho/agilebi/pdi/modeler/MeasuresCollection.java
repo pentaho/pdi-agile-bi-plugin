@@ -7,8 +7,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pentaho.di.i18n.BaseMessages;
+
 public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaData>  implements Serializable {
-  private String name = Messages.getString("measures");
+  private String name = BaseMessages.getString(this.getClass(), "measures");
   
   public MeasuresCollection(){
     this.valid = false;
@@ -37,7 +39,7 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
     validationMessages.clear();
 
     if (size() == 0) {
-      validationMessages.add(Messages.getString("need_one_measure"));
+      validationMessages.add(BaseMessages.getString(this.getClass(), "need_one_measure"));
       valid = false;
     }
     List<String> usedNames = new ArrayList<String>();
@@ -46,7 +48,7 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
       validationMessages.addAll(measure.getValidationMessages());
       if(usedNames.contains(measure.getName())){
         valid = false;
-        validationMessages.add(Messages.getString("duplicate_measure_name"));
+        validationMessages.add(BaseMessages.getString(this.getClass(), "duplicate_measure_name"));
       }
       
       usedNames.add(measure.getName());

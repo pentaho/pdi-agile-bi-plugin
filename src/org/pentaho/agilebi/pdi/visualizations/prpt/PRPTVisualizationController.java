@@ -8,16 +8,17 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.pentaho.agilebi.pdi.modeler.Messages;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
+import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.IPhysicalModel;
@@ -89,7 +90,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
       Domain theDomain = ModelerHelper.getInstance().loadDomain(xmiFileLocation);
       modelId = theDomain.getLogicalModels().get(0).getName(Locale.getDefault().toString());
     } else {
-      modelId = Messages.getString("unavailable");
+      modelId = BaseMessages.getString(IVisualization.class,"unavailable");
     }
     bf.setBindingType(Binding.Type.ONE_WAY);
     this.modelNameBinding = this.bf.createBinding(this, "modelId", "modelName", "value");
@@ -156,7 +157,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     String theName = null;
     String xmiFileLocation = getXmiFileLocation();
     if(xmiFileLocation == null){
-      return Messages.getString("unavailable");
+      return BaseMessages.getString(IVisualization.class,"unavailable");
     }
     Domain theDomain = ModelerHelper.getInstance().loadDomain(xmiFileLocation);
     List<IPhysicalModel> theModels = theDomain.getPhysicalModels();
@@ -187,7 +188,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
       spoon.saveToFile(meta);
     } catch (KettleException e) {
       logger.error(e);
-      showErrorDialog(Messages.getString("error_saving"));
+      showErrorDialog(BaseMessages.getString(IVisualization.class,"error_saving"));
     }
     
   }
@@ -197,7 +198,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
       spoon.saveFileAs(meta);
     } catch (KettleException e) {
       logger.error(e);
-      showErrorDialog(Messages.getString("error_saving"));
+      showErrorDialog(BaseMessages.getString(IVisualization.class,"error_saving"));
     }
   }
   
@@ -205,7 +206,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     XulMessageBox dlg;
     try {
       dlg = (XulMessageBox) document.createElement("messagebox");
-      dlg.setTitle(Messages.getString("error_title"));
+      dlg.setTitle(BaseMessages.getString(IVisualization.class,"error_title"));
       dlg.setMessage(msg);
       dlg.open();
     } catch (XulException e) {
@@ -230,8 +231,8 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
       XulMessageBox box;
       try {
         box = (XulMessageBox) document.createElement("messagebox");
-        box.setTitle(Messages.getString("error_title"));
-        box.setMessage(Messages.getString("prpt_no_model"));
+        box.setTitle(BaseMessages.getString(IVisualization.class,"error_title"));
+        box.setMessage(BaseMessages.getString(IVisualization.class,"prpt_no_model"));
         box.open();
       } catch (XulException e) {
         // TODO Auto-generated catch block
@@ -250,8 +251,8 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
       XulMessageBox box;
       try {
         box = (XulMessageBox) document.createElement("messagebox");
-        box.setTitle(Messages.getString("error_title"));
-        box.setMessage(Messages.getString("prpt_no_model"));
+        box.setTitle(BaseMessages.getString(IVisualization.class,"error_title"));
+        box.setMessage(BaseMessages.getString(IVisualization.class,"prpt_no_model"));
         box.open();
       } catch (XulException e) {
         // TODO Auto-generated catch block

@@ -6,19 +6,19 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.widgets.Composite;
-import org.pentaho.agilebi.pdi.modeler.Messages;
+import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;
 import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.XulTabAndPanel;
 import org.pentaho.agilebi.pdi.visualizations.AbstractVisualization;
-import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
+import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
@@ -55,7 +55,7 @@ public class PRPTVisualization extends AbstractVisualization {
   }
 
   public String[] getFileTypeDisplayNames(Locale locale) {
-    return new String[]{Messages.getString("prpt_file_type_name")};
+    return new String[]{BaseMessages.getString(IVisualization.class, "prpt_file_type_name")};
   }
 
   public String getRootNodeName() {
@@ -99,7 +99,7 @@ public class PRPTVisualization extends AbstractVisualization {
       }
       SwtXulLoader theXulLoader = new SwtXulLoader();
       theXulLoader.register("PRPT", "org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag");
-      XulDomContainer theXulContainer = theXulLoader.loadXul("org/pentaho/agilebi/pdi/visualizations/prpt/prptVisualization.xul");
+      XulDomContainer theXulContainer = theXulLoader.loadXul("org/pentaho/agilebi/pdi/visualizations/prpt/prptVisualization.xul", new PDIMessages(IVisualization.class));
       
       PRPTMeta meta = new PRPTMeta();
       meta.setTab(tabAndPanel.tab);

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.i18n.LanguageChoice;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.concept.types.DataType;
@@ -202,11 +203,11 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
     validationMessages.clear();
     // check name
     if (StringUtils.isEmpty(name)) {
-      validationMessages.add(Messages.getString("measure_name_missing", getName())); 
+      validationMessages.add(BaseMessages.getString(this.getClass(), "measure_name_missing", getName())); 
       valid = false;
     } 
     if(logicalColumn == null){
-      validationMessages.add(Messages.getString("measure_column_missing", getName()));
+      validationMessages.add(BaseMessages.getString(this.getClass(), "measure_column_missing", getName()));
       valid = false;
     }
   }

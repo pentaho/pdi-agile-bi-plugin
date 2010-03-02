@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pentaho.di.i18n.BaseMessages;
+
 public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<DimensionMetaData> implements Serializable {
 
   private static final long serialVersionUID = -6327799582519270107L;
@@ -80,7 +82,7 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
       validationMessages.addAll(dim.getValidationMessages());
       if(usedNames.contains(dim.getName())){
         valid = false;
-        validationMessages.add(Messages.getString("duplicate_dimension_names"));
+        validationMessages.add(BaseMessages.getString(this.getClass(), "duplicate_dimension_names"));
       }
       usedNames.add(dim.getName());
     }

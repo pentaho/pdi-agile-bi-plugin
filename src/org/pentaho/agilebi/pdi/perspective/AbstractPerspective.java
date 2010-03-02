@@ -18,6 +18,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.modeler.ModelerController;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
@@ -60,7 +61,6 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   protected XulTabpanels panels;
   protected XulTabbox tabbox;
   protected List<SpoonPerspectiveListener> listeners = new ArrayList<SpoonPerspectiveListener>();
-  private ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective"); //$NON-NLS-1$
   private String defaultExtension = "";
   protected ModelerWorkspace model;
   protected EngineMetaInterface selectedMeta;
@@ -70,7 +70,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   protected AbstractPerspective(String perspectiveSrc) {
     try {
       SwtXulLoader loader = new SwtXulLoader();
-      container = loader.loadXul(perspectiveSrc); //$NON-NLS-1$
+      container = loader.loadXul(perspectiveSrc, new PDIMessages(this.getClass())); //$NON-NLS-1$
       
       runner = new SwtXulRunner();
       runner.addContainer(container);

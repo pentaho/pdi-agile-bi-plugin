@@ -16,13 +16,12 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.pentaho.di.i18n.BaseMessages;
 
 /**
  * Event aware node class that also listens to it's children's events and propagates them up.
@@ -75,7 +74,7 @@ public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaDa
       validationMessages.addAll(hier.getValidationMessages());
       if(usedNames.contains(hier.getName())){
         valid = false;
-        validationMessages.add(Messages.getString("duplicate_hier_names"));
+        validationMessages.add(BaseMessages.getString(this.getClass(), "duplicate_hier_names"));
       }
       usedNames.add(hier.getName());
     }

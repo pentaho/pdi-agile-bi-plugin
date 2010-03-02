@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.modeler.ModelerEngineMeta;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -29,6 +29,7 @@ import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
@@ -51,7 +52,6 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
 
   private Log logger = LogFactory.getLog(AgileBiModelerPerspective.class);
   private static final AgileBiModelerPerspective INSTANCE = new AgileBiModelerPerspective();
-  private ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective"); //$NON-NLS-1$
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
   private XulMenuitem modelPropItem;
   
@@ -70,8 +70,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
   }
   
   public String getDisplayName(Locale l) {
-    ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective", l); //$NON-NLS-1$
-    return messages.getString("perspectiveName");
+    return BaseMessages.getString(this.getClass(), "Modeler.Perspective.perspectiveName");
   }
 
   public InputStream getPerspectiveIcon() {
@@ -206,8 +205,8 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
   public boolean onTabClose(final int pos) throws XulException{
     if(models.get(0).isDirty()){
       XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox"); //$NON-NLS-1$
-      confirm.setTitle(messages.getString("unsavedChanges")); //$NON-NLS-1$
-      confirm.setMessage(messages.getString("unsavedChangesMessage")); //$NON-NLS-1$
+      confirm.setTitle(BaseMessages.getString(this.getClass(), "Modeler.Perspective.unsavedChanges")); //$NON-NLS-1$
+      confirm.setMessage(BaseMessages.getString(this.getClass(), "Modeler.Perspective.unsavedChangesMessage")); //$NON-NLS-1$
       
       CloseConfirmXulDialogCallback callback = new CloseConfirmXulDialogCallback();
       confirm.addDialogCallback(callback);

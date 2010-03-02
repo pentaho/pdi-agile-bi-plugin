@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.spoon.ChangedWarningInterface;
 import org.pentaho.di.ui.spoon.TabItemInterface;
@@ -49,7 +50,7 @@ public class XulUI implements TabItemInterface {
     try{
       SwtXulLoader loader = new SwtXulLoader();
       loader.setOuterContext(shell);
-      container = loader.loadXul("org/pentaho/agilebi/pdi/modeler/res/panel.xul", new PDIMessages()); //$NON-NLS-1$
+      container = loader.loadXul("org/pentaho/agilebi/pdi/modeler/res/panel.xul", new PDIMessages(this.getClass())); //$NON-NLS-1$
 
       
       controller = new ModelerController(model);

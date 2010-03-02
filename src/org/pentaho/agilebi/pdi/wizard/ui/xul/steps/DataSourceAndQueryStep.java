@@ -23,11 +23,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.pentaho.agilebi.pdi.modeler.Messages;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
 import org.pentaho.commons.metadata.mqleditor.editor.SwtMqlEditor;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.repository.IMetadataDomainRepository;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
@@ -254,7 +255,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       
     }
     if (items.size() < 1) {
-      items.add(Messages.getString("DataSourceAndQueryStep.no_defined_fields")); //$NON-NLS-1$
+      items.add(BaseMessages.getString(EmbeddedWizard.class,"DataSourceAndQueryStep.no_defined_fields")); //$NON-NLS-1$
     }
     setAvailableColumns(items);  
   }
@@ -365,7 +366,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
    */
   public String getStepName()
   {
-    return Messages.getString("DataSourceAndQueryStep.name"); //$NON-NLS-1$
+    return BaseMessages.getString(EmbeddedWizard.class,"DataSourceAndQueryStep.name"); //$NON-NLS-1$
   }
 
   public void setModel(ModelerWorkspace model) {

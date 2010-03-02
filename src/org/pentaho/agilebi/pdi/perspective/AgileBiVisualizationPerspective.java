@@ -16,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.widgets.Composite;
+import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.modeler.ModelerEngineMeta;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -24,6 +25,7 @@ import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.ui.xul.XulException;
@@ -37,7 +39,6 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
   private Log logger = LogFactory.getLog(AgileBiModelerPerspective.class);
   private static final AgileBiVisualizationPerspective INSTANCE = new AgileBiVisualizationPerspective();
-  private ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective"); //$NON-NLS-1$
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
   private Map<ModelerWorkspace, EngineMetaInterface> metas = new HashMap<ModelerWorkspace, EngineMetaInterface>();
   private AgileBiVisualizationPerspectiveController controller = new AgileBiVisualizationPerspectiveController();
@@ -55,8 +56,8 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   }
   
   public String getDisplayName(Locale l) {
-    ResourceBundle messages = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/perspective/perspective", l); //$NON-NLS-1$
-    return messages.getString("visualizationPerspectiveName");
+  
+    return BaseMessages.getString(this.getClass(), "Visualization.Perspective.perspectiveName");
   }
 
   public InputStream getPerspectiveIcon() {

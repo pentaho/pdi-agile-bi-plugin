@@ -9,29 +9,22 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Composite;
-import org.pentaho.agilebi.pdi.modeler.BiServerConnection;
-import org.pentaho.agilebi.pdi.modeler.Messages;
-import org.pentaho.agilebi.pdi.modeler.ModelServerPublish;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
-import org.pentaho.agilebi.pdi.modeler.XulDialogPublish;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.perspective.PublisherHelper;
+import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
-import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
-import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
-import org.pentaho.platform.api.repository.ISolutionRepository;
-import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
@@ -143,7 +136,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
       spoon.saveToFile(meta);
     } catch (KettleException e) {
       logger.error(e);
-      showErrorDialog(Messages.getString("error_saving"));
+      showErrorDialog(BaseMessages.getString(IVisualization.class,"error_saving"));
     }
 	}
 
@@ -152,7 +145,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	    spoon.saveFileAs(meta);
     } catch (KettleException e) {
       logger.error(e);
-      showErrorDialog(Messages.getString("error_saving"));
+      showErrorDialog(BaseMessages.getString(IVisualization.class,"error_saving"));
     }
   }
 
@@ -160,7 +153,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     XulMessageBox dlg;
     try {
       dlg = (XulMessageBox) document.createElement("messagebox");
-      dlg.setTitle(Messages.getString("error_title"));
+      dlg.setTitle(BaseMessages.getString(IVisualization.class,"error_title"));
       dlg.setMessage(msg);
       dlg.open();
     } catch (XulException e) {

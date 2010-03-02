@@ -12,12 +12,12 @@
     <menu id="file-export" disabled="false"/>
         
     <menupopup id="file-export-popup">
-        <menuitem id="file-export-xmi" label="${mondrian_schema}"
+        <menuitem id="file-export-xmi" label="${Modeler.Perspective.mondrian_schema}"
 	      command="agileBiPerspective.exportSchema()" />	      
     </menupopup>
     
   <menupopup id="view-popup">
-        <menuitem id="view-modeler-props" label="${view.modeler.props}"
+        <menuitem id="view-modeler-props" label="${Modeler.Perspective.modeler.props}"
           command="agileBiPerspective.toggleProperties()" type="checkbox"/>
   </menupopup>
 </overlay>

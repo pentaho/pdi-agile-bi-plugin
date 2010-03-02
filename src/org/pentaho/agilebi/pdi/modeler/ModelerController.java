@@ -29,15 +29,11 @@ import org.apache.commons.logging.LogFactory;
 import org.pentaho.agilebi.pdi.perspective.PublisherHelper;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
-import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.gui.SpoonFactory;
-import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
 import org.pentaho.metadata.model.LogicalColumn;
-import org.pentaho.platform.api.repository.ISolutionRepository;
-import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
@@ -54,7 +50,6 @@ import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDeck;
 import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.containers.XulEditpanel;
-import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
@@ -339,10 +334,10 @@ public class ModelerController extends AbstractXulEventHandler{
         autoPopulate();
       } else {
           XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
-          confirm.setTitle(Messages.getString("auto_populate_title"));
-          confirm.setMessage(Messages.getString("auto_populate_msg"));
-          confirm.setAcceptLabel(Messages.getString("yes"));
-          confirm.setCancelLabel(Messages.getString("no"));
+          confirm.setTitle(BaseMessages.getString(this.getClass(), "auto_populate_title"));
+          confirm.setMessage(BaseMessages.getString(this.getClass(), "auto_populate_msg"));
+          confirm.setAcceptLabel(BaseMessages.getString(this.getClass(), "yes"));
+          confirm.setCancelLabel(BaseMessages.getString(this.getClass(), "no"));
           confirm.addDialogCallback(new XulDialogCallback(){
             public void onClose(XulComponent sender, Status returnCode, Object retVal) {
               if(returnCode == Status.ACCEPT){
@@ -652,7 +647,7 @@ public class ModelerController extends AbstractXulEventHandler{
   
   private void showValidationMessages(){
 
-    StringBuffer validationErrors = new StringBuffer(Messages.getString("model_contains_errors"));
+    StringBuffer validationErrors = new StringBuffer(BaseMessages.getString(this.getClass(), "model_contains_errors"));
     for (String msg : workspace.getValidationMessages()) {
       validationErrors.append(msg);
       validationErrors.append("\n");
@@ -660,7 +655,7 @@ public class ModelerController extends AbstractXulEventHandler{
     }
     try{
       XulMessageBox msg = (XulMessageBox) document.createElement("messagebox");
-      msg.setTitle(Messages.getString("model_not_valid"));
+      msg.setTitle(BaseMessages.getString(this.getClass(), "model_not_valid"));
       msg.setMessage(validationErrors.toString());
       msg.open();
     } catch(XulException e){
