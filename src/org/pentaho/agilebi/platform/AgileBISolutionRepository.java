@@ -50,6 +50,10 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
     path = path.replaceAll("%3A",":");
     path = path.replaceAll("%5C","\\\\");
     path = path.replaceAll("%2F", "\\\\");
+    boolean isUnix = File.pathSeparator.equals("/");
+    if (isUnix) {
+      path = path.replaceAll("\\\\", File.pathSeparator);
+    }
     return path;
   }
   
