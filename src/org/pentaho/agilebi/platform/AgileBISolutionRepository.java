@@ -49,7 +49,7 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
     path = path.replaceAll("\\+"," ");
     path = path.replaceAll("%3A",":");
     path = path.replaceAll("%5C","\\\\");
-    path = path.replaceAll("%2F", "\\");
+    path = path.replaceAll("%2F", "\\\\");
     return path;
   }
   
