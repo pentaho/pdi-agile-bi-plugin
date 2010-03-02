@@ -49,14 +49,13 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
     path = path.replaceAll("\\+"," ");
     path = path.replaceAll("%3A",":");
     path = path.replaceAll("%5C","\\\\");
+    path = path.replaceAll("%2F", "\\");
     return path;
   }
   
   public int publish(String baseUrl, String path, String fileName, byte[] data, boolean overwrite) throws PentahoAccessControlException {
     
-    path = URL.decode(path);
     path = cleanUpPath(path);
-
     
     // Analyzer puts a "/" at the beginning of the path on windows, remove it.
     if (path.startsWith("/") && path.contains(":")) { //$NON-NLS-1$ //$NON-NLS-2$
