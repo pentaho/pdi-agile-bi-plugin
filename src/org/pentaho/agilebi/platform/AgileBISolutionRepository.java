@@ -49,14 +49,14 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
     path = path.replaceAll("\\+"," ");
     path = path.replaceAll("%3A",":");
     path = path.replaceAll("%5C","\\\\");
-    path = path.replaceAll("%2F", "\\\\");
+    path = path.replaceAll("%2F", File.separator);
 
-    String lcOSName = System.getProperty("os.name").toLowerCase();
-    boolean isMac = lcOSName.startsWith("mac os x");
-    boolean isNix = (lcOSName.indexOf( "nix") >=0 || lcOSName.indexOf( "nux") >=0);
-    if (isMac || isNix) {
-      path = path.replaceAll("\\\\", File.pathSeparator);
-    }
+//    String lcOSName = System.getProperty("os.name").toLowerCase();
+//    boolean isMac = lcOSName.startsWith("mac os x");
+//    boolean isNix = (lcOSName.indexOf( "nix") >=0 || lcOSName.indexOf( "nux") >=0);
+//    if (isMac || isNix) {
+//      path = path.replaceAll("\\\\", File.pathSeparator);
+//    }
     return path;
   }
   
