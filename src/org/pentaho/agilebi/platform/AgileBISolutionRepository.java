@@ -50,7 +50,7 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
     path = path.replaceAll("%3A",":");
     path = path.replaceAll("%5C","\\\\");
     path = path.replaceAll("%2F", "\\\\");
-    boolean isUnix = File.pathSeparator.equals("/");
+
     String lcOSName = System.getProperty("os.name").toLowerCase();
     boolean isMac = lcOSName.startsWith("mac os x");
     boolean isNix = (lcOSName.indexOf( "nix") >=0 || lcOSName.indexOf( "nux") >=0);
