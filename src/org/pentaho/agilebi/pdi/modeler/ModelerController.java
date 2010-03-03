@@ -43,6 +43,7 @@ import org.pentaho.di.ui.spoon.delegates.SpoonDBDelegate;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
 import org.pentaho.metadata.model.LogicalColumn;
+import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
@@ -109,6 +110,7 @@ public class ModelerController extends AbstractXulEventHandler{
   private XulMenuList visualizationList;
   private XulDeck propDeck;
   private Object[] selectedFields;
+  private ModelerControllerDBRegistry databaseInterface;
   
   private BindingFactory bf = new DefaultBindingFactory();
  
@@ -120,11 +122,13 @@ public class ModelerController extends AbstractXulEventHandler{
   private XulEditpanel propPanel;
   
   public ModelerController(){
-    workspace = new ModelerWorkspace();
+    this.workspace = new ModelerWorkspace();
+    this.databaseInterface = new ModelerControllerDBRegistry();
   }
   
   public ModelerController(ModelerWorkspace workspace){
     this.workspace = workspace;
+    this.databaseInterface = new ModelerControllerDBRegistry();
   }
   
   public String getName(){
@@ -258,39 +262,46 @@ public class ModelerController extends AbstractXulEventHandler{
   }
   
   public void editDataSource() {
-    Spoon theSpoon = Spoon.getInstance();
-
-    EngineMetaInterface theMeta = null;
-    HasDatabasesInterface theDatabasesInterface = null;
-    List<SpoonPerspective> thePerspectives = SpoonPerspectiveManager.getInstance().getPerspectives();
-    for (SpoonPerspective thePerspective : thePerspectives) {
-      if(thePerspective instanceof MainSpoonPerspective) {
-         theMeta = thePerspective.getActiveMeta();
-         break;
-      } 
-    }
-    
-    List<DatabaseMeta> theDatabases = new ArrayList<DatabaseMeta>();
-    if(theMeta != null) {
-      theDatabasesInterface = (HasDatabasesInterface) theMeta; 
-    } else {
-      theDatabasesInterface = new ModelerControllerDBRegistry();
-    }
-    if (theDatabasesInterface != null) {
+    try {
+      Spoon theSpoon = Spoon.getInstance();
+  
+      EngineMetaInterface theMeta = null;
+      HasDatabasesInterface theDatabasesInterface = null;
+      List<SpoonPerspective> thePerspectives = SpoonPerspectiveManager.getInstance().getPerspectives();
+      for (SpoonPerspective thePerspective : thePerspectives) {
+        if(thePerspective instanceof MainSpoonPerspective) {
+           theMeta = thePerspective.getActiveMeta();
+           break;
+        } 
+      }
+      
+      List<DatabaseMeta> theDatabases = new ArrayList<DatabaseMeta>();
+      if(theMeta != null) {
+        theDatabasesInterface = (HasDatabasesInterface) theMeta; 
+      } else {
+        theDatabasesInterface = this.databaseInterface;
+      }
       theDatabases.addAll(theDatabasesInterface.getDatabases());
-    }
-
-    String[] theNames = new String[theDatabases.size()];
-    for (int i = 0; i < theDatabases.size(); i++) {
-      theNames[i] = theDatabases.get(i).getName();
-    }
-
-    EnterSelectionDialog theDialog = new EnterSelectionDialog(theSpoon.getShell(), theNames, BaseMessages.getString(Spoon.class ,"Spoon.ExploreDB.SelectDB.Title"), BaseMessages.getString(Spoon.class, "Spoon.ExploreDB.SelectDB.Message"), theDatabasesInterface);
-    String theDBName = theDialog.open();
-    if (theDBName != null) {
-      SpoonDBDelegate theDelegate = new SpoonDBDelegate(theSpoon);
-      DatabaseMeta theDBMeta = DatabaseMeta.findDatabase(theDatabases, theDBName);
-      theDelegate.exploreDB(theDBMeta);
+  
+      String[] theNames = new String[theDatabases.size()];
+      for (int i = 0; i < theDatabases.size(); i++) {
+        theNames[i] = theDatabases.get(i).getName();
+      }
+      
+      EnterSelectionDialog theDialog = new EnterSelectionDialog(theSpoon.getShell(), theNames, BaseMessages.getString(Spoon.class ,"Spoon.ExploreDB.SelectDB.Title"), BaseMessages.getString(Spoon.class, "Spoon.ExploreDB.SelectDB.Message"), theDatabasesInterface);
+      String theDBName = theDialog.open();
+      if (theDBName != null) {
+        SpoonDBDelegate theDelegate = new SpoonDBDelegate(theSpoon);
+        DatabaseMeta theDBMeta = DatabaseMeta.findDatabase(theDatabasesInterface.getDatabases(), theDBName);
+        String theTable = theDelegate.exploreDB(theDBMeta, false);
+        if(!StringUtils.isEmpty(theTable)) {
+          TableModelerSource theSource = new TableModelerSource(theDBMeta, theTable, null);
+          ModelerWorkspaceUtil.populateModelFromSource(this.workspace, theSource);
+          this.workspace.refresh();
+        }
+      }
+    } catch (Exception e) {
+     logger.equals(e); 
     }
   }
   
