@@ -16,5 +16,11 @@
 	    <menuitem label="${Spoon.Edit.EditBiServerConfig.MenuItem.Label}"
 	      command="agileBi.editBiServerConfig()" />
 	</menupopup>
+	
+	<menupopup id="file-newfile-new-popup">
+	    <menuitem id="file-new-model" acceltext="CTRL-ALT-M" accesskey="ctrl-alt-m" label="${model}"
+              command="agileBi.createEmptyModel()" />
+	</menupopup>
+	
   
 </overlay>

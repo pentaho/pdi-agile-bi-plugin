@@ -54,7 +54,7 @@
           <toolbarbutton onclick="modeler.refreshFields()" image="images/refresh.png" />
           <toolbarbutton image="images/autogen_model.png" onclick="modeler.showAutopopulatePrompt()" tooltiptext="${autopopulate_model}"/>
           <toolbarbutton id="addField" image="images/insert_to_model.png" onclick="modeler.addField()" tooltiptext="${add}"/>
-          
+          <toolbarbutton id="datasourceButton" image="images/edit.png" onclick="modeler.editDataSource()" tooltiptext="${select_edit_ds}"/>
         </toolbar>
       
         <listbox id="fieldList" flex="1" seltype="multi"

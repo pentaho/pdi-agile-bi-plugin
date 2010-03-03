@@ -32,6 +32,7 @@ import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.core.database.dialog.DatabaseExplorerDialog;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
@@ -256,6 +257,16 @@ public class ModelerHelper extends AbstractXulEventHandler {
     } catch (XulException e) {
       logger.error(e);
       new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Could not create dialog", e);
+    }
+  }
+  
+  public void createEmptyModel() {
+    try {
+      ModelerWorkspace model = new ModelerWorkspace();
+      AgileBiModelerPerspective.getInstance().createTabForModel(model, MODELER_NAME);
+      SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiModelerPerspective.class);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
   

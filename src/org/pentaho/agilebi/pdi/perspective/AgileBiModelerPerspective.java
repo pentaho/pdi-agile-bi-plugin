@@ -31,6 +31,7 @@ import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.FileListener;
+import org.pentaho.di.ui.spoon.MainSpoonPerspective;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
@@ -271,5 +272,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
     perspectiveController.setSelectedModelerMeta((ModelerEngineMeta) meta);
   }
   
+  
+ 
   
 }
