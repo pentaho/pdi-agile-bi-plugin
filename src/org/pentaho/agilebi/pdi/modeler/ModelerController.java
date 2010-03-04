@@ -289,7 +289,7 @@ public class ModelerController extends AbstractXulEventHandler{
       if(theModelerSource != null) {
         theSelectedTable = theModelerSource.getDatabaseName();
       }
-      int[] theSelectedIndexes = {1};
+      int[] theSelectedIndexes = new int[1];
       String[] theNames = new String[theDatabases.size()];
       for (int i = 0; i < theDatabases.size(); i++) {
         theNames[i] = theDatabases.get(i).getName();
