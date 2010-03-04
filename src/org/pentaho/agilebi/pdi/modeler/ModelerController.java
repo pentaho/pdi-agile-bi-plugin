@@ -26,12 +26,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.pentaho.agilebi.pdi.perspective.PublisherHelper;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.trans.HasDatabasesInterface;
 import org.pentaho.di.ui.core.dialog.EnterSelectionDialog;
@@ -283,25 +284,51 @@ public class ModelerController extends AbstractXulEventHandler{
       }
       theDatabases.addAll(theDatabasesInterface.getDatabases());
   
+      String theSelectedTable = null;
+      IModelerSource theModelerSource = this.workspace.getModelSource();
+      if(theModelerSource != null) {
+        theSelectedTable = theModelerSource.getDatabaseName();
+      }
+      int[] theSelectedIndexes = {1};
       String[] theNames = new String[theDatabases.size()];
       for (int i = 0; i < theDatabases.size(); i++) {
         theNames[i] = theDatabases.get(i).getName();
+        if(theSelectedTable != null && theNames[i].equals(theSelectedTable)) {
+          theSelectedIndexes[0] = i;
+        }
       }
       
       EnterSelectionDialog theDialog = new EnterSelectionDialog(theSpoon.getShell(), theNames, BaseMessages.getString(Spoon.class ,"Spoon.ExploreDB.SelectDB.Title"), BaseMessages.getString(Spoon.class, "Spoon.ExploreDB.SelectDB.Message"), theDatabasesInterface);
+      theDialog.setSelectedNrs(theSelectedIndexes);
       String theDBName = theDialog.open();
       if (theDBName != null) {
         SpoonDBDelegate theDelegate = new SpoonDBDelegate(theSpoon);
         DatabaseMeta theDBMeta = DatabaseMeta.findDatabase(theDatabasesInterface.getDatabases(), theDBName);
         String theTable = theDelegate.exploreDB(theDBMeta, false);
-        if(!StringUtils.isEmpty(theTable)) {
+        boolean refresh = this.workspace.getAvailableFields().isEmpty();
+        if(!StringUtils.isEmpty(theTable) && !this.workspace.getAvailableFields().isEmpty()) {
+          MessageBox theMessageBox = new MessageBox(theSpoon.getShell(), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
+          theMessageBox.setText(BaseMessages.getString(Spoon.class, "Spoon.Message.Warning.Warning"));
+          theMessageBox.setMessage(BaseMessages.getString(Spoon.class, "Spoon.Message.Model.Warning"));
+          int theVal = theMessageBox.open();
+          switch (theVal) 
+          {
+            case SWT.OK:
+             refresh = true;
+              break;
+            case SWT.CANCEL:
+              refresh = false;
+               break;
+          }
+        }
+        if(refresh) {
           TableModelerSource theSource = new TableModelerSource(theDBMeta, theTable, null);
           ModelerWorkspaceUtil.populateModelFromSource(this.workspace, theSource);
-          this.workspace.refresh();
+          this.workspace.refresh();  
         }
       }
     } catch (Exception e) {
-     logger.equals(e); 
+      logger.equals(e); 
     }
   }
   
