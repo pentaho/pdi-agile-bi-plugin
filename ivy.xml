@@ -44,30 +44,30 @@
       changing="true" />
     <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default"
       changing="true" />
-    <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul" rev="TRUNK-SNAPSHOT"
+    <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul" rev="${dependency.pentaho-reporting.revision}"
       conf="default->default" changing="true" />
-    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-extensions-pmd" rev="TRUNK-SNAPSHOT"
+    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-extensions-pmd" rev="${dependency.pentaho-reporting.revision}"
       conf="default->default" changing="true" />
 
-    <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="TRUNK-SNAPSHOT" changing="true"
+    <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="${dependency.bi-platform.revision}" changing="true"
       conf="default->default" />
-    <dependency org="pentaho" name="pentaho-bi-platform-engine-core" rev="TRUNK-SNAPSHOT" changing="true"
+    <dependency org="pentaho" name="pentaho-bi-platform-engine-core" rev="${dependency.bi-platform.revision}" changing="true"
       conf="default->default" />
-    <dependency org="pentaho" name="pentaho-bi-platform-engine-services" rev="TRUNK-SNAPSHOT" changing="true"
+    <dependency org="pentaho" name="pentaho-bi-platform-engine-services" rev="${dependency.bi-platform.revision}" changing="true"
       conf="default->default" />
-    <dependency org="pentaho" name="pentaho-bi-platform-repository" rev="TRUNK-SNAPSHOT" changing="true"
+    <dependency org="pentaho" name="pentaho-bi-platform-repository" rev="${dependency.bi-platform.revision}" changing="true"
       conf="default->default" />
-    <dependency org="pentaho" name="pentaho-bi-platform-util" rev="TRUNK-SNAPSHOT" changing="true"
+    <dependency org="pentaho" name="pentaho-bi-platform-util" rev="${dependency.bi-platform.revision}" changing="true"
       conf="default->default" />
 
     <!-- Pentaho -->
-    <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="TRUNK-SNAPSHOT" changing="true"
+    <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="${dependency.bi-platform.revision}" changing="true"
       conf="default->default" />
-    <dependency org="pentaho" name="pentaho-bi-platform-security-userroledao" rev="TRUNK-SNAPSHOT" changing="true"
+    <dependency org="pentaho" name="pentaho-bi-platform-security-userroledao" rev="${dependency.bi-platform.revision}" changing="true"
       conf="default->default" />
-    <dependency org="pentaho" name="pentaho-bi-platform-legacy" rev="TRUNK-SNAPSHOT" changing="true"
+    <dependency org="pentaho" name="pentaho-bi-platform-legacy" rev="${dependency.bi-platform.revision}" changing="true"
       conf="default->default" />
-    <dependency org="pentaho" name="mantle" rev="TRUNK-SNAPSHOT" changing="true" conf="default->default" />
+    <dependency org="pentaho" name="mantle" rev="${dependency.bi-platform.revision}" changing="true" conf="default->default" />
     <dependency org="org.json" name="json" rev="${dependency.json.revision}" changing="true" conf="default->default" />
     <!-- test dependencies -->
     <dependency org="junit" name="junit" rev="4.4" conf="test->default" />
