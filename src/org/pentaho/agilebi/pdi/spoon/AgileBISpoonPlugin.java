@@ -26,11 +26,13 @@ import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.di.ui.spoon.SpoonLifecycleListener;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPlugin;
+import org.pentaho.di.ui.spoon.SpoonPluginInterface;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.impl.DefaultXulOverlay;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 
-public class AgileBISpoonPlugin implements SpoonPlugin{
+@SpoonPlugin(id = "AgileBi", image = "")
+public class AgileBISpoonPlugin implements SpoonPluginInterface{
 
   public Map<String, List<XulEventHandler>> getEventHandlers() {
     HashMap<String, List<XulEventHandler>> hash = new HashMap<String, List<XulEventHandler>>();
