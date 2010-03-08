@@ -70,6 +70,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   protected AbstractPerspective(String perspectiveSrc) {
     try {
       SwtXulLoader loader = new SwtXulLoader();
+      loader.registerClassLoader(getClass().getClassLoader());
       container = loader.loadXul(perspectiveSrc, new PDIMessages(this.getClass())); //$NON-NLS-1$
       
       runner = new SwtXulRunner();
