@@ -33,6 +33,7 @@ public class AgileBISpoonPlugin implements SpoonPluginInterface{
   
   
   public void applyToContainer(String category, XulDomContainer container) throws XulException {
+    container.registerClassLoader(getClass().getClassLoader());
     if(category.equals("spoon")){
       container.loadOverlay("org/pentaho/agilebi/pdi/spoon/spoon_overlays.xul");
       container.addEventHandler(ModelerHelper.getInstance());
