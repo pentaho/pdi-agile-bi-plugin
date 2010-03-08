@@ -16,47 +16,33 @@
  */
 package org.pentaho.agilebi.pdi.spoon;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.di.ui.spoon.SpoonLifecycleListener;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPlugin;
+import org.pentaho.di.ui.spoon.SpoonPluginCategories;
 import org.pentaho.di.ui.spoon.SpoonPluginInterface;
-import org.pentaho.ui.xul.XulOverlay;
-import org.pentaho.ui.xul.impl.DefaultXulOverlay;
-import org.pentaho.ui.xul.impl.XulEventHandler;
+import org.pentaho.ui.xul.XulDomContainer;
+import org.pentaho.ui.xul.XulException;
 
 @SpoonPlugin(id = "AgileBi", image = "")
+@SpoonPluginCategories({"spoon", "trans-graph", "database_dialog"})
 public class AgileBISpoonPlugin implements SpoonPluginInterface{
 
-  public Map<String, List<XulEventHandler>> getEventHandlers() {
-    HashMap<String, List<XulEventHandler>> hash = new HashMap<String, List<XulEventHandler>>();
-    hash.put("spoon", Collections.singletonList((XulEventHandler) ModelerHelper.getInstance())); //$NON-NLS-1$
-    hash.put("trans-graph", Collections.singletonList((XulEventHandler) ModelerHelper.getInstance())); //$NON-NLS-1$
-    hash.put("database_dialog", Collections.singletonList((XulEventHandler) new AgileBiDatabaseController())); //$NON-NLS-1$
-    return hash;
-  }
-
-  public Map<String, List<XulOverlay>> getOverlays() {
-   
-  	HashMap<String, List<XulOverlay>> hash = new HashMap<String, List<XulOverlay>>();
-  	
-  	XulOverlay overlay = new DefaultXulOverlay("org/pentaho/agilebi/pdi/spoon/spoon_overlays.xul"); //$NON-NLS-1$ 
-    hash.put("spoon", Collections.singletonList((XulOverlay) overlay)); //$NON-NLS-1$
-    
-
-    overlay = new DefaultXulOverlay("org/pentaho/agilebi/pdi/spoon/trans_overlay.xul"); //$NON-NLS-1$ 
-    hash.put("trans-graph", Collections.singletonList((XulOverlay) overlay)); //$NON-NLS-1$
-    
-    overlay = new DefaultXulOverlay("org/pentaho/agilebi/pdi/spoon/database_dialog_overlay.xul"); //$NON-NLS-1$  
-    hash.put("database_dialog", Collections.singletonList((XulOverlay) overlay)); //$NON-NLS-1$
-    
-    return hash;
+  
+  
+  public void applyToContainer(String category, XulDomContainer container) throws XulException {
+    if(category.equals("spoon")){
+      container.loadOverlay("org/pentaho/agilebi/pdi/spoon/spoon_overlays.xul");
+      container.addEventHandler(ModelerHelper.getInstance());
+    } else if(category.equals("trans-graph")){
+      container.loadOverlay("org/pentaho/agilebi/pdi/spoon/trans_overlay.xul");
+      container.addEventHandler(ModelerHelper.getInstance());
+    } else if(category.equals("database_dialog")){
+      container.loadOverlay("org/pentaho/agilebi/pdi/spoon/database_dialog_overlay.xul");
+      container.addEventHandler(new AgileBiDatabaseController());
+    } 
   }
 
   public SpoonLifecycleListener getLifecycleListener() {

@@ -4,30 +4,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;
 import org.pentaho.di.ui.spoon.SpoonLifecycleListener;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPlugin;
+import org.pentaho.di.ui.spoon.SpoonPluginCategories;
 import org.pentaho.di.ui.spoon.SpoonPluginInterface;
+import org.pentaho.ui.xul.XulDomContainer;
+import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 
 @SpoonPlugin(id = "AgileBiVis", image = "")
+@SpoonPluginCategories({})
 public class AgileBiSpoonVisualizationPlugin implements SpoonPluginInterface{
 
-  public Map<String, List<XulEventHandler>> getEventHandlers() {
-    HashMap<String, List<XulEventHandler>> hash = new HashMap<String, List<XulEventHandler>>();
-//    hash.put("spoon", ModelerHelper.getInstance());
-//    hash.put("databaseDialog", ModelerHelper.getInstance());
-    return hash;
+  public void applyToContainer(String category, XulDomContainer container) throws XulException {
+     
   }
 
-  public Map<String, List<XulOverlay>> getOverlays() {
-//    XulOverlay overlay = new DefaultXulOverlay("spoon.agilebi", "org/pentaho/agilebi/pdi/spoon/overlays.xul", null, null); //$NON-NLS-1$  //$NON-NLS-2$
-    HashMap<String, List<XulOverlay>> hash = new HashMap<String, List<XulOverlay>>();
-//    hash.put("spoon", overlay);
-    return hash;
-  }
 
   public SpoonLifecycleListener getLifecycleListener() {
     return null;
