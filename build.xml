@@ -31,7 +31,7 @@
 	            description="Location of platform assembly zip" />
 	
 	<property name="kettle.dist.dir"
-				value="../Kettle trunk"
+				value="../Kettle"
     			description="Location of kettle spoon zip" />
 	
 	<property name="analyzer.dist.dir"
@@ -218,7 +218,14 @@
 		    value="org.pentaho.platform.web.servlet.UIServlet"/>
 		<replace 
 		    file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml"  
-		    token="com.sun.xml.ws.transport.http.servlet.WSServletContextListener"/>
+		    token="com.sun.xml.ws.transport.http.servlet.WSServletContextListener"
+			value=""/>
+
+		<replace 
+		    file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml"  
+		    token="org.pentaho.platform.web.servlet.UIServletContextListener" 
+		    value=""/>
+		
 
 		<!-- remove solution folders that aren't necessary -->
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/data-access-plugin"/>
@@ -247,6 +254,16 @@
       	  </then>
 	     </if>
 	</target>
+	
+	
+	  <target name="assemble.copy-libs">
+	    <copy todir="${approot.stage.dir}/lib">
+	      <fileset dir="${lib.dir}" />
+	    </copy>
+	    <copy todir="${approot.stage.dir}">
+	      <fileset file="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar" />
+	    </copy>
+	  </target>
 
 	<!-- this target builds a kettle release that includes the agile bi plugin -->
 	<target name="kettle-w-plugin-dist">
