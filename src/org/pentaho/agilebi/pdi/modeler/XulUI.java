@@ -49,6 +49,7 @@ public class XulUI implements TabItemInterface {
   public XulUI( Shell shell,  ModelerWorkspace model) throws ModelerException{
     try{
       SwtXulLoader loader = new SwtXulLoader();
+      loader.registerClassLoader(getClass().getClassLoader());
       loader.setOuterContext(shell);
       container = loader.loadXul("org/pentaho/agilebi/pdi/modeler/res/panel.xul", new PDIMessages(this.getClass())); //$NON-NLS-1$
 

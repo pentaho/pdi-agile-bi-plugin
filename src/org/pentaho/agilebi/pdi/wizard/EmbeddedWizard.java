@@ -109,6 +109,7 @@ public class EmbeddedWizard
     {
       final SwtXulLoader loader = new SwtXulLoader();
       loader.setOuterContext(null);
+      loader.registerClassLoader(getClass().getClassLoader());
 
       XulDomContainer mainWizardContainer = loader.loadXul(MAIN_WIZARD_PANEL);
       new WizardContentPanel(wizardController).addContent(mainWizardContainer);

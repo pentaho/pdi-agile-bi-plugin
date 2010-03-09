@@ -137,6 +137,8 @@ public class AnalyzerVisualization extends AbstractVisualization {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
     	SwtXulLoader theXulLoader = new SwtXulLoader();
+
+      theXulLoader.registerClassLoader(getClass().getClassLoader());
       AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, model.getFileName(), model.getModelName() + " Cube", null);
       theController.setModel(model);
     	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION);
@@ -238,6 +240,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
       String modelId = node2.getText();            
       
       SwtXulLoader theXulLoader = new SwtXulLoader();
+      theXulLoader.registerClassLoader(getClass().getClassLoader());
       AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, modelFileName, modelId, null);
     	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION, new PDIMessages(IVisualization.class));
 			theXulContainer.addEventHandler(theController);
