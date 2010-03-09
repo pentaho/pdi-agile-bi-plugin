@@ -697,43 +697,34 @@ public class ModelerController extends AbstractXulEventHandler{
   }
   
 
+
+
   public void openVisualizer() {
-    if(workspace.isDirty()){
-      /*try{
-        XulMessageBox box = (XulMessageBox) document.createElement("messagebox");
-        box.setTitle("Warning");
-        box.setMessage("You must save your workspace before visualizing.");
-        box.open();
-      } catch(XulException e){
-        e.printStackTrace();
-        logger.error(e);
-      }
-      return;*/
-      
-      try {
-        ModelerHelper theHelper = ModelerHelper.getInstance();
-        theHelper.quickVisualize(workspace);
-      } catch (ModelerException e) {
-        return;
-      }
-    }
+
     workspace.getModel().validateTree();
-    if(workspace.isValid() == false){
+    if (workspace.isValid() == false) {
       showValidationMessages();
       return;
     }
-    
-  	/*VisualizationManager theManager = VisualizationManager.getInstance();
-  	IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
-  	if(theVisualization != null) {
-  	  if (workspace.getFileName() != null) {
-  	    // TODO: Find a better name for the cube, maybe just workspace name?
-  	    theVisualization.createVisualizationFromModel(workspace);
-  	  } else {
-  	    throw new UnsupportedOperationException("TODO: prompt to save workspace before visualization");
-  	  }
-  	}*/
+
+    try {
+      if (workspace.isDirty()) { 
+        ModelerHelper theHelper = ModelerHelper.getInstance();
+        theHelper.quickVisualize(workspace);
+      } else {
+        VisualizationManager theManager = VisualizationManager.getInstance();
+        IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
+        if (theVisualization != null) {
+          // TODO: Find a better name for the cube, maybe just workspace name?
+          theVisualization.createVisualizationFromModel(workspace);
+        }
+      }
+    } catch (ModelerException e) {
+      logger.error(e);
+    }
   }
+
+  
   
   private void showValidationMessages(){
 
