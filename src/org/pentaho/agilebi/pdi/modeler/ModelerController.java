@@ -324,7 +324,6 @@ public class ModelerController extends AbstractXulEventHandler{
         if(refresh) {
           TableModelerSource theSource = new TableModelerSource(theDBMeta, theTable, null);
           ModelerWorkspaceUtil.populateModelFromSource(this.workspace, theSource);
-          this.workspace.refresh();  
         }
       }
     } catch (Exception e) {
@@ -700,7 +699,7 @@ public class ModelerController extends AbstractXulEventHandler{
 
   public void openVisualizer() {
     if(workspace.isDirty()){
-      try{
+      /*try{
         XulMessageBox box = (XulMessageBox) document.createElement("messagebox");
         box.setTitle("Warning");
         box.setMessage("You must save your workspace before visualizing.");
@@ -709,7 +708,14 @@ public class ModelerController extends AbstractXulEventHandler{
         e.printStackTrace();
         logger.error(e);
       }
-      return;
+      return;*/
+      
+      try {
+        ModelerHelper theHelper = ModelerHelper.getInstance();
+        theHelper.quickVisualize(workspace);
+      } catch (ModelerException e) {
+        return;
+      }
     }
     workspace.getModel().validateTree();
     if(workspace.isValid() == false){
@@ -717,7 +723,7 @@ public class ModelerController extends AbstractXulEventHandler{
       return;
     }
     
-  	VisualizationManager theManager = VisualizationManager.getInstance();
+  	/*VisualizationManager theManager = VisualizationManager.getInstance();
   	IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
   	if(theVisualization != null) {
   	  if (workspace.getFileName() != null) {
@@ -726,7 +732,7 @@ public class ModelerController extends AbstractXulEventHandler{
   	  } else {
   	    throw new UnsupportedOperationException("TODO: prompt to save workspace before visualization");
   	  }
-  	}
+  	}*/
   }
   
   private void showValidationMessages(){
