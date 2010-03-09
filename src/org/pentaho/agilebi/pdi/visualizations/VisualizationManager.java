@@ -93,7 +93,9 @@ public class VisualizationManager {
 	@SuppressWarnings("unchecked")
   protected void loadVisualizationFile(File file) {
     try {
-      ApplicationContext context = new FileSystemXmlApplicationContext(file.getPath());
+      FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(new String[]{file.getPath()}, false);
+      context.setClassLoader(getClass().getClassLoader());
+      context.refresh();
       Map beans = context.getBeansOfType(IVisualization.class);
       for (Object key : beans.keySet()) {
         IVisualization vis = (IVisualization)beans.get(key);
