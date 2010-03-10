@@ -18,6 +18,12 @@ package org.pentaho.agilebi.pdi.spoon;
 
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
+import org.pentaho.agilebi.pdi.visualizations.IVisualization;
+import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
+import org.pentaho.agilebi.platform.JettyServer;
+import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.core.lifecycle.LifecycleException;
+import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonLifecycleListener;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPlugin;
@@ -30,7 +36,22 @@ import org.pentaho.ui.xul.XulException;
 @SpoonPluginCategories({"spoon", "trans-graph", "database_dialog"})
 public class AgileBISpoonPlugin implements SpoonPluginInterface{
 
-  
+  public AgileBISpoonPlugin(){
+    
+    // TODO: Remove once LifeCycle listeners are working with plugins
+    try {
+      JettyServer server = new JettyServer("localhost", 9999); //$NON-NLS-1$
+      server.startServer();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    ((Spoon) SpoonFactory.getInstance()).addFileListener(AgileBiModelerPerspective.getInstance());
+    
+    for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {
+      ((Spoon) SpoonFactory.getInstance()).addFileListener(viz);
+    }
+  }
   
   public void applyToContainer(String category, XulDomContainer container) throws XulException {
     container.registerClassLoader(getClass().getClassLoader());
