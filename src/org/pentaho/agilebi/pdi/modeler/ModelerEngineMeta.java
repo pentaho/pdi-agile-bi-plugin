@@ -40,6 +40,10 @@ public class ModelerEngineMeta implements EngineMetaInterface {
     return controller;
   }
   
+  public boolean canSave() {
+    return true;
+  }  
+  
   public void clearChanged() {
     // TODO Auto-generated method stub
     

@@ -3,16 +3,24 @@ package org.pentaho.agilebi.pdi.visualizations.analyzer;
 import java.io.File;
 import java.util.Date;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.pentaho.agilebi.pdi.HasXulController;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
+import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.ProgressMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.ObjectRevision;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.repository.RepositoryDirectory;
 import org.pentaho.di.repository.RepositoryLock;
 import org.pentaho.di.repository.RepositoryObjectType;
+import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.ui.xul.components.XulTab;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 
@@ -218,6 +226,23 @@ public class AnalyzerVisualizationMeta implements EngineMetaInterface, HasXulCon
     return browser;
   }
   
-  
-  
+  public boolean canSave() {
+    ModelerWorkspace workspace = browser.getModel();
+    boolean isDirty = workspace.isDirty();
+    try {
+      if(isDirty) {
+        Spoon theSpoon = Spoon.getInstance();
+        MessageBox theMessageBox = new MessageBox(theSpoon.getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
+        theMessageBox.setText(BaseMessages.getString(Spoon.class, "Spoon.Message.Warning.Warning")); //$NON-NLS-1$
+        theMessageBox.setMessage(BaseMessages.getString(IVisualization.class, "AnalyzerViz.save_model")); //$NON-NLS-1$
+        int theVal = theMessageBox.open();
+        if(theVal == SWT.YES) {
+          SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiModelerPerspective.class);
+        }
+      }
+    } catch(Exception e) {
+      return false;
+    }
+    return !isDirty;
+  }
 }

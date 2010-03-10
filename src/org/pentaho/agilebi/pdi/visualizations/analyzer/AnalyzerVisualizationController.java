@@ -7,8 +7,10 @@ import mondrian.rolap.agg.AggregationManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MessageBox;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -22,6 +24,7 @@ import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
@@ -127,8 +130,8 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	}
 
 	public void save(String filename) {
-		visFileLocation = filename;
-		browser.execute(visualization.generateSaveJavascript(filename));
+ 		visFileLocation = filename;
+ 		browser.execute(visualization.generateSaveJavascript(filename));
 	}
 
 	public void save() {
@@ -325,4 +328,8 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
   public void setModel(ModelerWorkspace aWorkspace) {
     this.workspace = aWorkspace;
   }  
+  
+  public ModelerWorkspace getModel() {
+    return this.workspace;
+  }
 }

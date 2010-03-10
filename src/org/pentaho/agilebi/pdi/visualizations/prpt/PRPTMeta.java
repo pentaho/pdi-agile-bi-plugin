@@ -26,6 +26,10 @@ public class PRPTMeta implements EngineMetaInterface, HasXulController {
     
   }
   
+  public boolean canSave() {
+    return true;
+  }  
+  
   public PRPTMeta(PRPTVisualizationController controller) {
     this.controller = controller;
   }
