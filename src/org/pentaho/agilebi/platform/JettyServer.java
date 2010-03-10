@@ -58,6 +58,7 @@ public class JettyServer {
     server = new Server();
 
     WebAppContext pentahoContext = new WebAppContext();
+    pentahoContext.setClassLoader(getClass().getClassLoader());
     pentahoContext.setContextPath("/pentaho"); //$NON-NLS-1$
     pentahoContext.setWar(webappsFolder + "/pentaho"); //$NON-NLS-1$
     
