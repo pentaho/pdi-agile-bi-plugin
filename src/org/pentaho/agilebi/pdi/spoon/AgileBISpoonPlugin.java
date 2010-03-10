@@ -16,11 +16,14 @@
  */
 package org.pentaho.agilebi.pdi.spoon;
 
+import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs.impl.DefaultFileSystemManager;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.agilebi.platform.JettyServer;
+import org.pentaho.agilebi.vfs.MetadataToMondrianVfs;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.core.lifecycle.LifecycleException;
 import org.pentaho.di.ui.spoon.Spoon;
@@ -40,6 +43,12 @@ public class AgileBISpoonPlugin implements SpoonPluginInterface{
     
     // TODO: Remove once LifeCycle listeners are working with plugins
     try {
+      
+      // because we're outside of the default classpath,
+      // META-INF/providers.xml is not loaded, so instead,
+      // we register our VFS provider programmatically
+      ((DefaultFileSystemManager)VFS.getManager()).addProvider("mtm", new MetadataToMondrianVfs());
+      
       JettyServer server = new JettyServer("localhost", 9999); //$NON-NLS-1$
       server.startServer();
     } catch (Exception e) {
