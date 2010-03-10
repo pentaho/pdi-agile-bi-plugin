@@ -141,7 +141,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
       theXulLoader.registerClassLoader(getClass().getClassLoader());
       AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, model.getFileName(), model.getModelName() + " Cube", null);
       theController.setModel(model);
-    	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION);
+    	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION, new PDIMessages(IVisualization.class));
 			theXulContainer.addEventHandler(theController);
 			Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject();
 			SwtXulRunner theRunner = new SwtXulRunner();
@@ -325,7 +325,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
   }
 
   public String[] getFileTypeDisplayNames(Locale locale) {
-    ResourceBundle bundle = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/visualizations/analyzer/analyzer_visualization_browser", locale);
+    ResourceBundle bundle = ResourceBundle.getBundle("org/pentaho/agilebi/pdi/visualizations/analyzer/analyzer_visualization_browser", locale, getClass().getClassLoader());
     return new String[]{bundle.getString("AnalyzerViz.fileTypeName")};
   }
 
