@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
@@ -34,6 +35,7 @@ import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.core.database.dialog.DatabaseExplorerDialog;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.spoon.Spoon;
@@ -42,6 +44,8 @@ import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.ui.xul.XulException;
+import org.pentaho.ui.xul.components.WaitBoxRunnable;
+import org.pentaho.ui.xul.components.XulWaitBox;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.xul.swt.tab.TabItem;
 
@@ -171,21 +175,55 @@ public class ModelerHelper extends AbstractXulEventHandler {
   }
   
   public void reportWizard() {
+    XulWaitBox box;
     try {
-      ModelerWorkspace model = new ModelerWorkspace();
-      ModelerWorkspaceUtil.populateModelFromOutputStep(model);
-
+      box = (XulWaitBox) document.createElement("waitbox");
+      box.setIndeterminate(true);
+      box.setMaximum(10);
+      box.setCanCancel(false);
+      box.setTitle(BaseMessages.getString(XulUI.class, "wait_dialog_title"));
+      box.setMessage(BaseMessages.getString(XulUI.class, "wait_dialog_message"));
       
-      if(ClassicEngineBoot.getInstance().isBootDone() == false){
-        ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
-        engineBoot.start();
-      }
-      EmbeddedWizard wizard = new EmbeddedWizard(model);
-      wizard.run(null);
-    } catch (Exception e) {
-      logger.error(e);
-      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
+      box.setCancelLabel(BaseMessages.getString(XulUI.class, "wait_dialog_btn"));
+      
+      box.setDialogParent(((Spoon)SpoonFactory.getInstance()).getShell());
+      box.setRunnable(new WaitBoxRunnable(box){
+        boolean canceled = false;
+        @Override
+        public void run() {
+          
+          try {
+            ModelerWorkspace model = new ModelerWorkspace();
+            ModelerWorkspaceUtil.populateModelFromOutputStep(model);
+
+            if(ClassicEngineBoot.getInstance().isBootDone() == false){
+              ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
+              engineBoot.start();
+            }
+            EmbeddedWizard wizard = new EmbeddedWizard(model);
+            waitBox.stop();
+            wizard.run(null);
+          } catch (Exception e) {
+            logger.error(e);
+            new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
+          }
+          waitBox.stop();
+        }
+
+        @Override
+        public void cancel() {
+          canceled =true;
+        }
+        
+        
+      });
+      box.start();
+    } catch (XulException e1) {
+      logger.error(e1);
+      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e1);
     }
+
+
   }
   
   public void quickVisualize( ModelerWorkspace model ) throws ModelerException {

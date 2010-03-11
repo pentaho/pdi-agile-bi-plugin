@@ -21,9 +21,12 @@ package org.pentaho.agilebi.pdi.wizard;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.wizard.ui.xul.DefaultWizardDesignTimeContext;
 import org.pentaho.agilebi.pdi.wizard.ui.xul.steps.DataSourceAndQueryStep;
+import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
@@ -87,8 +90,23 @@ public class EmbeddedWizard
     wizardController.addPropertyChangeListener(WizardController.FINISHED_PROPERTY_NAME, new FinishedHandler());
   }
 
+  private AbstractReportDefinition retVal = null;
   public AbstractReportDefinition run(final AbstractReportDefinition original) throws ReportProcessingException
   {
+    if(Display.getDefault().getThread().equals(Thread.currentThread()) == false){
+      Display.getDefault().syncExec(new Runnable(){
+
+        public void run() {
+          try {
+            EmbeddedWizard.this.retVal  = EmbeddedWizard.this.run(original);
+          } catch (ReportProcessingException e) {
+            e.printStackTrace();
+          }
+        }
+        
+      });
+      return retVal;
+    }
     // Set the report if we have one otherwise create a new one
     if (original != null)
     {
@@ -108,7 +126,7 @@ public class EmbeddedWizard
     try
     {
       final SwtXulLoader loader = new SwtXulLoader();
-      loader.setOuterContext(null);
+      loader.setOuterContext(((Spoon) SpoonFactory.getInstance()).getShell());
       loader.registerClassLoader(getClass().getClassLoader());
 
       XulDomContainer mainWizardContainer = loader.loadXul(MAIN_WIZARD_PANEL);
