@@ -42,7 +42,6 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
   //TODO: investigate using "this" form of notification in super-class
   protected void fireCollectionChanged() {
     this.changeSupport.firePropertyChange("children", null, this); //$NON-NLS-1$
-    validateNode();
   }
 
   @Override
@@ -69,6 +68,7 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
 
   @Override
   public void validate() {
+    System.out.println("Validating DimensionMetaDataCollection");
     valid = true;
     validationMessages.clear();
     if (size() == 0) {

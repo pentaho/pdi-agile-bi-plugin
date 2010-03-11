@@ -528,10 +528,8 @@ public class ModelerController extends AbstractXulEventHandler{
         }
         
       });
-      int theResult = prompt.open();
-      if(theResult == 0) {
-        refreshFields();
-      }
+      prompt.open();
+      
     } catch (Exception e) {
       logger.error(e);
     }
@@ -574,6 +572,7 @@ public class ModelerController extends AbstractXulEventHandler{
      	 public void onClose(XulComponent sender, Status returnCode, Object retVal) {
           if(returnCode == Status.ACCEPT){
           	HierarchyMetaData theHierarchy = (HierarchyMetaData) selectedTreeItem;
+          	theHierarchy.validate();
           	LevelMetaData theLevel = new LevelMetaData(theHierarchy, "" + retVal);
           	theHierarchy.add(theLevel);
           }
@@ -583,10 +582,8 @@ public class ModelerController extends AbstractXulEventHandler{
           logger.error(t);
         }
       });
-      int theResult = prompt.open();
-      if(theResult == 0) {
-        refreshFields();
-      }
+      prompt.open();
+     
     } catch (Exception e) {
       logger.error(e);
     }
@@ -607,6 +604,7 @@ public class ModelerController extends AbstractXulEventHandler{
   
             DimensionMetaData dimension = new DimensionMetaData(""+retVal);
             HierarchyMetaData hierarchy = new HierarchyMetaData(""+retVal);
+            hierarchy.validate();
             hierarchy.setParent(dimension);
             dimension.add(hierarchy);
             workspace.addDimension(dimension);

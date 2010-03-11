@@ -58,6 +58,7 @@ public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaDa
   }
   
   public void validate() {
+    System.out.println("Validating DimensionMetaData");
     validationMessages.clear();
     valid = true;
     if (StringUtils.isEmpty(name)) {

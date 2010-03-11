@@ -43,7 +43,7 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
     child.addPropertyChangeListener("name", nameListener);
     child.addPropertyChangeListener("valid", validListener);
     child.addPropertyChangeListener("children", childrenListener);
-    validateNode();
+    validateTree();
   }
 
   @Override
@@ -72,7 +72,6 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
   @Override
   protected void fireCollectionChanged() {
     super.fireCollectionChanged();
-    validateNode();
   }
   
   public void setImage(String image) {
@@ -100,10 +99,12 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
     validate();
     this.firePropertyChange("valid", prevValid, valid);
     this.firePropertyChange("validationMessagesString", prevMessages, getValidationMessagesString());
-    if (valid) {
-      setImage(getValidImage());
-    } else {
-      setImage(getInvalidImage());
+    if(prevValid != valid){
+      if (valid) {
+        setImage(getValidImage());
+      } else {
+        setImage(getInvalidImage());
+      }
     }
   }
   

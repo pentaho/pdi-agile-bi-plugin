@@ -52,6 +52,7 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
   
   @Override
   public void validate() {
+    System.out.println("Validating HierarchyMetaData");
     valid = true;
     validationMessages.clear();
     // check name
@@ -65,6 +66,10 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
     }
     List<String> usedNames = new ArrayList<String>();
     
+    if(children.size() == 0){
+      valid = false;
+      validationMessages.add(BaseMessages.getString(this.getClass(), "missing_level_from_heirarchy"));
+    }
     for(LevelMetaData level: children){
       valid &= level.isValid();
       validationMessages.addAll(level.getValidationMessages());
