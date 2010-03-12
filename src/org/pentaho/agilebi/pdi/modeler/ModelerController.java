@@ -572,9 +572,10 @@ public class ModelerController extends AbstractXulEventHandler{
      	 public void onClose(XulComponent sender, Status returnCode, Object retVal) {
           if(returnCode == Status.ACCEPT){
           	HierarchyMetaData theHierarchy = (HierarchyMetaData) selectedTreeItem;
-          	theHierarchy.validate();
           	LevelMetaData theLevel = new LevelMetaData(theHierarchy, "" + retVal);
+          	theLevel.validate();
           	theHierarchy.add(theLevel);
+            theHierarchy.validate();
           }
         }
   
