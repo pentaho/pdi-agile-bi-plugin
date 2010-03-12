@@ -96,8 +96,6 @@
 			<!-- jetty jars -->
 			<include name="jetty-*.jar"/>
 			<!-- reporting libcore and libformula -->
-			<include name="libbase-*.jar"/>
-			<include name="libformula-*.jar"/>
 			<!-- spring core -->
   			<include name="spring-core*.jar"/>
 			<!-- mondrian -->
@@ -177,8 +175,15 @@
 			<include name="wsdl4j-*.jar"/>
 			<include name="wstx-asl-*.jar"/>
 			<include name="xercesImpl-*.jar"/>
+			<include name="jmiutils-*.jar"/>
+			<include name="xml-apis-*.jar"/>
 			
 			<exclude name="pentaho-database-model-*.jar"/>
+
+      <include name="openide-util-*.jar"/>
+			<include name="xmlParserAPIs-*.jar"/>
+      <include name="geronimo-stax-api-*.jar"/>
+			<include name="stax-api-1.0.1.jar"/>
 		</fileset>
   	</delete>
   </target>
@@ -281,4 +286,12 @@
 			<zipfileset dir="${bin.dir}/kettle-dist" />
 		</zip>
 	</target>
+	
+	<target name="install-plugin">
+		<delete dir="${kettle.dist.dir}/plugins/spoon/agile-bi"/>
+		<unzip dest="${kettle.dist.dir}/plugins/spoon">
+			<fileset file="${dist.dir}/${package.basename}.zip"/>
+			</unzip>
+	</target>
+	
 </project>
