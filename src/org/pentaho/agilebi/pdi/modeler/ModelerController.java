@@ -518,11 +518,17 @@ public class ModelerController extends AbstractXulEventHandler{
           if(returnCode == Status.ACCEPT){
           	MeasuresCollection theMesaures = (MeasuresCollection) selectedTreeItem;
           	MeasureMetaData theMeasure = new MeasureMetaData("" + retVal, "", "" + retVal);
-          	theMeasure.setParent(theMesaures);
-          	theMeasure.validate();
-          	theMesaures.add(theMeasure);
-          	theMesaures.validate();
+          	
+          	if(selectedFields.length > 0) {
+           	  AvailableField f = (AvailableField) selectedFields[0];
+           	  theMeasure.setLogicalColumn(f.getLogicalColumn());
+              workspace.setDirty(true);
+          	}
             
+          	theMeasure.setParent(theMesaures);
+            theMeasure.validate();
+            theMesaures.add(theMeasure);
+            theMesaures.validate();          
           }
         }
   
@@ -576,6 +582,13 @@ public class ModelerController extends AbstractXulEventHandler{
           if(returnCode == Status.ACCEPT){
           	HierarchyMetaData theHierarchy = (HierarchyMetaData) selectedTreeItem;
           	LevelMetaData theLevel = new LevelMetaData(theHierarchy, "" + retVal);
+          	
+          	if(selectedFields.length > 0) {
+          	  AvailableField f = (AvailableField) selectedFields[0];
+          	  theLevel.setLogicalColumn(f.getLogicalColumn());
+          	  workspace.setDirty(true);
+          	}
+          	
           	theLevel.validate();
           	theHierarchy.add(theLevel);
             theHierarchy.validate();
