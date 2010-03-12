@@ -519,7 +519,10 @@ public class ModelerController extends AbstractXulEventHandler{
           	MeasuresCollection theMesaures = (MeasuresCollection) selectedTreeItem;
           	MeasureMetaData theMeasure = new MeasureMetaData("" + retVal, "", "" + retVal);
           	theMeasure.setParent(theMesaures);
+          	theMeasure.validate();
           	theMesaures.add(theMeasure);
+          	theMesaures.validate();
+            
           }
         }
   
