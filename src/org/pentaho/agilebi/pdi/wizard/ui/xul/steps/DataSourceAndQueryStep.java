@@ -48,10 +48,14 @@ import org.pentaho.reporting.libraries.base.util.DebugLog;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
+import org.pentaho.ui.xul.XulLoader;
+import org.pentaho.ui.xul.XulRunner;
 import org.pentaho.ui.xul.components.XulButton;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.impl.DefaultXulOverlay;
+import org.pentaho.ui.xul.swt.SwtXulLoader;
+import org.pentaho.ui.xul.swt.SwtXulRunner;
 /**
  * TODO: Document Me
  *
@@ -112,7 +116,22 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
 
         IMetadataDomainRepository repo = getDomainRepo();
         
-        SwtMqlEditor editor = new SwtMqlEditor(repo);
+        SwtMqlEditor editor = new SwtMqlEditor(repo){
+
+          @Override
+          protected XulLoader getLoader() {
+            SwtXulLoader loader;
+            try {
+              loader = new SwtXulLoader();
+              loader.registerClassLoader(getClass().getClassLoader());
+              return loader;
+            } catch (XulException e) {
+              e.printStackTrace();
+            }
+            return null;
+          }
+                    
+        };
         String queryString = null;
         if (df != null && df.getQuery(DEFAULT) != null) {
           queryString = df.getQuery(DEFAULT);

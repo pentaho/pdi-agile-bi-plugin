@@ -43,6 +43,7 @@ import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
+import org.pentaho.reporting.libraries.base.util.ObjectUtilities;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.WaitBoxRunnable;
 import org.pentaho.ui.xul.components.XulWaitBox;
@@ -196,6 +197,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
             ModelerWorkspace model = new ModelerWorkspace();
             ModelerWorkspaceUtil.populateModelFromOutputStep(model);
 
+            ObjectUtilities.setClassLoaderSource(ObjectUtilities.CLASS_CONTEXT);
             if(ClassicEngineBoot.getInstance().isBootDone() == false){
               ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
               engineBoot.start();
@@ -203,9 +205,14 @@ public class ModelerHelper extends AbstractXulEventHandler {
             EmbeddedWizard wizard = new EmbeddedWizard(model);
             waitBox.stop();
             wizard.run(null);
-          } catch (Exception e) {
+          } catch (final Exception e) {
             logger.error(e);
-            new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
+            Display.getDefault().asyncExec(new Runnable(){
+              public void run() {
+                new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
+              }
+            });
+          
           }
           waitBox.stop();
         }

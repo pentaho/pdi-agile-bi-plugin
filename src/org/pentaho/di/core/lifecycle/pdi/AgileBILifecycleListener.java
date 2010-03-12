@@ -16,25 +16,39 @@
  */
 package org.pentaho.di.core.lifecycle.pdi;
 
+import org.apache.commons.lang.ObjectUtils.Null;
+import org.apache.commons.vfs.VFS;
+import org.apache.commons.vfs.impl.DefaultFileSystemManager;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.agilebi.platform.JettyServer;
+import org.pentaho.agilebi.vfs.MetadataToMondrianVfs;
+import org.pentaho.di.core.annotations.LifecyclePlugin;
+import org.pentaho.di.core.gui.GUIOption;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.core.lifecycle.LifeEventHandler;
 import org.pentaho.di.core.lifecycle.LifecycleException;
 import org.pentaho.di.core.lifecycle.LifecycleListener;
+import org.pentaho.di.core.plugins.PluginClassTypeMapping;
 import org.pentaho.di.ui.spoon.Spoon;
 
-public class AgileBILifecycleListener implements LifecycleListener {
+@LifecyclePlugin(id="AgileBiPlugin")
+@PluginClassTypeMapping(classTypes = { GUIOption.class }, implementationClass = {Null.class})
+public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
 
   public void onStart(LifeEventHandler arg0) throws LifecycleException {
-    // start up embedded server
     try {
+      
+      // because we're outside of the default classpath,
+      // META-INF/providers.xml is not loaded, so instead,
+      // we register our VFS provider programmatically
+      ((DefaultFileSystemManager)VFS.getManager()).addProvider("mtm", new MetadataToMondrianVfs());
+      
       JettyServer server = new JettyServer("localhost", 9999); //$NON-NLS-1$
       server.startServer();
     } catch (Exception e) {
-      throw new LifecycleException("error starting embedded bi server", e, true);
+      e.printStackTrace();
     }
 
     ((Spoon) SpoonFactory.getInstance()).addFileListener(AgileBiModelerPerspective.getInstance());
@@ -42,9 +56,30 @@ public class AgileBILifecycleListener implements LifecycleListener {
     for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {
       ((Spoon) SpoonFactory.getInstance()).addFileListener(viz);
     }
-    
   }
   
   public void onExit(LifeEventHandler arg0) throws LifecycleException {
   }
+
+  public String getLabelText() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public Object getLastValue() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public DisplayType getType() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public void setValue(Object value) {
+    // TODO Auto-generated method stub
+    
+  }
+  
+  
 }

@@ -40,26 +40,7 @@ import org.pentaho.ui.xul.XulException;
 public class AgileBISpoonPlugin implements SpoonPluginInterface{
 
   public AgileBISpoonPlugin(){
-    
-    // TODO: Remove once LifeCycle listeners are working with plugins
-    try {
-      
-      // because we're outside of the default classpath,
-      // META-INF/providers.xml is not loaded, so instead,
-      // we register our VFS provider programmatically
-      ((DefaultFileSystemManager)VFS.getManager()).addProvider("mtm", new MetadataToMondrianVfs());
-      
-      JettyServer server = new JettyServer("localhost", 9999); //$NON-NLS-1$
-      server.startServer();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    ((Spoon) SpoonFactory.getInstance()).addFileListener(AgileBiModelerPerspective.getInstance());
-    
-    for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {
-      ((Spoon) SpoonFactory.getInstance()).addFileListener(viz);
-    }
+   
   }
   
   public void applyToContainer(String category, XulDomContainer container) throws XulException {
