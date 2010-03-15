@@ -33,9 +33,11 @@ import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.trans.HasDatabasesInterface;
 import org.pentaho.di.ui.core.dialog.EnterSelectionDialog;
+import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.spoon.MainSpoonPerspective;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
@@ -66,6 +68,7 @@ import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.util.AbstractModelNode;
 import org.pentaho.ui.xul.util.XulDialogCallback;
+import org.pentaho.ui.xul.util.XulDialogCallback.Status;
 
 /**
  * XUL Event Handler for the modeling interface. This class interacts with a ModelerModel to store state.
@@ -298,27 +301,28 @@ public class ModelerController extends AbstractXulEventHandler{
         }
       }
       
-      EnterSelectionDialog theDialog = new EnterSelectionDialog(theSpoon.getShell(), theNames, BaseMessages.getString(Spoon.class ,"Spoon.ExploreDB.SelectDB.Title"), BaseMessages.getString(Spoon.class, "Spoon.ExploreDB.SelectDB.Message"), theDatabasesInterface);
+      EnterSelectionDialog theDialog = new EnterSelectionDialog(theSpoon.getShell(), theNames, 
+          BaseMessages.getString(Spoon.class ,"Spoon.ExploreDB.SelectDB.Title"), 
+          BaseMessages.getString(Spoon.class, "Spoon.ExploreDB.SelectDB.Message"), theDatabasesInterface);
       theDialog.setSelectedNrs(theSelectedIndexes);
       String theDBName = theDialog.open();
+      
       if (theDBName != null) {
         SpoonDBDelegate theDelegate = new SpoonDBDelegate(theSpoon);
         DatabaseMeta theDBMeta = DatabaseMeta.findDatabase(theDatabasesInterface.getDatabases(), theDBName);
         String theTable = theDelegate.exploreDB(theDBMeta, false);
         boolean refresh = this.workspace.getAvailableFields().isEmpty();
         if(!StringUtils.isEmpty(theTable) && !this.workspace.getAvailableFields().isEmpty()) {
+          
           MessageBox theMessageBox = new MessageBox(theSpoon.getShell(), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
           theMessageBox.setText(BaseMessages.getString(Spoon.class, "Spoon.Message.Warning.Warning"));
           theMessageBox.setMessage(BaseMessages.getString(Spoon.class, "Spoon.Message.Model.Warning"));
+          
           int theVal = theMessageBox.open();
-          switch (theVal) 
-          {
-            case SWT.OK:
-             refresh = true;
-              break;
-            case SWT.CANCEL:
-              refresh = false;
-               break;
+          if(theVal == SWT.OK) {
+            refresh = true;
+          } else {
+            refresh = false;
           }
         }
         if(refresh) {
@@ -327,7 +331,7 @@ public class ModelerController extends AbstractXulEventHandler{
         }
       }
     } catch (Exception e) {
-      logger.equals(e); 
+      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
     }
   }
   
