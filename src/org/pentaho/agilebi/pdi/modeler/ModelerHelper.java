@@ -312,7 +312,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
       AgileBiModelerPerspective.getInstance().createTabForModel(model, MODELER_NAME);
       SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiModelerPerspective.class);
     } catch (Exception e) {
-      e.printStackTrace();
+      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
     }
   }
   
