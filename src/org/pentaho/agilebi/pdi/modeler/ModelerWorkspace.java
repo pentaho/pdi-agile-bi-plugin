@@ -98,7 +98,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 
       public void propertyChange(PropertyChangeEvent arg0) {  
         if(!modelIsChanging){
-          System.out.println("main children listener firing");
           fireModelChanged();
         }
       }

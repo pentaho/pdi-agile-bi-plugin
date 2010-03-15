@@ -180,7 +180,6 @@ public class ModelerHelper extends AbstractXulEventHandler {
     try {
       box = (XulWaitBox) document.createElement("waitbox");
       box.setIndeterminate(true);
-      box.setMaximum(10);
       box.setCanCancel(false);
       box.setTitle(BaseMessages.getString(XulUI.class, "wait_dialog_title"));
       box.setMessage(BaseMessages.getString(XulUI.class, "wait_dialog_message"));
@@ -197,7 +196,9 @@ public class ModelerHelper extends AbstractXulEventHandler {
             ModelerWorkspace model = new ModelerWorkspace();
             ModelerWorkspaceUtil.populateModelFromOutputStep(model);
 
+            ObjectUtilities.setClassLoader(getClass().getClassLoader());
             ObjectUtilities.setClassLoaderSource(ObjectUtilities.CLASS_CONTEXT);
+            
             if(ClassicEngineBoot.getInstance().isBootDone() == false){
               ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
               engineBoot.start();

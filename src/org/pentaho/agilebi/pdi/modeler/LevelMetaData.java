@@ -98,7 +98,6 @@ public class LevelMetaData extends AbstractMetaDataModelNode implements Serializ
 
   @Override
   public void validate() {
-    System.out.println("Validating LevelMetaData");
     String prevMessages = getValidationMessagesString();
     valid = true;
     validationMessages.clear();

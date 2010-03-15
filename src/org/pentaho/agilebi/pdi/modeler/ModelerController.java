@@ -455,9 +455,7 @@ public class ModelerController extends AbstractXulEventHandler{
   
   public void setSelectedDims(List<Object> selectedDims) {
     List<Object> prevSelected = null; // this.selectedColumns;
-    if (selectedDims != null) {
-      System.out.println(selectedDims.get(0));
-    }
+    
     // this.selectedColumns = selectedColumns;
     // this.firePropertyChange("selectedColumns", prevSelected , selectedColumns);
   }

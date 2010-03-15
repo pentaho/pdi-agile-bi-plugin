@@ -6,9 +6,12 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;
 import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.XulTabAndPanel;
 import org.pentaho.agilebi.pdi.visualizations.AbstractVisualization;
@@ -19,15 +22,21 @@ import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
+import org.pentaho.reporting.libraries.base.util.ObjectUtilities;
 import org.pentaho.reporting.libraries.fonts.LibFontBoot;
 import org.pentaho.reporting.libraries.resourceloader.LibLoaderBoot;
 import org.pentaho.reporting.libraries.resourceloader.Resource;
 import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 import org.pentaho.ui.xul.XulDomContainer;
+import org.pentaho.ui.xul.XulException;
+import org.pentaho.ui.xul.components.WaitBoxRunnable;
+import org.pentaho.ui.xul.components.XulWaitBox;
+import org.pentaho.ui.xul.dom.Document;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
 import org.w3c.dom.Node;
@@ -150,18 +159,65 @@ public class PRPTVisualization extends AbstractVisualization {
   public void syncMetaName(EngineMetaInterface meta, String name) {
   }
 
-  public void createVisualizationFromModel(ModelerWorkspace model) {
+  public void createVisualizationFromModel(final ModelerWorkspace model) {
 
+
+    
+    XulWaitBox box;
     try {
-      if(ClassicEngineBoot.getInstance().isBootDone() == false){
-        ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
-        engineBoot.start();
-      }
-      EmbeddedWizard wizard = new EmbeddedWizard(model);
-      wizard.run(null);
-    } catch (Exception e) {
-      e.printStackTrace();
-      SpoonFactory.getInstance().messageBox( "Could not create a report: "+e.getLocalizedMessage(), "Report Error", false, Const.ERROR);
+      Spoon spoon = ((Spoon)SpoonFactory.getInstance());
+      Document document = spoon.getMainSpoonContainer().getDocumentRoot();
+      
+      box = (XulWaitBox) document.createElement("waitbox");
+      box.setIndeterminate(true);
+      box.setMaximum(10);
+      box.setCanCancel(false);
+      box.setTitle(BaseMessages.getString(XulUI.class, "wait_dialog_title"));
+      box.setMessage(BaseMessages.getString(XulUI.class, "wait_dialog_message"));
+      
+      box.setCancelLabel(BaseMessages.getString(XulUI.class, "wait_dialog_btn"));
+      
+      box.setDialogParent(((Spoon)SpoonFactory.getInstance()).getShell());
+      box.setRunnable(new WaitBoxRunnable(box){
+        boolean canceled = false;
+        @Override
+        public void run() {
+          
+          try {
+
+            ObjectUtilities.setClassLoader(getClass().getClassLoader());
+            ObjectUtilities.setClassLoaderSource(ObjectUtilities.CLASS_CONTEXT);
+            
+            if(ClassicEngineBoot.getInstance().isBootDone() == false){
+              ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
+              engineBoot.start();
+            }
+            EmbeddedWizard wizard = new EmbeddedWizard(model);
+            waitBox.stop();
+            wizard.run(null);
+          } catch (final Exception e) {
+            logger.error(e);
+            Display.getDefault().asyncExec(new Runnable(){
+              public void run() {
+                new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
+              }
+            });
+          
+          }
+          waitBox.stop();
+        }
+
+        @Override
+        public void cancel() {
+          canceled =true;
+        }
+        
+        
+      });
+      box.start();
+    } catch (XulException e1) {
+      logger.error(e1);
+      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e1);
     }
     
   }

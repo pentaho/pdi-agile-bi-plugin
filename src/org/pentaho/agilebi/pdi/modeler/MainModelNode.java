@@ -87,7 +87,6 @@ public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataMod
 
   @Override
   public void validate() {
-    System.out.println("Validating MainModelNode");
     valid = true;
     this.validationMessages.clear();
     if(this.children.size() != 2){

@@ -68,7 +68,6 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
 
   @Override
   public void validate() {
-    System.out.println("Validating DimensionMetaDataCollection");
     valid = true;
     validationMessages.clear();
     if (size() == 0) {

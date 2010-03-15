@@ -52,7 +52,6 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
   
   @Override
   public void validate() {
-    System.out.println("Validating HierarchyMetaData");
     valid = true;
     validationMessages.clear();
     // check name

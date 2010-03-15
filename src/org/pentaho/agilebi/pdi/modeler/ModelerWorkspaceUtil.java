@@ -285,7 +285,6 @@ public class ModelerWorkspaceUtil {
           List<OlapHierarchyLevel> levels = new ArrayList<OlapHierarchyLevel>();
 
           for (LevelMetaData lvl : hier) {
-            // System.out.println( "level "+child.getId() );
             OlapHierarchyLevel level = new OlapHierarchyLevel(hierarchy);
             level.setName(lvl.getName());
             level.setReferenceColumn(lvl.getLogicalColumn());
