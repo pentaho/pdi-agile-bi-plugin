@@ -230,6 +230,11 @@
 		    file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml"  
 		    token="org.pentaho.platform.web.servlet.UIServletContextListener" 
 		    value=""/>
+		<replace file="${approot.stage.dir}/platform/pentaho-solutions/system/pentahoObjects.spring.xml"
+	   token="&lt;bean id=&quot;IVersionCheckDataProvider&quot; class=&quot;org.pentaho.platform.plugin.services.versionchecker.PentahoVersionCheckDataProvider&quot; scope=&quot;prototype&quot; /&gt;"
+	   value=""/>
+		
+		
 		
 
 		<!-- remove solution folders that aren't necessary -->
