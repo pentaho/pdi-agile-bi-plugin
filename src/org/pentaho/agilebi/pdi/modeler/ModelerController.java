@@ -723,16 +723,15 @@ public class ModelerController extends AbstractXulEventHandler{
     }
 
     try {
-      if (workspace.isDirty()) { 
+      if (workspace.isDirty()) {
         ModelerHelper theHelper = ModelerHelper.getInstance();
-        theHelper.quickVisualize(workspace);
-      } else {
-        VisualizationManager theManager = VisualizationManager.getInstance();
-        IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
-        if (theVisualization != null) {
-          // TODO: Find a better name for the cube, maybe just workspace name?
-          theVisualization.createVisualizationFromModel(workspace);
-        }
+        theHelper.createTemporaryModel(workspace);
+      }
+      VisualizationManager theManager = VisualizationManager.getInstance();
+      IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
+      if (theVisualization != null) {
+        // TODO: Find a better name for the cube, maybe just workspace name?
+        theVisualization.createVisualizationFromModel(workspace);
       }
     } catch (ModelerException e) {
       logger.error(e);

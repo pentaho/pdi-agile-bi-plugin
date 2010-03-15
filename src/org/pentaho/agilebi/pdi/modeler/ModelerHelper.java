@@ -234,9 +234,21 @@ public class ModelerHelper extends AbstractXulEventHandler {
   }
   
   public void quickVisualize( ModelerWorkspace model ) throws ModelerException {
-
-
-    // give it a temporary name
+    createTemporaryModel(model);
+    VisualizationManager theManager = VisualizationManager.getInstance();
+    IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));
+    if(theVisualization != null) {
+      if (model.getFileName() != null) {
+        // TODO: Find a better name for the cube, maybe just model name?
+        theVisualization.createVisualizationFromModel(model);
+      } else {
+        throw new UnsupportedOperationException("TODO: prompt to save model before visualization");
+      }
+    }
+  }
+  
+  public void createTemporaryModel(ModelerWorkspace model) throws ModelerException {
+    //give it a temporary name
     File modelsDir = new File("models"); //$NON-NLS-1$
     modelsDir.mkdirs();
     int idx = 1;
@@ -258,17 +270,6 @@ public class ModelerHelper extends AbstractXulEventHandler {
     ModelerWorkspaceUtil.autoModelFlat(model);
     ModelerWorkspaceUtil.populateDomain(model);
     ModelerWorkspaceUtil.saveWorkspace( model, fileName);
-    VisualizationManager theManager = VisualizationManager.getInstance();
-    IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));
-    if(theVisualization != null) {
-      if (model.getFileName() != null) {
-        // TODO: Find a better name for the cube, maybe just model name?
-        theVisualization.createVisualizationFromModel(model);
-      } else {
-        throw new UnsupportedOperationException("TODO: prompt to save model before visualization");
-      }
-    }
-
   }
   
   public void databaseModelItem() {
