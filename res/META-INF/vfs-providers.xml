@@ -1,5 +1,0 @@
-<providers>
-        <provider class-name="org.pentaho.agilebi.vfs.MetadataToMondrianVfs">
-                <scheme name="mtm"/>
-        </provider>
-</providers>
