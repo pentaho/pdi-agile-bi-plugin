@@ -14,6 +14,7 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
   protected boolean valid = true;
   protected List<String> validationMessages = new ArrayList<String>();
   protected String image;
+  protected boolean suppressEvents;
   
   protected PropertyChangeListener validListener = new PropertyChangeListener(){
     public void propertyChange(PropertyChangeEvent arg0) {
@@ -71,14 +72,18 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
   
   @Override
   protected void fireCollectionChanged() {
-    super.fireCollectionChanged();
+    if(this.suppressEvents == false){
+      super.fireCollectionChanged();
+    }
   }
   
   public void setImage(String image) {
     if (this.image == null || !this.image.equals(image)) {
       String oldimg = this.image;
       this.image = image;
-      this.firePropertyChange("image", oldimg, image); //$NON-NLS-1$
+      if(suppressEvents == false){
+        this.firePropertyChange("image", oldimg, image); //$NON-NLS-1$
+      }
     }
   }
   
@@ -97,8 +102,10 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
     boolean prevValid = valid;
     String prevMessages = getValidationMessagesString();
     validate();
-    this.firePropertyChange("valid", prevValid, valid);
-    this.firePropertyChange("validationMessagesString", prevMessages, getValidationMessagesString());
+    if(suppressEvents == false){
+      this.firePropertyChange("valid", prevValid, valid);
+      this.firePropertyChange("validationMessagesString", prevMessages, getValidationMessagesString());
+    }
     if(prevValid != valid){
       if (valid) {
         setImage(getValidImage());
@@ -137,4 +144,10 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
   
   public abstract Class<? extends ModelerNodePropertiesForm> getPropertiesForm();
   
+  public void setSupressEvents(boolean suppress){
+    this.suppressEvents = suppress;
+    for(T child : this){
+      child.setSupressEvents(suppress);
+    }
+  }
 }

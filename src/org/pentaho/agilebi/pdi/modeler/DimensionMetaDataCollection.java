@@ -85,7 +85,9 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
       }
       usedNames.add(dim.getName());
     }
-    this.firePropertyChange("valid", null, valid);
+    if(this.suppressEvents == false){
+      this.firePropertyChange("valid", null, valid);
+    }
   }
   
   public boolean isEditingDisabled(){

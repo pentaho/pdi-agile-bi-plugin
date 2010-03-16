@@ -147,6 +147,8 @@ public class ModelerController extends AbstractXulEventHandler{
   }
   
   public void onDimensionTreeDrop(DropEvent event) {
+
+    workspace.setModelIsChanging(true);
     List<Object> data = event.getDataTransfer().getData();
     List<Object> newdata = new ArrayList<Object>();
     for (Object obj : data) {
@@ -225,9 +227,11 @@ public class ModelerController extends AbstractXulEventHandler{
     } else {
       event.getDataTransfer().setData(newdata);
     }
+    workspace.setModelIsChanging(false);
   }
 
   public void addField() {
+    workspace.setModelIsChanging(true);
   	AbstractMetaDataModelNode theNode = null;
     Object[] selectedItems = getSelectedFields();
     for (Object obj : selectedItems) {
@@ -262,6 +266,7 @@ public class ModelerController extends AbstractXulEventHandler{
         } 
       } 
     }
+    workspace.setModelIsChanging(false);
   }
   
   public void editDataSource() {
@@ -528,8 +533,10 @@ public class ModelerController extends AbstractXulEventHandler{
             
           	theMeasure.setParent(theMesaures);
             theMeasure.validate();
+
+            workspace.setModelIsChanging(true);
             theMesaures.add(theMeasure);
-            theMesaures.validate();          
+            workspace.setModelIsChanging(false);
           }
         }
   
@@ -557,7 +564,10 @@ public class ModelerController extends AbstractXulEventHandler{
           	DimensionMetaData theDimension = (DimensionMetaData) selectedTreeItem;
           	HierarchyMetaData theHieararchy = new HierarchyMetaData("" + retVal);
           	theHieararchy.setParent(theDimension);
+
+            workspace.setModelIsChanging(true);
           	theDimension.add(theHieararchy);
+            workspace.setModelIsChanging(false);
            }
          }
    
@@ -591,8 +601,10 @@ public class ModelerController extends AbstractXulEventHandler{
           	}
           	
           	theLevel.validate();
+          	workspace.setModelIsChanging(true);
           	theHierarchy.add(theLevel);
-            theHierarchy.validate();
+            workspace.setModelIsChanging(false);
+            
           }
         }
   

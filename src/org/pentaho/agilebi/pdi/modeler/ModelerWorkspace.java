@@ -213,7 +213,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
 
   public void addDimension(DimensionMetaData dim) {
+    this.setModelIsChanging(true);
     this.model.getDimensions().add(dim);
+    this.setModelIsChanging(false);
   }
 
   public LevelMetaData createLevelForParentWithNode(HierarchyMetaData parent, ColumnBackedNode obj) {
@@ -258,7 +260,10 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
   
   public void addMeasure(MeasureMetaData measure) {
+
+    this.setModelIsChanging(true);
     this.model.getMeasures().add(measure); //$NON-NLS-1$
+    this.setModelIsChanging(false);
   }
   
   public LogicalColumn findLogicalColumn(String id) {
@@ -519,8 +524,10 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     this.modelIsChanging = changing;
     if(!changing){
       fireFieldsChanged();
+      model.validateTree();
       fireModelChanged();
     }
+    model.setSupressEvents(changing);
   }
   
   public boolean isAutoModel() {
