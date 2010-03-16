@@ -256,6 +256,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 			model.setFileName(modelFileName);	
 			theController.setModel(model);
       createTabForBrowser(theMainBox, theController, model);      
+      theController.openReport(fname);
       
       String fullPath = f.getAbsolutePath();
       spoon.getProperties().addLastFile("Analyzer", fullPath, null, false, null);

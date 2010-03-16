@@ -74,6 +74,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	public void init() {
 		this.browser = (XulBrowser) this.document.getElementById("web_visualization_browser");
 		this.propPanel = (XulEditpanel) document.getElementById("propPanel");
+		
 		this.browser.setSrc(this.location);
 
 		this.bf.setDocument(super.document);
@@ -84,6 +85,12 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     this.bf.setBindingType(Type.BI_DIRECTIONAL);
     bf.createBinding(this.propPanel, "visible", this, "propVisible");
 		fireBindings();
+	}
+	
+	public void openReport(String aReport) {
+	  String theLocation = this.location.substring(0, this.location.indexOf("?"));
+	  theLocation = theLocation + "?command=open&solution=&path=&action=" + aReport + "&edit=true&showFieldList=true";
+	  this.browser.setSrc(theLocation);
 	}
 
 	private String processFactTableName() {
