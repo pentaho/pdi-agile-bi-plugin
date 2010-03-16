@@ -9,7 +9,7 @@
 	    <menuitem label="${Spoon.Perspectives.AgileBi.MenuItem.Label}"
 	      command="spoon.loadPerspective('agilebi')" />
 	    <menuitem label="${Spoon.Perspectives.AgileBiViz.MenuItem.Label}"
-	      command="spoon.loadPerspective('agileBi')" />
+	      command="spoon.loadPerspective('agilebiVisualization')" />
 	</menupopup>
 	
 	<menupopup id="edit-popup">
