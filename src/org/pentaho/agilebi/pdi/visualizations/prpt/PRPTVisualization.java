@@ -79,6 +79,10 @@ public class PRPTVisualization extends AbstractVisualization {
     try{
       
       if(ClassicEngineBoot.getInstance().isBootDone() == false){
+
+        ObjectUtilities.setClassLoader(getClass().getClassLoader());
+        ObjectUtilities.setClassLoaderSource(ObjectUtilities.CLASS_CONTEXT);
+        
         LibLoaderBoot.getInstance().start();
         LibFontBoot.getInstance().start();
         ClassicEngineBoot.getInstance().start();
