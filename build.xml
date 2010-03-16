@@ -165,7 +165,6 @@
 			<include name="nekohtml-*.jar"/>
 			<include name="ognl-*.jar"/>
 			<include name="pentaho-database-*.jar"/>
-			<include name="pentaho-versionchecker-*.jar"/>
 			<include name="rome-*.jar"/>
 			<include name="salesforce-*.jar"/>
 			<include name="simple-jndi-*.jar"/>
