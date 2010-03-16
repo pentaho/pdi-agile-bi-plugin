@@ -192,6 +192,7 @@ public class PRPTVisualization extends AbstractVisualization {
               ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
               engineBoot.start();
             }
+            model.setAutoModel(false);
             EmbeddedWizard wizard = new EmbeddedWizard(model);
             waitBox.stop();
             wizard.run(null);

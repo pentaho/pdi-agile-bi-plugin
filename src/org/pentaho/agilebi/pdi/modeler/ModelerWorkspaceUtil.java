@@ -149,22 +149,23 @@ public class ModelerWorkspaceUtil {
    * @param tableName
    */
   public static void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
-    workspace.setModelIsChanging(true);
-    workspace.setModel(new MainModelNode());
-
-    List<AvailableField> fields = workspace.getAvailableFields();
-    for( AvailableField field : fields ) {
-      DataType dataType = field.getLogicalColumn().getDataType();
-      if( dataType == DataType.NUMERIC) {
-        // create a measure
-        MeasureMetaData measure = workspace.createMeasureForNode(field);
-        workspace.getModel().getMeasures().add(measure);
+    if(workspace.isAutoModel()) {
+      workspace.setModelIsChanging(true);
+      workspace.setModel(new MainModelNode());
+  
+      List<AvailableField> fields = workspace.getAvailableFields();
+      for( AvailableField field : fields ) {
+        DataType dataType = field.getLogicalColumn().getDataType();
+        if( dataType == DataType.NUMERIC) {
+          // create a measure
+          MeasureMetaData measure = workspace.createMeasureForNode(field);
+          workspace.getModel().getMeasures().add(measure);
+        }
+        // create a dimension
+        workspace.addDimensionFromNode(field);
       }
-      // create a dimension
-      workspace.addDimensionFromNode(field);
+      workspace.setModelIsChanging(false);
     }
-
-    workspace.setModelIsChanging(false);
   }
   
   public static void populateDomain(ModelerWorkspace model) throws ModelerException {

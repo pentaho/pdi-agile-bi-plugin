@@ -26,14 +26,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
-import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.core.database.dialog.DatabaseExplorerDialog;
@@ -203,6 +200,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
               ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
               engineBoot.start();
             }
+            model.setAutoModel(true);
             EmbeddedWizard wizard = new EmbeddedWizard(model);
             waitBox.stop();
             wizard.run(null);
@@ -235,6 +233,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
   }
   
   public void quickVisualize( ModelerWorkspace model ) throws ModelerException {
+    model.setAutoModel(true);
     createTemporaryModel(model);
     VisualizationManager theManager = VisualizationManager.getInstance();
     IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));

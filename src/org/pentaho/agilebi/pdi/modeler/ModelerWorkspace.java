@@ -74,7 +74,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   private String fileName;
   
   private boolean modelIsChanging;
-
+  
+  private boolean autoModel = true;
   
   public ModelerWorkspace() {
     
@@ -520,5 +521,13 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       fireFieldsChanged();
       fireModelChanged();
     }
+  }
+  
+  public boolean isAutoModel() {
+    return this.autoModel;
+  }
+  
+  public void setAutoModel(boolean isAutomodel) {
+    this.autoModel = isAutomodel;
   }
 }

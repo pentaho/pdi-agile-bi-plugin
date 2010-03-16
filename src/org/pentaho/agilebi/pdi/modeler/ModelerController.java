@@ -68,7 +68,6 @@ import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.util.AbstractModelNode;
 import org.pentaho.ui.xul.util.XulDialogCallback;
-import org.pentaho.ui.xul.util.XulDialogCallback.Status;
 
 /**
  * XUL Event Handler for the modeling interface. This class interacts with a ModelerModel to store state.
@@ -727,6 +726,7 @@ public class ModelerController extends AbstractXulEventHandler{
     try {
       if (workspace.isDirty()) {
         ModelerHelper theHelper = ModelerHelper.getInstance();
+        workspace.setAutoModel(false);
         theHelper.createTemporaryModel(workspace);
       }
       VisualizationManager theManager = VisualizationManager.getInstance();
