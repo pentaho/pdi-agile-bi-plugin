@@ -79,13 +79,14 @@
   		</toolbar>
         <tree id="dimensionTree" flex="1" editable="false"
           ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move"
-          ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false" pen:preserveexpandedstate="true">
+          ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false">
           <treecols>
             <treecol flex="1" label="" primary="true"
               pen:binding="name" pen:childrenbinding="children"
               pen:imagebinding="image" editable="false"
                pen:disabledbinding="editingDisabled"
-              pen:tooltipbinding="validationMessagesString" />
+              pen:tooltipbinding="validationMessagesString" 
+              pen:expandedbinding="expanded"/>
           </treecols>
           <treechildren>
             <treeitem container="true" open="true">

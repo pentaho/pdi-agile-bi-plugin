@@ -15,6 +15,7 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
   protected List<String> validationMessages = new ArrayList<String>();
   protected String image;
   protected boolean suppressEvents;
+  protected boolean expanded;
   
   protected PropertyChangeListener validListener = new PropertyChangeListener(){
     public void propertyChange(PropertyChangeEvent arg0) {
@@ -150,4 +151,13 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
       child.setSupressEvents(suppress);
     }
   }
+
+  public boolean isExpanded() {
+    return expanded;
+  }
+
+  public void setExpanded(boolean expanded) {
+    this.expanded = expanded;
+  }
+  
 }

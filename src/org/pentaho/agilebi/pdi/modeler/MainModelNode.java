@@ -23,6 +23,9 @@ public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataMod
   public MainModelNode(){
     add(measures);
     add(dimensions);
+    setExpanded(true);
+    measures.setExpanded(true);
+    dimensions.setExpanded(true);
   }
   
   public String getName() {
