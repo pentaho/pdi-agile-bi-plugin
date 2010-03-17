@@ -192,8 +192,10 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 
   public DimensionMetaData createDimensionFromNode(ColumnBackedNode obj) {
     DimensionMetaData dimension = new DimensionMetaData(obj.getName());
+    dimension.setExpanded(true);
     HierarchyMetaData hierarchy = createHierarchyForParentWithNode(dimension, obj);
     hierarchy.setParent(dimension);
+    hierarchy.setExpanded(true);
     dimension.add(hierarchy);
     return dimension;
   }
@@ -201,8 +203,10 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 
   public DimensionMetaData createDimensionWithName(String dimName) {
     DimensionMetaData dimension = new DimensionMetaData(dimName);
+    dimension.setExpanded(true);
     HierarchyMetaData hierarchy = createHierarchyForParentWithNode(dimension, null);
     hierarchy.setParent(dimension);
+    hierarchy.setExpanded(true);
     dimension.add(hierarchy);
     return dimension;
   }
@@ -235,6 +239,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public HierarchyMetaData createHierarchyForParentWithNode(DimensionMetaData parent, ColumnBackedNode obj) {
     HierarchyMetaData hier = new HierarchyMetaData(obj.getName());
     hier.setParent(parent);
+    hier.setExpanded(true);
     if(obj != null){
       LevelMetaData level = createLevelForParentWithNode(hier, obj);
       hier.add(level);

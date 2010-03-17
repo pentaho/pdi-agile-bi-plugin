@@ -415,7 +415,7 @@ public class ModelerController extends AbstractXulEventHandler{
     
     fireBindings();
     
-    dimensionTree.expandAll();
+    
   }
   
   public void showAutopopulatePrompt() {
@@ -564,6 +564,7 @@ public class ModelerController extends AbstractXulEventHandler{
           	DimensionMetaData theDimension = (DimensionMetaData) selectedTreeItem;
           	HierarchyMetaData theHieararchy = new HierarchyMetaData("" + retVal);
           	theHieararchy.setParent(theDimension);
+          	theHieararchy.setExpanded(true);
 
             workspace.setModelIsChanging(true);
           	theDimension.add(theHieararchy);
@@ -633,7 +634,9 @@ public class ModelerController extends AbstractXulEventHandler{
           if(returnCode == Status.ACCEPT){
   
             DimensionMetaData dimension = new DimensionMetaData(""+retVal);
+            dimension.setExpanded(true);
             HierarchyMetaData hierarchy = new HierarchyMetaData(""+retVal);
+            hierarchy.setExpanded(true);
             hierarchy.validate();
             hierarchy.setParent(dimension);
             dimension.add(hierarchy);
