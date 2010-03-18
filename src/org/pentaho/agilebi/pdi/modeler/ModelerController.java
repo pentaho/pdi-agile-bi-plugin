@@ -739,7 +739,7 @@ public class ModelerController extends AbstractXulEventHandler{
     }
 
     try {
-      if (workspace.isDirty()) {
+      if (workspace.getFileName() == null) {
         ModelerHelper theHelper = ModelerHelper.getInstance();
         workspace.setAutoModel(false);
         theHelper.createTemporaryModel(workspace);
@@ -750,7 +750,7 @@ public class ModelerController extends AbstractXulEventHandler{
         // TODO: Find a better name for the cube, maybe just workspace name?
         theVisualization.createVisualizationFromModel(workspace);
       }
-    } catch (ModelerException e) {
+    } catch (Exception e) {
       logger.error(e);
     }
   }
