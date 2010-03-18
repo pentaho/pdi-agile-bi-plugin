@@ -285,6 +285,28 @@
 	</context-param>]]></replacetoken>
 	    	<replacevalue></replacevalue>
 	    </replace>
+	    <replace file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml">
+	    	<replacetoken><![CDATA[<servlet-mapping>
+		<servlet-name>Print</servlet-name>
+		<url-pattern>/Print</url-pattern>
+	</servlet-mapping>]]></replacetoken>
+	    	<replacevalue></replacevalue>
+	    </replace>
+	    <replace file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml">
+	    	<replacetoken><![CDATA[<servlet-mapping>
+		<servlet-name>DisplayChart</servlet-name>
+		<url-pattern>/DisplayChart</url-pattern>
+	</servlet-mapping>]]></replacetoken>
+	    	<replacevalue></replacevalue>
+	    </replace>
+	    <replace file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml">
+	    	<replacetoken><![CDATA[<servlet-mapping>
+		<servlet-name>GetChart</servlet-name>
+		<url-pattern>/GetChart</url-pattern>
+	</servlet-mapping>]]></replacetoken>
+	    	<replacevalue></replacevalue>
+	    </replace>
+
 
 
 
