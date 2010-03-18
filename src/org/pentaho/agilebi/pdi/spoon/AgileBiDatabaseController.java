@@ -21,6 +21,7 @@ package org.pentaho.agilebi.pdi.spoon;
 import java.io.File;
 
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
+import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.modeler.TableModelerSource;
@@ -91,29 +92,10 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 	}
 
 	public void quickVisualize(ModelerWorkspace model) throws ModelerException {
-
-		// give it a temporary name
-		File modelsDir = new File("models"); //$NON-NLS-1$
-		modelsDir.mkdirs();
-		int idx = 1;
-		boolean looking = true;
-		File modelFile;
-		String fileName = ""; //$NON-NLS-1$
-		String modelName = ""; //$NON-NLS-1$
-		while (looking) {
-			modelName = "Model " + idx; //$NON-NLS-1$
-			fileName = "models/" + modelName + ".xmi"; //$NON-NLS-1$ //$NON-NLS-2$
-			modelFile = new File(fileName);
-			if (!modelFile.exists()) {
-				looking = false;
-			}
-			idx++;
-		}
-		model.setFileName(fileName);
-		model.setModelName(modelName);
-		ModelerWorkspaceUtil.autoModelFlat(model);
-		ModelerWorkspaceUtil.populateDomain(model);
-		ModelerWorkspaceUtil.saveWorkspace(model, fileName);
+		
+		ModelerHelper theHelper = ModelerHelper.getInstance();
+		theHelper.createTemporaryModel(model);
+		
 		VisualizationManager theManager = VisualizationManager.getInstance();
 		IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));
 		if (theVisualization != null) {
