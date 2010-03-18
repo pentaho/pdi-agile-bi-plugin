@@ -7,10 +7,8 @@ import mondrian.rolap.agg.AggregationManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.MessageBox;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -24,7 +22,6 @@ import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
-import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
@@ -70,6 +67,8 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 		this.location = visualization.generateNewUrl(xmiFileLocation, modelId);
 		this.bf = new DefaultBindingFactory();
 	}
+	
+
 
 	public void init() {
 		this.browser = (XulBrowser) this.document.getElementById("web_visualization_browser");
