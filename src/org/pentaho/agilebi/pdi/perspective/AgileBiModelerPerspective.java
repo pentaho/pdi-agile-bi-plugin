@@ -120,7 +120,6 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
       document.addBinding(bind);
       models.add(aModel);
     	model = aModel;
-    	model.setModelName(name);
     	setSelectedMeta(xul.getMeta());
     	
       
