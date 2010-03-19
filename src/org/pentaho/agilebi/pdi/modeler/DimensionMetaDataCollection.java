@@ -68,6 +68,7 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
 
   @Override
   public void validate() {
+    boolean prevValid = valid;
     valid = true;
     validationMessages.clear();
     if (size() == 0) {
@@ -86,7 +87,7 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
       usedNames.add(dim.getName());
     }
     if(this.suppressEvents == false){
-      this.firePropertyChange("valid", null, valid);
+      this.firePropertyChange("valid", prevValid, valid);
     }
   }
   

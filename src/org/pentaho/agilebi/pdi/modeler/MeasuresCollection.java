@@ -35,6 +35,7 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
 
   @Override
   public void validate() {
+    boolean prevVal = valid;
     valid = true;
     validationMessages.clear();
 
@@ -54,7 +55,7 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
       usedNames.add(measure.getName());
       
     }
-    this.firePropertyChange("valid", null, valid);
+    this.firePropertyChange("valid", prevVal, valid);
   }
 
   @Override
