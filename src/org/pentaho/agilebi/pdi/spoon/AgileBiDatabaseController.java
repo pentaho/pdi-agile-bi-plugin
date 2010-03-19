@@ -33,6 +33,7 @@ import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.core.database.dialog.XulDatabaseExplorerController;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.TabMapEntry;
+import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.xul.swt.tab.TabItem;
 
@@ -113,6 +114,18 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 		return "agilebi_database"; //$NON-NLS-1$
 	}
 
+	private XulDatabaseExplorerController getDbController() {
+	  if (dbExplorerController == null) {
+	    try {
+        dbExplorerController = (XulDatabaseExplorerController) this.getXulDomContainer().getEventHandler("dbexplorer");
+      } catch (XulException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+	  }
+	  return dbExplorerController;
+	}
+	
 	public void setData(Object aDatabaseDialog) {
 		this.dbExplorerController = (XulDatabaseExplorerController) aDatabaseDialog;
 	}
