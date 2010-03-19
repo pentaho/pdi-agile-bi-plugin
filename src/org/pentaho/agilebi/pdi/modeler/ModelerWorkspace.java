@@ -75,9 +75,14 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   private boolean modelIsChanging;
   
-  private boolean autoModel = true;
+  private boolean autoModel;
+  
+  private boolean isTemporary;
   
   public ModelerWorkspace() {
+    
+    this.autoModel = true;
+    this.isTemporary = true;
     
     setModel(new MainModelNode());
    
@@ -86,7 +91,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     if( serverNames.size() > 0 ) {
       selectedServer = serverNames.get(0);
     }
-   
   }
 
   public MainModelNode getModel() {
@@ -541,5 +545,13 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   public void setAutoModel(boolean isAutomodel) {
     this.autoModel = isAutomodel;
+  }
+  
+  public void setTemporary(boolean isTempoarary) {
+    this.isTemporary = isTempoarary;
+  }
+  
+  public boolean isTemporary() {
+    return this.isTemporary;
   }
 }

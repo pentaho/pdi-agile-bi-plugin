@@ -750,6 +750,7 @@ public class ModelerController extends AbstractXulEventHandler{
         // TODO: Find a better name for the cube, maybe just workspace name?
         theVisualization.createVisualizationFromModel(workspace);
       }
+      Spoon.getInstance().enableMenus();
     } catch (Exception e) {
       logger.error(e);
     }
@@ -784,6 +785,7 @@ public class ModelerController extends AbstractXulEventHandler{
   	ModelerWorkspaceUtil.saveWorkspace(workspace, fileName);
     workspace.setFileName(fileName);
     workspace.setDirty(false);
+    workspace.setTemporary(false);
     return true;
   }
   

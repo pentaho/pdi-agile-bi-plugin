@@ -121,6 +121,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
         l.onDeactication();
       }
     }
+
   }
 
   public abstract String getId();

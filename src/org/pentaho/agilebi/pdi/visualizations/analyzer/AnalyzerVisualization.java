@@ -254,6 +254,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 			model.setDomain(domain);
 			model.setModelName(modelId);
 			model.setFileName(modelFileName);	
+			model.setTemporary(false);
 			theController.setModel(model);
       createTabForBrowser(theMainBox, theController, model);      
       theController.openReport(fname);

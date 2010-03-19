@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -20,7 +19,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
-import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.modeler.ModelerEngineMeta;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -31,7 +29,6 @@ import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.FileListener;
-import org.pentaho.di.ui.spoon.MainSpoonPerspective;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
@@ -131,15 +128,16 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
   public boolean open(Node transNode, String fname, boolean importfile) {
     try {
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-      ModelerWorkspace model = new ModelerWorkspace();
+      ModelerWorkspace theModel = new ModelerWorkspace();
+      theModel.setTemporary(false);
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
-      ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);
+      ModelerWorkspaceUtil.loadWorkspace(fname, xml, theModel);
       
-      createTabForModel(model,AgileBiModelerPerspective.createShortName(fname));
+      createTabForModel(theModel,AgileBiModelerPerspective.createShortName(fname));
 
       File f = new File(fname);
       String fullPath = f.getAbsolutePath();
-      spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
+      spoon.getProperties().addLastFile("Model", fullPath, null, false, null); //$NON-NLS-1$
       spoon.addMenuLast();
       
       return true;  

@@ -241,6 +241,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
       if (model.getFileName() != null) {
         // TODO: Find a better name for the cube, maybe just model name?
         theVisualization.createVisualizationFromModel(model);
+        Spoon.getInstance().enableMenus();
       } else {
         throw new UnsupportedOperationException("TODO: prompt to save model before visualization");
       }
