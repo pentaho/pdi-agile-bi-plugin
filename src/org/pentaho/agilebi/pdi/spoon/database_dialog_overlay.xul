@@ -6,8 +6,10 @@
     xmlns:pen="http://www.pentaho.org/2008/xul" >
 
 	<menupopup id="action_popup">
-      <menuitem id="trans-graph-entry-model" label="${model}" command="dbexplorer.openModeler()" />
-      <menuitem id="trans-graph-entry-visualize" label="${visualize}" command="dbexplorer.quickVisualize()" />
+      <menuitem id="trans-graph-entry-model" label="${model}" command="agilebi_database.openModeler()" />
+      <menuitem id="trans-graph-entry-visualize" label="${visualize}" command="agilebi_database.quickVisualize()" />
     </menupopup>
+    
+    
     
 </overlay>
