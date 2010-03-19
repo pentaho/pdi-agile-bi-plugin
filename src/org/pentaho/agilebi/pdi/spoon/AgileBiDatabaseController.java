@@ -60,6 +60,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 	}
 
 	public void openModeler() {
+	  getDbController();
 		this.dbExplorerController.close();
 		TableModelerSource source = new TableModelerSource(this.dbExplorerController.getDatabaseMeta(), this.dbExplorerController.getSelectedTable(), this.dbExplorerController.getSelectedSchema());
 		try {
@@ -76,7 +77,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 	}
 
 	public void quickVisualize() {
-
+	  getDbController();
 		this.dbExplorerController.close();
 		TableModelerSource source = new TableModelerSource(this.dbExplorerController.getDatabaseMeta(), this.dbExplorerController.getSelectedTable(), this.dbExplorerController.getSelectedSchema() == null ? "" : this.dbExplorerController.getSelectedSchema()); //$NON-NLS-1$
 		if (source.getSchemaName() == null) {
