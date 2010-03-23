@@ -55,7 +55,7 @@
     </dependency> 
     
     <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-datasource-editor-pmd" rev="${dependency.pentaho-reporting.revision}"
-      conf="default->default" changing="true" />
+      conf="default->default" changing="true" transitive="false"/>
     
       
     <dependency org="pentaho" name="mondrian" rev="3.1.6"
