@@ -23,16 +23,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.table.TableModel;
+
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
+import org.pentaho.commons.metadata.mqleditor.MqlQuery;
+import org.pentaho.commons.metadata.mqleditor.editor.MQLEditorService;
 import org.pentaho.commons.metadata.mqleditor.editor.SwtMqlEditor;
+import org.pentaho.commons.metadata.mqleditor.editor.service.MQLEditorServiceImpl;
+import org.pentaho.commons.metadata.mqleditor.editor.service.util.MQLEditorServiceDelegate;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.metadata.query.model.util.QueryXmlHelper;
 import org.pentaho.metadata.repository.IMetadataDomainRepository;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
 import org.pentaho.reporting.engine.classic.core.MetaAttributeNames;
+import org.pentaho.reporting.engine.classic.core.MetaTableModel;
 import org.pentaho.reporting.engine.classic.core.ReportDataFactoryException;
 import org.pentaho.reporting.engine.classic.core.states.datarow.StaticDataRow;
 import org.pentaho.reporting.engine.classic.core.wizard.DataAttributes;
@@ -46,16 +54,16 @@ import org.pentaho.reporting.engine.classic.wizard.ui.xul.WizardEditorModel;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.AbstractWizardStep;
 import org.pentaho.reporting.libraries.base.util.DebugLog;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
+import org.pentaho.reporting.ui.datasources.pmd.PmdPreviewWorker;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulLoader;
-import org.pentaho.ui.xul.XulRunner;
+import org.pentaho.ui.xul.XulServiceCallback;
 import org.pentaho.ui.xul.components.XulButton;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.impl.DefaultXulOverlay;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
-import org.pentaho.ui.xul.swt.SwtXulRunner;
 /**
  * TODO: Document Me
  *
@@ -92,6 +100,8 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   {
     public DatasourceAndQueryStepHandler()
     {
+      
+      
     }
 
     public String getName()
@@ -107,6 +117,50 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       return repo;
     }
     
+    
+    private MQLEditorServiceDelegate getMqlServiceDelegate() throws ReportDataFactoryException{
+
+      MQLEditorServiceDelegate delegate = new MQLEditorServiceDelegate(getDomainRepo()) {
+        @Override
+        public String[][] getPreviewData(MqlQuery query, int page, int limit) {
+          org.pentaho.metadata.query.model.Query mqlQuery = convertQueryModel(query);
+          String mqlString = new QueryXmlHelper().toXML(mqlQuery);
+          
+
+          PmdDataFactory df = (PmdDataFactory) getEditorModel().getReportDefinition().getDataFactory();
+          df.setQuery("default", mqlString);
+          
+          PmdPreviewWorker worker = new PmdPreviewWorker(df, "default", 0,  limit);
+          worker.run();
+          if(worker.getException() != null){
+            worker.getException().printStackTrace();
+          }
+          TableModel model = worker.getResultTableModel();
+          int colCount = model.getColumnCount();
+          int rowCount = model.getRowCount();
+          String[][] results = new String[rowCount][colCount];
+          for(int y = 0; y < rowCount; y++ ){
+            for(int x=0; x < colCount; x++){
+              results[y][x] = model.getValueAt(y, x).toString();
+            }
+          }
+          return results;
+        }
+      };
+      return delegate;
+    }
+    
+    private MQLEditorService getMqlService(MQLEditorServiceDelegate delegate){
+
+      MQLEditorServiceImpl mqlService = new MQLEditorServiceImpl(delegate) {
+        @Override
+        public void getPreviewData(MqlQuery query, int page, int limit, XulServiceCallback<String[][]> callback) {
+          callback.success(delegate.getPreviewData(query, page, limit));
+        }
+      };
+      return mqlService;
+    }
+    
     /**
      * doEditQuery()
      * Updates (or creates) a query using the PME data source.
@@ -116,7 +170,10 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
 
         IMetadataDomainRepository repo = getDomainRepo();
         
-        SwtMqlEditor editor = new SwtMqlEditor(repo){
+        
+        MQLEditorServiceDelegate delegate = getMqlServiceDelegate();
+        
+        SwtMqlEditor editor = new SwtMqlEditor(repo, getMqlService(delegate), delegate){
 
           @Override
           protected XulLoader getLoader() {
