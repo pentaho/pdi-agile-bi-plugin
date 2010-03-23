@@ -31,7 +31,7 @@
 	            description="Location of platform assembly zip" />
 	
 	<property name="kettle.dist.dir"
-				value="../Kettle"
+				value="../Kettle trunk"
     			description="Location of kettle spoon zip" />
 	
 	<property name="analyzer.dist.dir"
@@ -184,7 +184,8 @@
       <include name="openide-util-*.jar"/>
 			<include name="xmlParserAPIs-*.jar"/>
       <include name="geronimo-stax-api-*.jar"/>
-			<include name="stax-api-1.0.1.jar"/>
+      <include name="stax-api*.jar"/>
+			<include name="jtidy*.jar"/>
 		</fileset>
   	</delete>
   </target>
