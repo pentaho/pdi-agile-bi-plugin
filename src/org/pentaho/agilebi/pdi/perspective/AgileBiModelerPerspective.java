@@ -118,7 +118,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
       models.add(aModel);
     	model = aModel;
     	setSelectedMeta(xul.getMeta());
-    	
+    	Spoon.getInstance().enableMenus();
       
    } catch(KettleException e){
       throw new ModelerException(e);
