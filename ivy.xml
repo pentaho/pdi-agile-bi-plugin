@@ -48,6 +48,9 @@
       conf="default->default" changing="true" />
     <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-extensions-pmd" rev="${dependency.pentaho-reporting.revision}"
       conf="default->default" changing="true" />
+    
+    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-datasource-editor-pmd" rev="${dependency.pentaho-reporting.revision}"
+      conf="default->default" changing="true" />
 
     <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="${dependency.bi-platform.revision}" changing="true"
       conf="default->default" />
