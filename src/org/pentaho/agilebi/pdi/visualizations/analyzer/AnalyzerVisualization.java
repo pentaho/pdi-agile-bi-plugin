@@ -18,7 +18,6 @@ import org.jaxen.dom4j.Dom4jXPath;
 import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;
 import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.XulTabAndPanel;
 import org.pentaho.agilebi.pdi.visualizations.AbstractVisualization;
@@ -139,7 +138,13 @@ public class AnalyzerVisualization extends AbstractVisualization {
     	SwtXulLoader theXulLoader = new SwtXulLoader();
 
       theXulLoader.registerClassLoader(getClass().getClassLoader());
-      AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, model.getFileName(), model.getModelName() + " Cube", null);
+      
+      String theFileName = model.getFileName();
+      if(theFileName == null) {
+        theFileName = "models/" + model.getModelName() + ".xmi";
+      }
+      
+      AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, theFileName, model.getModelName() + " Cube", null);
       theController.setModel(model);
     	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION, new PDIMessages(IVisualization.class));
 			theXulContainer.addEventHandler(theController);
@@ -176,7 +181,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
     
     AgileBiVisualizationPerspective.getInstance().setModel(model);    
     AgileBiVisualizationPerspective.getInstance().setSelectedMeta(controller.getMeta());
-
+    Spoon.getInstance().enableMenus();
 	}
 	
 	public static Document getXAnalyzerDocument( File file ) throws Exception {
