@@ -141,7 +141,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
           String[][] results = new String[rowCount][colCount];
           for(int y = 0; y < rowCount; y++ ){
             for(int x=0; x < colCount; x++){
-              results[y][x] = model.getValueAt(y, x).toString();
+              results[y][x] = ""+model.getValueAt(y, x);
             }
           }
           return results;
