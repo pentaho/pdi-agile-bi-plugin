@@ -44,9 +44,9 @@
       changing="true" />
     <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default"
       changing="true" />
-    <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul" rev="TRUNK-SNAPSHOT"
+    <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul" rev="${dependency.RDW-wizard.revision}"
       conf="default->default" changing="true" transitive="false"/>
-    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-wizard-core" rev="TRUNK-SNAPSHOT"
+    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-wizard-core" rev="${dependency.RDW-wizard.revision}"
       conf="default->default" changing="true" transitive="false"/>
    
     <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-core" rev="${dependency.pentaho-reporting.revision}"
