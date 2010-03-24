@@ -56,7 +56,10 @@
     
     <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-datasource-editor-pmd" rev="${dependency.pentaho-reporting.revision}"
       conf="default->default" changing="true" transitive="false"/>
-    
+      
+      
+    <dependency org="pentaho-library" name="libswing" rev="1.1.5"
+      conf="default->default" changing="true" transitive="false"/>
       
     <dependency org="pentaho" name="mondrian" rev="3.1.6"
       conf="default->default" changing="true" transitive="false"/>
