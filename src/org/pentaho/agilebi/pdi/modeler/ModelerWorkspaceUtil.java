@@ -150,8 +150,8 @@ public class ModelerWorkspaceUtil {
    */
   public static void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
     if(workspace.isAutoModel()) {
-      workspace.setModelIsChanging(true);
       workspace.setModel(new MainModelNode());
+      workspace.setModelIsChanging(true);
   
       List<AvailableField> fields = workspace.getAvailableFields();
       for( AvailableField field : fields ) {
