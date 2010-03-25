@@ -234,7 +234,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
   
   public void quickVisualize( ModelerWorkspace model ) throws ModelerException {
     model.setAutoModel(true);
-    createTemporaryModel(model);
+    createTemporaryModel(model, true);
     VisualizationManager theManager = VisualizationManager.getInstance();
     IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));
     if(theVisualization != null) {
@@ -248,7 +248,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     }
   }
   
-  public void createTemporaryModel(ModelerWorkspace model) throws ModelerException {
+  public void createTemporaryModel(ModelerWorkspace model, boolean saveName) throws ModelerException {
     //give it a temporary name
     File modelsDir = new File("models"); //$NON-NLS-1$
     modelsDir.mkdirs();
@@ -265,6 +265,9 @@ public class ModelerHelper extends AbstractXulEventHandler {
         looking = false;
       }
       idx++;
+    }
+    if(saveName){
+      model.setFileName(fileName);
     }
     model.setModelName(modelName);
     ModelerWorkspaceUtil.autoModelFlat(model);

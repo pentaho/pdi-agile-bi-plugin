@@ -742,7 +742,7 @@ public class ModelerController extends AbstractXulEventHandler{
       if (workspace.getFileName() == null) {
         ModelerHelper theHelper = ModelerHelper.getInstance();
         workspace.setAutoModel(false);
-        theHelper.createTemporaryModel(workspace);
+        theHelper.createTemporaryModel(workspace, false);
       }
       VisualizationManager theManager = VisualizationManager.getInstance();
       IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
