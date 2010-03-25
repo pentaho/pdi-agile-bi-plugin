@@ -1,5 +1,7 @@
 package org.pentaho.agilebi.pdi.visualizations.analyzer;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Locale;
 
@@ -88,6 +90,13 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	
 	public void openReport(String aReport) {
 	  String theLocation = this.location.substring(0, this.location.indexOf("?"));
+	  
+	  try {
+      aReport = URLEncoder.encode(aReport, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+	  
 	  theLocation = theLocation + "?command=open&solution=&path=&action=" + aReport + "&edit=true&showFieldList=true";
 	  this.browser.setSrc(theLocation);
 	}
