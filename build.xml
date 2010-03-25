@@ -7,7 +7,7 @@
   
   See subfloor.xml for more details
 ============================================================================-->
-<project name="Agile BI" basedir="." default="jar" 
+<project name="Agile BI" basedir="." default="dist" 
 	xmlns:ivy="antlib:org.apache.ivy.ant" >
 	
 	<description>
@@ -223,18 +223,16 @@
 	    <delete dir="${approot.stage.dir}/platform/webapps/pentaho/jpivot" />
 		<delete dir="approot.stage.dir}/platform/webapps/pentaho/WEB-INF/jpivot" />
 		
+		<replace file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml">
+			<replacetoken><![CDATA[<listener>
+		<listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
+	</listener>]]></replacetoken>
+			<replacevalue></replacevalue>
+		</replace>
 		<replace 
 		    file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml"  
 		    token="com.sun.xml.ws.transport.http.servlet.WSServlet" 
 		    value="org.pentaho.platform.web.servlet.UIServlet"/>
-		<replace 
-		    file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml"  
-		    token="com.sun.xml.ws.transport.http.servlet.WSServletContextListener"
-			value=""/>
-		<replace 
-		    file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml"  
-		    token="org.pentaho.platform.web.servlet.UIServletContextListener" 
-		    value=""/>
 		<replace 
 		    file="${approot.stage.dir}/platform/pentaho-solutions/system/pentahoObjects.spring.xml"
 	   		token="&lt;bean id=&quot;IVersionCheckDataProvider&quot; class=&quot;org.pentaho.platform.plugin.services.versionchecker.PentahoVersionCheckDataProvider&quot; scope=&quot;prototype&quot; /&gt;"
