@@ -96,7 +96,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 	public void quickVisualize(ModelerWorkspace model) throws ModelerException {
 		
 		ModelerHelper theHelper = ModelerHelper.getInstance();
-		theHelper.createTemporaryModel(model);
+		theHelper.createTemporaryModel(model, true);
 		
 		VisualizationManager theManager = VisualizationManager.getInstance();
 		IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));
