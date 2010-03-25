@@ -148,6 +148,7 @@ public class ModelerController extends AbstractXulEventHandler{
   
   public void onDimensionTreeDrop(DropEvent event) {
 
+    boolean prevChangeState = workspace.isModelChanging();
     workspace.setModelIsChanging(true);
     List<Object> data = event.getDataTransfer().getData();
     List<Object> newdata = new ArrayList<Object>();
@@ -227,10 +228,12 @@ public class ModelerController extends AbstractXulEventHandler{
     } else {
       event.getDataTransfer().setData(newdata);
     }
-    workspace.setModelIsChanging(false);
+    workspace.setModelIsChanging(prevChangeState);
   }
 
   public void addField() {
+
+    boolean prevChangeState = workspace.isModelChanging();
     workspace.setModelIsChanging(true);
   	AbstractMetaDataModelNode theNode = null;
     Object[] selectedItems = getSelectedFields();
@@ -266,7 +269,7 @@ public class ModelerController extends AbstractXulEventHandler{
         } 
       } 
     }
-    workspace.setModelIsChanging(false);
+    workspace.setModelIsChanging(prevChangeState);
   }
   
   public void editDataSource() {
@@ -534,9 +537,11 @@ public class ModelerController extends AbstractXulEventHandler{
           	theMeasure.setParent(theMesaures);
             theMeasure.validate();
 
+            boolean prevChangeState = workspace.isModelChanging();
             workspace.setModelIsChanging(true);
             theMesaures.add(theMeasure);
-            workspace.setModelIsChanging(false);
+            workspace.setModelIsChanging(prevChangeState);
+            
           }
         }
   
@@ -566,9 +571,10 @@ public class ModelerController extends AbstractXulEventHandler{
           	theHieararchy.setParent(theDimension);
           	theHieararchy.setExpanded(true);
 
+            boolean prevChangeState = workspace.isModelChanging();
             workspace.setModelIsChanging(true);
           	theDimension.add(theHieararchy);
-            workspace.setModelIsChanging(false);
+            workspace.setModelIsChanging(prevChangeState);
            }
          }
    
@@ -602,9 +608,10 @@ public class ModelerController extends AbstractXulEventHandler{
           	}
           	
           	theLevel.validate();
+            boolean prevChangeState = workspace.isModelChanging();
           	workspace.setModelIsChanging(true);
           	theHierarchy.add(theLevel);
-            workspace.setModelIsChanging(false);
+            workspace.setModelIsChanging(prevChangeState);
             
           }
         }

@@ -28,6 +28,7 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.swt.widgets.Display;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
@@ -148,23 +149,39 @@ public class ModelerWorkspaceUtil {
    * @param user
    * @param tableName
    */
-  public static void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
+  public static void autoModelFlat( final ModelerWorkspace workspace ) throws ModelerException {
     if(workspace.isAutoModel()) {
-      workspace.setModel(new MainModelNode());
-      workspace.setModelIsChanging(true);
-  
-      List<AvailableField> fields = workspace.getAvailableFields();
-      for( AvailableField field : fields ) {
-        DataType dataType = field.getLogicalColumn().getDataType();
-        if( dataType == DataType.NUMERIC) {
-          // create a measure
-          MeasureMetaData measure = workspace.createMeasureForNode(field);
-          workspace.getModel().getMeasures().add(measure);
+      final Display display = Display.findDisplay(Thread.currentThread());
+      Runnable worker = new Runnable(){
+
+        public void run() {
+          workspace.setModel(new MainModelNode());
+          final boolean prevChangeState = workspace.isModelChanging();
+          workspace.setModelIsChanging(true);
+      
+          List<AvailableField> fields = workspace.getAvailableFields();
+          for( AvailableField field : fields ) {
+            DataType dataType = field.getLogicalColumn().getDataType();
+            if( dataType == DataType.NUMERIC) {
+              // create a measure
+              MeasureMetaData measure = workspace.createMeasureForNode(field);
+              workspace.getModel().getMeasures().add(measure);
+            }
+            // create a dimension
+            workspace.addDimensionFromNode(field);
+          }
+          display.syncExec(new Runnable(){
+
+            public void run() {
+
+              workspace.setModelIsChanging(prevChangeState); 
+            }
+          });
         }
-        // create a dimension
-        workspace.addDimensionFromNode(field);
-      }
-      workspace.setModelIsChanging(false);
+      };
+      new Thread(worker).start();
+      
+      
     }
   }
   

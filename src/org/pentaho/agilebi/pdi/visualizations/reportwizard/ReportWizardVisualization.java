@@ -19,8 +19,10 @@ package org.pentaho.agilebi.pdi.visualizations.reportwizard;
 import java.util.Locale;
 
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.i18n.BaseMessages;
 import org.w3c.dom.Node;
 
 public class ReportWizardVisualization implements IVisualization {
@@ -29,7 +31,7 @@ public class ReportWizardVisualization implements IVisualization {
 	private int order;
 	
 	public String getTitle() {
-		return description;
+		return BaseMessages.getString(XulUI.class, "ReportWizard.Option");
 	}
 
 	public void setTitle(String aDescription) {
