@@ -46,22 +46,6 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
 
   private static final long serialVersionUID = -1174699308144524442L;
   
-  private static String cleanUpPath(String path) {
-    // TODO: this is a hack until we figure out encoding issues with paths
-    path = path.replaceAll("\\+"," ");
-    path = path.replaceAll("%3A",":");
-    path = path.replaceAll("%5C","\\\\");
-    path = path.replaceAll("%2F", File.separator);
-
-//    String lcOSName = System.getProperty("os.name").toLowerCase();
-//    boolean isMac = lcOSName.startsWith("mac os x");
-//    boolean isNix = (lcOSName.indexOf( "nix") >=0 || lcOSName.indexOf( "nux") >=0);
-//    if (isMac || isNix) {
-//      path = path.replaceAll("\\\\", File.pathSeparator);
-//    }
-    return path;
-  }
-  
   public int publish(String baseUrl, String path, String fileName, byte[] data, boolean overwrite) throws PentahoAccessControlException {
     
 
@@ -76,8 +60,6 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }
-    
-    path = cleanUpPath(path);
     
     // Analyzer puts a "/" at the beginning of the path on windows, remove it.
     if (path.startsWith("/") && path.contains(":")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -99,8 +81,6 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
   
   private File getFile(String solutionPath) {
     
-    solutionPath = cleanUpPath(solutionPath);
-    
     if (solutionPath.startsWith("system/")) {
       String filePath = PentahoSystem.getApplicationContext().getSolutionPath(solutionPath);
       File file = new File(filePath);
@@ -112,7 +92,6 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
   }
   
   public boolean resourceExists(String solutionPath, int actionOperation) {
-    solutionPath = cleanUpPath(solutionPath);
     return getFile(solutionPath).exists();
   }
 

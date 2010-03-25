@@ -40,7 +40,6 @@ import org.pentaho.ui.xul.XulException;
 public class AgileBISpoonPlugin implements SpoonPluginInterface{
 
   public AgileBISpoonPlugin(){
-   
   }
   
   public void applyToContainer(String category, XulDomContainer container) throws XulException {

@@ -144,7 +144,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
         theFileName = "models/" + model.getModelName() + ".xmi";
       }
       
-      AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, theFileName, model.getModelName() + " Cube", null);
+      AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, theFileName, model.getModelName() + " Cube", null, null);
       theController.setModel(model);
     	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION, new PDIMessages(IVisualization.class));
 			theXulContainer.addEventHandler(theController);
@@ -246,7 +246,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
       
       SwtXulLoader theXulLoader = new SwtXulLoader();
       theXulLoader.registerClassLoader(getClass().getClassLoader());
-      AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, modelFileName, modelId, null);
+      AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, modelFileName, modelId, f.toString(), f.getName());
     	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION, new PDIMessages(IVisualization.class));
 			theXulContainer.addEventHandler(theController);
 			Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject();
@@ -280,7 +280,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
     spoon.addMenuLast();
-    AgileBiVisualizationPerspective.getInstance().setNameForTab(wvmeta.getTab(), fname);
+    AgileBiVisualizationPerspective.getInstance().setNameForTab(wvmeta.getTab(), getPathAndFilename(fname)[1].replace("."+this.getExtension(), ""));
 
     return true;
   }

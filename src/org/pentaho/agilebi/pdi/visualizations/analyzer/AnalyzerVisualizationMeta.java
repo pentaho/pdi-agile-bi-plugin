@@ -82,10 +82,10 @@ public class AnalyzerVisualizationMeta implements EngineMetaInterface, HasXulCon
 
   public String getName() {
     // this uses the file name to determine the tab name
-    if (browser.getVisFileLocation() == null) {
+    if (browser.getFileName() == null) {
       return "Untitled";
     } else {
-      File f = new File(browser.getVisFileLocation());
+      File f = new File(browser.getFileName());
       String n = f.getName();
       // strip the file name of its extension
       if (n.length() > getDefaultExtension().length() + 1) {

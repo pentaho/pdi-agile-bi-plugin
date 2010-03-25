@@ -244,7 +244,9 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
     String tabName = name;
     List<String> usedNames = new ArrayList<String>();
     for(XulComponent c : tabs.getChildNodes()){
-      usedNames.add(((SwtTab) c).getLabel());
+      if(c != tab){
+        usedNames.add(((SwtTab) c).getLabel());
+      }
     }
     if(usedNames.contains(name)){
       int num = 2;

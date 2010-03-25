@@ -58,8 +58,9 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	private ModelerWorkspace workspace;
 
 	private static Log logger = LogFactory.getLog(AnalyzerVisualizationController.class);
+	private String fileName;
 
-	public AnalyzerVisualizationController(Composite parent, final AnalyzerVisualization visualization, String xmiFileLocation, String modelId, String aVisFileLocaiton) throws SWTError {
+	public AnalyzerVisualizationController(Composite parent, final AnalyzerVisualization visualization, String xmiFileLocation, String modelId, String aVisFileLocaiton, String fileName) throws SWTError {
 		this.visualization = visualization;
 		this.xmiFileLocation = xmiFileLocation;
 		this.modelId = modelId;
@@ -68,6 +69,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 		this.spoon = ((Spoon) SpoonFactory.getInstance());
 		this.location = visualization.generateNewUrl(xmiFileLocation, modelId);
 		this.bf = new DefaultBindingFactory();
+		this.fileName = fileName;
 	}
 	
 
@@ -273,6 +275,10 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 
 	public String getName() {
 		return "analyzerVis";
+	}
+	
+	public String getFileName(){
+	  return fileName;
 	}
 	
 	public String getFileLocation() {
