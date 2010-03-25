@@ -66,7 +66,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   }
 
   public String getId() {
-    return "agilebiVisualization";
+    return "020-agilebiVisualization"; //$NON-NLS-1$
   }
 
   public boolean acceptsXml(String nodeName) {

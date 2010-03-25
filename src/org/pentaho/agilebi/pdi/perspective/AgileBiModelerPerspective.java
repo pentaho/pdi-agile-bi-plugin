@@ -77,7 +77,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
   }
 
   public String getId() {
-    return "agilebi";
+    return "010-agilebi"; //$NON-NLS-1$
   }
 
   public boolean acceptsXml(String nodeName) {
