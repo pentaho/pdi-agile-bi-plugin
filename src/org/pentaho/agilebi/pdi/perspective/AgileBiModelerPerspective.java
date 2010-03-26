@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -42,6 +43,7 @@ import org.pentaho.ui.xul.binding.DefaultBinding;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.components.XulConfirmBox;
 import org.pentaho.ui.xul.components.XulMenuitem;
+import org.pentaho.ui.xul.components.XulTab;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.w3c.dom.Node;
 
@@ -126,7 +128,25 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
   }
   
   public boolean open(Node transNode, String fname, boolean importfile) {
+
     try {
+      // files may be a mix of absolute and relative. Constructing File objects to test equality
+      File incomingFile = new File(fname);
+      for(Map.Entry<XulTab, EngineMetaInterface> m : this.metas.entrySet()){
+        if(m == null){
+          continue;
+        }
+        String fileName = ((ModelerEngineMeta) m.getValue()).getController().getModel().getFileName();
+        
+        if(fileName != null && new File(fileName).getAbsoluteFile().equals(incomingFile.getAbsoluteFile())){
+          int idx = this.tabbox.getTabs().getChildNodes().indexOf(m.getKey());
+          if(idx > -1){
+            SpoonPerspectiveManager.getInstance().activatePerspective(getClass());
+            this.tabbox.setSelectedIndex(idx);
+            return true;
+          }
+        }
+      }
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       ModelerWorkspace theModel = new ModelerWorkspace();
       theModel.setTemporary(false);
@@ -144,6 +164,8 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
     } catch(ModelerException e){
       logger.error(e);
     } catch(IOException e){
+      logger.error(e);
+    } catch (KettleException e) {
       logger.error(e);
     } 
     

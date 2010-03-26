@@ -1,40 +1,26 @@
 package org.pentaho.agilebi.pdi.perspective;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.DocumentHelper;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
 import org.pentaho.agilebi.pdi.PDIMessages;
-import org.pentaho.agilebi.pdi.modeler.ModelerController;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.spoon.FileListener;
-import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveListener;
-import org.pentaho.metadata.model.LogicalModel;
-import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.XulRunner;
-import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingConvertor;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
@@ -65,7 +51,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   protected ModelerWorkspace model;
   protected EngineMetaInterface selectedMeta;
   
-  protected Map<XulTab, EngineMetaInterface> metas = new HashMap<XulTab, EngineMetaInterface>();
+  protected Map<XulTab, EngineMetaInterface> metas = new WeakHashMap<XulTab, EngineMetaInterface>();
   
   protected AbstractPerspective(String perspectiveSrc) {
     try {
