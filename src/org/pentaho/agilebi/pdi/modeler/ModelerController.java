@@ -384,6 +384,18 @@ public class ModelerController extends AbstractXulEventHandler{
     visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements");
     
     modelTreeBinding = bf.createBinding(workspace, "model", dimensionTree, "elements");
+    
+    
+    this.refreshButtonBinding = bf.createBinding(workspace, "model", "refreshButton", "disabled", new BindingConvertor<MainModelNode, Boolean>() {
+      public Boolean sourceToTarget(MainModelNode mainModelNode) {
+        return mainModelNode.getMeasures().isEmpty() && mainModelNode.getDimensions().isEmpty();
+      }
+
+      public MainModelNode targetToSource(Boolean value) {
+        return null;
+      }
+    });
+    
     bf.createBinding(dimensionTree, "selectedItem", this, "dimTreeSelectionChanged");    
     
     bf.createBinding("fieldList", "selectedItem", "addField", "disabled", new BindingConvertor<Object, Boolean>() {
@@ -454,6 +466,7 @@ public class ModelerController extends AbstractXulEventHandler{
       modelTreeBinding.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
       visualizationsBinding.fireSourceChanged();
+      refreshButtonBinding.fireSourceChanged();
     } catch (Exception e) {
       logger.info("Error firing off initial bindings", e);
       throw new ModelerException(e);
@@ -681,6 +694,7 @@ public class ModelerController extends AbstractXulEventHandler{
   Object selectedTreeItem;
 
   private Binding fieldListBinding;
+  private Binding refreshButtonBinding;
   private Binding selectedFieldsBinding;
 
   private Binding visualizationsBinding;
