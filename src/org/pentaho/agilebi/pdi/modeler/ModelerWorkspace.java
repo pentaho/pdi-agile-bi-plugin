@@ -302,6 +302,9 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
 
  public void refresh() throws ModelerException {
+      if(source == null) {
+        return;
+      }
       Domain newDomain = source.generateDomain();
       
       // Add in new logicalColumns
