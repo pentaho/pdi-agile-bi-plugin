@@ -102,7 +102,7 @@ public class PRPTVisualization extends AbstractVisualization {
       
       XulTabAndPanel tabAndPanel = AgileBiVisualizationPerspective.getInstance().createTab();
       
-      AgileBiVisualizationPerspective.getInstance().setNameForTab(tabAndPanel.tab, fname);
+      AgileBiVisualizationPerspective.getInstance().setNameForTab(tabAndPanel.tab, getPathAndFilename(fname)[1].replace(".prpt", ""));
   
       try {
         SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiVisualizationPerspective.class);
@@ -152,6 +152,8 @@ public class PRPTVisualization extends AbstractVisualization {
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
       AgileBiVisualizationPerspective.getInstance().setNameForTab(prptMeta.getTab(), fname);
+      AgileBiVisualizationPerspective.getInstance().setNameForTab(prptMeta.getTab(), getPathAndFilename(fname)[1].replace(".prpt", ""));
+      
       spoon.addMenuLast();
       return true;
     } catch(ModelerException e){
@@ -274,5 +276,16 @@ try{
     }
     
   }
-	
+  public String[] getPathAndFilename(String filename) {
+    int loc = filename.lastIndexOf(File.separator);
+    String path = ""; //$NON-NLS-1$
+    String fname = ""; //$NON-NLS-1$
+    if (loc == -1) {
+      fname = filename;
+    } else {
+      path = filename.substring(0, loc);
+      fname = filename.substring(loc + 1);
+    }
+    return new String[]{path, fname};
+  }
 }
