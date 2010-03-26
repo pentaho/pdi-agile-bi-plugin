@@ -303,7 +303,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 
  public void refresh() throws ModelerException {
       Domain newDomain = source.generateDomain();
-      //ModelerWorkspaceUtil.updateDomain(domain, newDomain);
       
       // Add in new logicalColumns
       outer:
@@ -386,6 +385,11 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
           }
         }
       }
+
+      // replace the domain with the new domain, which
+      // makes sure the physical and logical columns are accurate
+      domain = newDomain;
+      
       model.validateTree();
   }
 
