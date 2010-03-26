@@ -141,6 +141,7 @@ public class ModelerWorkspaceUtil {
     return model;
   }
   
+  
   /**
    * Builds an OLAP model that is attribute based.
    * @param modelId
@@ -149,7 +150,36 @@ public class ModelerWorkspaceUtil {
    * @param user
    * @param tableName
    */
-  public static void autoModelFlat( final ModelerWorkspace workspace ) throws ModelerException {
+  public static void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
+    if(workspace.isAutoModel()) {
+      workspace.setModel(new MainModelNode());
+      workspace.setModelIsChanging(true);
+  
+      List<AvailableField> fields = workspace.getAvailableFields();
+      for( AvailableField field : fields ) {
+        DataType dataType = field.getLogicalColumn().getDataType();
+        if( dataType == DataType.NUMERIC) {
+          // create a measure
+          MeasureMetaData measure = workspace.createMeasureForNode(field);
+          workspace.getModel().getMeasures().add(measure);
+        }
+        // create a dimension
+        workspace.addDimensionFromNode(field);
+      }
+      workspace.setModelIsChanging(false);
+    }
+  }
+  
+  
+  /**
+   * Builds an OLAP model that is attribute based.
+   * @param modelId
+   * @param rowMeta
+   * @param locale
+   * @param user
+   * @param tableName
+   */
+  public static void autoModelFlatInBackground( final ModelerWorkspace workspace ) throws ModelerException {
     if(workspace.isAutoModel()) {
       final Display display = Display.findDisplay(Thread.currentThread());
       Runnable worker = new Runnable(){

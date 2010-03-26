@@ -839,7 +839,7 @@ public class ModelerController extends AbstractXulEventHandler{
   
   public void autoPopulate(){
     try {
-      ModelerWorkspaceUtil.autoModelFlat(this.workspace);
+      ModelerWorkspaceUtil.autoModelFlatInBackground(this.workspace);
       this.dimensionTree.expandAll();
     } catch (ModelerException e) {
       logger.error(e.getLocalizedMessage());
