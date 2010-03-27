@@ -217,16 +217,17 @@ public class ModelerWorkspaceUtil {
   
   public static void populateDomain(ModelerWorkspace model) throws ModelerException {
     
-    model.getDomain().setId( model.getModelName() );
+    Domain domain = model.getDomain();
+    domain.setId( model.getModelName() );
     
-    List<Category> cats = model.getDomain().getLogicalModels().get(0).getCategories();
-    LogicalTable logicalTable = model.getDomain().getLogicalModels().get(0).getLogicalTables().get(0);
+    List<Category> cats = domain.getLogicalModels().get(0).getCategories();
+    LogicalTable logicalTable = domain.getLogicalModels().get(0).getLogicalTables().get(0);
 
     if (model.getModelSource() != null) {
-      model.getModelSource().serializeIntoDomain(model.getDomain());
+      model.getModelSource().serializeIntoDomain(domain);
     }
     
-    LogicalModel logicalModel = model.getDomain().getLogicalModels().get(0);
+    LogicalModel logicalModel = domain.getLogicalModels().get(0);
     logicalModel.setName( new LocalizedString( Locale.getDefault().toString(), model.getModelName() ) );
     
     Category cat;
@@ -236,14 +237,14 @@ public class ModelerWorkspaceUtil {
       cat = cats.get(0);
     } else {
       cat = new Category();
-      model.getDomain().getLogicalModels().get(0).addCategory(cat);
+      logicalModel.addCategory(cat);
     }
     cat.setId(model.getModelName());
     cat.getLogicalColumns().clear();
 
     // Add all measures
     for (MeasureMetaData f : model.getModel().getMeasures()) {
-      LogicalColumn lCol = f.getLogicalColumn();
+      LogicalColumn lCol = logicalModel.findLogicalColumn(f.getLogicalColumn().getId());
       lCol.setName(new LocalizedString(Locale.getDefault().toString(), f.getName()));
       AggregationType type = AggregationType.valueOf(f.getAggTypeDesc());
       if (type != AggregationType.NONE) {
@@ -282,7 +283,7 @@ public class ModelerWorkspaceUtil {
       for (HierarchyMetaData hier : dim) {
         for (int j = 0; j < hier.size(); j++) {
           LevelMetaData level = hier.get(j);
-          LogicalColumn lCol = level.getLogicalColumn();
+          LogicalColumn lCol = logicalModel.findLogicalColumn(level.getLogicalColumn().getId());
           lCol.setName(new LocalizedString(Locale.getDefault().toString(), level.getName()));
           if (cat.findLogicalColumn(lCol.getId()) == null) {
             cat.addLogicalColumn(lCol);
@@ -290,24 +291,6 @@ public class ModelerWorkspaceUtil {
         }
       }
     }
-//
-//    XmiParser parser = new XmiParser();
-//    String xmi = parser.generateXmi(model.getDomain());
-//  
-//    // write the XMI to a tmp file
-//    // models was created earlier.
-//    try{
-//      File dir = new File( "models"); //$NON-NLS-1$
-//      dir.mkdirs();
-//      File file = new File("models/" + model.getModelName() + ".xmi"); //$NON-NLS-1$ //$NON-NLS-2$
-//      PrintWriter pw = new PrintWriter(new FileWriter(file));
-//      pw.print(xmi);
-//      pw.close();
-//    } catch(IOException e){
-//      logger.info(BaseMessages.getString(ModelerWorkspaceUtil.class, "ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
-//      throw new ModelerException(BaseMessages.getString(ModelerWorkspaceUtil.class, "ModelerWorkspaceUtil.Populate.BadWrite"),e); //$NON-NLS-1$
-//    }
-//  
 
     // =========================== OLAP ===================================== //
 
@@ -335,7 +318,8 @@ public class ModelerWorkspaceUtil {
           for (LevelMetaData lvl : hier) {
             OlapHierarchyLevel level = new OlapHierarchyLevel(hierarchy);
             level.setName(lvl.getName());
-            level.setReferenceColumn(lvl.getLogicalColumn());
+            LogicalColumn lvlColumn = logicalModel.findLogicalColumn(lvl.getLogicalColumn().getId());
+            level.setReferenceColumn(lvlColumn);
             level.setHavingUniqueMembers(lvl.isUniqueMembers());
             levels.add(level);
           }
@@ -377,7 +361,7 @@ public class ModelerWorkspaceUtil {
 
       cube.setOlapMeasures(measures);
 
-      LogicalModel lModel = model.getDomain().getLogicalModels().get(0);
+      LogicalModel lModel = domain.getLogicalModels().get(0);
 
       if (olapDimensions.size() > 0) { // Metadata OLAP generator doesn't like empty lists.
         lModel.setProperty("olap_dimensions", olapDimensions); //$NON-NLS-1$
@@ -385,26 +369,6 @@ public class ModelerWorkspaceUtil {
       List<OlapCube> cubes = new ArrayList<OlapCube>();
       cubes.add(cube);
       lModel.setProperty("olap_cubes", cubes); //$NON-NLS-1$
-
-//      try{
-//        MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
-//        String mondrianSchema = exporter.createMondrianModelXML();
-//  
-//        logger.info(mondrianSchema);
-//  
-//        // run it thru the parser to be safe and get a doc type node
-//        Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
-//        byte schemaBytes[] = schemaDoc.asXML().getBytes();
-//        // write out the file
-//        File modelFile = new File("models"); //$NON-NLS-1$
-//        modelFile.mkdirs();
-//        modelFile = new File("models/" + model.getModelName() + ".mondrian.xml"); //$NON-NLS-1$ //$NON-NLS-2$
-//        OutputStream out = new FileOutputStream(modelFile);
-//        out.write(schemaBytes);
-//      } catch(Exception e){
-//        throw new ModelerException(BaseMessages.getString(ModelerWorkspaceUtil.class, "ModelerWorkspaceUtil.Populate.BadGenerateOLAP"),e); //$NON-NLS-1$
-//      }
-
   }
   
   public static void saveWorkspace(ModelerWorkspace aModel, String fileName) throws ModelerException {
