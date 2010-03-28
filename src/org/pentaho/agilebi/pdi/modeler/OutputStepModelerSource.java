@@ -36,7 +36,7 @@ public class OutputStepModelerSource extends TableModelerSource {
 	private String stepId;
 	public static final String OUTPUTSTEP_SOURCE_TYPE = OutputStepModelerSource.class.getSimpleName();
 	
-  public OutputStepModelerSource(){
+  public OutputStepModelerSource() {
     
   }
 	
@@ -51,9 +51,13 @@ public class OutputStepModelerSource extends TableModelerSource {
 	public void initialize(Domain domain) throws ModelerException {
 	  super.initialize(domain);
 	  LogicalModel lm = domain.getLogicalModels().get(0);
-	  if(lm.getProperty("trans_file") != null){ //$NON-NLS-1$
+	  if(lm.getProperty("trans_file") != null) { //$NON-NLS-1$
 	    setFileName(lm.getProperty("trans_file").toString()); //$NON-NLS-1$
+	  }
+	  if (lm.getProperty("trans_repo") != null) { //$NON-NLS-1$
 	    setRepositoryName(lm.getProperty("trans_repo").toString()); //$NON-NLS-1$
+	  }
+	  if (lm.getProperty("trans_step") != null) { //$NON-NLS-1$
       setStepId(lm.getProperty("trans_step").toString()); //$NON-NLS-1$
 	  }
     
@@ -125,14 +129,11 @@ public class OutputStepModelerSource extends TableModelerSource {
   }
 
   public void serializeIntoDomain(Domain d) {
-    if(this.fileName == null){
-      return;
-    }
     LogicalModel lm = d.getLogicalModels().get(0);
-    lm.setProperty("trans_file", this.fileName); //$NON-NLS-1$
-    lm.setProperty("trans_repo", this.repositoryName != null ? this.repositoryName : ""); //$NON-NLS-1$ //$NON-NLS-2$
     lm.setProperty("source_type", OutputStepModelerSource.OUTPUTSTEP_SOURCE_TYPE); //$NON-NLS-1$
-    lm.setProperty("trans_step", this.stepId); //$NON-NLS-1$
+    lm.setProperty("trans_file", this.fileName != null ? this.fileName : ""); //$NON-NLS-1$ //$NON-NLS-2$
+    lm.setProperty("trans_repo", this.repositoryName != null ? this.repositoryName : ""); //$NON-NLS-1$ //$NON-NLS-2$
+    lm.setProperty("trans_step", this.stepId != null ? this.stepId : ""); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
 }
