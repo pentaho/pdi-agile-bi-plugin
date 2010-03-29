@@ -318,12 +318,21 @@ public class ModelerController extends AbstractXulEventHandler{
         SpoonDBDelegate theDelegate = new SpoonDBDelegate(theSpoon);
         DatabaseMeta theDBMeta = DatabaseMeta.findDatabase(theDatabasesInterface.getDatabases(), theDBName);
         String theTable = theDelegate.exploreDB(theDBMeta, false);
+        
+        if (StringUtils.isEmpty(theTable)) {
+          MessageBox theMessageBox = new MessageBox(theSpoon.getShell(), SWT.ICON_ERROR | SWT.OK);
+          theMessageBox.setText(BaseMessages.getString(Spoon.class, "Spoon.Message.Warning.Warning")); //$NON-NLS-1$
+          theMessageBox.setMessage(BaseMessages.getString(ModelerController.class, "Spoon.Message.Model.EmptyTable")); //$NON-NLS-1$
+          theMessageBox.open();
+          return;
+        }
+        
         boolean refresh = this.workspace.getAvailableFields().isEmpty();
         if(!StringUtils.isEmpty(theTable) && !this.workspace.getAvailableFields().isEmpty()) {
           
           MessageBox theMessageBox = new MessageBox(theSpoon.getShell(), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
-          theMessageBox.setText(BaseMessages.getString(Spoon.class, "Spoon.Message.Warning.Warning"));
-          theMessageBox.setMessage(BaseMessages.getString(Spoon.class, "Spoon.Message.Model.Warning"));
+          theMessageBox.setText(BaseMessages.getString(Spoon.class, "Spoon.Message.Warning.Warning")); //$NON-NLS-1$
+          theMessageBox.setMessage(BaseMessages.getString(ModelerController.class, "Spoon.Message.Model.Warning")); //$NON-NLS-1$
           
           int theVal = theMessageBox.open();
           if(theVal == SWT.OK) {
