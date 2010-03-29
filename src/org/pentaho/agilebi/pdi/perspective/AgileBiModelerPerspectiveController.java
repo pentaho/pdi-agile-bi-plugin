@@ -1,6 +1,22 @@
 package org.pentaho.agilebi.pdi.perspective;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Locale;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.dom4j.DocumentHelper;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.FileDialog;
 import org.pentaho.agilebi.pdi.modeler.ModelerEngineMeta;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
+import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
@@ -10,6 +26,7 @@ import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
 public class AgileBiModelerPerspectiveController extends AbstractXulEventHandler {
 
+  private Log logger = LogFactory.getLog(AgileBiModelerPerspective.class);
   private XulMenuitem modelPropItem;
   BindingFactory bf = new DefaultBindingFactory();
   
@@ -56,5 +73,43 @@ public class AgileBiModelerPerspectiveController extends AbstractXulEventHandler
     meta.getController().togglePropertiesPanel();
   }
   
+  public void exportSchema() {
+    try {
+      ModelerWorkspace model = this.meta.getController().getModel();
+      if (model.isValid()) {
+        ModelerWorkspaceUtil.populateDomain(model);
+        LogicalModel lModel = model.getDomain().getLogicalModels().get(0);
+
+        FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell(), SWT.SAVE);
+        String[] theExtensions = { "*.xml" };
+        fileDialog.setFilterExtensions(theExtensions);
+        String theFile = fileDialog.open();
+        if(theFile != null) {
+          MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
+          String mondrianSchema = exporter.createMondrianModelXML();
+          logger.info(mondrianSchema);
   
+          org.dom4j.Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
+          byte schemaBytes[] = schemaDoc.asXML().getBytes();
+  
+          File modelFile = new File(theFile);
+          OutputStream out = new FileOutputStream(modelFile);
+          out.write(schemaBytes);
+          out.flush();
+          out.close();
+        }
+      } else {
+        StringBuffer validationErrors = new StringBuffer();
+        for (String msg : model.getValidationMessages()) {
+          validationErrors.append(msg);
+          validationErrors.append("\n");
+          logger.info(msg);
+        }
+        MessageDialog.openError(Spoon.getInstance().getShell(), "", validationErrors.toString());
+      }
+    } catch (Exception e) {
+      logger.error(e);
+      MessageDialog.openError(Spoon.getInstance().getShell(), "", e.getMessage());
+    }
+  }
 }
