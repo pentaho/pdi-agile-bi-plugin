@@ -117,11 +117,11 @@ public class ModelerWorkspaceUtil {
       rowMeta = transMeta.getStepFields(stepMeta);
     } catch (KettleException e) {
     	logger.info(e);
-    	Throwable e1 = e;
-    	while (e1.getCause() != null && e1 != e1.getCause()) {
-    	  e1 = e1.getCause();
+    	Throwable rootCause = e;
+    	while (rootCause.getCause() != null && rootCause != rootCause.getCause()) {
+    	  rootCause = rootCause.getCause();
     	}
-      throw new ModelerException(BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta"), e1); //$NON-NLS-1$
+      throw new ModelerException(BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta"), rootCause); //$NON-NLS-1$
     }
     if(rowMeta == null){
    	 throw new ModelerException(BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta")); //$NON-NLS-1$
