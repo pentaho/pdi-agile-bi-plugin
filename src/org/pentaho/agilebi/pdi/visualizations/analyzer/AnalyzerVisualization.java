@@ -92,7 +92,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
     // path, filename
     String pathAndFilename[] = getPathAndFilename(filename);
     String str = replaceField(saveJavascript, "path", pathAndFilename[0], true); //$NON-NLS-1$
-    str = replaceField(str, "filename", pathAndFilename[1], false); //$NON-NLS-1$
+    str = replaceField(str, "filename", pathAndFilename[1], true); //$NON-NLS-1$
     return str;
   }
 
