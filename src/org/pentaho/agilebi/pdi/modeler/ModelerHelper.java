@@ -50,12 +50,20 @@ import org.pentaho.xul.swt.tab.TabItem;
 public class ModelerHelper extends AbstractXulEventHandler {
 
   private static final String MODELER_NAME = "Modeler"; 
+  private static final String TEMP_MODELS_FOLDER = "models";
 
   private static ModelerHelper instance = null;
     
   private static Log logger = LogFactory.getLog(ModelerHelper.class);
   
   private ModelerHelper() {
+    File modelsDir = new File(TEMP_MODELS_FOLDER);
+    if(modelsDir.exists()) {
+      for(File file : modelsDir.listFiles()) {
+        file.delete();
+      }
+      modelsDir.delete();
+    }
   }
   
   public static ModelerHelper getInstance() {
@@ -250,7 +258,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
   
   public void createTemporaryModel(ModelerWorkspace model, boolean saveName) throws ModelerException {
     //give it a temporary name
-    File modelsDir = new File("models"); //$NON-NLS-1$
+    File modelsDir = new File(TEMP_MODELS_FOLDER); //$NON-NLS-1$
     modelsDir.mkdirs();
     int idx = 1;
     boolean looking = true;
@@ -259,7 +267,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     String modelName = ""; //$NON-NLS-1$
     while( looking ) {
       modelName = "Model "+idx; //$NON-NLS-1$
-      fileName = "models/"+modelName+".xmi"; //$NON-NLS-1$ //$NON-NLS-2$
+      fileName = TEMP_MODELS_FOLDER + "/" + modelName+".xmi"; //$NON-NLS-1$ //$NON-NLS-2$
       modelFile = new File(fileName);
       if( !modelFile.exists() ) {
         looking = false;
