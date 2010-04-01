@@ -64,6 +64,7 @@ import org.pentaho.ui.xul.containers.XulDeck;
 import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.containers.XulEditpanel;
 import org.pentaho.ui.xul.containers.XulTree;
+import org.pentaho.ui.xul.containers.XulVbox;
 import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.util.AbstractModelNode;
@@ -344,6 +345,9 @@ public class ModelerController extends AbstractXulEventHandler{
         if(refresh) {
           TableModelerSource theSource = new TableModelerSource(theDBMeta, theTable, null);
           ModelerWorkspaceUtil.populateModelFromSource(this.workspace, theSource);
+          XulLabel sourceLabel = (XulLabel) document.getElementById(SOURCE_NAME_LABEL_ID);
+          sourceLabel.setValue(theTable);
+          fireBindings();
         }
       }
     } catch (Exception e) {
@@ -382,7 +386,7 @@ public class ModelerController extends AbstractXulEventHandler{
         }
       }
     }
-    sourceLabel.setValue( "Table : " + tableName );
+    sourceLabel.setValue(tableName);
     bf.createBinding(workspace, "sourceName", sourceLabel, "value");
 
     bf.setBindingType(Type.ONE_WAY);
@@ -414,6 +418,19 @@ public class ModelerController extends AbstractXulEventHandler{
       	return null;
       }
     });      
+    
+    datasourceButtonBinding = bf.createBinding(sourceLabel, "value", "datasource_button", "visible", new BindingConvertor<Object, Boolean>() {
+      public Boolean sourceToTarget(Object value) {
+        boolean isVisible = StringUtils.isEmpty(value.toString());
+        XulVbox messageBox = (XulVbox) document.getElementById("undefined_datasource_message");
+        messageBox.setVisible(isVisible);
+        return isVisible;
+      }
+
+      public Object targetToSource(Boolean value) {
+        return null;
+      }
+    });
     
     bf.createBinding(dimensionTree, "selectedItem", "measureBtn", "disabled", new ButtonConvertor(MeasuresCollection.class));    
     bf.createBinding(dimensionTree, "selectedItem", "dimensionBtn", "disabled", new ButtonConvertor(DimensionMetaDataCollection.class));
@@ -463,6 +480,7 @@ public class ModelerController extends AbstractXulEventHandler{
       modelTreeBinding.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
       visualizationsBinding.fireSourceChanged();
+      datasourceButtonBinding.fireSourceChanged();
     } catch (Exception e) {
       logger.info("Error firing off initial bindings", e);
       throw new ModelerException(e);
@@ -695,6 +713,7 @@ public class ModelerController extends AbstractXulEventHandler{
   private Binding visualizationsBinding;
 
   private Binding modelTreeBinding;
+  private Binding datasourceButtonBinding;
 
   private Binding modelNameBinding;
   
