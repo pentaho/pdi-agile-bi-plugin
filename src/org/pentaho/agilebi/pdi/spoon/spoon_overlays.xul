@@ -24,5 +24,10 @@
               command="agileBi.createEmptyModel()" />
 	</menupopup>
 	
+	<menupopup id="new-file-popup">
+	    <menuitem id="file-new-model" insertafter="menubar-new-trans" acceltext="CTRL-ALT-M" accesskey="ctrl-alt-m" label="${model}"
+              command="agileBi.createEmptyModel()" />
+	</menupopup>	
+	
   
 </overlay>
