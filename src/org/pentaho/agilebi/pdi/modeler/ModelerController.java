@@ -421,9 +421,21 @@ public class ModelerController extends AbstractXulEventHandler{
     
     datasourceButtonBinding = bf.createBinding(sourceLabel, "value", "datasource_button", "visible", new BindingConvertor<Object, Boolean>() {
       public Boolean sourceToTarget(Object value) {
+        
         boolean isVisible = StringUtils.isEmpty(value.toString());
         XulVbox messageBox = (XulVbox) document.getElementById("undefined_datasource_message");
         messageBox.setVisible(isVisible);
+        
+        
+        XulComponent refreshButton = document.getElementById("refreshButton");
+        refreshButton.setDisabled(isVisible);
+
+        XulComponent addFieldButton = document.getElementById("addField");
+        addFieldButton.setDisabled(isVisible);
+        
+        XulComponent autoPopulateButton = document.getElementById("autoPopulateButton");
+        autoPopulateButton.setDisabled(isVisible);
+        
         return isVisible;
       }
 
@@ -475,12 +487,12 @@ public class ModelerController extends AbstractXulEventHandler{
   
   private void fireBindings() throws ModelerException{
     try {
+      datasourceButtonBinding.fireSourceChanged();
       fieldListBinding.fireSourceChanged();
       selectedFieldsBinding.fireSourceChanged();
       modelTreeBinding.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
       visualizationsBinding.fireSourceChanged();
-      datasourceButtonBinding.fireSourceChanged();
     } catch (Exception e) {
       logger.info("Error firing off initial bindings", e);
       throw new ModelerException(e);
