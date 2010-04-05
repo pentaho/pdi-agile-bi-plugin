@@ -35,7 +35,9 @@ import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.di.repository.Repository;
 import org.pentaho.di.trans.HasDatabasesInterface;
+import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.ui.core.dialog.EnterSelectionDialog;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.spoon.MainSpoonPerspective;
@@ -276,7 +278,10 @@ public class ModelerController extends AbstractXulEventHandler{
   public void editDataSource() {
     try {
       Spoon theSpoon = Spoon.getInstance();
+      Repository theRepository = theSpoon.getRepository();
   
+      List<DatabaseMeta> theDatabases = new ArrayList<DatabaseMeta>();
+
       EngineMetaInterface theMeta = null;
       HasDatabasesInterface theDatabasesInterface = null;
       List<SpoonPerspective> thePerspectives = SpoonPerspectiveManager.getInstance().getPerspectives();
@@ -286,15 +291,20 @@ public class ModelerController extends AbstractXulEventHandler{
            break;
         } 
       }
-      
-      List<DatabaseMeta> theDatabases = new ArrayList<DatabaseMeta>();
       if(theMeta != null) {
         theDatabasesInterface = (HasDatabasesInterface) theMeta; 
       } else {
         theDatabasesInterface = this.databaseInterface;
       }
       theDatabases.addAll(theDatabasesInterface.getDatabases());
-  
+      
+      if(theRepository != null) {   
+        TransMeta theTransMeta = new TransMeta();
+        theRepository.readTransSharedObjects(theTransMeta);
+        theDatabases.addAll(theTransMeta.getDatabases());
+        theDatabasesInterface.setDatabases(theDatabases);
+      }
+        
       String theSelectedTable = null;
       IModelerSource theModelerSource = this.workspace.getModelSource();
       if(theModelerSource != null) {
@@ -310,8 +320,8 @@ public class ModelerController extends AbstractXulEventHandler{
       }
       
       EnterSelectionDialog theDialog = new EnterSelectionDialog(theSpoon.getShell(), theNames, 
-          BaseMessages.getString(Spoon.class ,"Spoon.ExploreDB.SelectDB.Title"), 
-          BaseMessages.getString(Spoon.class, "Spoon.ExploreDB.SelectDB.Message"), theDatabasesInterface);
+          BaseMessages.getString(Spoon.class ,"Spoon.ExploreDB.SelectDB.Title"), //$NON-NLS-1$
+          BaseMessages.getString(Spoon.class, "Spoon.ExploreDB.SelectDB.Message"), theDatabasesInterface); //$NON-NLS-1$
       theDialog.setSelectedNrs(theSelectedIndexes);
       String theDBName = theDialog.open();
       
@@ -351,7 +361,7 @@ public class ModelerController extends AbstractXulEventHandler{
         }
       }
     } catch (Exception e) {
-      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
+      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e); //$NON-NLS-1$ 
     }
   }
   
