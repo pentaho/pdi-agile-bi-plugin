@@ -48,6 +48,7 @@ import org.pentaho.di.ui.spoon.delegates.SpoonDBDelegate;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
 import org.pentaho.metadata.model.LogicalColumn;
+import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
@@ -548,7 +549,23 @@ public class ModelerController extends AbstractXulEventHandler{
   }
   
   public void publish() throws ModelerException{
-    PublisherHelper.publish(workspace, workspace.getFileName());
+    String publishingFile = workspace.getFileName();
+    String comment = BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment"); //$NON-NLS-1$
+    int treeDepth = 1;
+    DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
+    boolean checkDatasources = true;
+    boolean showServerSelection = true;
+    boolean showFolders = true;
+    boolean showCurrentFolder = false;
+    String serverPathTemplate = "{path}" + //$NON-NLS-1$
+      "resources" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
+      "metadata" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
+      "{file}.xmi"; //$NON-NLS-1$     String extension = "xmi";
+    String databaseName = workspace.getDatabaseName();
+    String extension = ".mondrian.xml"; //$NON-NLS-1$
+    String filename = workspace.getModelName();
+    PublisherHelper.publish(workspace, publishingFile, comment, treeDepth, databaseMeta, filename, checkDatasources, 
+        showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
   }
   
   /**

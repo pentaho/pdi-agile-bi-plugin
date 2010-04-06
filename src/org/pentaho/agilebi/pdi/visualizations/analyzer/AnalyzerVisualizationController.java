@@ -14,11 +14,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.perspective.PublisherHelper;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
@@ -343,7 +345,23 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
   
   public void publish() throws ModelerException{
     EngineMetaInterface engineMeta = spoon.getActiveMeta();
-    PublisherHelper.publish(workspace, engineMeta.getFilename());
+//    PublisherHelper.publish(workspace, engineMeta.getFilename());
+    
+    String publishingFile = engineMeta.getFilename();
+    String comment = BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment"); //$NON-NLS-1$
+    int treeDepth = 1;
+    DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
+    boolean checkDatasources = false;
+    boolean showServerSelection = true;
+    boolean showFolders = true;
+    boolean showCurrentFolder = true;
+    String serverPathTemplate = "{path}{file}.xanalyzer"; //$NON-NLS-1$     String extension = "xmi";
+    String databaseName = workspace.getDatabaseName();
+    String extension = ".mondrian.xml"; //$NON-NLS-1$
+    String filename = workspace.getModelName();
+    PublisherHelper.publish(workspace, publishingFile, comment, treeDepth, databaseMeta, filename, checkDatasources, 
+        showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
+
   }
   
   public void setModel(ModelerWorkspace aWorkspace) {

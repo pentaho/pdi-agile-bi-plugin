@@ -4,7 +4,6 @@ import org.pentaho.agilebi.pdi.modeler.BiServerConnection;
 import org.pentaho.agilebi.pdi.modeler.ModelServerPublish;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.modeler.XulDialogPublish;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.di.core.Const;
@@ -12,13 +11,14 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.Spoon;
-import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulException;
 
 public class PublisherHelper {
 
-  public static void publish(ModelerWorkspace workspace, String publishingFile) throws ModelerException {
+  public static void publish(ModelerWorkspace workspace, String publishingFile,
+      String comment, int treeDepth, DatabaseMeta databaseMeta, String filename, boolean checkDatasources, 
+      boolean showServerSelection, boolean showFolders, boolean showCurrentFolder, String serverPathTemplate, String extension, String databaseName ) throws ModelerException {
     try {
 
       if (StringUtils.isEmpty(publishingFile)) {
@@ -26,26 +26,29 @@ public class PublisherHelper {
             "Dialog Error", false, Const.ERROR);
         return;
       }
-
+/*
       ModelerWorkspaceUtil.populateDomain(workspace);
+*/
       ModelServerPublish publisher = new ModelServerPublish();
       publisher.setModel(workspace);
-
       Spoon spoon = ((Spoon) SpoonFactory.getInstance());
       try {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
-        publishDialog.setFolderTreeDepth(1);
-        publishDialog.setComment(BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment")); //$NON-NLS-1$
-        DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
+        publishDialog.setFolderTreeDepth(treeDepth);
+//        publishDialog.setFolderTreeDepth(1);
+        publishDialog.setComment(comment); //$NON-NLS-1$
+//        publishDialog.setComment(BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment")); //$NON-NLS-1$      
+//        DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
         publishDialog.setDatabaseMeta(databaseMeta);
-        publishDialog.setFilename(workspace.getModelName());
-        publishDialog.setCheckDatasources(true);
-        publishDialog.setShowLocation(true, true, false);
-        String template = "{path}" + //$NON-NLS-1$
-            "resources" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
-            "metadata" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
-            "{file}.xmi"; //$NON-NLS-1$ 
-        publishDialog.setPathTemplate(template);
+        publishDialog.setFilename(filename);
+//        publishDialog.setFilename(workspace.getModelName());
+        publishDialog.setCheckDatasources(checkDatasources);
+        publishDialog.setShowLocation(showServerSelection, showFolders, showCurrentFolder);
+//        String template = "{path}" + //$NON-NLS-1$
+//            "resources" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
+//            "metadata" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
+//            "{file}.xmi"; //$NON-NLS-1$ 
+        publishDialog.setPathTemplate(serverPathTemplate);
         publishDialog.showDialog();
         if (publishDialog.isAccepted()) {
           // now try to publish
@@ -55,14 +58,19 @@ public class PublisherHelper {
           BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
           publisher.setBiServerConnection(biServerConnection);
           boolean publishDatasource = publishDialog.isPublishDataSource();
-          sb.append(path).append(ISolutionRepository.SEPARATOR).append("resources") //$NON-NLS-1$
-              .append(ISolutionRepository.SEPARATOR).append("metadata"); //$NON-NLS-1$
-          String repositoryPath = sb.toString();
-          String filename = publishDialog.getFilename();
+          String repositoryPath = path;
+          if( serverPathTemplate != null ) {
+            repositoryPath = serverPathTemplate.replace("{path}", path);
+            repositoryPath = repositoryPath.replace("{file}", publishDialog.getFilename());
+          }
+//          sb.append(path).append(ISolutionRepository.SEPARATOR).append("resources") //$NON-NLS-1$
+//              .append(ISolutionRepository.SEPARATOR).append("metadata"); //$NON-NLS-1$
+//          String repositoryPath = sb.toString();
+          filename = publishDialog.getFilename();
 
           publisher
               .publishToServer(
-                  filename + ".mondrian.xml", workspace.getDatabaseName(), filename, repositoryPath, publishDatasource, true, publishDialog.isExistentDatasource(), publishingFile); //$NON-NLS-1$
+                  filename + extension, databaseName, filename, repositoryPath, publishDatasource, true, publishDialog.isExistentDatasource(), publishingFile); //$NON-NLS-1$
         }
       } catch (XulException e) {
         e.printStackTrace();
