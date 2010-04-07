@@ -12,7 +12,6 @@ import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.ObjectRevision;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.repository.RepositoryDirectory;
-import org.pentaho.di.repository.RepositoryLock;
 import org.pentaho.di.repository.RepositoryObjectType;
 import org.pentaho.ui.xul.components.XulTab;
 import org.pentaho.ui.xul.impl.XulEventHandler;
@@ -185,11 +184,6 @@ public class PRPTMeta implements EngineMetaInterface, HasXulController {
   }
 
   public ObjectRevision getObjectRevision() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  public RepositoryLock getRepositoryLock() {
     // TODO Auto-generated method stub
     return null;
   }
