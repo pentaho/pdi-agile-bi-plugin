@@ -23,13 +23,14 @@ import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.handler.DefaultHandler;
 import org.mortbay.jetty.handler.HandlerCollection;
 import org.mortbay.jetty.webapp.WebAppContext;
-import org.pentaho.di.core.logging.LogWriter;
+import org.pentaho.di.core.logging.LogChannel;
+import org.pentaho.di.core.logging.LogChannelInterface;
 
 public class JettyServer {
   
   private static Class<?> PKG = JettyServer.class; // for i18n purposes, needed by Translator2!!   $NON-NLS-1$
 
-  private static LogWriter log = LogWriter.getInstance();
+  private static LogChannelInterface log = new LogChannel(JettyServer.class.toString());
 
   public static final int PORT = 80;
 
@@ -85,7 +86,7 @@ public class JettyServer {
         server.stop();
       }
     } catch (Exception e) {
-      LogWriter.getInstance(LogWriter.LOG_LEVEL_ERROR).logBasic(toString(), "WebServer.Error.FailedToStop.Title", null);
+      log.logError("WebServer.Error.FailedToStop.Title", e);
     }
   }
 
@@ -94,8 +95,7 @@ public class JettyServer {
     connector.setPort(port);
     connector.setHost(hostname);
     connector.setName(hostname);
-
-    LogWriter.getInstance(LogWriter.LOG_LEVEL_ERROR).logBasic(toString(), "WebServer.Log.CreateListener" + hostname + ":" + port, null);
+    log.logBasic("WebServer.Log.CreateListener " + hostname + ":" + port);
 
     server.setConnectors(new Connector[] { connector });
   }
