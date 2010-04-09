@@ -20,7 +20,7 @@
       <toolbarseparator/>
       <toolbarbutton image="images/modeler.png" onclick="analyzerVis.editModel()" tooltiptext="${AnalyzerViz.edit_model}" />
       <toolbarseparator />
-      <!--toolbarbutton  image="images/publish.png" onclick="analyzerVis.publish()" tooltiptext="${AnalyzerViz.analyzer-publish}" /-->
+      <toolbarbutton  image="images/publish.png" onclick="analyzerVis.publish()" tooltiptext="${AnalyzerViz.analyzer-publish}" />
     </toolbar>
     <hbox flex="1">
       <browser id="web_visualization_browser" flex="1" src="" showtoolbar="false"/>

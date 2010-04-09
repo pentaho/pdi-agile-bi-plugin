@@ -27,7 +27,7 @@
         </toolbaritem>
       
       <toolbarbutton label="${go}" id="exploreButton" onclick="modeler.visualize()" />
-      <!--toolbarbutton image="images/publish.png" id="publishButton" onclick="modeler.publish()" tooltiptext="${publish}"/-->
+      <toolbarbutton image="images/publish.png" id="publishButton" onclick="modeler.publish()" tooltiptext="${publish}"/>
       
     </toolbar>
 

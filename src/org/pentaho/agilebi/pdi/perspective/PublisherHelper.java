@@ -22,32 +22,22 @@ public class PublisherHelper {
     try {
 
       if (StringUtils.isEmpty(publishingFile)) {
-        SpoonFactory.getInstance().messageBox(BaseMessages.getString(XulUI.class,"ModelServerPublish.Publish.UnsavedModel"),
-            "Dialog Error", false, Const.ERROR);
+        SpoonFactory.getInstance().messageBox(BaseMessages.getString(XulUI.class,"ModelServerPublish.Publish.UnsavedModel"), //$NON-NLS-1$
+            "Dialog Error", false, Const.ERROR); //$NON-NLS-1$
         return;
       }
-/*
-      ModelerWorkspaceUtil.populateDomain(workspace);
-*/
+
       ModelServerPublish publisher = new ModelServerPublish();
       publisher.setModel(workspace);
       Spoon spoon = ((Spoon) SpoonFactory.getInstance());
       try {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
         publishDialog.setFolderTreeDepth(treeDepth);
-//        publishDialog.setFolderTreeDepth(1);
         publishDialog.setComment(comment); //$NON-NLS-1$
-//        publishDialog.setComment(BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment")); //$NON-NLS-1$      
-//        DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
         publishDialog.setDatabaseMeta(databaseMeta);
         publishDialog.setFilename(filename);
-//        publishDialog.setFilename(workspace.getModelName());
         publishDialog.setCheckDatasources(checkDatasources);
         publishDialog.setShowLocation(showServerSelection, showFolders, showCurrentFolder);
-//        String template = "{path}" + //$NON-NLS-1$
-//            "resources" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
-//            "metadata" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
-//            "{file}.xmi"; //$NON-NLS-1$ 
         publishDialog.setPathTemplate(serverPathTemplate);
         publishDialog.showDialog();
         if (publishDialog.isAccepted()) {
@@ -61,11 +51,7 @@ public class PublisherHelper {
           String repositoryPath = path;
           if( serverPathTemplate != null ) {
             repositoryPath = serverPathTemplate.replace("{path}", path);
-            repositoryPath = repositoryPath.replace("{file}", publishDialog.getFilename());
           }
-//          sb.append(path).append(ISolutionRepository.SEPARATOR).append("resources") //$NON-NLS-1$
-//              .append(ISolutionRepository.SEPARATOR).append("metadata"); //$NON-NLS-1$
-//          String repositoryPath = sb.toString();
           filename = publishDialog.getFilename();
 
           publisher

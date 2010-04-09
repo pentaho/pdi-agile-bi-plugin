@@ -34,7 +34,7 @@
       <toolbarseparator/>
       <toolbarbutton image="images/modeler.png" onclick="prpt.editModel()" tooltiptext="${edit_model}" />
       <toolbarseparator />
-      <!--toolbarbutton image="images/publish.png" onclick="prpt.publish()" tooltiptext="${prpt-publish}" /-->
+      <toolbarbutton image="images/publish.png" onclick="prpt.publish()" tooltiptext="${prpt-publish}" />
             
       
       

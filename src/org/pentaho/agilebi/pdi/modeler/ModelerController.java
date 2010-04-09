@@ -85,7 +85,6 @@ public class ModelerController extends AbstractXulEventHandler{
 
   private static final String NEW_DIMESION_DIALOG = "newDimesionDialog"; //$NON-NLS-1$
 
-
   private static final String MY_TAB_LIST_ID = "myTabList"; //$NON-NLS-1$
 
   private static final String FIELD_LIST_ID = "fieldList"; //$NON-NLS-1$
@@ -557,13 +556,12 @@ public class ModelerController extends AbstractXulEventHandler{
     boolean showServerSelection = true;
     boolean showFolders = true;
     boolean showCurrentFolder = false;
-    String serverPathTemplate = "{path}" + //$NON-NLS-1$
-      "resources" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
-      "metadata" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
-      "{file}.xmi"; //$NON-NLS-1$     String extension = "xmi";
+    String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
+      "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
     String databaseName = workspace.getDatabaseName();
     String extension = ".mondrian.xml"; //$NON-NLS-1$
     String filename = workspace.getModelName();
+    ModelerWorkspaceUtil.populateDomain(workspace);
     PublisherHelper.publish(workspace, publishingFile, comment, treeDepth, databaseMeta, filename, checkDatasources, 
         showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
   }

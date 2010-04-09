@@ -499,7 +499,13 @@ public class ModelServerPublish {
   
   private void publishOlapSchemaToServer( String schemaFilePath, String jndiName, String modelName, String repositoryPath, boolean showFeedback ) throws Exception {
     
-    File publishFile = new File( "models/"+schemaFilePath ); //$NON-NLS-1$
+    File modelsDir = new File("models"); //$NON-NLS-1$
+    if(!modelsDir.exists()) {
+      modelsDir.mkdir();
+    }
+    File publishFile = new File(modelsDir, schemaFilePath); 
+    publishFile.createNewFile();
+
     LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
 
     MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
@@ -508,14 +514,16 @@ public class ModelServerPublish {
     org.dom4j.Document schemaDoc = DocumentHelper.parseText(mondrianSchema);
     byte schemaBytes[] = schemaDoc.asXML().getBytes();
 
+    if(!publishFile.exists()) {
+      throw new ModelerException("Schema file does not exist"); //$NON-NLS-1$
+    }
+    
     OutputStream out = new FileOutputStream(publishFile);
     out.write(schemaBytes);
     out.flush();
     out.close();
-    
-    boolean enableXmla = false;
-    
-    int result = publish(repositoryPath, publishFile, jndiName, modelName, enableXmla);
+       
+    int result = publish(repositoryPath, publishFile, jndiName, modelName, false);
     if( showFeedback ) {
       showFeedback( result );
     }
