@@ -25,13 +25,16 @@ import org.pentaho.metadata.automodel.SchemaTable;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.LogicalTable;
+import org.pentaho.metadata.model.concept.IConcept;
+import org.pentaho.metadata.model.concept.security.Security;
 import org.pentaho.metadata.model.concept.security.SecurityOwner;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.pms.core.exception.PentahoMetadataException;
+import org.pentaho.pms.schema.concept.DefaultPropertyID;
 
 public class ModelerSourceUtil {
 
-  public static final String DEFAULT_USER_NAME = "joe";
+  public static final String DEFAULT_ROLE_NAME = "Authenticated"; //$NON-NLS-1$
   private static ModelGenerator generator = new ModelGenerator();
   private static Log logger = LogFactory.getLog(ModelerSourceUtil.class);
 
@@ -62,20 +65,28 @@ public class ModelerSourceUtil {
 	    LogicalTable businessTable = businessModel.getLogicalTables().get(0);
 	    businessTable.setName(new LocalizedString(locale, "Available Columns"));
 	
-	    // is this necessary
-	    // businessTable.getsetTargetTable( tableName );
-	    SecurityOwner owner = new SecurityOwner(SecurityOwner.OwnerType.USER, DEFAULT_USER_NAME);
-	
-	    Metadata meta = new Metadata();
-	
+	    // configuring security is necessary so when publishing a model to the bi-server
+	    // it can be viewed by everyone.  we will eventually have a security UI where this will
+	    // be configurable in the modeler tool
+	    
 	    // TODO: investigate and replace this magic number with named constant?
 	    int rights = 31;
-	    meta.setUserAccess(DEFAULT_USER_NAME, rights, businessModel);
-	    meta.setUserAccess(DEFAULT_USER_NAME, rights, businessTable);
+	    String roleName = System.getProperty("AGILE_BI_MODEL_ROLE", DEFAULT_ROLE_NAME); //$NON-NLS-1$
+	    setRoleAccess(roleName, rights, businessModel);
   	} catch (PentahoMetadataException e) {
   		logger.info(e.getLocalizedMessage());
   		throw new ModelerException(e);
   	}
     return domain;
+  }
+  
+  private static void setRoleAccess( String role, int rights, IConcept concept ) {
+    SecurityOwner owner = new SecurityOwner(SecurityOwner.OwnerType.ROLE, role );
+    Security security = (Security)concept.getProperty(DefaultPropertyID.SECURITY.getId());
+    if( security == null ) {
+      security = new Security();
+      concept.setProperty(DefaultPropertyID.SECURITY.getId(), security);
+    }
+    security.putOwnerRights(owner, rights);
   }
 }
