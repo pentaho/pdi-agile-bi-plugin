@@ -54,9 +54,13 @@ public class PublisherHelper {
           }
           filename = publishDialog.getFilename();
 
+          if(publishingFile.endsWith(".xmi")) {
+            path = null;
+          }
+          
           publisher
               .publishToServer(
-                  filename + extension, databaseName, filename, repositoryPath, publishDatasource, true, publishDialog.isExistentDatasource(), publishingFile); //$NON-NLS-1$
+                  filename + extension, databaseName, filename, repositoryPath, path, publishDatasource, true, publishDialog.isExistentDatasource(), publishingFile); //$NON-NLS-1$
         }
       } catch (XulException e) {
         e.printStackTrace();

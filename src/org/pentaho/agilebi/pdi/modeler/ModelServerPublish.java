@@ -383,7 +383,7 @@ public class ModelServerPublish {
    * @param showFeedback
    * @throws Exception
    */
-  public void publishToServer( String schemaName, String jndiName, String modelName, String repositoryPath, boolean publishDatasource, boolean showFeedback, boolean isExistentDatasource, String fileName) throws Exception {
+  public void publishToServer( String schemaName, String jndiName, String modelName, String repositoryPath, String selectedPath, boolean publishDatasource, boolean showFeedback, boolean isExistentDatasource, String fileName) throws Exception {
 
     if( publishDatasource ) {
       DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
@@ -391,7 +391,7 @@ public class ModelServerPublish {
     }
     publishOlapSchemaToServer( schemaName, jndiName , modelName, repositoryPath, showFeedback );
     File files[] = { new File(fileName) };
-    publishFile(repositoryPath, files, false);
+    publishFile(selectedPath != null ? selectedPath : repositoryPath, files, false);
   }
   
   public boolean checkDataSource( boolean autoMode ) throws KettleDatabaseException, ConnectionServiceException {

@@ -1,7 +1,10 @@
 package org.pentaho.agilebi.pdi.visualizations.analyzer;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -9,6 +12,12 @@ import mondrian.rolap.agg.AggregationManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
@@ -29,6 +38,7 @@ import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
+import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
@@ -345,23 +355,52 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
   
   public void publish() throws ModelerException{
     EngineMetaInterface engineMeta = spoon.getActiveMeta();
-//    PublisherHelper.publish(workspace, engineMeta.getFilename());
-    
     String publishingFile = engineMeta.getFilename();
     String comment = BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment"); //$NON-NLS-1$
     int treeDepth = 1;
     DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
-    boolean checkDatasources = false;
+    boolean checkDatasources = true; 
     boolean showServerSelection = true;
     boolean showFolders = true;
     boolean showCurrentFolder = true;
-    String serverPathTemplate = "{path}{file}.xanalyzer"; //$NON-NLS-1$     String extension = "xmi";
+    String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
+    "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
     String databaseName = workspace.getDatabaseName();
     String extension = ".mondrian.xml"; //$NON-NLS-1$
     String filename = workspace.getModelName();
+    
+    String originalValue = replaceAttributeValue("report", "catalog", filename, publishingFile);
+    
     PublisherHelper.publish(workspace, publishingFile, comment, treeDepth, databaseMeta, filename, checkDatasources, 
         showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
+    
+    replaceAttributeValue("report", "catalog", originalValue, publishingFile);
+  }
+  
+  private String replaceAttributeValue(String aElement, String anAttribute, String aValue, String aFile) {
 
+    String originalValue = null;
+    try {
+        SAXReader reader = new SAXReader();
+        Document doc = reader.read(new File(aFile));
+        Element root = doc.getRootElement();
+
+        for ( Iterator<Element> i = root.elementIterator(); i.hasNext(); ) {
+            Element element = i.next();
+            if(element.getName().equals(aElement)) {
+              Attribute attr = element.attribute(anAttribute);
+              originalValue = attr.getValue();
+              attr.setValue(aValue);
+            }
+        }
+
+        XMLWriter writer = new XMLWriter(new FileWriter(aFile));
+        writer.write(doc);
+        writer.close();
+    } catch(Exception e) {
+      logger.error(e);
+    }
+    return originalValue;
   }
   
   public void setModel(ModelerWorkspace aWorkspace) {
