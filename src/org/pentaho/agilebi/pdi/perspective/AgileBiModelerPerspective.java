@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.pentaho.agilebi.pdi.modeler.IncompatibleModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerEngineMeta;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
@@ -43,6 +44,7 @@ import org.pentaho.ui.xul.binding.DefaultBinding;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.components.XulConfirmBox;
 import org.pentaho.ui.xul.components.XulMenuitem;
+import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTab;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.w3c.dom.Node;
@@ -161,7 +163,19 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
       spoon.addMenuLast();
       
       return true;  
+    } catch(IncompatibleModelerException e){
+      try {
+        XulMessageBox box = (XulMessageBox) document.createElement("messagebox");
+        box.setTitle(BaseMessages.getString(AgileBiModelerPerspective.class, "incompatible_model_title"));
+        box.setMessage(BaseMessages.getString(AgileBiModelerPerspective.class, "incompatible_model_msg"));
+        box.setModalParent(((Spoon)SpoonFactory.getInstance()).getShell());
+        box.open();
+      } catch (XulException e1) {
+        e1.printStackTrace();
+      }
+      
     } catch(ModelerException e){
+      logger.error(e);
       logger.error(e);
     } catch(IOException e){
       logger.error(e);

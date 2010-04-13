@@ -412,9 +412,15 @@ public class ModelerWorkspaceUtil {
     try{
       XmiParser parser = new XmiParser();
       Domain domain = parser.parseXmi(new ByteArrayInputStream(aXml.getBytes()));
+
+      LogicalModel logical = domain.getLogicalModels().get(0);
+      
+      Object agileBiProp = logical.getProperty("AGILE_BI_GENERATED_SCHEMA");
+      if(agileBiProp == null || "FALSE".equals(agileBiProp)){
+        throw new IncompatibleModelerException();
+      }
         	
       // re-hydrate the source
-      LogicalModel logical = domain.getLogicalModels().get(0);
       Object property = logical.getProperty("source_type"); //$NON-NLS-1$
       if( property != null ) {
         IModelerSource theSource = ModelerSourceFactory.generateSource(property.toString());
@@ -429,7 +435,9 @@ public class ModelerWorkspaceUtil {
     	aModel.setDirty(false);
     } catch (Exception e){
       logger.info(e);
-      e.printStackTrace();
+      if(e instanceof ModelerException){
+        throw (ModelerException) e;
+      }
       throw new ModelerException(BaseMessages.getString(ModelerWorkspaceUtil.class, "ModelerWorkspaceUtil.LoadWorkspace.Failed"),e); //$NON-NLS-1$
     }
   }  

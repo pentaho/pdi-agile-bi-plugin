@@ -56,6 +56,7 @@ public class ModelerSourceUtil {
 	    domain.setId(tableName); // replaced with user specified name later
 	
 	    LogicalModel businessModel = domain.getLogicalModels().get(0); // schemaMeta.getActiveModel();
+	    businessModel.setProperty("AGILE_BI_GENERATED_SCHEMA", "TRUE");
 	
 	    // TODO do this with messages
 	    businessModel.setName(new LocalizedString(locale, tableName));
