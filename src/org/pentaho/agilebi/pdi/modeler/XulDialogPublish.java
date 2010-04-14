@@ -450,11 +450,11 @@ public class XulDialogPublish extends AbstractSwtXulDialogController {
   }
 
   public String getPath() {
-    CmisObject folder = getCurrentFile();
-    if( folder == null ) {
+   
+    if( currentFolder == null ) {
       return null;
     }
-    return publisher.getNavigationService().getRepositoryPath(folder);
+    return publisher.getNavigationService().getRepositoryPath(currentFolder);
   }
 
   public void setShowLocation(boolean showServerSelection, boolean showFolders, boolean showCurrentFolder ) {
