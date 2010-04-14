@@ -383,7 +383,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     EngineMetaInterface engineMeta = spoon.getActiveMeta();
     String publishingFile = engineMeta.getFilename();
     String comment = BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment"); //$NON-NLS-1$
-    int treeDepth = 1;
+    int treeDepth = 100;
     DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
     boolean checkDatasources = true; 
     boolean showServerSelection = true;
