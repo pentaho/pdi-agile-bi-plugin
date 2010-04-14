@@ -268,7 +268,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       } catch (IOException e) {
         getDesignTimeContext().userError(e);
       }
-      df.setDomainId(DEFAULT);
+      df.setDomainId(model.getDomain().getId());
       getEditorModel().getReportDefinition().setDataFactory(df);
       
     } else { // editing existing
