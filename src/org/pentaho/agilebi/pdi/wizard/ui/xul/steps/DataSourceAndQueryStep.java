@@ -40,7 +40,6 @@ import org.pentaho.metadata.repository.IMetadataDomainRepository;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
 import org.pentaho.reporting.engine.classic.core.MetaAttributeNames;
-import org.pentaho.reporting.engine.classic.core.MetaTableModel;
 import org.pentaho.reporting.engine.classic.core.ReportDataFactoryException;
 import org.pentaho.reporting.engine.classic.core.states.datarow.StaticDataRow;
 import org.pentaho.reporting.engine.classic.core.wizard.DataAttributes;
@@ -268,7 +267,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       } catch (IOException e) {
         getDesignTimeContext().userError(e);
       }
-      df.setDomainId(model.getDomain().getId());
+      df.setDomainId(DEFAULT);
       getEditorModel().getReportDefinition().setDataFactory(df);
       
     } else { // editing existing
