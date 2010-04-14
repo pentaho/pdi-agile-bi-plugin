@@ -550,7 +550,7 @@ public class ModelerController extends AbstractXulEventHandler{
   public void publish() throws ModelerException{
     String publishingFile = workspace.getFileName();
     String comment = BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment"); //$NON-NLS-1$
-    int treeDepth = 1;
+    int treeDepth = 100;
     DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
     boolean checkDatasources = true;
     boolean showServerSelection = true;
