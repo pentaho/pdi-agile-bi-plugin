@@ -19,6 +19,9 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.eclipse.swt.SWTError;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.StatusTextEvent;
+import org.eclipse.swt.browser.StatusTextListener;
 import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
@@ -48,6 +51,7 @@ import org.pentaho.ui.xul.components.XulBrowser;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.containers.XulEditpanel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
+import org.pentaho.ui.xul.swt.tags.SwtBrowser;
 import org.w3c.dom.Node;
 
 public class AnalyzerVisualizationController extends AbstractXulEventHandler implements FileListener, PropertyPanelController {
@@ -68,6 +72,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	private String factTableName;
 	private XulEditpanel propPanel;
 	private ModelerWorkspace workspace;
+	private String status;
 
 	private static Log logger = LogFactory.getLog(AnalyzerVisualizationController.class);
 	private String fileName;
@@ -100,6 +105,22 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     this.bf.setBindingType(Type.BI_DIRECTIONAL);
     bf.createBinding(this.propPanel, "visible", this, "propVisible");
 		fireBindings();
+		
+
+    Browser b = ((SwtBrowser) browser).getBrowser();
+    b.addStatusTextListener(new StatusTextListener(){
+      public void changed(StatusTextEvent arg0) {
+        setStatus(arg0.text);
+      }
+    });
+	}
+	
+	private void setStatus(String status){
+	  this.status = status;
+	}
+	
+	private String getStatus(){
+	  return status;
 	}
 	
 	public void openReport(String aReport) {
@@ -301,7 +322,12 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	private boolean showFilters = false;
 	private boolean showFieldLayout = false;
   public void  toggleFieldList(){
-	  showFields = !showFields;
+    
+    browser.execute("window.status=window.cv.rptEditor.isShowingFieldList;");
+    int showing = Integer.parseInt(getStatus());
+    
+	  showFields = (showing == 0);
+	  browser.execute("window.cv.rptEditor.isShowingFieldList=\""+(showFields ? 1 : 0)+"\"");
 	  browser.execute("window.cv.rptEditor._toggleReportPane(window.cv.rptEditor.fieldList, "+showFields+", false, true)");
 	}
 	
