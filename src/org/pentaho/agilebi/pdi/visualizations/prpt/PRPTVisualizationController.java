@@ -10,12 +10,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
+import org.pentaho.agilebi.pdi.perspective.PublisherHelper;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
+import org.pentaho.commons.metadata.mqleditor.editor.models.Workspace;
 import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
@@ -23,6 +29,7 @@ import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
+import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
 import org.pentaho.reporting.engine.classic.core.modules.parser.bundle.writer.BundleWriter;
@@ -51,6 +58,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   private PrptViewerTag viewer;
   private XulEditpanel propPanel;
   private XulMenuList zoomList;
+  private ModelerWorkspace model;
   
 
   private TreeMap<Double, String> zoomMap = new TreeMap<Double, String>();
@@ -271,7 +279,32 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     
   }
   
-  public void publish(){
+  public void publish() throws ModelerException {
+    
+    String publishingFile = model.getFileName();
+    String comment = BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment"); //$NON-NLS-1$
+    int treeDepth = 100;
+    DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
+    boolean checkDatasources = true;
+    boolean showServerSelection = true;
+    boolean showFolders = true;
+    boolean showCurrentFolder = false;
+    String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
+      "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
+    String databaseName = model.getDatabaseName();
+    String extension = ".mondrian.xml"; //$NON-NLS-1$
+    String filename = model.getModelName();
+    //ModelerWorkspaceUtil.populateDomain(model);
+    
+    
+
+    EngineMetaInterface engineMeta = Spoon.getInstance().getActiveMeta();
+
+
+    
+    
+    PublisherHelper.publish(model, publishingFile, comment, treeDepth, databaseMeta, filename, checkDatasources, 
+        showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
     
   }
   
@@ -309,8 +342,6 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     this.firePropertyChange("propVisible", prevVal, vis);
   }
   
-  
-
   public void start(){
     viewer.start();
   }
@@ -333,6 +364,13 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   
   public void zoomIn(){
     viewer.zoomIn();
-   
+  }
+  
+  public void setModel(ModelerWorkspace model) {
+    this.model = model; 
+  }
+  
+  public ModelerWorkspace getModel() {
+    return this.model;
   }
 }

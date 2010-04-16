@@ -16,7 +16,9 @@ import org.jaxen.JaxenException;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.dom4j.Dom4jXPath;
 import org.pentaho.agilebi.pdi.PDIMessages;
+import org.pentaho.agilebi.pdi.modeler.IModelerSource;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
+import org.pentaho.agilebi.pdi.modeler.ModelerSourceFactory;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;
 import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.XulTabAndPanel;
@@ -28,6 +30,8 @@ import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.metadata.model.Domain;
+import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.util.XmiParser;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
@@ -232,10 +236,10 @@ public class AnalyzerVisualization extends AbstractVisualization {
       }
       
       Document doc = DocumentHelper.parseText(sb.toString());
-      Dom4jXPath xpath = new Dom4jXPath( "//@catalog");
-      Dom4jXPath xpath2 = new Dom4jXPath( "//@cube");
+      Dom4jXPath xpath = new Dom4jXPath( "//@catalog"); //$NON-NLS-1$
+      Dom4jXPath xpath2 = new Dom4jXPath( "//@cube"); //$NON-NLS-1$
       HashMap map = new HashMap();
-      map.put( "pho", "http://www.pentaho.com");
+      map.put( "pho", "http://www.pentaho.com"); //$NON-NLS-1$ //$NON-NLS-2$
       xpath.setNamespaceContext( new SimpleNamespaceContext( map));
       xpath2.setNamespaceContext( new SimpleNamespaceContext( map));
       org.dom4j.Node node = (org.dom4j.Node) xpath.selectSingleNode( doc);
@@ -249,23 +253,37 @@ public class AnalyzerVisualization extends AbstractVisualization {
       AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, modelFileName, modelId, f.toString(), f.getName());
     	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION, new PDIMessages(IVisualization.class));
 			theXulContainer.addEventHandler(theController);
-			Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject();
+			Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject(); //$NON-NLS-1$
 			SwtXulRunner theRunner = new SwtXulRunner();
 			theRunner.addContainer(theXulContainer);
 			theRunner.initialize();
 			
-	  	Domain domain = ModelerHelper.getInstance().loadDomain(modelFileName);
 			ModelerWorkspace model = new ModelerWorkspace();
-			model.setDomain(domain);
-			model.setModelName(modelId);
-			model.setFileName(modelFileName);	
-			model.setTemporary(false);
-			theController.setModel(model);
+	    XmiParser parser = new XmiParser();
+	    FileInputStream inputStream = new FileInputStream(new File(modelFileName));
+	    Domain domain = parser.parseXmi(inputStream);
+	    inputStream.close();
+	    
+	    LogicalModel logical = domain.getLogicalModels().get(0);
+	    Object property = logical.getProperty("source_type"); //$NON-NLS-1$
+	    if( property != null ) {
+	      IModelerSource theSource = ModelerSourceFactory.generateSource(property.toString());
+	      theSource.initialize(domain);   
+	      model.setModelSource(theSource);
+	    }
+	  
+	    model.setDomain(domain);
+	    model.setModelName(modelId);
+	    model.setFileName(modelFileName); 
+	    model.setTemporary(false);
+	    theController.setModel(model);
+	    theXulContainer.addEventHandler(theController);
+			
       createTabForBrowser(theMainBox, theController, model);      
       theController.openReport(fname);
       
       String fullPath = f.getAbsolutePath();
-      spoon.getProperties().addLastFile("Analyzer", fullPath, null, false, null);
+      spoon.getProperties().addLastFile("Analyzer", fullPath, null, false, null); //$NON-NLS-1$
       spoon.addMenuLast();
     } catch (Throwable e) {
       throw new RuntimeException(e);

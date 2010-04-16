@@ -225,34 +225,9 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   {
     super.stepActivating();
     if (model != null && df == null) {
-      
-      // Populate a PmdDataFactoryClass for the report definition to use
-      File modelsDir = new File("models"); //$NON-NLS-1$
-      modelsDir.mkdirs();
-      int idx = 1;
-      boolean looking = true;
-      String fileName = ""; //$NON-NLS-1$
-      String modelName = ""; //$NON-NLS-1$
-      while( looking ) {
-        modelName = "Model "+idx; //$NON-NLS-1$
-        fileName = "models/"+modelName+".xmi"; //$NON-NLS-1$ //$NON-NLS-2$
-        modelFile = new File(fileName);
-        if( !modelFile.exists() ) {
-          looking = false;
-        }
-        idx++;
-      }
-      model.setFileName(fileName);
-      model.setModelName(modelName);
-      
-      try {
-        ModelerWorkspaceUtil.autoModelFlat(model);
-        ModelerWorkspaceUtil.saveWorkspace( model, fileName);
-      } catch (ModelerException e1) {
-        getDesignTimeContext().userError(e1);
-      }
-      
-      if (getEditorModel().getReportDefinition().getDataFactory() != null && getEditorModel().getReportDefinition().getDataFactory() instanceof CompoundDataFactory) {
+
+      if (getEditorModel().getReportDefinition().getDataFactory() != null && getEditorModel().getReportDefinition().getDataFactory()
+          instanceof CompoundDataFactory) {
         CompoundDataFactory cdf = (CompoundDataFactory) getEditorModel().getReportDefinition().getDataFactory();
         for (int i=0; i<cdf.size(); i++) {
           cdf.remove(i);
@@ -262,26 +237,24 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       df = new PmdDataFactory();
       PmdConnectionProvider connectionProvider = new PmdConnectionProvider();
       df.setConnectionProvider(connectionProvider);
-      try {
-        df.setXmiFile(modelFile.getCanonicalPath());
-      } catch (IOException e) {
-        getDesignTimeContext().userError(e);
-      }
+      df.setXmiFile(model.getFileName());
       df.setDomainId(DEFAULT);
       getEditorModel().getReportDefinition().setDataFactory(df);
-      
+
     } else { // editing existing
       try {
-        df = (PmdDataFactory) getEditorModel().getReportDefinition().getDataFactory();
+        df = (PmdDataFactory)
+        getEditorModel().getReportDefinition().getDataFactory();
       } catch (ClassCastException e) {
         df = (PmdDataFactory)((CompoundDataFactory)getEditorModel().getReportDefinition().getDataFactory()).getDataFactoryForQuery(DEFAULT);
       }
     }
-    
+
     updateGui();
-    
+
     setValid(validateStep());
   }
+
 
   
   /**
