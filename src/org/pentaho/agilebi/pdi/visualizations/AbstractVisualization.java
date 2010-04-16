@@ -2,6 +2,7 @@ package org.pentaho.agilebi.pdi.visualizations;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.TabItemInterface;
 import org.pentaho.di.ui.spoon.TabMapEntry;
@@ -28,8 +29,8 @@ public abstract class AbstractVisualization implements IVisualization {
     return title;
   }
 
-  public void setTitle(String aDescription) {
-    title = aDescription;
+  public void setTitle(String key) {
+    title = BaseMessages.getString(IVisualization.class, key);
   }
   
   public void setOrder(int order) {
