@@ -5,6 +5,7 @@
   xmlns:pen="http://www.pentaho.org/2008/xul">
 
   <menupopup id="trans-graph-entry">
+    <menuseparator />
     <menuitem id="trans-graph-entry-model" label="${model}" command="agileBi.openModeler()" />
     <menu id="trans-graph-entry-visualize" label="${TransGraph.PopupMenu.Visualize}">
       <menupopup id="trans-graph-entry-align-popup">
