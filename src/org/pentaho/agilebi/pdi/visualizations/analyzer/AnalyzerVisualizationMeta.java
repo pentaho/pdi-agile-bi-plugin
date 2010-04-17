@@ -12,6 +12,7 @@ import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.ObjectRevision;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.repository.RepositoryDirectory;
+import org.pentaho.di.repository.RepositoryDirectoryInterface;
 import org.pentaho.di.repository.RepositoryObjectType;
 import org.pentaho.ui.xul.components.XulTab;
 import org.pentaho.ui.xul.impl.XulEventHandler;
@@ -46,11 +47,6 @@ public class AnalyzerVisualizationMeta implements EngineMetaInterface, HasXulCon
 
   public String getDefaultExtension() {
     return browser.getVisualization().getExtension();
-  }
-
-  public RepositoryDirectory getDirectory() {
- // TODO: evaluate when moving to Repo support
-    return new RepositoryDirectory();
   }
 
   public String getFileType() {
@@ -159,7 +155,7 @@ public class AnalyzerVisualizationMeta implements EngineMetaInterface, HasXulCon
     this.tab = tab;
   }
 
-  public RepositoryDirectory getRepositoryDirectory() {
+  public RepositoryDirectoryInterface getRepositoryDirectory() {
     // TODO Auto-generated method stub
     return null;
   }
@@ -199,7 +195,7 @@ public class AnalyzerVisualizationMeta implements EngineMetaInterface, HasXulCon
     
   }
 
-  public void setRepositoryDirectory(RepositoryDirectory repositoryDirectory) {
+  public void setRepositoryDirectory(RepositoryDirectoryInterface repositoryDirectory) {
     // TODO Auto-generated method stub
     
   }

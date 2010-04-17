@@ -25,6 +25,7 @@ import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.ObjectRevision;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.repository.RepositoryDirectory;
+import org.pentaho.di.repository.RepositoryDirectoryInterface;
 import org.pentaho.di.repository.RepositoryObjectType;
 
 public class ModelerEngineMeta implements EngineMetaInterface {
@@ -60,11 +61,6 @@ public class ModelerEngineMeta implements EngineMetaInterface {
 
   public String getDefaultExtension() {
     return "xmi";
-  }
-
-  public RepositoryDirectory getDirectory() {
-    // TODO: evaluate when moving to Repo support
-    return new RepositoryDirectory();
   }
 
   public String getFilename() {
@@ -160,7 +156,7 @@ public class ModelerEngineMeta implements EngineMetaInterface {
     return false;
   }
 
-  public RepositoryDirectory getRepositoryDirectory() {
+  public RepositoryDirectoryInterface getRepositoryDirectory() {
     // TODO Auto-generated method stub
     return null;
   }
@@ -205,7 +201,7 @@ public class ModelerEngineMeta implements EngineMetaInterface {
     
   }
 
-  public void setRepositoryDirectory(RepositoryDirectory repositoryDirectory) {
+  public void setRepositoryDirectory(RepositoryDirectoryInterface repositoryDirectory) {
     // TODO Auto-generated method stub
     
   }
