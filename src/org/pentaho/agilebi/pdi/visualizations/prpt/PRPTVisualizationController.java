@@ -11,7 +11,6 @@ import org.apache.commons.logging.LogFactory;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.perspective.PublisherHelper;
@@ -19,7 +18,6 @@ import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
-import org.pentaho.commons.metadata.mqleditor.editor.models.Workspace;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
@@ -294,16 +292,23 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     String databaseName = model.getDatabaseName();
     String extension = ".mondrian.xml"; //$NON-NLS-1$
     String filename = model.getModelName();
-    //ModelerWorkspaceUtil.populateDomain(model);
-    
-    
-
-    EngineMetaInterface engineMeta = Spoon.getInstance().getActiveMeta();
-
 
     
     
-    PublisherHelper.publish(model, publishingFile, comment, treeDepth, databaseMeta, filename, checkDatasources, 
+
+    String thePrpt = getFileName();
+    
+
+    /*
+    1. Publish the XMI
+
+    2.  PRPTVisualization.open()
+        MasterREport.getDataFactory() -> CompoundDataFactory -> set the id to the xmi location
+    
+    */
+    
+    
+    PublisherHelper.publishPrpt(model, publishingFile, thePrpt, comment, treeDepth, databaseMeta, filename, checkDatasources, 
         showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
     
   }

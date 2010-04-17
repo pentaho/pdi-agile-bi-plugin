@@ -1,6 +1,5 @@
 package org.pentaho.agilebi.pdi.visualizations.prpt;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Locale;
@@ -22,7 +21,6 @@ import org.pentaho.agilebi.pdi.visualizations.AbstractVisualization;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.wizard.EmbeddedWizard;
 import org.pentaho.di.core.EngineMetaInterface;
-import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
@@ -116,13 +114,15 @@ public class PRPTVisualization extends AbstractVisualization {
       AgileBiVisualizationPerspective.getInstance().setMetaForTab(tabAndPanel.tab, meta);
       
       PRPTVisualizationController controller = new PRPTVisualizationController(meta, masterReport);
-      
+      controller.setFileName(fname);
       PmdDataFactory theDataFactory = (PmdDataFactory) masterReport.getDataFactory();
       String theXmiFile = theDataFactory.getXmiFile();
       
       ModelerWorkspace model = new ModelerWorkspace();
       XmiParser parser = new XmiParser();
-      Domain domain = parser.parseXmi(new FileInputStream(new File(theXmiFile)));
+      FileInputStream inputStream = new FileInputStream(new File(theXmiFile));
+      Domain domain = parser.parseXmi(inputStream);
+      inputStream.close();
 
       LogicalModel logical = domain.getLogicalModels().get(0);
       Object property = logical.getProperty("source_type"); //$NON-NLS-1$
@@ -272,9 +272,21 @@ public class PRPTVisualization extends AbstractVisualization {
       
       PmdDataFactory theDataFactory = (PmdDataFactory) rpt.getDataFactory();
       String theXmiFile = theDataFactory.getXmiFile();
-      Domain domain = ModelerHelper.getInstance().loadDomain(theXmiFile);      
+      
+      XmiParser parser = new XmiParser();
+      FileInputStream inputStream = new FileInputStream(new File(theXmiFile));
+      Domain domain = parser.parseXmi(inputStream);
+      inputStream.close();      
       
       ModelerWorkspace model = new ModelerWorkspace();
+      LogicalModel logical = domain.getLogicalModels().get(0);
+      Object property = logical.getProperty("source_type"); //$NON-NLS-1$
+      if( property != null ) {
+        IModelerSource theSource = ModelerSourceFactory.generateSource(property.toString());
+        theSource.initialize(domain);   
+        model.setModelSource(theSource);
+      }
+      
       model.setDomain(domain);
       model.setModelName(domain.getId());
       model.setFileName(theXmiFile); 

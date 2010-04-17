@@ -22,6 +22,7 @@ import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.SqlPhysicalModel;
 import org.pentaho.metadata.model.SqlPhysicalTable;
 import org.pentaho.metadata.util.ThinModelConverter;
+import org.pentaho.reporting.libraries.base.util.StringUtils;
 
 /**
  * Provides information to the ModelerModel to support the User Interface. This
@@ -61,6 +62,11 @@ public class TableModelerSource implements IModelerSource {
 	public void initialize(Domain domain) throws ModelerException {
 	  SqlPhysicalModel model = (SqlPhysicalModel) domain.getPhysicalModels().get(0);
 	  SqlPhysicalTable table = model.getPhysicalTables().get(0);
+	  
+	  String targetTable = (String) table.getProperty("target_table"); //$NON-NLS-1$
+	  if(!StringUtils.isEmpty(targetTable)) {
+	    domain.setId(targetTable);
+	  }
 	  
 	  this.databaseMeta = ThinModelConverter.convertToLegacy(model.getId(), model.getDatasource());
     this.tableName = table.getTargetTable();

@@ -273,7 +273,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	    }
 	  
 	    model.setDomain(domain);
-	    model.setModelName(modelId);
+	    model.setModelName(domain.getId());
 	    model.setFileName(modelFileName); 
 	    model.setTemporary(false);
 	    theController.setModel(model);

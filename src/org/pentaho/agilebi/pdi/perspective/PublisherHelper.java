@@ -71,5 +71,54 @@ public class PublisherHelper {
       throw new ModelerException(e);
     }
   }
+  
+  public static void publishPrpt(ModelerWorkspace workspace, String publishingFile, String prpt,
+      String comment, int treeDepth, DatabaseMeta databaseMeta, String filename, boolean checkDatasources, 
+      boolean showServerSelection, boolean showFolders, boolean showCurrentFolder, String serverPathTemplate, String extension, String databaseName ) throws ModelerException {
+    try {
+
+      if (StringUtils.isEmpty(publishingFile)) {
+        SpoonFactory.getInstance().messageBox(BaseMessages.getString(XulUI.class,"ModelServerPublish.Publish.UnsavedModel"), //$NON-NLS-1$
+            "Dialog Error", false, Const.ERROR); //$NON-NLS-1$
+        return;
+      }
+
+      ModelServerPublish publisher = new ModelServerPublish();
+      publisher.setModel(workspace);
+      Spoon spoon = ((Spoon) SpoonFactory.getInstance());
+      try {
+        XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
+        publishDialog.setFolderTreeDepth(treeDepth);
+        publishDialog.setComment(comment);
+        publishDialog.setDatabaseMeta(databaseMeta);
+        publishDialog.setFilename(filename);
+        publishDialog.setCheckDatasources(checkDatasources);
+        publishDialog.setShowLocation(showServerSelection, showFolders, showCurrentFolder);
+        publishDialog.setPathTemplate(serverPathTemplate);
+        publishDialog.showDialog();
+        if (publishDialog.isAccepted()) {
+          // now try to publish
+          String repositoryPath = publishDialog.getPath();
+          // we always publish to {solution}/resources/metadata
+          BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
+          publisher.setBiServerConnection(biServerConnection);
+          boolean publishDatasource = publishDialog.isPublishDataSource();
+          if( serverPathTemplate != null ) {
+            repositoryPath = serverPathTemplate.replace("{path}", repositoryPath);  //$NON-NLS-1$
+          }
+          filename = publishDialog.getFilename();
+          
+          publisher
+              .publishPrptToServer(repositoryPath, publishDatasource, publishDialog.isExistentDatasource(), publishingFile, prpt); 
+        }
+      } catch (XulException e) {
+        e.printStackTrace();
+        SpoonFactory.getInstance().messageBox("Could not create dialog: " + e.getLocalizedMessage(), "Dialog Error", //$NON-NLS-1$ //$NON-NLS-2$
+            false, Const.ERROR); 
+      }
+    } catch (Exception e) {
+      throw new ModelerException(e);
+    }
+  }
 
 }

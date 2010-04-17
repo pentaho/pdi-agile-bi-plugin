@@ -394,6 +394,16 @@ public class ModelServerPublish {
     publishFile(selectedPath != null ? selectedPath : repositoryPath, files, false);
   }
   
+  public void publishPrptToServer(String repositoryPath, boolean publishDatasource, boolean isExistentDatasource, String fileName, String prpt) throws Exception {
+
+    if( publishDatasource ) {
+      DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
+      publishDataSource(databaseMeta, isExistentDatasource);    
+    }
+    File files[] = { new File(fileName), new File(prpt) };
+    publishFile(repositoryPath, files, false);
+  }
+  
   public boolean checkDataSource( boolean autoMode ) throws KettleDatabaseException, ConnectionServiceException {
     // check the data source
     
