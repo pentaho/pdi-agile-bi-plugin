@@ -86,7 +86,7 @@ public class PublisherHelper {
       boolean showServerSelection, boolean showFolders, boolean showCurrentFolder, String serverPathTemplate, String databaseName ) throws ModelerException {
     try {
 
-      if (StringUtils.isEmpty(xmi)) {
+      if (StringUtils.isEmpty(prpt)) {
         SpoonFactory.getInstance().messageBox(BaseMessages.getString(XulUI.class,"ModelServerPublish.Publish.UnsavedModel"), //$NON-NLS-1$
             "Dialog Error", false, Const.ERROR); //$NON-NLS-1$
         return;
