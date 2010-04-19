@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
@@ -28,6 +29,7 @@ import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
 import org.pentaho.platform.api.repository.ISolutionRepository;
+import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
 import org.pentaho.reporting.engine.classic.core.modules.parser.bundle.writer.BundleWriter;
@@ -279,7 +281,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   
   public void publish() throws ModelerException {
     
-    String publishingFile = model.getFileName();
+    String theXmiFile = model.getFileName();
     String comment = BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment"); //$NON-NLS-1$
     int treeDepth = 100;
     DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
@@ -290,26 +292,30 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
       "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
     String databaseName = model.getDatabaseName();
-    String extension = ".mondrian.xml"; //$NON-NLS-1$
-    String filename = model.getModelName();
+    String modelName = model.getModelName();
 
     
     
 
     String thePrpt = getFileName();
-    
-
-    /*
-    1. Publish the XMI
-
-    2.  PRPTVisualization.open()
-        MasterREport.getDataFactory() -> CompoundDataFactory -> set the id to the xmi location
-    
-    */
+   
     
     
-    PublisherHelper.publishPrpt(model, publishingFile, thePrpt, comment, treeDepth, databaseMeta, filename, checkDatasources, 
-        showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
+    PmdDataFactory thePmdDataFactory = (PmdDataFactory) this.report.getDataFactory();
+    String theOldDomainId = thePmdDataFactory.getDomainId();
+    
+    
+    
+    
+    PublisherHelper.publishPrpt(this.report, model, theXmiFile, thePrpt, comment, treeDepth, databaseMeta, modelName, checkDatasources, 
+        showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, databaseName);
+    
+    
+    
+    
+    thePmdDataFactory.setDomainId(theOldDomainId);
+    save(thePrpt);
+    
     
   }
   

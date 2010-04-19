@@ -394,14 +394,18 @@ public class ModelServerPublish {
     publishFile(selectedPath != null ? selectedPath : repositoryPath, files, false);
   }
   
-  public void publishPrptToServer(String repositoryPath, boolean publishDatasource, boolean isExistentDatasource, String fileName, String prpt) throws Exception {
+  public void publishPrptToServer(String theXmiPublishingPath, String thePrptPublishingPath, boolean publishDatasource, boolean isExistentDatasource, String xmi, String prpt) throws Exception {
 
     if( publishDatasource ) {
       DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
       publishDataSource(databaseMeta, isExistentDatasource);    
     }
-    File files[] = { new File(fileName), new File(prpt) };
-    publishFile(repositoryPath, files, false);
+    File thePrpt[] = { new File(prpt) };
+    publishFile(thePrptPublishingPath, thePrpt, false);
+    
+    File theXmi[] = { new File(xmi) };
+    publishFile(theXmiPublishingPath, theXmi, true);
+
   }
   
   public boolean checkDataSource( boolean autoMode ) throws KettleDatabaseException, ConnectionServiceException {

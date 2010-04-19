@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.perspective.PublisherHelper;
@@ -369,7 +370,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     String filename = workspace.getModelName();
     
     String originalValue = replaceAttributeValue("report", "catalog", filename, publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
-    
+    ModelerWorkspaceUtil.populateDomain(workspace);
     PublisherHelper.publish(workspace, publishingFile, comment, treeDepth, databaseMeta, filename, checkDatasources, 
         showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
     
