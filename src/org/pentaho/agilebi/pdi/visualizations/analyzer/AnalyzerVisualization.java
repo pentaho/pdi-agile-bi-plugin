@@ -17,7 +17,6 @@ import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.dom4j.Dom4jXPath;
 import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.modeler.IModelerSource;
-import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.modeler.ModelerSourceFactory;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.perspective.AgileBiVisualizationPerspective;

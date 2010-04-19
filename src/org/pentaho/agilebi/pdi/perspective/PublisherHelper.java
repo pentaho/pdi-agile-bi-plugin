@@ -115,8 +115,8 @@ public class PublisherHelper {
           String theXmiPublishingPath = null;
           if(serverPathTemplate != null) {
             String theSolution = null;
-            if(thePrptPublishingPath.indexOf("/") != -1) {
-              theSolution = thePrptPublishingPath.substring(0, thePrptPublishingPath.indexOf("/"));  
+            if(thePrptPublishingPath.indexOf("/") != -1) { //$NON-NLS-1$
+              theSolution = thePrptPublishingPath.substring(0, thePrptPublishingPath.indexOf("/")); //$NON-NLS-1$   
             } else {
               theSolution = thePrptPublishingPath;
             }

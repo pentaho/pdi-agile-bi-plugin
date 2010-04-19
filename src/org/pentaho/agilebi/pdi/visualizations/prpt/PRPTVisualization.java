@@ -11,7 +11,6 @@ import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.modeler.IModelerSource;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
-import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.modeler.ModelerSourceFactory;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
