@@ -73,7 +73,7 @@
   		</toolbar>
         <tree id="dimensionTree" flex="1" editable="false"
           ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move"
-          ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false">
+          ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false" preserveselection="true">
           <treecols>
             <treecol flex="1" label="" primary="true"
               pen:binding="name" pen:childrenbinding="children"
