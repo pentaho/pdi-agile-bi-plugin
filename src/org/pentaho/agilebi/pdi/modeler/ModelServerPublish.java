@@ -391,7 +391,7 @@ public class ModelServerPublish {
     }
     publishOlapSchemaToServer( schemaName, jndiName , modelName, repositoryPath, showFeedback );
     File files[] = { new File(fileName) };
-    publishFile(selectedPath != null ? selectedPath : repositoryPath, files, false);
+    publishFile(selectedPath, files, false);
   }
   
   public void publishPrptToServer(String theXmiPublishingPath, String thePrptPublishingPath, boolean publishDatasource, boolean isExistentDatasource, String xmi, String prpt) throws Exception {

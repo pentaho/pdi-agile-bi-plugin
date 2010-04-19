@@ -293,30 +293,16 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
       "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
     String databaseName = model.getDatabaseName();
     String modelName = model.getModelName();
-
-    
-    
-
-    String thePrpt = getFileName();
-   
-    
     
     PmdDataFactory thePmdDataFactory = (PmdDataFactory) this.report.getDataFactory();
     String theOldDomainId = thePmdDataFactory.getDomainId();
     
-    
-    
-    
+    String thePrpt = getFileName();
     PublisherHelper.publishPrpt(this.report, model, theXmiFile, thePrpt, comment, treeDepth, databaseMeta, modelName, checkDatasources, 
         showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, databaseName);
     
-    
-    
-    
     thePmdDataFactory.setDomainId(theOldDomainId);
     save(thePrpt);
-    
-    
   }
   
   public String getFileName(){

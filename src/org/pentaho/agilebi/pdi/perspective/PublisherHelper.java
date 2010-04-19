@@ -38,7 +38,7 @@ public class PublisherHelper {
       try {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
         publishDialog.setFolderTreeDepth(treeDepth);
-        publishDialog.setComment(comment); //$NON-NLS-1$
+        publishDialog.setComment(comment); 
         publishDialog.setDatabaseMeta(databaseMeta);
         publishDialog.setFilename(filename);
         publishDialog.setCheckDatasources(checkDatasources);
@@ -47,29 +47,33 @@ public class PublisherHelper {
         publishDialog.showDialog();
         if (publishDialog.isAccepted()) {
           // now try to publish
-          String path = publishDialog.getPath();
+          String selectedPath = publishDialog.getPath();
           // we always publish to {solution}/resources/metadata
-          StringBuilder sb = new StringBuilder();
           BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
           publisher.setBiServerConnection(biServerConnection);
           boolean publishDatasource = publishDialog.isPublishDataSource();
-          String repositoryPath = path;
-          if( serverPathTemplate != null ) {
-            repositoryPath = serverPathTemplate.replace("{path}", path);
+          String repositoryPath = null;
+          if(serverPathTemplate != null) {
+            String selectedSolution = null;
+            if(selectedPath.indexOf("/") != -1) { //$NON-NLS-1$
+              selectedSolution = selectedPath.substring(0, selectedPath.indexOf("/")); //$NON-NLS-1$   
+            } else {
+              selectedSolution = selectedPath;
+            }
+            repositoryPath = serverPathTemplate.replace("{path}", selectedSolution); //$NON-NLS-1$
           }
-          filename = publishDialog.getFilename();
+          if(publishingFile.endsWith(".xmi")) { //$NON-NLS-1$
+            selectedPath = repositoryPath;
+          }
 
-          if(publishingFile.endsWith(".xmi")) {
-            path = null;
-          }
-          
+          filename = publishDialog.getFilename();
           publisher
               .publishToServer(
-                  filename + extension, databaseName, filename, repositoryPath, path, publishDatasource, true, publishDialog.isExistentDatasource(), publishingFile); //$NON-NLS-1$
+                  filename + extension, databaseName, filename, repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), publishingFile);
         }
       } catch (XulException e) {
         e.printStackTrace();
-        SpoonFactory.getInstance().messageBox("Could not create dialog: " + e.getLocalizedMessage(), "Dialog Error",
+        SpoonFactory.getInstance().messageBox("Could not create dialog: " + e.getLocalizedMessage(), "Dialog Error", //$NON-NLS-1$ //$NON-NLS-2$
             false, Const.ERROR);
       }
     } catch (Exception e) {
@@ -109,10 +113,12 @@ public class PublisherHelper {
           publisher.setBiServerConnection(biServerConnection);
           boolean publishDatasource = publishDialog.isPublishDataSource();
           String theXmiPublishingPath = null;
-          if( serverPathTemplate != null ) {
-            String theSolution = thePrptPublishingPath;
+          if(serverPathTemplate != null) {
+            String theSolution = null;
             if(thePrptPublishingPath.indexOf("/") != -1) {
               theSolution = thePrptPublishingPath.substring(0, thePrptPublishingPath.indexOf("/"));  
+            } else {
+              theSolution = thePrptPublishingPath;
             }
             theXmiPublishingPath = serverPathTemplate.replace("{path}", theSolution);  //$NON-NLS-1$
           }
@@ -124,7 +130,7 @@ public class PublisherHelper {
           thePmdDataFactory.setDomainId(theDomainId);
           
           
-          // Set the mql query from default to the xmi.
+          // Point the mql query to the xmi instead of default.
           String theMQLQuery = thePmdDataFactory.getQuery("default"); //$NON-NLS-1$
           String theQuery = theMQLQuery.substring(0, theMQLQuery.lastIndexOf("default")) //$NON-NLS-1$
                             + theDomainId + theMQLQuery.substring(theMQLQuery.lastIndexOf("default") + 7, theMQLQuery.length()); //$NON-NLS-1$
