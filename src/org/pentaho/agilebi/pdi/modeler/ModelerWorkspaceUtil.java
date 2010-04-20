@@ -209,6 +209,7 @@ public class ModelerWorkspaceUtil {
             public void run() {
 
               workspace.setModelIsChanging(prevChangeState); 
+              workspace.setSelectedNode(workspace.getModel());
             }
           });
         }
@@ -411,7 +412,7 @@ public class ModelerWorkspaceUtil {
 
     try{
       XmiParser parser = new XmiParser();
-      Domain domain = parser.parseXmi(new ByteArrayInputStream(aXml.getBytes()));
+      Domain domain = parser.parseXmi(new ByteArrayInputStream(aXml.getBytes("UTF-8")));
 
       LogicalModel logical = domain.getLogicalModels().get(0);
       

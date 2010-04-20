@@ -101,6 +101,51 @@ public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataMod
       this.validationMessages.addAll(child.getValidationMessages());
     }
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result
+        + ((dimensions == null) ? 0 : dimensions.hashCode());
+    result = prime * result + ((listener == null) ? 0 : listener.hashCode());
+    result = prime * result + ((measures == null) ? 0 : measures.hashCode());
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    MainModelNode other = (MainModelNode) obj;
+    if (dimensions == null) {
+      if (other.dimensions != null)
+        return false;
+    } else if (!dimensions.equals(other.dimensions))
+      return false;
+    if (listener == null) {
+      if (other.listener != null)
+        return false;
+    } else if (!listener.equals(other.listener))
+      return false;
+    if (measures == null) {
+      if (other.measures != null)
+        return false;
+    } else if (!measures.equals(other.measures))
+      return false;
+    if (name == null) {
+      if (other.name != null)
+        return false;
+    } else if (!name.equals(other.name))
+      return false;
+    return true;
+  }
+  
   
   
 }

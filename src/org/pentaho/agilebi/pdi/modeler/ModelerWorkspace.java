@@ -79,6 +79,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   private boolean isTemporary;
   
+  private AbstractMetaDataModelNode selectedNode;
+  
   public ModelerWorkspace() {
     
     this.autoModel = true;
@@ -567,4 +569,15 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public boolean isTemporary() {
     return this.isTemporary;
   }
+  
+  public AbstractMetaDataModelNode getSelectedNode(){
+    return selectedNode;
+  }
+  
+  public void setSelectedNode(AbstractMetaDataModelNode node){
+    AbstractMetaDataModelNode prevVal = this.selectedNode;
+    this.selectedNode = node;
+    firePropertyChange("selectedNode", prevVal, node);
+  }
+  
 }

@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,10 @@ import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.util.AbstractModelNode;
 import org.pentaho.ui.xul.util.XulDialogCallback;
+
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * XUL Event Handler for the modeling interface. This class interacts with a ModelerModel to store state.
@@ -407,7 +412,23 @@ public class ModelerController extends AbstractXulEventHandler{
     visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements");
     
     modelTreeBinding = bf.createBinding(workspace, "model", dimensionTree, "elements");
-    bf.createBinding(dimensionTree, "selectedItem", this, "dimTreeSelectionChanged");    
+    bf.createBinding(dimensionTree, "selectedItem", this, "dimTreeSelectionChanged");
+    
+    bf.setBindingType(Type.BI_DIRECTIONAL);
+    bf.createBinding(workspace, "selectedNode", dimensionTree, "selectedItems", new BindingConvertor<AbstractMetaDataModelNode, Collection>(){
+
+      @Override
+      public Collection sourceToTarget(AbstractMetaDataModelNode arg0) {
+        return Collections.singletonList(arg0);
+      }
+
+      @Override
+      public AbstractMetaDataModelNode targetToSource(Collection arg0) {
+        return (AbstractMetaDataModelNode) ((arg0 == null || arg0.isEmpty()) ? null : arg0.iterator().next());
+      }
+      
+    });
+    bf.setBindingType(Type.ONE_WAY);
     
     bf.createBinding("fieldList", "selectedItem", "addField", "disabled", new BindingConvertor<Object, Boolean>() {
     	public Boolean sourceToTarget(Object value) {
@@ -465,6 +486,8 @@ public class ModelerController extends AbstractXulEventHandler{
     bf.createBinding(this.propPanel, "visible", this, "propVisible");
     
     fireBindings();
+    
+    dimensionTree.setSelectedItems(Collections.singletonList(workspace.getModel()));
     
     
   }

@@ -220,4 +220,6 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
   public Class<? extends ModelerNodePropertiesForm<MeasureMetaData>> getPropertiesForm() {
     return MeasuresPropertiesForm.class;
   }
+  
+  
 }

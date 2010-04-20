@@ -119,4 +119,6 @@ public class DimensionMetaData extends AbstractMetaDataModelNode<HierarchyMetaDa
     child.removePropertyChangeListener(childrenListener);
     validateNode();
   }
+  
+  
 }
