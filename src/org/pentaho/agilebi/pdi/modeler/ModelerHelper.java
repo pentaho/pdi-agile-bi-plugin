@@ -209,6 +209,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
               engineBoot.start();
             }
             model.setAutoModel(true);
+            createTemporaryModel(model, true);
             EmbeddedWizard wizard = new EmbeddedWizard(model);
             waitBox.stop();
             wizard.run(null);
