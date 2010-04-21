@@ -49,6 +49,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	
   private String getStateJavascript;
   private String setStateJavascript;
+  private String reportName;
 	
 	public String getNewUrl() {
 		return newUrl;
@@ -129,7 +130,8 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	
 	public String generateRefreshModelJavascript(String fileLocation, String modelId) {
 	  String str = replaceField(refreshModelJavascript, "modelLocation", fileLocation, true); //$NON-NLS-1$
-    str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
+	  str = str.replaceAll("tmpview", reportName); //$NON-NLS-1$
+	  str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
     str = replaceField(str, "basedir", new File("").getAbsolutePath(), true); //$NON-NLS-1$ //$NON-NLS-2$
     return str;
 	}
@@ -155,7 +157,8 @@ public class AnalyzerVisualization extends AbstractVisualization {
 			SwtXulRunner theRunner = new SwtXulRunner();
 			theRunner.addContainer(theXulContainer);
 			theRunner.initialize();
-      createTabForBrowser(theMainBox, theController, model);      
+      createTabForBrowser(theMainBox, theController, model);   
+      reportName = "Unsaved Report"; //$NON-NLS-1$
     } catch (Throwable e) {
       throw new RuntimeException(e);
     }
@@ -225,6 +228,8 @@ public class AnalyzerVisualization extends AbstractVisualization {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
       File f = new File( fname );
+      reportName = f.getName();
+      reportName = reportName.substring(0, reportName.indexOf(".xanalyzer")); //$NON-NLS-1$
       FileInputStream in = new FileInputStream( f );
       StringBuilder sb = new StringBuilder();
       byte b[] = new byte[2048];
@@ -293,6 +298,8 @@ public class AnalyzerVisualization extends AbstractVisualization {
     AnalyzerVisualizationMeta wvmeta = (AnalyzerVisualizationMeta)meta;
     wvmeta.save(fname);
     File f = new File(fname);
+    reportName = f.getName();
+    reportName = reportName.substring(0, reportName.indexOf(".xanalyzer")); //$NON-NLS-1$
     String fullPath = f.getAbsolutePath();
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
