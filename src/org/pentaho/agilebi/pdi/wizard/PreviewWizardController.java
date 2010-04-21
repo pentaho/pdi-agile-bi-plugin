@@ -60,7 +60,7 @@ public class PreviewWizardController extends LinearWizardController {
 			MasterReport element = (MasterReport) processWizardSpecification();
 			element = WizardProcessorUtil.materialize(element, new WizardProcessor());
 			VisualizationManager theManager = VisualizationManager.getInstance();
-			PRPTVisualization theVisualization = (PRPTVisualization) theManager.getVisualization("PRPT Viewer");
+			PRPTVisualization theVisualization = (PRPTVisualization) theManager.getVisualization("Report Wizard");
 			if (theVisualization != null) {
 				theVisualization.createVisualizationFromMasterReport(element);
 			}
