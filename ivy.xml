@@ -61,7 +61,7 @@
     <dependency org="pentaho-library" name="libswing" rev="1.1.5"
       conf="default->default" changing="true" transitive="false"/>
       
-    <dependency org="pentaho" name="mondrian" rev="3.1.6"
+    <dependency org="pentaho" name="mondrian" rev="${dependency.mondrian.revision}"
       conf="default->default" changing="true" transitive="false"/>
       
     <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-extensions-pmd" rev="${dependency.pentaho-reporting.revision}"
