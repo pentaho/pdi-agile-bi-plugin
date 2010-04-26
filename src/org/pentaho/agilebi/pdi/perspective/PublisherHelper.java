@@ -56,7 +56,7 @@ public class PublisherHelper {
           if(serverPathTemplate != null) {
             String selectedSolution = null;
             if(selectedPath.indexOf(File.pathSeparator) != -1) { //$NON-NLS-1$
-              selectedSolution = selectedPath.substring(0, selectedPath.indexOf("/")); //$NON-NLS-1$   
+              selectedSolution = selectedPath.substring(0, selectedPath.indexOf(File.pathSeparator)); //$NON-NLS-1$   
             } else {
               selectedSolution = selectedPath;
             }
