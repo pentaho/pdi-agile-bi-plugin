@@ -126,7 +126,7 @@ public class PublisherHelper {
           // Set the domain id to the xmi.
           String theXmiFile = xmi.substring(xmi.lastIndexOf(File.pathSeparator) + 1, xmi.length()); //$NON-NLS-1$
           PmdDataFactory thePmdDataFactory = (PmdDataFactory) report.getDataFactory();
-          String theDomainId = theXmiPublishingPath + "/" + theXmiFile; //$NON-NLS-1$
+          String theDomainId = theXmiPublishingPath + File.pathSeparator + theXmiFile; //$NON-NLS-1$
           thePmdDataFactory.setDomainId(theDomainId);
           
           
