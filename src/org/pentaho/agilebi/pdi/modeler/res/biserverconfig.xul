@@ -37,7 +37,7 @@
 				        <textbox flex="1" id="publishpassword" type="password"/>
 					    <hbox>
 					        <spacer flex="1" />
-							<button id="testButton" width="100" label="${Spoon.Perspectives.AgileBi.EditBIServerConfigsDialog.Test}" onclick="dialog.testServerConnection()"/>
+							<!-- RE-ENABLE after RC-1 <button id="testButton" width="100" label="${Spoon.Perspectives.AgileBi.EditBIServerConfigsDialog.Test}" onclick="dialog.testServerConnection()"/> -->
 							<button id="saveButton" width="100" label="${Spoon.Perspectives.AgileBi.EditBIServerConfigsDialog.Save}" onclick="dialog.saveServerConnection()"/>
 				        </hbox>
 				</groupbox>

@@ -272,7 +272,8 @@ public class XulDialogBiServerList extends AbstractSwtXulDialogController {
   public void updateButtonStatus() {
     int idx = serverListBox.getSelectedIndex();
     removeButton.setDisabled( idx == -1 );
-    testButton.setDisabled( StringUtil.isEmpty( url ) );
+    // TODO: re-enable after RC-1
+    //testButton.setDisabled( StringUtil.isEmpty( url ) );
     saveButton.setDisabled( StringUtil.isEmpty( url ) );
     if( idx == -1 ) {
       removeButton.setImage( "images/remove_disabled.png" ); //$NON-NLS-1$
