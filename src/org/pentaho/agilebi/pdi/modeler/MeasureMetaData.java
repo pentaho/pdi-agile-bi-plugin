@@ -24,6 +24,7 @@ import java.util.Vector;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.i18n.LanguageChoice;
 import org.pentaho.metadata.model.LogicalColumn;
+import org.pentaho.metadata.model.concept.types.AggregationType;
 import org.pentaho.metadata.model.concept.types.DataType;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.reporting.libraries.base.util.StringUtils;

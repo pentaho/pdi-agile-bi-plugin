@@ -44,17 +44,18 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     if(fieldMeta != null){
       fieldMeta.removePropertyChangeListener(propListener);
     }
-    this.fieldMeta = t;
+    this.fieldMeta = null;
     t.addPropertyChangeListener("valid", propListener);
     t.addPropertyChangeListener("logicalColumn", propListener);
     
-    setDisplayName(fieldMeta.getName());
-    setFormat(fieldMeta.getFormat());
-    setAggTypeDesc(fieldMeta.getAggTypeDesc());
-    setAggTypes(fieldMeta.getAggTypeDescValues());
-    setValidMessages(fieldMeta.getValidationMessagesString());
-    setNotValid(!fieldMeta.isValid());
-    setColumnName(fieldMeta.getLogicalColumn());
+    setDisplayName(t.getName());
+    setFormat(t.getFormat());
+    setAggTypes(t.getAggTypeDescValues());
+    setAggTypeDesc(t.getAggTypeDesc());
+    setValidMessages(t.getValidationMessagesString());
+    setNotValid(!t.isValid());
+    setColumnName(t.getLogicalColumn());
+    this.fieldMeta = t;
   }
   
   public void setColumnName(LogicalColumn col){
@@ -104,7 +105,9 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
   }
 
   public void setDisplayName(String displayName) {
-    fieldMeta.setName(displayName);
+    if(fieldMeta != null){
+      fieldMeta.setName(displayName);
+    }
     this.firePropertyChange("displayName", null, displayName);
 
   }
@@ -117,7 +120,10 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
   }
 
   public void setFormat(String format) {
-    fieldMeta.setFormat(format);
+
+    if(fieldMeta != null){
+      fieldMeta.setFormat(format);
+    }
     this.firePropertyChange("format", null, format);
   }
 
@@ -129,8 +135,13 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
   }
 
   public void setAggTypeDesc(String aggTypeDesc) {
-    fieldMeta.setAggTypeDesc(aggTypeDesc);
-    this.firePropertyChange("aggTypeDesc", null, aggTypeDesc);
+    String prevVal = null;
+
+    if(fieldMeta != null){
+      fieldMeta.getAggTypeDesc();
+      fieldMeta.setAggTypeDesc(aggTypeDesc);
+    }
+    this.firePropertyChange("aggTypeDesc", prevVal, aggTypeDesc);
   }
   
   
