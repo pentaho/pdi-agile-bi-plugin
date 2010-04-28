@@ -541,8 +541,12 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
   
   public void setModelIsChanging(boolean changing){
+    setModelIsChanging(changing, true);
+  }
+  
+  public void setModelIsChanging(boolean changing, boolean fireChanged){
     this.modelIsChanging = changing;
-    if(!changing){
+    if(!changing && fireChanged){
       fireFieldsChanged();
       model.validateTree();
       fireModelChanged();

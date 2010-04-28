@@ -181,6 +181,7 @@ public class ModelerController extends AbstractXulEventHandler{
         } else if (event.getDropParent() instanceof LevelMetaData) {
           // level - cannot drop into a level
           event.setAccepted(false);
+          workspace.setModelIsChanging(prevChangeState, false);
           return;
         }
       } else if (obj instanceof LevelMetaData) {
@@ -236,7 +237,7 @@ public class ModelerController extends AbstractXulEventHandler{
     } else {
       event.getDataTransfer().setData(newdata);
     }
-    workspace.setModelIsChanging(prevChangeState);
+    workspace.setModelIsChanging(prevChangeState, false);
   }
 
   public void addField() {
