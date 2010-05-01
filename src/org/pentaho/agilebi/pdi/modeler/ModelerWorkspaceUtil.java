@@ -65,6 +65,8 @@ import org.pentaho.metadata.util.XmiParser;
 public class ModelerWorkspaceUtil {
 
   private static final List<AggregationType> DEFAULT_AGGREGATION_LIST = new ArrayList<AggregationType>();
+  private static final List<AggregationType> DEFAULT_NON_NUMERIC_AGGREGATION_LIST = new ArrayList<AggregationType>();
+
   
   private static Log logger = LogFactory.getLog(ModelerWorkspaceUtil.class);
   
@@ -74,6 +76,13 @@ public class ModelerWorkspaceUtil {
     DEFAULT_AGGREGATION_LIST.add(AggregationType.AVERAGE);
     DEFAULT_AGGREGATION_LIST.add(AggregationType.MINIMUM);
     DEFAULT_AGGREGATION_LIST.add(AggregationType.MAXIMUM);
+    DEFAULT_AGGREGATION_LIST.add(AggregationType.COUNT);
+    DEFAULT_AGGREGATION_LIST.add(AggregationType.COUNT_DISTINCT);
+    
+    DEFAULT_NON_NUMERIC_AGGREGATION_LIST.add(AggregationType.NONE);
+    DEFAULT_NON_NUMERIC_AGGREGATION_LIST.add(AggregationType.COUNT);
+    DEFAULT_NON_NUMERIC_AGGREGATION_LIST.add(AggregationType.COUNT_DISTINCT);
+
   }
   
   public static ModelerWorkspace populateModelFromSource( ModelerWorkspace model, IModelerSource source ) throws ModelerException {
@@ -271,15 +280,14 @@ public class ModelerWorkspaceUtil {
         }
       }
       
-      lCol.setAggregationList(DEFAULT_AGGREGATION_LIST);
-      AggregationType selectedAgg = AggregationType.NONE; 
-      try{
-        selectedAgg = AggregationType.valueOf(f.getAggTypeDesc());
-      } catch(IllegalArgumentException e){
-        logger.info(BaseMessages.getString(ModelerWorkspaceUtil.class, "ModelerWorkspaceUtil.Populate.BadAggType", f.getAggTypeDesc() ), e); //$NON-NLS-1$
-        throw new ModelerException(e);
+      // All Measures get a list of aggs to choose from within metadata
+      // eventually this will be customizable
+      
+      if (lCol.getDataType() != DataType.NUMERIC) {
+        lCol.setAggregationList(DEFAULT_NON_NUMERIC_AGGREGATION_LIST);
+      } else {
+        lCol.setAggregationList(DEFAULT_AGGREGATION_LIST);
       }
-      lCol.setAggregationType(selectedAgg);
       cat.addLogicalColumn(lCol);
     }
 
