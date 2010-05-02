@@ -5,13 +5,6 @@
   xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" height="600"
   width="800" onload="propertiesForm.init(),modeler.init()" xmlns:pen="http://www.pentaho.org/2008/xul">
 
-  <dialog width="300" height="150" id="newDimesionDialog" title="Add Dimension"
-    ondialogaccept="modeler.addNewDimension()" ondialogcancel="modeler.hideNewDimensionDialog()">
-    <label value="Name:" />
-    <textbox id="newDimensionName" />
-  </dialog>
-
-
   <pen:include src="columnResolver.xul" />
 
   <vbox flex="1" id="mainVBox" spacing="0" padding="0">

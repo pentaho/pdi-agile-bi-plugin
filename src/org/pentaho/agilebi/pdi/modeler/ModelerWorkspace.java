@@ -56,8 +56,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   private String sourceName;
   
-  private String modelName;
-  
   private IModelerSource source;
 
   private String selectedServer;
@@ -101,16 +99,13 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 
   public void setModel(MainModelNode model) {
     this.model = model;
-    model.addPropertyChangeListener("children", new PropertyChangeListener(){
-
+    model.addPropertyChangeListener("children", new PropertyChangeListener() { //$NON-NLS-1$
       public void propertyChange(PropertyChangeEvent arg0) {  
         if(!modelIsChanging){
           fireModelChanged();
         }
       }
-      
     });
-
   }
 
   public void setFileName(String fileName) {
@@ -118,8 +113,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     String prevFriendly = getShortFileName();
     
     this.fileName = fileName;
-    firePropertyChange("fileName", prevVal, fileName);
-    firePropertyChange("shortFileName", prevFriendly, getShortFileName());
+    firePropertyChange("fileName", prevVal, fileName); //$NON-NLS-1$
+    firePropertyChange("shortFileName", prevFriendly, getShortFileName()); //$NON-NLS-1$
   }
   
   public String getShortFileName() {
@@ -154,14 +149,14 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
 
   public String getModelName() {
-    return modelName;
+    return model.getName();
   }
 
   public void setModelName(String modelName) {
-    String prevVal = this.modelName;
-    this.modelName = modelName;
+    String prevVal = model.getName();
+    model.setName(modelName);
     setDirty(true);
-    this.firePropertyChange("modelName", prevVal, this.modelName);
+    this.firePropertyChange("modelName", prevVal, modelName); //$NON-NLS-1$
   }
   
   public boolean isDirty() {
@@ -180,7 +175,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public void setDirty(boolean dirty) {
     boolean prevVal = this.dirty;
     this.dirty = dirty;
-    this.firePropertyChange("dirty", prevVal, this.dirty);
+    this.firePropertyChange("dirty", prevVal, this.dirty); //$NON-NLS-1$
   }
   
   public AvailableFieldCollection getAvailableFields() {
@@ -255,17 +250,17 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   }
   
   private void fireFieldsChanged() {
-    firePropertyChange("availableFields", null, this.availableFields);
+    firePropertyChange("availableFields", null, this.availableFields); //$NON-NLS-1$
   }
   
   private void fireModelChanged() {
-    firePropertyChange("model", null, model);
+    firePropertyChange("model", null, model); //$NON-NLS-1$
     setDirty(true);
   }
 
   public MeasureMetaData createMeasureForNode(AvailableField selectedField) {
     
-    MeasureMetaData meta = new MeasureMetaData(selectedField.getName(), "", selectedField.getDisplayName());
+    MeasureMetaData meta = new MeasureMetaData(selectedField.getName(), "", selectedField.getDisplayName()); //$NON-NLS-1$
     meta.setLogicalColumn(selectedField.getLogicalColumn());
     
     return meta;
@@ -275,7 +270,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 
     boolean prevChangeState = isModelChanging();
     this.setModelIsChanging(true);
-    this.model.getMeasures().add(measure); //$NON-NLS-1$
+    this.model.getMeasures().add(measure);
     this.setModelIsChanging(prevChangeState);
   }
   
@@ -310,7 +305,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       Domain newDomain = source.generateDomain();
       
       // Add in new logicalColumns
-      outer:
       for(LogicalColumn lc : newDomain.getLogicalModels().get(0).getLogicalTables().get(0).getLogicalColumns()){
         boolean exists = false;
         inner:
@@ -455,7 +449,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     
     sortFields();
 
-    firePropertyChange("availableFields", null, getAvailableFields());
+    firePropertyChange("availableFields", null, getAvailableFields()); //$NON-NLS-1$
     
     LogicalModel lModel = domain.getLogicalModels().get(0);
     
@@ -463,7 +457,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
       setModelName(lModel.getCategories().get(0).getId());
     }
     
-    List<OlapDimension> theDimensions = (List) lModel.getProperty("olap_dimensions");
+    List<OlapDimension> theDimensions = (List) lModel.getProperty("olap_dimensions"); //$NON-NLS-1$
     if(theDimensions != null) {
 	    Iterator<OlapDimension> theDimensionItr = theDimensions.iterator();
 	    while(theDimensionItr.hasNext()) {
@@ -495,7 +489,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    }
     }
     
-    List<OlapCube> theCubes = (List) lModel.getProperty("olap_cubes");
+    List<OlapCube> theCubes = (List) lModel.getProperty("olap_cubes"); //$NON-NLS-1$
     if(theCubes != null) {
 	    Iterator<OlapCube> theCubeItr = theCubes.iterator();
 	    while(theCubeItr.hasNext()) {
@@ -508,7 +502,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    		
 	    		MeasureMetaData theMeasureMD = new MeasureMetaData();
 	    		theMeasureMD.setName(theMeasure.getName());
-	    		theMeasureMD.setFormat((String)theMeasure.getLogicalColumn().getProperty("mask"));
+	    		theMeasureMD.setFormat((String)theMeasure.getLogicalColumn().getProperty("mask")); //$NON-NLS-1$
 	    		theMeasureMD.setName(theMeasure.getLogicalColumn().getName(Locale.getDefault().toString()));
           theMeasureMD.setAggTypeDesc(theMeasure.getLogicalColumn().getAggregationType().toString());
 	        
@@ -581,7 +575,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   public void setSelectedNode(AbstractMetaDataModelNode node){
     AbstractMetaDataModelNode prevVal = this.selectedNode;
     this.selectedNode = node;
-    firePropertyChange("selectedNode", prevVal, node);
+    firePropertyChange("selectedNode", prevVal, node); //$NON-NLS-1$
   }
   
 }

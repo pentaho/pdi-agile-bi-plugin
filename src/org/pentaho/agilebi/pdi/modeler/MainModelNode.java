@@ -16,19 +16,18 @@
  */
 package org.pentaho.agilebi.pdi.modeler;
 
-import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.ui.xul.util.AbstractModelNode;
 
 public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataModelNode<?>> implements Serializable {
 
   private static final long serialVersionUID = 2399128598598210134L;
 
-  String name = "Model";
+  String name;
   
   private MeasuresCollection measures = new MeasuresCollection();
   private DimensionMetaDataCollection dimensions = new DimensionMetaDataCollection();
@@ -46,7 +45,12 @@ public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataMod
   }
 
   public void setName(String name) {
-    // noop
+    if (!StringUtils.equals(name, this.name)) {
+      String oldName = this.name;
+      this.name = name;
+      this.firePropertyChange("name", oldName, name); //$NON-NLS-1$
+      validateNode();
+    }
   }
 
   public String getImage() {
@@ -105,11 +109,17 @@ public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataMod
   public void validate() {
     valid = true;
     this.validationMessages.clear();
-    if(this.children.size() != 2){
+    
+    if (StringUtils.isBlank(this.getName())) {
       valid = false;
-      this.validationMessages.add(BaseMessages.getString(this.getClass(), "model_structure_invalid"));
+      this.validationMessages.add(BaseMessages.getString(MainModelNode.class, "MainModelNode.ModelNameEmpty")); //$NON-NLS-1$
     }
-    for(AbstractMetaDataModelNode child : children){
+    
+    if(this.children.size() != 2) {
+      valid = false;
+      this.validationMessages.add(BaseMessages.getString(MainModelNode.class, "MainModelNode.ModelStructureInvalid")); //$NON-NLS-1$
+    }
+    for(AbstractMetaDataModelNode child : children) {
       valid &= child.isValid();
       this.validationMessages.addAll(child.getValidationMessages());
     }

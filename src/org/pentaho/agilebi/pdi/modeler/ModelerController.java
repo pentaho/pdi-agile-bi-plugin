@@ -63,9 +63,7 @@ import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMenuList;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulPromptBox;
-import org.pentaho.ui.xul.components.XulTextbox;
 import org.pentaho.ui.xul.containers.XulDeck;
-import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.containers.XulEditpanel;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.containers.XulVbox;
@@ -84,37 +82,14 @@ import edu.emory.mathcs.backport.java.util.Collections;
  */
 public class ModelerController extends AbstractXulEventHandler{
 
-  private static final String NEW_DIMENSION_NAME = "newDimensionName"; //$NON-NLS-1$
-
-  private static final String NEW_DIMESION_DIALOG = "newDimesionDialog"; //$NON-NLS-1$
-
-  private static final String MY_TAB_LIST_ID = "myTabList"; //$NON-NLS-1$
-
   private static final String FIELD_LIST_ID = "fieldList"; //$NON-NLS-1$
-
-  private static final String IN_PLAY_TABLE_ID = "fieldTable"; //$NON-NLS-1$
-
-  private static final String MODEL_NAME_FIELD_ID = "modelname"; //$NON-NLS-1$
   
   private static final String SOURCE_NAME_LABEL_ID = "source_name"; //$NON-NLS-1$
-
-  private static final String MODEL_NAME_PROPERTY = "modelName"; //$NON-NLS-1$
-
-  private static final String VALUE_PROPERTY = "value"; //$NON-NLS-1$
-
-  private static final String ELEMENTS_PROPERTY = "elements"; //$NON-NLS-1$
-
-  private static final String FIELD_NAMES_PROPERTY = "fieldNames"; //$NON-NLS-1$
 
   private static Log logger = LogFactory.getLog(ModelerController.class);
   
   private ModelerWorkspace workspace;
   
-  private String fieldTypesDesc[];
-  private Integer fieldTypesCode[];
-  
-  private XulDialog newDimensionDialog;
-  private XulTextbox newDimensionName;
   private XulTree dimensionTree;
   private XulMenuList visualizationList;
   private XulDeck propDeck;
@@ -373,8 +348,6 @@ public class ModelerController extends AbstractXulEventHandler{
 
     bf.setDocument(document);
     
-    newDimensionDialog = (XulDialog) document.getElementById(NEW_DIMESION_DIALOG);
-    newDimensionName = (XulTextbox) document.getElementById(NEW_DIMENSION_NAME);
     dimensionTree = (XulTree) document.getElementById("dimensionTree"); //$NON-NLS-1$
     visualizationList = (XulMenuList)document.getElementById("visualizationlist"); //$NON-NLS-1$
     propDeck = (XulDeck) document.getElementById("propertiesdeck"); //$NON-NLS-1$
@@ -404,7 +377,7 @@ public class ModelerController extends AbstractXulEventHandler{
     bf.createBinding(workspace, "sourceName", sourceLabel, "value"); //$NON-NLS-1$//$NON-NLS-2$
 
     bf.setBindingType(Type.ONE_WAY);
-    fieldListBinding = bf.createBinding(workspace, "availableFields", FIELD_LIST_ID, ELEMENTS_PROPERTY); //$NON-NLS-1$
+    fieldListBinding = bf.createBinding(workspace, "availableFields", FIELD_LIST_ID, "elements"); //$NON-NLS-1$ //$NON-NLS-2$
     selectedFieldsBinding = bf.createBinding(FIELD_LIST_ID, "selectedItems", this, "selectedFields"); //$NON-NLS-1$//$NON-NLS-2$
     
     bf.createBinding(workspace, "selectedVisualization", visualizationList, "selectedItem"); //$NON-NLS-1$//$NON-NLS-2$    
@@ -480,7 +453,7 @@ public class ModelerController extends AbstractXulEventHandler{
     bf.createBinding(dimensionTree, "selectedItem", "levelBtn", "disabled", new ButtonConvertor(HierarchyMetaData.class)); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
     
     bf.setBindingType(Type.BI_DIRECTIONAL);
-    modelNameBinding = bf.createBinding(workspace, MODEL_NAME_PROPERTY, MODEL_NAME_FIELD_ID, VALUE_PROPERTY);
+    modelNameBinding = bf.createBinding(workspace, "modelName", "modelname", "value"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
     
     bf.createBinding(this.propPanel, "visible", this, "propVisible"); //$NON-NLS-1$//$NON-NLS-2$
     
