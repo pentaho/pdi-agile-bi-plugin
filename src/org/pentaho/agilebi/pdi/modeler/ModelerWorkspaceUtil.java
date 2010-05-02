@@ -165,7 +165,9 @@ public class ModelerWorkspaceUtil {
    */
   public static void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
     if(workspace.isAutoModel()) {
-      workspace.setModel(new MainModelNode());
+      MainModelNode mainModel = new MainModelNode();
+      mainModel.setName(workspace.getModelName());
+      workspace.setModel(mainModel);
       workspace.setModelIsChanging(true);
   
       List<AvailableField> fields = workspace.getAvailableFields();
@@ -198,7 +200,9 @@ public class ModelerWorkspaceUtil {
       Runnable worker = new Runnable(){
 
         public void run() {
-          workspace.setModel(new MainModelNode());
+          MainModelNode mainModel = new MainModelNode();
+          mainModel.setName(workspace.getModelName());
+          workspace.setModel(mainModel);
           final boolean prevChangeState = workspace.isModelChanging();
           workspace.setModelIsChanging(true);
       
