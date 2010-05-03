@@ -71,8 +71,8 @@ public class PublisherHelper {
           String repositoryPath = null;
           if(serverPathTemplate != null) {
             String selectedSolution = null;
-            if(selectedPath.indexOf(File.separator) != -1) { //$NON-NLS-1$
-              selectedSolution = selectedPath.substring(0, selectedPath.indexOf(File.separator)); //$NON-NLS-1$   
+            if(selectedPath.indexOf("/") != -1) { //$NON-NLS-1$
+              selectedSolution = selectedPath.substring(0, selectedPath.indexOf("/")); //$NON-NLS-1$   
             } else {
               selectedSolution = selectedPath;
             }
@@ -131,8 +131,8 @@ public class PublisherHelper {
           String theXmiPublishingPath = null;
           if(serverPathTemplate != null) {
             String theSolution = null;
-            if(thePrptPublishingPath.indexOf(File.separator) != -1) { //$NON-NLS-1$
-              theSolution = thePrptPublishingPath.substring(0, thePrptPublishingPath.indexOf(File.separator)); //$NON-NLS-1$   
+            if(thePrptPublishingPath.indexOf("/") != -1) { //$NON-NLS-1$
+              theSolution = thePrptPublishingPath.substring(0, thePrptPublishingPath.indexOf("/")); //$NON-NLS-1$   
             } else {
               theSolution = thePrptPublishingPath;
             }
@@ -142,7 +142,7 @@ public class PublisherHelper {
           // Set the domain id to the xmi.
           String theXmiFile = xmi.substring(xmi.lastIndexOf(File.separator) + 1, xmi.length()); //$NON-NLS-1$
           PmdDataFactory thePmdDataFactory = (PmdDataFactory) report.getDataFactory();
-          String theDomainId = theXmiPublishingPath + File.separator + theXmiFile; //$NON-NLS-1$
+          String theDomainId = theXmiPublishingPath + "/" + theXmiFile; //$NON-NLS-1$
           thePmdDataFactory.setDomainId(theDomainId);
           
           
