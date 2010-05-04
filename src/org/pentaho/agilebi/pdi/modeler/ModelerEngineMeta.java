@@ -73,7 +73,7 @@ public class ModelerEngineMeta implements EngineMetaInterface {
   }
 
   public String[] getFilterExtensions() {
-    return new String[]{"xmi"};
+    return new String[]{"*.xmi"}; //$NON-NLS-1$
   }
 
   public String[] getFilterNames() {

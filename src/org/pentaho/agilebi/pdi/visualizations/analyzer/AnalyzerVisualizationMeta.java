@@ -74,7 +74,7 @@ public class AnalyzerVisualizationMeta implements EngineMetaInterface, HasXulCon
   }
 
   public String[] getFilterExtensions() {
-    return new String[]{getDefaultExtension()};
+    return new String[]{"*." + getDefaultExtension()}; //$NON-NLS-1$
   }
 
   public String[] getFilterNames() {

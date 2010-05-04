@@ -87,7 +87,7 @@ public class PRPTMeta implements EngineMetaInterface, HasXulController {
   }
 
   public String[] getFilterExtensions() {
-    return new String[] { getDefaultExtension() };
+    return new String[] { "*." + getDefaultExtension() }; //$NON-NLS-1$
   }
 
   public String[] getFilterNames() {
