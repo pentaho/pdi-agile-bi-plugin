@@ -397,22 +397,25 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 
     String originalValue = null;
     try {
-        SAXReader reader = new SAXReader();
-        Document doc = reader.read(new File(aFile));
-        Element root = doc.getRootElement();
-
-        for ( Iterator<Element> i = root.elementIterator(); i.hasNext(); ) {
-            Element element = i.next();
-            if(element.getName().equals(aElement)) {
-              Attribute attr = element.attribute(anAttribute);
-              originalValue = attr.getValue();
-              attr.setValue(aValue);
-            }
+        if(aFile != null) {
+          SAXReader reader = new SAXReader();
+          reader.setEncoding("ISO-8859-1");
+          Document doc = reader.read(new File(aFile));
+          Element root = doc.getRootElement();
+  
+          for ( Iterator<Element> i = root.elementIterator(); i.hasNext(); ) {
+              Element element = i.next();
+              if(element.getName().equals(aElement)) {
+                Attribute attr = element.attribute(anAttribute);
+                originalValue = attr.getValue();
+                attr.setValue(aValue);
+              }
+          }
+  
+          XMLWriter writer = new XMLWriter(new FileWriter(aFile));
+          writer.write(doc);
+          writer.close();
         }
-
-        XMLWriter writer = new XMLWriter(new FileWriter(aFile));
-        writer.write(doc);
-        writer.close();
     } catch(Exception e) {
       logger.error(e);
     }
