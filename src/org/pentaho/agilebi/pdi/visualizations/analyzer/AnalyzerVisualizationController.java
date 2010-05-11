@@ -399,7 +399,6 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     try {
         if(aFile != null) {
           SAXReader reader = new SAXReader();
-          reader.setEncoding("ISO-8859-1");
           Document doc = reader.read(new File(aFile));
           Element root = doc.getRootElement();
   
