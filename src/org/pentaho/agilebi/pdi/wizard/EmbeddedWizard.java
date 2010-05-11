@@ -31,7 +31,11 @@ import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
+import org.pentaho.reporting.engine.classic.core.SubReport;
 import org.pentaho.reporting.engine.classic.core.designtime.DesignTimeContext;
+import org.pentaho.reporting.engine.classic.wizard.WizardProcessor;
+import org.pentaho.reporting.engine.classic.wizard.WizardProcessorUtil;
+import org.pentaho.reporting.engine.classic.wizard.model.WizardSpecification;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.WizardEditorModel;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.WizardContentPanel;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.WizardController;
@@ -149,7 +153,6 @@ public class EmbeddedWizard
       // if we're doing an edit drop into the layout step
       if (wizardController.getEditorModel().isEditing())
       {
-        ((LookAndFeelStep)wizardController.getStep(0)).setSelectedTemplate((Integer) ((MasterReport)original).getParameterValues().get(LookAndFeelStep.SELECTED_INDEX_PROPERTY_NAME));
         if (wizardController.getStep(0).isValid())
         {
           wizardController.setActiveStep(1); // initializes the data
