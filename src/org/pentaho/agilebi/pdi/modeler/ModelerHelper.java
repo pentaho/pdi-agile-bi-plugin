@@ -305,18 +305,6 @@ public class ModelerHelper extends AbstractXulEventHandler {
       }
     }
   }  
-    
-  public void editBiServerConfig() {
-    
-    Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-    try {
-    XulDialogBiServerList biServerConfigDialog = new XulDialogBiServerList( spoon.getShell() );
-    biServerConfigDialog.showDialog();
-    } catch (XulException e) {
-      logger.error(e);
-      new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Could not create dialog", e);
-    }
-  }
   
   public void createEmptyModel() {
     try {

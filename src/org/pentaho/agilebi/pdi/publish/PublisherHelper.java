@@ -14,15 +14,18 @@
  *
  * Copyright (c) 2010 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.perspective;
+package org.pentaho.agilebi.pdi.publish;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.lang.Thread.UncaughtExceptionHandler;
 
-import org.pentaho.agilebi.pdi.modeler.BiServerConnection;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.pdi.modeler.ModelServerPublish;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.pdi.modeler.XulDialogPublish;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
@@ -38,7 +41,7 @@ import org.pentaho.ui.xul.XulException;
 public class PublisherHelper {
 
   public static void publish(ModelerWorkspace workspace, String publishingFile,
-      String comment, int treeDepth, DatabaseMeta databaseMeta, String filename, boolean checkDatasources, 
+      int treeDepth, DatabaseMeta databaseMeta, String filename, boolean checkDatasources, 
       boolean showServerSelection, boolean showFolders, boolean showCurrentFolder, String serverPathTemplate, String extension, String databaseName ) throws ModelerException {
     try {
 
@@ -54,13 +57,16 @@ public class PublisherHelper {
       try {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
         publishDialog.setFolderTreeDepth(treeDepth);
-        publishDialog.setComment(comment); 
         publishDialog.setDatabaseMeta(databaseMeta);
         publishDialog.setFilename(filename);
         publishDialog.setCheckDatasources(checkDatasources);
         publishDialog.setShowLocation(showServerSelection, showFolders, showCurrentFolder);
         publishDialog.setPathTemplate(serverPathTemplate);
-        publishDialog.showDialog();
+        try{
+          publishDialog.showDialog();
+        } catch(Exception e){
+          e.printStackTrace();
+        }
         if (publishDialog.isAccepted()) {
           // now try to publish
           String selectedPath = publishDialog.getPath();
@@ -83,9 +89,17 @@ public class PublisherHelper {
           }
 
           filename = publishDialog.getFilename();
+
+          File tempF = new File(new File(System.getProperty("java.io.tmpdir")), publishDialog.getFilename()+".xanalyzer");
+          if(tempF.exists() == false){
+            tempF.createNewFile();
+          }
+          tempF.deleteOnExit();
+          IOUtils.copy(new FileInputStream(new File(publishingFile)), new FileOutputStream(tempF));
+          
           publisher
               .publishToServer(
-                  filename + extension, databaseName, filename, repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), publishingFile);
+                  filename + extension, databaseName, filename, repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
         }
       } catch (XulException e) {
         e.printStackTrace();
@@ -98,7 +112,7 @@ public class PublisherHelper {
   }
   
   public static void publishPrpt(MasterReport report, ModelerWorkspace workspace, String xmi, String prpt,
-      String comment, int treeDepth, DatabaseMeta databaseMeta, String modelName, boolean checkDatasources, 
+      int treeDepth, DatabaseMeta databaseMeta, String modelName, boolean checkDatasources, 
       boolean showServerSelection, boolean showFolders, boolean showCurrentFolder, String serverPathTemplate, String databaseName ) throws ModelerException {
     try {
 
@@ -114,7 +128,7 @@ public class PublisherHelper {
       try {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
         publishDialog.setFolderTreeDepth(treeDepth);
-        publishDialog.setComment(comment);
+        publishDialog.setFileMode(true);
         publishDialog.setDatabaseMeta(databaseMeta);
         publishDialog.setFilename(modelName);
         publishDialog.setCheckDatasources(checkDatasources);
@@ -153,14 +167,19 @@ public class PublisherHelper {
           thePmdDataFactory.setQuery("default", theQuery); //$NON-NLS-1$
           
           try {
-            BundleWriter.writeReportToZipFile(report, new File(prpt));
+            File tempF = new File(new File(System.getProperty("java.io.tmpdir")), publishDialog.getFilename()+".prpt");
+            if(tempF.exists() == false){
+              tempF.createNewFile();
+            }
+            tempF.deleteOnExit();
+            BundleWriter.writeReportToZipFile(report, tempF);
+            publisher.publishPrptToServer(theXmiPublishingPath, thePrptPublishingPath, publishDatasource, publishDialog.isExistentDatasource(), publishDialog.isPublishXmi(), xmi, tempF.getAbsolutePath()); 
+            
           } catch (Exception e) {
             throw new ModelerException(e);
+          } finally {
+            thePmdDataFactory.setQuery("default", theMQLQuery); //$NON-NLS-1$
           }
-
-          publisher.publishPrptToServer(theXmiPublishingPath, thePrptPublishingPath, publishDatasource, publishDialog.isExistentDatasource(), xmi, prpt); 
-          
-          thePmdDataFactory.setQuery("default", theMQLQuery); //$NON-NLS-1$
         }
       } catch (XulException e) {
         e.printStackTrace();

@@ -29,7 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
-import org.pentaho.agilebi.pdi.perspective.PublisherHelper;
+import org.pentaho.agilebi.pdi.publish.PublisherHelper;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
 import org.pentaho.di.core.EngineMetaInterface;
@@ -544,7 +544,6 @@ public class ModelerController extends AbstractXulEventHandler{
   
   public void publish() throws ModelerException{
     String publishingFile = workspace.getFileName();
-    String comment = BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment"); //$NON-NLS-1$
     int treeDepth = 0;
     DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
     boolean checkDatasources = true;
@@ -557,7 +556,7 @@ public class ModelerController extends AbstractXulEventHandler{
     String extension = ".mondrian.xml"; //$NON-NLS-1$
     String filename = workspace.getModelName();
     ModelerWorkspaceUtil.populateDomain(workspace);
-    PublisherHelper.publish(workspace, publishingFile, comment, treeDepth, databaseMeta, filename, checkDatasources, 
+    PublisherHelper.publish(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources, 
         showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
   }
   

@@ -14,7 +14,7 @@
  *
  * Copyright (c) 2009 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.publish;
 
 import org.pentaho.platform.api.repository.ISolutionRepository;
 
@@ -71,6 +71,9 @@ public class BiServerConnection {
    */
   public void setUrl(String url) {
     this.url = url;
+    if(url == null){
+      return;
+    }
     if( this.url.charAt( this.url.length()-1) != ISolutionRepository.SEPARATOR ) {
       this.url = this.url + ISolutionRepository.SEPARATOR;
     }

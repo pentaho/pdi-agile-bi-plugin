@@ -39,6 +39,7 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.dom4j.DocumentHelper;
+import org.pentaho.agilebi.pdi.publish.BiServerConnection;
 import org.pentaho.commons.util.repository.type.CmisObject;
 import org.pentaho.commons.util.repository.type.PropertiesBase;
 import org.pentaho.commons.util.repository.type.TypesOfFileableObjects;
@@ -394,18 +395,19 @@ public class ModelServerPublish {
     publishFile(selectedPath, files, false);
   }
   
-  public void publishPrptToServer(String theXmiPublishingPath, String thePrptPublishingPath, boolean publishDatasource, boolean isExistentDatasource, String xmi, String prpt) throws Exception {
+  public void publishPrptToServer(String theXmiPublishingPath, String thePrptPublishingPath, boolean publishDatasource, boolean isExistentDatasource, boolean publishXmi, String xmi, String prpt) throws Exception {
 
     if( publishDatasource ) {
       DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
       publishDataSource(databaseMeta, isExistentDatasource);    
     }
     File thePrpt[] = { new File(prpt) };
-    publishFile(thePrptPublishingPath, thePrpt, false);
+    publishFile(thePrptPublishingPath, thePrpt, !publishXmi /*show feedback here if not publishing xmi*/);
     
-    File theXmi[] = { new File(xmi) };
-    publishFile(theXmiPublishingPath, theXmi, true);
-
+    if(publishXmi){
+      File theXmi[] = { new File(xmi) };
+      publishFile(theXmiPublishingPath, theXmi, true);
+    }
   }
   
   public boolean checkDataSource( boolean autoMode ) throws KettleDatabaseException, ConnectionServiceException {
@@ -501,7 +503,7 @@ public class ModelServerPublish {
       }
       case ModelServerPublish.PUBLISH_SUCCESS: {
         SpoonFactory.getInstance().messageBox( BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.Success" ),  //$NON-NLS-1$  
-            BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+            BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), false, Const.INFO); //$NON-NLS-1$
         break;
       }
       case ModelServerPublish.PUBLISH_UNKNOWN_PROBLEM: {

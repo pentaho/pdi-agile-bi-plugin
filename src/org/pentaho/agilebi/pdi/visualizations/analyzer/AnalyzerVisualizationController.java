@@ -41,7 +41,7 @@ import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
-import org.pentaho.agilebi.pdi.perspective.PublisherHelper;
+import org.pentaho.agilebi.pdi.publish.PublisherHelper;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.di.core.EngineMetaInterface;
@@ -372,7 +372,6 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
   public void publish() throws ModelerException{
     EngineMetaInterface engineMeta = spoon.getActiveMeta();
     String publishingFile = engineMeta.getFilename();
-    String comment = BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment"); //$NON-NLS-1$
     int treeDepth = 100;
     DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
     boolean checkDatasources = true; 
@@ -387,7 +386,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     
     String originalValue = replaceAttributeValue("report", "catalog", filename, publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
     ModelerWorkspaceUtil.populateDomain(workspace);
-    PublisherHelper.publish(workspace, publishingFile, comment, treeDepth, databaseMeta, filename, checkDatasources, 
+    PublisherHelper.publish(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources, 
         showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
     
     replaceAttributeValue("report", "catalog", originalValue, publishingFile); //$NON-NLS-1$ //$NON-NLS-2$

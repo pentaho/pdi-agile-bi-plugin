@@ -12,36 +12,18 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2010 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2009 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.publish;
 
-import java.beans.PropertyChangeListener;
+import org.pentaho.ui.xul.util.AbstractModelList;
 
-import org.pentaho.ui.xul.XulEventSource;
+/**
+ * A BI server connection list
+ * @author jamesdixon
+ *
+ */
+public class BiServerConnectionCollection extends AbstractModelList<BiServerConnection> {
 
-public class NamedObject implements XulEventSource {
   
-  private String name;
-  
-  public NamedObject( ) {
-  }
-  
-  public NamedObject( String name ) {
-    this.name = name;
-  }
-  
-  public String getName() {
-    return name;
-  }
-  
-  public void setName( String name ) {
-    this.name = name;
-  }
-
-  public void addPropertyChangeListener(PropertyChangeListener arg0) {
-  }
-
-  public void removePropertyChangeListener(PropertyChangeListener arg0) {
-  }
 }

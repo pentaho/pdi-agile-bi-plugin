@@ -29,7 +29,7 @@ import org.pentaho.agilebi.pdi.modeler.ModelerHelper;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
-import org.pentaho.agilebi.pdi.perspective.PublisherHelper;
+import org.pentaho.agilebi.pdi.publish.PublisherHelper;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
@@ -296,8 +296,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   public void publish() throws ModelerException {
     
     String theXmiFile = model.getFileName();
-    String comment = BaseMessages.getString(XulUI.class, "ModelServerPublish.Publish.ModelPublishComment"); //$NON-NLS-1$
-    int treeDepth = 100;
+    int treeDepth = -1; //infinite
     DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
     boolean checkDatasources = true;
     boolean showServerSelection = true;
@@ -312,7 +311,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     String theOldDomainId = thePmdDataFactory.getDomainId();
     
     String thePrpt = getFileName();
-    PublisherHelper.publishPrpt(this.report, model, theXmiFile, thePrpt, comment, treeDepth, databaseMeta, modelName, checkDatasources, 
+    PublisherHelper.publishPrpt(this.report, model, theXmiFile, thePrpt, treeDepth, databaseMeta, modelName, checkDatasources, 
         showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, databaseName);
     
     thePmdDataFactory.setDomainId(theOldDomainId);

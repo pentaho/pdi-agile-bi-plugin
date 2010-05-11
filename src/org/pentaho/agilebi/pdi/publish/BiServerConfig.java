@@ -14,7 +14,7 @@
  *
  * Copyright (c) 2009 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.publish;
 
 import java.io.File;
 import java.io.FileInputStream;
