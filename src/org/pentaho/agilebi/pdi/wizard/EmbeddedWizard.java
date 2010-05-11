@@ -149,7 +149,7 @@ public class EmbeddedWizard
       // if we're doing an edit drop into the layout step
       if (wizardController.getEditorModel().isEditing())
       {
-        ((LookAndFeelStep)wizardController.getStep(0)).setSelectedTemplate((Integer) original.getProperty("wizard_template_index"));
+        ((LookAndFeelStep)wizardController.getStep(0)).setSelectedTemplate((Integer) ((MasterReport)original).getParameterValues().get(LookAndFeelStep.SELECTED_INDEX_PROPERTY_NAME));
         if (wizardController.getStep(0).isValid())
         {
           wizardController.setActiveStep(1); // initializes the data
