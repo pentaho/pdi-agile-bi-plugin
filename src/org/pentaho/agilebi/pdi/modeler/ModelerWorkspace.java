@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.pentaho.agilebi.pdi.publish.BiServerConfig;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
@@ -502,11 +501,11 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
 	    		OlapMeasure theMeasure = theMeasuresItr.next();
 	    		
 	    		MeasureMetaData theMeasureMD = new MeasureMetaData();
-	    		theMeasureMD.setName(theMeasure.getName());
+          theMeasureMD.setName(theMeasure.getLogicalColumn().getName(Locale.getDefault().toString()));
 	    		theMeasureMD.setFormat((String)theMeasure.getLogicalColumn().getProperty("mask")); //$NON-NLS-1$
           theMeasureMD.setAggTypeDesc(theMeasure.getLogicalColumn().getAggregationType().toString());
-	        
-	    		theMeasureMD.setLogicalColumn(theMeasure.getLogicalColumn());
+          
+          theMeasureMD.setLogicalColumn(theMeasure.getLogicalColumn());
 	    		this.model.getMeasures().add(theMeasureMD);
 	    	}
 	    }
