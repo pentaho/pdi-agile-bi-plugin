@@ -301,6 +301,9 @@ public class ModelerWorkspaceUtil {
         for (int j = 0; j < hier.size(); j++) {
           LevelMetaData level = hier.get(j);
           LogicalColumn lCol = logicalModel.findLogicalColumn(level.getLogicalColumn().getId());
+          if(cat.getLogicalColumns().contains(lCol)){
+            continue;
+          }
           lCol.setName(new LocalizedString(Locale.getDefault().toString(), level.getName()));
           if (cat.findLogicalColumn(lCol.getId()) == null) {
             cat.addLogicalColumn(lCol);
@@ -369,8 +372,6 @@ public class ModelerWorkspaceUtil {
       for (MeasureMetaData f : model.getModel().getMeasures()) {
 
         OlapMeasure measure = new OlapMeasure();
-        String n = f.getName();
-        measure.setName(n);
         f.getLogicalColumn().setAggregationType(AggregationType.valueOf(f.getAggTypeDesc()));
         measure.setLogicalColumn(f.getLogicalColumn());
         measures.add(measure);
