@@ -38,6 +38,7 @@ import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
 import org.pentaho.metadata.model.olap.OlapMeasure;
 import org.pentaho.metadata.util.ThinModelConverter;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
+import org.pentaho.agilebi.pdi.publish.BiServerConfig;
 
 
 /**
