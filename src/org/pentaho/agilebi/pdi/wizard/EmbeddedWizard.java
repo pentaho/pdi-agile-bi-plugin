@@ -153,6 +153,8 @@ public class EmbeddedWizard
       // if we're doing an edit drop into the layout step
       if (wizardController.getEditorModel().isEditing())
       {
+        wizardController.setActiveStep(0);
+        ((LookAndFeelStep)wizardController.getStep(0)).setSelectedTemplateByPath(original.getAttribute("http://reporting.pentaho.org/namespaces/engine/attributes/wizard", "template"));
         if (wizardController.getStep(0).isValid())
         {
           wizardController.setActiveStep(1); // initializes the data
