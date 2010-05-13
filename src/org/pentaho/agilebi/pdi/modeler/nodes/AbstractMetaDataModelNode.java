@@ -14,13 +14,14 @@
  *
  * Copyright (c) 2010 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.modeler.nodes;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pentaho.agilebi.pdi.modeler.propforms.ModelerNodePropertiesForm;
 import org.pentaho.ui.xul.util.AbstractModelNode;
 
 public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelNode> extends AbstractModelNode<T> {

@@ -14,20 +14,23 @@
  *
  * Copyright (c) 2010 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.modeler.nodes;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 
 import org.apache.commons.lang.StringUtils;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.propforms.MainModelerNodePropertiesForm;
+import org.pentaho.agilebi.pdi.modeler.propforms.ModelerNodePropertiesForm;
 import org.pentaho.di.i18n.BaseMessages;
 
 public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataModelNode<?>> implements Serializable {
 
   private static final long serialVersionUID = 2399128598598210134L;
 
-  String name;
+  String name = BaseMessages.getString(ModelerWorkspace.class, "Main.Model.Name.Untitled");
   
   private MeasuresCollection measures = new MeasuresCollection();
   private DimensionMetaDataCollection dimensions = new DimensionMetaDataCollection();
@@ -43,12 +46,18 @@ public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataMod
   public String getName() {
     return name;
   }
+  
+  public String getDisplayName(){
+    return BaseMessages.getString(ModelerWorkspace.class, "Main.Model.Name.Template", getName());
+  }
 
   public void setName(String name) {
     if (!StringUtils.equals(name, this.name)) {
       String oldName = this.name;
+      String prevDisplay = getDisplayName();
       this.name = name;
-      this.firePropertyChange("name", oldName, name); //$NON-NLS-1$
+      this.firePropertyChange("name", oldName, this.name); //$NON-NLS-1$
+      this.firePropertyChange("displayName", prevDisplay, BaseMessages.getString(ModelerWorkspace.class, "Main.Model.Name.Template", getName())); //$NON-NLS-1$
       validateNode();
     }
   }
@@ -112,12 +121,12 @@ public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataMod
     
     if (StringUtils.isBlank(this.getName())) {
       valid = false;
-      this.validationMessages.add(BaseMessages.getString(MainModelNode.class, "MainModelNode.ModelNameEmpty")); //$NON-NLS-1$
+      this.validationMessages.add(BaseMessages.getString(ModelerWorkspace.class, "MainModelNode.ModelNameEmpty")); //$NON-NLS-1$
     }
     
     if(this.children.size() != 2) {
       valid = false;
-      this.validationMessages.add(BaseMessages.getString(MainModelNode.class, "MainModelNode.ModelStructureInvalid")); //$NON-NLS-1$
+      this.validationMessages.add(BaseMessages.getString(ModelerWorkspace.class, "MainModelNode.ModelStructureInvalid")); //$NON-NLS-1$
     }
     for(AbstractMetaDataModelNode child : children) {
       valid &= child.isValid();

@@ -14,12 +14,13 @@
  *
  * Copyright (c) 2010 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.modeler.propforms;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Vector;
 
+import org.pentaho.agilebi.pdi.modeler.nodes.MeasureMetaData;
 import org.pentaho.di.i18n.LanguageChoice;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.ui.xul.binding.BindingConvertor;

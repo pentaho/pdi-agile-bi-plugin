@@ -14,12 +14,15 @@
  *
  * Copyright (c) 2009 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.modeler.nodes;
 
 import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.pentaho.agilebi.pdi.modeler.ColumnBackedNode;
+import org.pentaho.agilebi.pdi.modeler.propforms.LevelsPropertiesForm;
+import org.pentaho.agilebi.pdi.modeler.propforms.ModelerNodePropertiesForm;
 import org.pentaho.metadata.model.LogicalColumn;
 
 @SuppressWarnings("unchecked")
@@ -42,11 +45,16 @@ public class LevelMetaData extends AbstractMetaDataModelNode implements Serializ
     return name;
   }
   
+  public String getDisplayName(){
+    return getName();
+  }
+  
   public void setName(String name) {
     if (!StringUtils.equals(name, this.name)) {
       String oldName = this.name;
       this.name = name;
       this.firePropertyChange("name", oldName, name); //$NON-NLS-1$
+      this.firePropertyChange("displayName", oldName, name); //$NON-NLS-1$
       validateNode();
     }
   }

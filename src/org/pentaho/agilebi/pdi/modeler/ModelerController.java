@@ -29,6 +29,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
+import org.pentaho.agilebi.pdi.modeler.nodes.AbstractMetaDataModelNode;
+import org.pentaho.agilebi.pdi.modeler.nodes.DimensionMetaData;
+import org.pentaho.agilebi.pdi.modeler.nodes.DimensionMetaDataCollection;
+import org.pentaho.agilebi.pdi.modeler.nodes.HierarchyMetaData;
+import org.pentaho.agilebi.pdi.modeler.nodes.LevelMetaData;
+import org.pentaho.agilebi.pdi.modeler.nodes.MainModelNode;
+import org.pentaho.agilebi.pdi.modeler.nodes.MeasureMetaData;
+import org.pentaho.agilebi.pdi.modeler.nodes.MeasuresCollection;
+import org.pentaho.agilebi.pdi.modeler.propforms.AbstractModelerNodeForm;
+import org.pentaho.agilebi.pdi.modeler.propforms.ModelerNodePropertiesForm;
 import org.pentaho.agilebi.pdi.publish.PublisherHelper;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
@@ -422,13 +432,16 @@ public class ModelerController extends AbstractXulEventHandler{
       }
     });      
     
+    
+    //TODO: move all this datasource stuff into models! use the existing property form validation to show messages.
     datasourceButtonBinding = bf.createBinding(sourceLabel, "value", "datasource_button", "visible", new BindingConvertor<Object, Boolean>() { //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
       public Boolean sourceToTarget(Object value) {
         
         boolean isVisible = StringUtils.isEmpty(value.toString());
-        XulVbox messageBox = (XulVbox) document.getElementById("undefined_datasource_message"); //$NON-NLS-1$
+        XulVbox messageBox = (XulVbox) document.getElementById("main_message"); //$NON-NLS-1$
         messageBox.setVisible(isVisible);
-        
+        XulComponent datsourceError = document.getElementById("datasource_message_label");
+        datsourceError.setVisible(isVisible);
         
         XulComponent refreshButton = document.getElementById("refreshButton"); //$NON-NLS-1$
         refreshButton.setDisabled(isVisible);
@@ -447,13 +460,14 @@ public class ModelerController extends AbstractXulEventHandler{
       }
     });
     
+    
     bf.createBinding(dimensionTree, "selectedItem", "measureBtn", "disabled", new ButtonConvertor(MeasuresCollection.class)); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
     bf.createBinding(dimensionTree, "selectedItem", "dimensionBtn", "disabled", new ButtonConvertor(DimensionMetaDataCollection.class)); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
     bf.createBinding(dimensionTree, "selectedItem", "hierarchyBtn", "disabled", new ButtonConvertor(DimensionMetaData.class)); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
     bf.createBinding(dimensionTree, "selectedItem", "levelBtn", "disabled", new ButtonConvertor(HierarchyMetaData.class)); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
     
     bf.setBindingType(Type.BI_DIRECTIONAL);
-    modelNameBinding = bf.createBinding(workspace, "modelName", "modelname", "value"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+    //modelNameBinding = bf.createBinding(workspace, "modelName", "modelname", "value"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
     
     bf.createBinding(this.propPanel, "visible", this, "propVisible"); //$NON-NLS-1$//$NON-NLS-2$
     
@@ -496,7 +510,7 @@ public class ModelerController extends AbstractXulEventHandler{
       fieldListBinding.fireSourceChanged();
       selectedFieldsBinding.fireSourceChanged();
       modelTreeBinding.fireSourceChanged();
-      modelNameBinding.fireSourceChanged();
+      //modelNameBinding.fireSourceChanged();
       visualizationsBinding.fireSourceChanged();
     } catch (Exception e) {
       logger.info("Error firing off initial bindings", e);

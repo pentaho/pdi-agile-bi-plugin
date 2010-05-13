@@ -14,7 +14,7 @@
  *
  * Copyright (c) 2010 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.modeler.nodes;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -22,6 +22,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.propforms.GenericPropertiesForm;
+import org.pentaho.agilebi.pdi.modeler.propforms.ModelerNodePropertiesForm;
 import org.pentaho.di.i18n.BaseMessages;
 
 public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<DimensionMetaData> implements Serializable {
@@ -36,6 +39,10 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
   
   public String getName() {
     return name;
+  }
+  
+  public String getDisplayName(){
+    return getName();
   }
 
   public void setName(String name) {
@@ -95,7 +102,7 @@ public class DimensionMetaDataCollection extends AbstractMetaDataModelNode<Dimen
       validationMessages.addAll(dim.getValidationMessages());
       if(usedNames.contains(dim.getName())){
         valid = false;
-        validationMessages.add(BaseMessages.getString(this.getClass(), "duplicate_dimension_names"));
+        validationMessages.add(BaseMessages.getString(ModelerWorkspace.class, "duplicate_dimension_names"));
       }
       usedNames.add(dim.getName());
     }

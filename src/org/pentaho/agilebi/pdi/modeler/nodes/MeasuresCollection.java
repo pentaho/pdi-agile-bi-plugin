@@ -14,16 +14,19 @@
  *
  * Copyright (c) 2010 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.modeler.nodes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.propforms.GenericPropertiesForm;
+import org.pentaho.agilebi.pdi.modeler.propforms.ModelerNodePropertiesForm;
 import org.pentaho.di.i18n.BaseMessages;
 
 public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaData>  implements Serializable {
-  private String name = BaseMessages.getString(this.getClass(), "measures");
+  private String name = BaseMessages.getString(ModelerWorkspace.class, "measures");
   
   public MeasuresCollection(){
     this.valid = false;
@@ -31,6 +34,10 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
   
   public String getName() {
     return name;
+  }
+  
+  public String getDisplayName(){
+    return getName();
   }
   
   public void setName(String name) {
@@ -53,7 +60,7 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
     validationMessages.clear();
 
     if (size() == 0) {
-      validationMessages.add(BaseMessages.getString(this.getClass(), "need_one_measure"));
+      validationMessages.add(BaseMessages.getString(ModelerWorkspace.class, "need_one_measure"));
       valid = false;
     }
     List<String> usedNames = new ArrayList<String>();
@@ -62,7 +69,7 @@ public class MeasuresCollection extends AbstractMetaDataModelNode<MeasureMetaDat
       validationMessages.addAll(measure.getValidationMessages());
       if(usedNames.contains(measure.getName())){
         valid = false;
-        validationMessages.add(BaseMessages.getString(this.getClass(), "duplicate_measure_name"));
+        validationMessages.add(BaseMessages.getString(ModelerWorkspace.class, "duplicate_measure_name"));
       }
       
       usedNames.add(measure.getName());

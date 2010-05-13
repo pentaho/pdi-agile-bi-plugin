@@ -28,6 +28,42 @@
     
   </vbox>
   
+  <vbox id="mainprops">
+    <vbox bgcolor="#FFFFCC" id="main_message">
+      <grid spacing="3">
+        <columns>
+          <column/>
+          <column flex="1"/>
+        </columns>
+        <rows>
+          <row >
+            <image src="images/warning.png" />
+                    <label id="mainnode_message_label" flex="1" multiline="true"
+                    value="${undefined_ds}" />
+          </row>
+          <row flex="1">
+            <label id="datasource_message_label" flex="1" multiline="true"
+                value="${undefined_ds}" />
+          </row>
+      
+       </rows>
+      </grid>
+    </vbox>
+    <groupbox>
+      <caption label="${details}"/>
+      <label value="${model_name}:" />
+      <textbox id="main_name" />
+      <label value="${source}:" />
+      <label id="source_name" value="some source" />
+      <hbox>
+        <button id="datasource_button" label="Select" onclick="modeler.editDataSource()" tooltiptext="${select_edit_ds}"/>
+        <spacer flex="1"/>
+      </hbox>
+    </groupbox>
+    
+  </vbox>
+  
+  
     <vbox id="hierarchyprops">
     <vbox bgcolor="#FFFFCC" id="hierarchy_message">
       <grid spacing="3">

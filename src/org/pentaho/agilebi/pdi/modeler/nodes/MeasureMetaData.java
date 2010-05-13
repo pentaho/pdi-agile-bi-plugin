@@ -14,7 +14,7 @@
  *
  * Copyright (c) 2009 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.modeler.nodes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
+import org.pentaho.agilebi.pdi.modeler.ColumnBackedNode;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.propforms.MeasuresPropertiesForm;
+import org.pentaho.agilebi.pdi.modeler.propforms.ModelerNodePropertiesForm;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.i18n.LanguageChoice;
 import org.pentaho.metadata.model.LogicalColumn;
@@ -76,12 +80,17 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
   public String getName() {
     return name;
   }
+  
+  public String getDisplayName(){
+    return getName();
+  }
 
   public void setName(String name) {
     if (!StringUtils.equals(name, this.name)) {
       String oldName = this.name;
       this.name = name;
       this.firePropertyChange("name", oldName, name); //$NON-NLS-1$
+      this.firePropertyChange("displayName", oldName, name); //$NON-NLS-1$
       validateNode();
       if(logicalColumn != null){
         logicalColumn.setName(new LocalizedString(LanguageChoice.getInstance().getDefaultLocale().getDisplayLanguage(), name));
@@ -203,11 +212,11 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
     validationMessages.clear();
     // check name
     if (StringUtils.isEmpty(name)) {
-      validationMessages.add(BaseMessages.getString(this.getClass(), "measure_name_missing", getName())); 
+      validationMessages.add(BaseMessages.getString(ModelerWorkspace.class, "measure_name_missing", getName())); 
       valid = false;
     } 
     if(logicalColumn == null){
-      validationMessages.add(BaseMessages.getString(this.getClass(), "measure_column_missing", getName()));
+      validationMessages.add(BaseMessages.getString(ModelerWorkspace.class, "measure_column_missing", getName()));
       valid = false;
     }
   }

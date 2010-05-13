@@ -14,13 +14,16 @@
  *
  * Copyright (c) 2009 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.pdi.modeler;
+package org.pentaho.agilebi.pdi.modeler.nodes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.modeler.propforms.HierarchyPropertiesForm;
+import org.pentaho.agilebi.pdi.modeler.propforms.ModelerNodePropertiesForm;
 import org.pentaho.di.i18n.BaseMessages;
 
 /**
@@ -40,11 +43,16 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
     return name;
   }
   
+  public String getDisplayName(){
+    return getName();
+  }
+  
   public void setName(String name) {
     if (!StringUtils.equals(name, this.name)) {
       String oldName = this.name;
       this.name = name;
       this.firePropertyChange("name", oldName, name); //$NON-NLS-1$
+      this.firePropertyChange("displayName", oldName, name); //$NON-NLS-1$
       validateNode();
     }
   }
@@ -67,14 +75,14 @@ public class HierarchyMetaData extends AbstractMetaDataModelNode<LevelMetaData> 
     
     if(children.size() == 0){
       valid = false;
-      validationMessages.add(BaseMessages.getString(this.getClass(), "missing_level_from_heirarchy"));
+      validationMessages.add(BaseMessages.getString(ModelerWorkspace.class, "missing_level_from_heirarchy"));
     }
     for(LevelMetaData level: children){
       valid &= level.isValid();
       validationMessages.addAll(level.getValidationMessages());
       if(usedNames.contains(level.getName())){
         valid = false;
-        validationMessages.add(BaseMessages.getString(this.getClass(), "duplicate_level_names"));
+        validationMessages.add(BaseMessages.getString(ModelerWorkspace.class, "duplicate_level_names"));
       }
       usedNames.add(level.getName());
     }

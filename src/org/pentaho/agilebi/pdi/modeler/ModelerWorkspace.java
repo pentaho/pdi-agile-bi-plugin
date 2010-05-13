@@ -25,6 +25,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.pentaho.agilebi.pdi.modeler.nodes.AbstractMetaDataModelNode;
+import org.pentaho.agilebi.pdi.modeler.nodes.DimensionMetaData;
+import org.pentaho.agilebi.pdi.modeler.nodes.HierarchyMetaData;
+import org.pentaho.agilebi.pdi.modeler.nodes.LevelMetaData;
+import org.pentaho.agilebi.pdi.modeler.nodes.MainModelNode;
+import org.pentaho.agilebi.pdi.modeler.nodes.MeasureMetaData;
+import org.pentaho.agilebi.pdi.publish.BiServerConfig;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
