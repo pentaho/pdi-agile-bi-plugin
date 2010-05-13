@@ -95,8 +95,8 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
 
   public void setColumnName(LogicalColumn col){
     String prevName = this.colName;
-    this.colName = (col != null && col.getPhysicalColumn() != null) ? col.getPhysicalColumn().getName(LanguageChoice.getInstance().getDefaultLocale().getDisplayLanguage()) : "";
-    this.firePropertyChange("columnName", prevName, this.colName);
+    this.colName = (col != null && col.getPhysicalColumn() != null) ? col.getPhysicalColumn().getName(LanguageChoice.getInstance().getDefaultLocale().toString()) : ""; //$NON-NLS-1$
+    this.firePropertyChange("columnName", prevName, this.colName); //$NON-NLS-1$
   }
   
   public String getColumnName(){

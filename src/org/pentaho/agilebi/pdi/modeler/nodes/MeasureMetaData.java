@@ -93,7 +93,7 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
       this.firePropertyChange("displayName", oldName, name); //$NON-NLS-1$
       validateNode();
       if(logicalColumn != null){
-        logicalColumn.setName(new LocalizedString(LanguageChoice.getInstance().getDefaultLocale().getDisplayLanguage(), name));
+        logicalColumn.setName(new LocalizedString(LanguageChoice.getInstance().getDefaultLocale().toString(), name));
       }
     }
   }
