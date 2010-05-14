@@ -18,8 +18,10 @@ package org.pentaho.agilebi.pdi.modeler;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -404,9 +406,10 @@ public class ModelerWorkspaceUtil {
 	    try{
 
 	      File file = new File(fileName);
-	      PrintWriter pw = new PrintWriter(new FileWriter(file));
-	      pw.print(xmi);
-	      pw.close();
+	      OutputStream out = new FileOutputStream(file);
+	      out.write(xmi.getBytes("UTF-8"));
+	      out.flush();
+	      out.close();
 	      
 	    } catch(IOException e){
 	      logger.info(BaseMessages.getString(ModelerWorkspaceUtil.class, "ModelerWorkspaceUtil.Populate.BadGenerateMetadata"),e); //$NON-NLS-1$
