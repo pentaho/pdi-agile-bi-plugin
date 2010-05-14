@@ -9,4 +9,8 @@ public class PublishException extends Exception {
   public PublishException(String msg, Exception e){
     super(msg, e);
   }
+  
+  public PublishException(Exception e){
+    super(e);
+  }
 }

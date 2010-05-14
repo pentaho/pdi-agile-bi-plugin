@@ -570,11 +570,13 @@ public class ModelerController extends AbstractXulEventHandler{
     String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
       "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
     String databaseName = workspace.getDatabaseName();
-    String extension = ".mondrian.xml"; //$NON-NLS-1$
+    String extension = ".xmi"; //$NON-NLS-1$
     String filename = workspace.getModelName();
     ModelerWorkspaceUtil.populateDomain(workspace);
-    PublisherHelper.publish(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources, 
-        showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
+    String fileName = PublisherHelper.publish(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources, 
+        false, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
+    workspace.getModel().setName(fileName);
+    workspace.setDirty(true);
   }
   
   /**

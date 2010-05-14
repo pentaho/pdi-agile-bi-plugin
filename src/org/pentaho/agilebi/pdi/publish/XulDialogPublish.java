@@ -54,6 +54,8 @@ import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.swt.SwtBindingFactory;
 
+import bsh.This;
+
 /**
  * A dialog for publishing to a BI server
  * @author jamesdixon
@@ -109,6 +111,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   // Connection form members
   private BiServerConnectionForm biserverForm = new BiServerConnectionForm();
   private XulTextbox publishpassword, password, userid, url, name;
+  private boolean doNotPublishDatasource; // override for the user checkbox
   
   /**
    * Creates a new dialog. Gets the current list of BI server connections from the properties file
@@ -163,8 +166,9 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     
 //    bf.createBinding(this, "selectedFolder", folderMenuList, "selectedItem");    //$NON-NLS-1$ //$NON-NLS-2$
     bf.createBinding(publishModel, "filename", "filename", "value");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-
+    
     bf.setBindingType(Type.ONE_WAY);
+    bf.createBinding(publishModel, "filename", this, "fileNameChanged");
     bf.createBinding(publishModel, "selectedFolder", folderTextbox, "value", new BindingConvertor<SolutionObject, String>(){
       @Override
       public String sourceToTarget(SolutionObject arg0) {
@@ -253,6 +257,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       }
     });
     
+    bf.createBinding(publishModelCheck, "checked", publishModel, "publishXmi");
 
     bf.createBinding(publishModel, "valid", "publish_accept", "!disabled");
     
@@ -347,7 +352,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     
   public void okClick() {
     
-    publishDataSource = publishDatasourceCheck.isChecked();
+    publishDataSource = !doNotPublishDatasource  && publishDatasourceCheck.isChecked();
     accepted = true;
     onDialogAccept();
   }
@@ -361,47 +366,56 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     this.publishModel.setFolderTreeDepth(folderTreeDepth);
   }
 
-  protected void connect() {
+  protected void connect(){
     
-    // create the publisher object
-    publisher = new ModelServerPublish();
-    publisher.setBiServerConnection(publishModel.getSelectedConnection());
-    publishModel.setSelectedFolder(null);
 
     // compare data sources
     try {
-      int result = publisher.compareDataSourceWithRemoteConnection(databaseMeta);
-      switch (result) {
-        case ModelServerPublish.REMOTE_CONNECTION_SAME : {
-          //datasourceLabel.setValue( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.DatasourceSame") ); //$NON-NLS-1$
-          publishDatasourceCheck.setChecked( false );
-          datasourceExists = true;
-          break;
-        }
-        case ModelServerPublish.REMOTE_CONNECTION_MISSING : {
-          //datasourceLabel.setValue( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.DatasourceMissing") ); //$NON-NLS-1$
-          datasourceExists = false;
-          break;
-        }
-        case ModelServerPublish.REMOTE_CONNECTION_MUST_BE_JNDI : {
-          //datasourceLabel.setValue( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.DatasourceCannotPublish") ); //$NON-NLS-1$
-          publishDatasourceCheck.setChecked( false );
-          datasourceExists = false;
-          break;
-        }
-        case ModelServerPublish.REMOTE_CONNECTION_DIFFERENT : {
-          //datasourceLabel.setValue( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.DatasourceDifferent") ); //$NON-NLS-1$
-          datasourceExists = true;
-          break;
-        }
-      }
-    } catch (Exception e) {
-      logger.error(e);
+      publishModel.createSolutionTree();
+      // create the publisher object
+      publisher = new ModelServerPublish();
+      publisher.setBiServerConnection(publishModel.getSelectedConnection());
+      publishModel.setSelectedFolder(null);
+      checkDatasources();
+    } catch (Exception e) { 
       SpoonFactory.getInstance().messageBox( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.CouldNotGetDataSources", e.getLocalizedMessage() ),  //$NON-NLS-1$
-          BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
+      BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
     }      
     
 
+  }
+  
+  private void checkDatasources() throws Exception{
+    if(publisher == null){//not connected yet, safe to exit
+      return;
+    }
+    int result = publisher.compareDataSourceWithRemoteConnection(databaseMeta);
+    switch (result) {
+      case ModelServerPublish.REMOTE_CONNECTION_SAME : {
+        //datasourceLabel.setValue( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.DatasourceSame") ); //$NON-NLS-1$
+        this.doNotPublishDatasource = true;
+        datasourceExists = true;
+        break;
+      }
+      case ModelServerPublish.REMOTE_CONNECTION_MISSING : {
+        //datasourceLabel.setValue( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.DatasourceMissing") ); //$NON-NLS-1$
+        datasourceExists = false;
+        doNotPublishDatasource = false;
+        break;
+      }
+      case ModelServerPublish.REMOTE_CONNECTION_MUST_BE_JNDI : {
+        //datasourceLabel.setValue( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.DatasourceCannotPublish") ); //$NON-NLS-1$
+        doNotPublishDatasource = true;
+        datasourceExists = false;
+        break;
+      }
+      case ModelServerPublish.REMOTE_CONNECTION_DIFFERENT : {
+        //datasourceLabel.setValue( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.DatasourceDifferent") ); //$NON-NLS-1$
+        datasourceExists = true;
+        doNotPublishDatasource = false;
+        break;
+      }
+    }
   }
   
   public boolean isExistentDatasource() {
@@ -418,6 +432,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
         wait.setTitle(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Title"));
         wait.setMessage(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Message"));
         wait.setIndeterminate(true);
+        wait.setModalParent(this.getDialog().getRootObject());
         wait.setRunnable(new WaitBoxRunnable(wait){
 
           @Override
@@ -446,6 +461,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     addingNewServer = false;
     biserverForm.setConn(this.publishModel.getSelectedConnection());
     biserverDialog.show();
+    biServerConfig.save();
   }
   
   public void newServer(){
@@ -514,17 +530,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     
   }
 
-  public void setShowLocation(boolean showServerSelection, boolean showFolders, boolean showCurrentFolder ) {
-    XulComponent component = document.getElementById("serverControls"); //$NON-NLS-1$
-    component.setVisible( showServerSelection );
-    //component = document.getElementById("folderControls"); //$NON-NLS-1$
-    //component.setVisible( showFolders );
-    //component = document.getElementById("currentFolderControls"); //$NON-NLS-1$
-    //component.setVisible( showCurrentFolder );
-    component = document.getElementById("locationGroupBox"); //$NON-NLS-1$
-    component.setVisible( showServerSelection || showFolders || showCurrentFolder );
-  }
-
   public void setShowDatasourceStatus(boolean showDatasourceStatus) {
     XulComponent component = document.getElementById("datasourceGroupBox"); //$NON-NLS-1$
     component.setVisible( showDatasourceStatus );
@@ -576,6 +581,17 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   public void setFileMode(boolean b){
     this.fileMode = b;
     publishModelCheck.setVisible(b);
+  }
+  
+  public void setFileNameChanged(String name){
+    try {
+      databaseMeta.setName(name);
+      checkDatasources();
+      
+    } catch (Exception e) {
+      logger.error(e);
+      e.printStackTrace();
+    }
   }
 }
 

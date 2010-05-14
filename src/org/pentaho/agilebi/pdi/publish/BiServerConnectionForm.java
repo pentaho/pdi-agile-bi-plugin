@@ -1,5 +1,6 @@
 package org.pentaho.agilebi.pdi.publish;
 
+import org.apache.commons.lang.StringUtils;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
 
 public class BiServerConnectionForm extends XulEventSourceAdapter{
@@ -105,9 +106,9 @@ public class BiServerConnectionForm extends XulEventSourceAdapter{
   
   private boolean valid;
   private boolean calculateValidity(){
-    this.valid = this.url != null
-      && this.publishPassword != null
-      && this.name != null;
+    this.valid = StringUtils.isNotEmpty(this.url)
+      && StringUtils.isNotEmpty(this.publishPassword)
+      && StringUtils.isNotEmpty(this.name);
     
     firePropertyChange("valid", null, valid);
     return this.valid;

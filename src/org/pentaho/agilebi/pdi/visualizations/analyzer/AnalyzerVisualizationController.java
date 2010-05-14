@@ -381,45 +381,16 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
     "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
     String databaseName = workspace.getDatabaseName();
-    String extension = ".mondrian.xml"; //$NON-NLS-1$
+    String extension = ".xanalyzer"; //$NON-NLS-1$
     String filename = workspace.getModelName();
     
-    String originalValue = replaceAttributeValue("report", "catalog", filename, publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
-    ModelerWorkspaceUtil.populateDomain(workspace);
-    PublisherHelper.publish(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources, 
-        showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
+    String newName = PublisherHelper.publishAnalysis(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources, 
+        true, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
     
-    replaceAttributeValue("report", "catalog", originalValue, publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
+    this.setName(newName );
+    
   }
-  
-  private String replaceAttributeValue(String aElement, String anAttribute, String aValue, String aFile) {
 
-    String originalValue = null;
-    try {
-        if(aFile != null) {
-          SAXReader reader = new SAXReader();
-          Document doc = reader.read(new File(aFile));
-          Element root = doc.getRootElement();
-  
-          for ( Iterator<Element> i = root.elementIterator(); i.hasNext(); ) {
-              Element element = i.next();
-              if(element.getName().equals(aElement)) {
-                Attribute attr = element.attribute(anAttribute);
-                originalValue = attr.getValue();
-                attr.setValue(aValue);
-              }
-          }
-  
-          XMLWriter writer = new XMLWriter(new FileWriter(aFile));
-          writer.write(doc);
-          writer.close();
-        }
-    } catch(Exception e) {
-      logger.error(e);
-    }
-    return originalValue;
-  }
-  
   public void setModel(ModelerWorkspace aWorkspace) {
     this.workspace = aWorkspace;
   }  

@@ -35,7 +35,6 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
     BiServerConnection prevVal = this.selectedConnection;
     this.selectedConnection = selectedConnection;
     firePropertyChange("selectedConnection", prevVal, this.selectedConnection);
-    createSolutionTree();
 
   }
 
@@ -121,6 +120,10 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
 
   public boolean isPublishXmi(){
     return publishXmi;
+  }
+  
+  public void setPublishXmi(boolean publish){
+    this.publishXmi = publish;
   }
   
   private void calculateValidity(){

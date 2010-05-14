@@ -295,7 +295,6 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   
   public void publish() throws ModelerException {
     
-    String theXmiFile = model.getFileName();
     int treeDepth = -1; //infinite
     DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
     boolean checkDatasources = true;
@@ -311,7 +310,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     String theOldDomainId = thePmdDataFactory.getDomainId();
     
     String thePrpt = getFileName();
-    PublisherHelper.publishPrpt(this.report, model, theXmiFile, thePrpt, treeDepth, databaseMeta, modelName, checkDatasources, 
+    PublisherHelper.publishPrpt(this.report, model, modelName, thePrpt, treeDepth, databaseMeta, modelName, checkDatasources, 
         showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, databaseName);
     
     thePmdDataFactory.setDomainId(theOldDomainId);
