@@ -382,7 +382,10 @@ public class ModelerController extends AbstractXulEventHandler{
           tableName = tables.get(0).getName("en_US");
         }
       }
+    } else if (workspace.getModelSource() != null && workspace.getModelSource() instanceof TableModelerSource) {
+      tableName = workspace.getModelSource().getTableName();
     }
+    
     sourceLabel.setValue(tableName);
     bf.createBinding(workspace, "sourceName", sourceLabel, "value"); //$NON-NLS-1$//$NON-NLS-2$
 
