@@ -325,7 +325,17 @@
 		<delete dir="${approot.stage.dir}/platform/webapps/pentaho/mantleLogin"/>
 
 		<!-- Step 3: Unzip the analyzer dist if available -->
-	    <if>
+		<fail message="Pentaho Analyzer agilebi plugin zip file is not available.">
+          <condition>
+	        <not>
+	          <resourcecount count="1">
+	            <fileset id="agilebiplugin" dir="${analyzer.dist.dir}" includes="paz-agilebi-plugin-*.zip" />
+	          </resourcecount>
+	        </not>
+	      </condition>
+        </fail>
+
+		<if>
 	      <available file="${analyzer.dist.dir}" />
 	      <then>
 			<unzip dest="${approot.stage.dir}/platform/pentaho-solutions/system">
