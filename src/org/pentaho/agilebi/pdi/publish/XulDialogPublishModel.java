@@ -31,7 +31,7 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
     return selectedConnection;
   }
 
-  public void setSelectedConnection(BiServerConnection selectedConnection) throws PublishException {
+  public void setSelectedConnection(BiServerConnection selectedConnection) {
     BiServerConnection prevVal = this.selectedConnection;
     this.selectedConnection = selectedConnection;
     firePropertyChange("selectedConnection", prevVal, this.selectedConnection);
@@ -45,6 +45,9 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
   public void setServerCollection(BiServerConnectionCollection serverCollection) {
     this.serverCollection = serverCollection;
     firePropertyChange("serverCollection", null, this.serverCollection);
+    if(selectedConnection == null && serverCollection != null && serverCollection.size() > 0){
+      setSelectedConnection(serverCollection.get(0));
+    }
     calculateValidity();
   }
 
