@@ -144,7 +144,6 @@ public class EmbeddedWizard
       }
 
       dialog = (XulDialog) root;
-      wizardController.setOuterContext(dialog.getRootObject());
       // This is a hack to get the JDialog (this wizard) to become the parent window of windows/dialogs
       // that the wizard creates.
       final DesignTimeContext context = new DefaultWizardDesignTimeContext(wizardController.getEditorModel());

@@ -32,6 +32,7 @@ import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.LinearWizar
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.containers.XulDialog;
+import org.pentaho.ui.xul.containers.XulRoot;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
@@ -40,7 +41,7 @@ public class PreviewWizardController extends LinearWizardController {
 
 	private static Log logger = LogFactory.getLog(PreviewWizardController.class);
 	private XulDomContainer theXulContainer;
-  private Object outerContext;
+
 	public PreviewWizardController(WizardEditorModel aModel, DefaultBindingFactory aFactory) {
 		super(aModel, aFactory);
 	}
@@ -53,7 +54,7 @@ public class PreviewWizardController extends LinearWizardController {
       theXulLoader.registerClassLoader(getClass().getClassLoader());
 			theXulLoader.register("PRPT", "org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag");
 			theXulContainer = theXulLoader.loadXul("org/pentaho/agilebi/pdi/wizard/prptPreview.xul");
-			theXulContainer.setOuterContext(outerContext);
+			theXulContainer.setOuterContext(((XulRoot) document.getRootElement()).getRootObject());
 			theXulContainer.addEventHandler(new PreviewCloseHandler());
 			
 			SwtXulRunner theRunner = new SwtXulRunner();
@@ -111,11 +112,4 @@ public class PreviewWizardController extends LinearWizardController {
 
   }
 
-  /**
-   * @param mainWizardContainer
-   */
-  public void setOuterContext(Object outerContext) {
-    this.outerContext = outerContext;
-  }
-	
 }

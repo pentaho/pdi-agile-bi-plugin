@@ -586,7 +586,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   public void setFileNameChanged(String name){
     try {
       databaseMeta.setName(name);
-      checkDatasources();
+      //checkDatasources();
       
     } catch (Exception e) {
       logger.error(e);

@@ -303,7 +303,7 @@ public class PRPTVisualization extends AbstractVisualization {
       }
       
       model.setDomain(domain);
-      model.setModelName(domain.getId());
+      model.setModelName(domain.getLogicalModels().get(0).getName(Locale.getDefault().toString()));
       model.setFileName(theXmiFile); 
       model.setTemporary(false);
       controller.setModel(model);

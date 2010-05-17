@@ -230,8 +230,8 @@ public class PublisherHelper {
     return filename;
   }
   
-  public static void publishPrpt(MasterReport report, ModelerWorkspace workspace, String xmi, String prpt,
-      int treeDepth, DatabaseMeta databaseMeta, String modelName, boolean checkDatasources, 
+  public static void publishPrpt(MasterReport report, ModelerWorkspace workspace, String modelName, String prpt,
+      int treeDepth, DatabaseMeta databaseMeta, String xmiFile, boolean checkDatasources, 
       boolean showServerSelection, boolean showFolders, boolean showCurrentFolder, String serverPathTemplate, String databaseName ) throws ModelerException {
     try {
 
@@ -272,7 +272,7 @@ public class PublisherHelper {
           }
           
           // Set the domain id to the xmi.
-          String theXmiFile = xmi.substring(xmi.lastIndexOf(File.separator) + 1, xmi.length()); //$NON-NLS-1$
+          String theXmiFile = xmiFile.substring(xmiFile.lastIndexOf(File.separator) + 1, xmiFile.length()); //$NON-NLS-1$
           PmdDataFactory thePmdDataFactory = (PmdDataFactory) report.getDataFactory();
           String theDomainId = theXmiPublishingPath + "/" + theXmiFile; //$NON-NLS-1$
           thePmdDataFactory.setDomainId(theDomainId);
@@ -291,7 +291,7 @@ public class PublisherHelper {
             }
             tempF.deleteOnExit();
             BundleWriter.writeReportToZipFile(report, tempF);
-            publisher.publishPrptToServer(theXmiPublishingPath, thePrptPublishingPath, publishDatasource, publishDialog.isExistentDatasource(), publishDialog.isPublishXmi(), xmi, tempF.getAbsolutePath()); 
+            publisher.publishPrptToServer(theXmiPublishingPath, thePrptPublishingPath, publishDatasource, publishDialog.isExistentDatasource(), publishDialog.isPublishXmi(), xmiFile, tempF.getAbsolutePath()); 
             
           } catch (Exception e) {
             throw new ModelerException(e);

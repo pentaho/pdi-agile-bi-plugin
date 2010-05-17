@@ -310,7 +310,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     String theOldDomainId = thePmdDataFactory.getDomainId();
     
     String thePrpt = getFileName();
-    PublisherHelper.publishPrpt(this.report, model, modelName, thePrpt, treeDepth, databaseMeta, modelName, checkDatasources, 
+    PublisherHelper.publishPrpt(this.report, model, modelName, thePrpt, treeDepth, databaseMeta, model.getFileName(), checkDatasources, 
         showServerSelection, showFolders, showCurrentFolder, serverPathTemplate, databaseName);
     
     thePmdDataFactory.setDomainId(theOldDomainId);
