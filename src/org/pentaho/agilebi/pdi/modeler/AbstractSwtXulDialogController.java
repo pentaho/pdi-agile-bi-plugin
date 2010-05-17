@@ -73,15 +73,15 @@ public abstract class AbstractSwtXulDialogController extends AbstractXulDialogCo
     
     runner = new SwtXulRunner();
     runner.addContainer(container);
-    runner.initialize();
-    if( perspective != null ) {
-      container.loadPerspective( perspective );
-    }
-    
+
     // try and get the dialog 
     xulDialog = (XulDialog) container.getDocumentRoot().getRootElement().getElementById( dialogId ); 
     swtDialog = (Composite) container.getDocumentRoot().getRootElement().getElementById( dialogId ).getManagedObject(); 
     
+    runner.initialize();
+    if( perspective != null ) {
+      container.loadPerspective( perspective );
+    }
     
   }
   
