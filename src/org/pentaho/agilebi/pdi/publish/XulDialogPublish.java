@@ -45,6 +45,7 @@ import org.pentaho.ui.xul.binding.Binding.Type;
 import org.pentaho.ui.xul.components.WaitBoxRunnable;
 import org.pentaho.ui.xul.components.XulButton;
 import org.pentaho.ui.xul.components.XulCheckbox;
+import org.pentaho.ui.xul.components.XulConfirmBox;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTextbox;
@@ -53,6 +54,8 @@ import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.swt.SwtBindingFactory;
+import org.pentaho.ui.xul.util.XulDialogCallback;
+import org.pentaho.ui.xul.util.XulDialogCallback.Status;
 
 import bsh.This;
 
@@ -472,8 +475,40 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   }
   
   public void deleteServer(){
-    biServerConfig.getServerConnections().remove(this.publishModel.getSelectedConnection());
-    biServerConfig.save();
+    try {
+      XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
+      confirm.setTitle(BaseMessages.getString(getClass(), "Spoon.Perspectives.AgileBi.Publish.DeleteServer.Title"));
+      confirm.setMessage(BaseMessages.getString(getClass(), "Spoon.Perspectives.AgileBi.Publish.DeleteServer.Message"));
+      confirm.addDialogCallback(new XulDialogCallback(){
+
+        public void onClose(XulComponent sender, Status returnCode,
+            Object retVal) {
+          if(returnCode == Status.ACCEPT){
+            biServerConfig.getServerConnections().remove(publishModel.getSelectedConnection());
+            biServerConfig.save();
+            publishModel.setSelectedConnection(null);
+          } else {
+            return;
+          }
+        }
+
+        public void onError(XulComponent sender, Throwable t) {
+          logger.error(t);
+          biServerConfig.getServerConnections().remove(publishModel.getSelectedConnection());
+          biServerConfig.save();
+          publishModel.setSelectedConnection(null);
+        }
+        
+      });
+      confirm.open();
+    } catch (XulException e) {
+      logger.error(e);
+
+      biServerConfig.getServerConnections().remove(this.publishModel.getSelectedConnection());
+      biServerConfig.save();
+      publishModel.setSelectedConnection(null);
+    }
+    
   }
   
   public void testServerConnection(){
