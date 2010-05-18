@@ -65,7 +65,6 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
     	  in.close();
       }
       AgileBILifecycleListener.consolePort = port;
-      System.out.println("PORT:"+AgileBILifecycleListener.consolePort);
       JettyServer server = new JettyServer("localhost", port); //$NON-NLS-1$
       server.startServer();
     } catch (Exception e) {
