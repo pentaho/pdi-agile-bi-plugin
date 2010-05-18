@@ -27,6 +27,7 @@ import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
 import org.pentaho.ui.xul.util.AbstractXulDialogController;
+import org.pentaho.ui.xul.XulSettingsManager;
 
 /**
  * An abstract XUL dialog controller. This can be subclassed to create instances of XUL dialogs
@@ -72,6 +73,7 @@ public abstract class AbstractSwtXulDialogController extends AbstractXulDialogCo
     }
     
     runner = new SwtXulRunner();
+    runner.setSettingsManager(XulSpoonSettingsManager.getInstance());
     runner.addContainer(container);
 
     // try and get the dialog 
