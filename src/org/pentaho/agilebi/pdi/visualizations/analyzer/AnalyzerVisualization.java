@@ -42,6 +42,7 @@ import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
+import org.pentaho.di.core.lifecycle.pdi.AgileBILifecycleListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.metadata.model.Domain;
@@ -113,6 +114,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
     String pathAndFilename[] = getPathAndFilename(filename);
     String str = replaceField(saveJavascript, "path", pathAndFilename[0], true); //$NON-NLS-1$
     str = replaceField(str, "filename", pathAndFilename[1], false); //$NON-NLS-1$
+    str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
     return str;
   }
 
@@ -122,6 +124,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	  String pathAndFilename[] = getPathAndFilename(filename);
 	  String str = replaceField(openUrl, "path", pathAndFilename[0], true); //$NON-NLS-1$
 	  str = replaceField(str, "filename", pathAndFilename[1], true); //$NON-NLS-1$
+	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
 	  return str;
 	}
 	
@@ -135,12 +138,14 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	public String generateNewUrl(String fileLocation, String modelId) {
     String str = replaceField(newUrl, "modelLocation", fileLocation, true); //$NON-NLS-1$
     str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
+	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
     return str;
 	}
 	
 	public String generateRefreshDataJavascript(String fileLocation, String modelId) { 
     String str = replaceField(refreshDataJavascript, "modelLocation", fileLocation, true);
     str = replaceField(str, "modelId", modelId, true);
+	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
     return str;
 	}
 	
@@ -148,6 +153,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	  String str = replaceField(refreshModelJavascript, "modelLocation", fileLocation, true); //$NON-NLS-1$
 	  str = str.replaceAll("tmpview", reportName); //$NON-NLS-1$
 	  str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
+	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
     str = replaceField(str, "basedir", new File("").getAbsolutePath(), true); //$NON-NLS-1$ //$NON-NLS-2$
     return str;
 	}

@@ -16,6 +16,10 @@
  */
 package org.pentaho.di.core.lifecycle.pdi;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import org.apache.commons.lang.ObjectUtils.Null;
 import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.impl.DefaultFileSystemManager;
@@ -36,7 +40,7 @@ import org.pentaho.di.ui.spoon.Spoon;
 @LifecyclePlugin(id="AgileBiPlugin")
 @PluginClassTypeMapping(classTypes = { GUIOption.class }, implementationClass = {Null.class})
 public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
-
+	public static int consolePort;
   public void onStart(LifeEventHandler arg0) throws LifecycleException {
     try {
       
@@ -45,7 +49,24 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
       // we register our VFS provider programmatically
       ((DefaultFileSystemManager)VFS.getManager()).addProvider("mtm", new MetadataToMondrianVfs());
       
-      JettyServer server = new JettyServer("localhost", 9999); //$NON-NLS-1$
+      int port = 9999;
+      File consoleProp = new File("plugins/spoon/agile-bi/console.properties");
+      FileInputStream in = new FileInputStream(consoleProp);
+      try{
+	      if(consoleProp.exists()){
+	    	  Properties prop = new Properties();
+	    	  prop.load(in);
+	    	  String val = prop.getProperty("jetty.port");
+	    	  if(val != null){
+	    		  port = Integer.parseInt(val);
+	    	  }
+	      }
+      } finally {
+    	  in.close();
+      }
+      AgileBILifecycleListener.consolePort = port;
+      System.out.println("PORT:"+AgileBILifecycleListener.consolePort);
+      JettyServer server = new JettyServer("localhost", port); //$NON-NLS-1$
       server.startServer();
     } catch (Exception e) {
       e.printStackTrace();
