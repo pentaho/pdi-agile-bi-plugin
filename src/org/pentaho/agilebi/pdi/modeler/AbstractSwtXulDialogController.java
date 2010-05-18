@@ -28,6 +28,7 @@ import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
 import org.pentaho.ui.xul.util.AbstractXulDialogController;
 import org.pentaho.ui.xul.XulSettingsManager;
+import org.pentaho.di.ui.spoon.XulSpoonSettingsManager;
 
 /**
  * An abstract XUL dialog controller. This can be subclassed to create instances of XUL dialogs
