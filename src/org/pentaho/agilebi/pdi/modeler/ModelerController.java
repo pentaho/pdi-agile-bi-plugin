@@ -285,13 +285,14 @@ public class ModelerController extends AbstractXulEventHandler{
       } else {
         theDatabasesInterface = this.databaseInterface;
       }
-      theDatabases.addAll(theDatabasesInterface.getDatabases());
       
       if(theRepository != null) {   
         TransMeta theTransMeta = new TransMeta();
         theRepository.readTransSharedObjects(theTransMeta);
         theDatabases.addAll(theTransMeta.getDatabases());
         theDatabasesInterface.setDatabases(theDatabases);
+      } else {
+        theDatabases.addAll(theDatabasesInterface.getDatabases());        
       }
         
       String theSelectedTable = null;
