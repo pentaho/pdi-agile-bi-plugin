@@ -64,6 +64,7 @@ public abstract class AbstractSwtXulDialogController extends AbstractXulDialogCo
   public void initDialogController( String xulPath, String dialogId, XulEventHandler eventHandler, String perspective ) throws XulException {
     SwtXulLoader loader = new SwtXulLoader();
     loader.registerClassLoader(getClass().getClassLoader());
+    loader.setSettingsManager(XulSpoonSettingsManager.getInstance());
     loader.setOuterContext(shell);
     container = loader.loadXul( xulPath ); 
 
@@ -74,7 +75,6 @@ public abstract class AbstractSwtXulDialogController extends AbstractXulDialogCo
     }
     
     runner = new SwtXulRunner();
-    runner.setSettingsManager(XulSpoonSettingsManager.getInstance());
     runner.addContainer(container);
 
     // try and get the dialog 
