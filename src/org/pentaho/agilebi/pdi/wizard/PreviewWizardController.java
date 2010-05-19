@@ -52,9 +52,9 @@ public class PreviewWizardController extends LinearWizardController {
 			AbstractReportDefinition element = processWizardSpecification();
 			SwtXulLoader theXulLoader = new SwtXulLoader();
       theXulLoader.registerClassLoader(getClass().getClassLoader());
+      theXulLoader.setOuterContext(((XulRoot) document.getRootElement()).getRootObject());
 			theXulLoader.register("PRPT", "org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag");
 			theXulContainer = theXulLoader.loadXul("org/pentaho/agilebi/pdi/wizard/prptPreview.xul");
-			theXulContainer.setOuterContext(((XulRoot) document.getRootElement()).getRootObject());
 			theXulContainer.addEventHandler(new PreviewCloseHandler());
 			
 			SwtXulRunner theRunner = new SwtXulRunner();
