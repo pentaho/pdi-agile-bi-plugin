@@ -56,10 +56,15 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
       while(portFound == false && tries > 0){
         port++;
         tries--;
+        Socket sock = null;
         try {
-          Socket sock = new Socket("localhost", port);
+          sock = new Socket("localhost", port);
         } catch (Exception e) {
           portFound = true;
+        } finally {
+          if(sock != null){
+            sock.close();
+          }
         }
       }
       if(!portFound){
