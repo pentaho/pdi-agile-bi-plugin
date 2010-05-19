@@ -62,6 +62,9 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
           portFound = true;
         }
       }
+      if(!portFound){
+        throw new IllegalStateException("Could not find an open port to start the Agile-BI server on");
+      }
       
       AgileBILifecycleListener.consolePort = port;
       JettyServer server = new JettyServer("localhost", port); //$NON-NLS-1$
