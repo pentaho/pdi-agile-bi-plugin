@@ -18,6 +18,7 @@ package org.pentaho.di.core.lifecycle.pdi;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.Socket;
 import java.util.Properties;
 
 import org.apache.commons.lang.ObjectUtils.Null;
@@ -48,22 +49,20 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
       // META-INF/providers.xml is not loaded, so instead,
       // we register our VFS provider programmatically
       ((DefaultFileSystemManager)VFS.getManager()).addProvider("mtm", new MetadataToMondrianVfs());
-      
+
       int port = 9999;
-      File consoleProp = new File("plugins/spoon/agile-bi/console.properties");
-      FileInputStream in = new FileInputStream(consoleProp);
-      try{
-	      if(consoleProp.exists()){
-	    	  Properties prop = new Properties();
-	    	  prop.load(in);
-	    	  String val = prop.getProperty("jetty.port");
-	    	  if(val != null){
-	    		  port = Integer.parseInt(val);
-	    	  }
-	      }
-      } finally {
-    	  in.close();
+      boolean portFound = false;
+      int tries = 100;
+      while(portFound == false && tries > 0){
+        port++;
+        tries--;
+        try {
+          Socket sock = new Socket("localhost", port);
+        } catch (Exception e) {
+          portFound = true;
+        }
       }
+      
       AgileBILifecycleListener.consolePort = port;
       JettyServer server = new JettyServer("localhost", port); //$NON-NLS-1$
       server.startServer();
