@@ -171,7 +171,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     bf.createBinding(publishModel, "filename", "filename", "value");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
     
     bf.setBindingType(Type.ONE_WAY);
-    bf.createBinding(publishModel, "filename", this, "fileNameChanged");
     bf.createBinding(publishModel, "selectedFolder", folderTextbox, "value", new BindingConvertor<SolutionObject, String>(){
       @Override
       public String sourceToTarget(SolutionObject arg0) {
@@ -618,15 +617,5 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     publishModelCheck.setVisible(b);
   }
   
-  public void setFileNameChanged(String name){
-    try {
-      databaseMeta.setName(name);
-      //checkDatasources();
-      
-    } catch (Exception e) {
-      logger.error(e);
-      e.printStackTrace();
-    }
-  }
 }
 
