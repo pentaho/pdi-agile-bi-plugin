@@ -171,7 +171,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
         theFileName = "models/" + model.getModelName() + ".xmi";
       }
       
-      AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, theFileName, model.getModelName() + " Cube", null, null);
+      AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, theFileName, model.getModelName(), null, null);
       theController.setModel(model);
     	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION, new PDIMessages(IVisualization.class));
 			theXulContainer.addEventHandler(theController);

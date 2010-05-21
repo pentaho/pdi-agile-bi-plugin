@@ -102,7 +102,8 @@ public class PublisherHelper {
           filename = publishDialog.getFilename();
           
           String originalValue = replaceAttributeValue("report", "catalog", filename, publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
-          ModelerWorkspaceUtil.populateDomain(workspace);
+          
+          //ModelerWorkspaceUtil.populateDomain(workspace);
           
 
           File tempF = new File(new File(System.getProperty("java.io.tmpdir")), publishDialog.getFilename()+extension);
@@ -114,7 +115,7 @@ public class PublisherHelper {
           
           publisher
               .publishToServer(
-                  filename + ".mondrian.xml", databaseName, filename, repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
+                  workspace.getModelName() + ".mondrian.xml", databaseName, filename, repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
           
 
           replaceAttributeValue("report", "catalog", originalValue, publishingFile); //$NON-NLS-1$ //$NON-NLS-2$

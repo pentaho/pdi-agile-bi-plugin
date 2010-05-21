@@ -373,7 +373,8 @@ public class ModelerWorkspaceUtil {
       OlapCube cube = new OlapCube();
       cube.setLogicalTable(logicalTable);
       // TODO find a better way to generate default names
-      cube.setName( BaseMessages.getString(ModelerWorkspaceUtil.class, "ModelerWorkspaceUtil.Populate.CubeName", model.getModelName() ) ); //$NON-NLS-1$
+      //cube.setName( BaseMessages.getString(ModelerWorkspaceUtil.class, "ModelerWorkspaceUtil.Populate.CubeName", model.getModelName() ) ); //$NON-NLS-1$
+      cube.setName( model.getModelName() ); //$NON-NLS-1$
       cube.setOlapDimensionUsages(usages);
 
       for (MeasureMetaData f : model.getModel().getMeasures()) {

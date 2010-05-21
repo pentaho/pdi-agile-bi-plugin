@@ -435,7 +435,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
         wait.setTitle(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Title"));
         wait.setMessage(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Message"));
         wait.setIndeterminate(true);
-        wait.setModalParent(this.getDialog().getRootObject());
+        wait.setDialogParent(this.getDialog().getRootObject());
         wait.setRunnable(new WaitBoxRunnable(wait){
 
           @Override
