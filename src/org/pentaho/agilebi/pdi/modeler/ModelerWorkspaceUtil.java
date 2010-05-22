@@ -102,24 +102,38 @@ public class ModelerWorkspaceUtil {
     return model;  
   }
   
+  private static String MODELER_NAME = "OutputStepModeler"; //$NON-NLS-1$
+
+  /**
+   * this method is used to see if a valid TableOutput step has been
+   * selected in a trans graph before attempting to model or quick vis
+   *
+   * @return true if valid
+   */
+  public static boolean isValidStepSelected() {
+    Spoon spoon = ((Spoon)SpoonFactory.getInstance());
+    TransMeta transMeta = spoon.getActiveTransformation();
+    if( transMeta == null || spoon.getActiveTransGraph() == null ) {
+      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen" ), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+      return false;
+    }
+    StepMeta stepMeta = spoon.getActiveTransGraph().getCurrentStep();
+    if( !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
+      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+      return false;
+    }
+    return true;
+  }
+
   public static ModelerWorkspace populateModelFromOutputStep(ModelerWorkspace model) throws ModelerException {
-    
-    String MODELER_NAME = "OutputStepModeler"; //$NON-NLS-1$
 
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     TransMeta transMeta = spoon.getActiveTransformation();
-    if( transMeta == null ) {
+    if( transMeta == null || spoon.getActiveTransGraph() == null ) {
       SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen" ), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
       throw new IllegalStateException(BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen")); //$NON-NLS-1$
     }
-    List<StepMeta> steps = transMeta.getSelectedSteps();
-    if( steps == null || steps.size() > 1 ) {
-      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.OneStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException(BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.OneStepNeeded")); //$NON-NLS-1$
-    }
-    
-    // assume only one selected 
-    StepMeta stepMeta = steps.get(0);
+    StepMeta stepMeta = spoon.getActiveTransGraph().getCurrentStep();
     if( !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
       SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
       throw new IllegalStateException(BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded")); //$NON-NLS-1$

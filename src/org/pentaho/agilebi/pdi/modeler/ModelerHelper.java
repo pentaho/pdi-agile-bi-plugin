@@ -131,6 +131,9 @@ public class ModelerHelper extends AbstractXulEventHandler {
   }
   
   public void openModeler() {
+    if (!ModelerWorkspaceUtil.isValidStepSelected()) {
+      return;
+    }
 
     try{
       ModelerHelper.getInstance().createModelerTabFromOutputStep();
@@ -169,6 +172,10 @@ public class ModelerHelper extends AbstractXulEventHandler {
   }
 
   public void quickVisualizeTableOutputStep() {
+    if (!ModelerWorkspaceUtil.isValidStepSelected()) {
+      return;
+    }
+
     try{
       ModelerWorkspace model = new ModelerWorkspace();
       ModelerWorkspaceUtil.populateModelFromOutputStep(model);
@@ -181,6 +188,10 @@ public class ModelerHelper extends AbstractXulEventHandler {
   }
   
   public void reportWizard() {
+    if (!ModelerWorkspaceUtil.isValidStepSelected()) {
+      return;
+    }
+    
     XulWaitBox box;
     try {
       box = (XulWaitBox) document.createElement("waitbox");
