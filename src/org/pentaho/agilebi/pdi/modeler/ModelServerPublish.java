@@ -33,7 +33,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
@@ -311,10 +310,6 @@ public class ModelServerPublish {
       try {
           String postResult = filePost.getResponseBodyAsString();
           int publishResult = Integer.parseInt(postResult.trim());
-          if( publishResult == ModelServerPublish.PUBLISH_SUCCESS ) {
-            // launch URLs to refresh the server-side caches
-            refreshOlapCaches( modelId, client );
-          }
           return publishResult;
       } catch (IOException e) {
           throw new Exception(e);
@@ -333,27 +328,6 @@ public class ModelServerPublish {
     }
     return client;
 
-  }
-  
-  /**
-   * Refreshes the OLAP cache for the current BI server
-   * @param modelId
-   * @throws IOException
-   */
-  public void refreshOlapCaches(       
-      String modelId ) throws IOException {
-    
-    HttpClient client = getClient( biServerConnection.getUserId(), biServerConnection.getPassword() );
-    refreshOlapCaches( modelId, client );
-  }
-  
-  private void refreshOlapCaches( String modelId, HttpClient client ) throws IOException {
-    String urlModelId = URLEncoder.encode( modelId, "UTF-8" ); //$NON-NLS-1$
-    GetMethod get = new GetMethod( biServerConnection.getUrl()+"ViewAction?solution=admin&path=&action=clear_mondrian_schema_cache.xaction&userid="+biServerConnection.getUserId()+"&password="+biServerConnection.getPassword() ); //$NON-NLS-1$ //$NON-NLS-2$
-    client.executeMethod( get );
-    // assume we are ok
-    get = new GetMethod( biServerConnection.getUrl()+"content/analyzer/ajax/clearCache?catalog="+urlModelId+"%20Model&userid="+biServerConnection.getUserId()+"&password="+biServerConnection.getPassword() ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    client.executeMethod( get );
   }
   
   private String getPasswordKey(String passWord) {
