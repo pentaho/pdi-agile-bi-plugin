@@ -32,6 +32,7 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.platform.api.repository.ISolutionRepository;
+import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServiceException;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
@@ -290,8 +291,11 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
 
           @Override
           public void run() {
-            connect();
+            boolean connected = connect();
             this.waitBox.stop();
+            if(connected == false){
+              return; 
+            }
             publishModel.setConnected(true);
             document.invokeLater(new Runnable(){
               public void run() {
@@ -395,8 +399,11 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
 
           @Override
           public void run() {
-            connect();
+            boolean connected = connect();
             this.waitBox.stop();
+            if(connected == false){
+              return; 
+            }
             document.invokeLater(new Runnable(){
               public void run() {
                 onDialogAccept();
@@ -424,23 +431,25 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     this.publishModel.setFolderTreeDepth(folderTreeDepth);
   }
 
-  protected void connect(){
+  protected boolean connect(){
     
 
     // compare data sources
     try {
-      publishModel.createSolutionTree();
-      // create the publisher object
       publisher = new ModelServerPublish();
       publisher.setBiServerConnection(publishModel.getSelectedConnection());
-      publishModel.setSelectedFolder(null);
       checkDatasources();
-    } catch (Exception e) { 
+      publishModel.createSolutionTree();
+      // create the publisher object
+      publishModel.setSelectedFolder(null);
+    } catch (Exception e) {
       logger.error(e);
       e.printStackTrace();
       SpoonFactory.getInstance().messageBox( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.CouldNotGetDataSources", e.getLocalizedMessage() ),  //$NON-NLS-1$
       BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
-    }      
+      return false;
+    }   
+    return true;
     
 
   }
@@ -490,6 +499,9 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
 
   private boolean addingNewServer;
   public void editServer() {
+    if(this.publishModel.getSelectedConnection() == null){
+      return;
+    }
     addingNewServer = false;
     biserverForm.setConn(this.publishModel.getSelectedConnection());
     biserverDialog.show();

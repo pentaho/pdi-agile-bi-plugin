@@ -14,6 +14,9 @@ public class BiServerConnectionForm extends XulEventSourceAdapter{
   }
   
   private void setValues(){
+    if(conn == null){
+      return;
+    }
     this.setName(conn.getName());
     this.setPassword(conn.getPassword());
     this.setPublishPassword(conn.getPublishPassword());

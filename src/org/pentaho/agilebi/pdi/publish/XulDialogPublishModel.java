@@ -37,6 +37,9 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
   public void setSelectedConnection(BiServerConnection selectedConnection) {
     BiServerConnection prevVal = this.selectedConnection;
     this.selectedConnection = selectedConnection;
+    if(prevVal != selectedConnection){
+      setConnected(false);
+    }
     firePropertyChange("selectedConnection", prevVal, this.selectedConnection);
 
   }
