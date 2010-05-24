@@ -49,6 +49,8 @@ import org.pentaho.ui.xul.XulException;
 
 public class PublisherHelper {
 
+  private static String cachedPath;
+  private static BiServerConnection cachedServer;
   
   public static String publishAnalysis(ModelerWorkspace workspace, String publishingFile,
       int treeDepth, DatabaseMeta databaseMeta, String filename, boolean checkDatasources, 
@@ -68,11 +70,17 @@ public class PublisherHelper {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
         publishDialog.setFolderTreeDepth(treeDepth);
         publishDialog.setDatabaseMeta(databaseMeta);
+        if(filename != null){
+          filename = filename.substring(0, filename.indexOf(".xanalyzer"));
+        }
         publishDialog.setFilename(filename);
         publishDialog.setCheckDatasources(checkDatasources);
 
         publishDialog.setFileMode(setShowModel);
         publishDialog.setPathTemplate(serverPathTemplate);
+        publishDialog.setPath(cachedPath);
+        publishDialog.setSelectedServer(cachedServer);
+        publishDialog.setModelName(workspace.getModelName());
         try{
           publishDialog.showDialog();
         } catch(Exception e){
@@ -81,9 +89,11 @@ public class PublisherHelper {
         if (publishDialog.isAccepted()) {
           // now try to publish
           String selectedPath = publishDialog.getPath();
+          cachedPath = selectedPath;
           // we always publish to {solution}/resources/metadata
           BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
           publisher.setBiServerConnection(biServerConnection);
+          cachedServer = biServerConnection;
           boolean publishDatasource = publishDialog.isPublishDataSource();
           String repositoryPath = null;
           if(serverPathTemplate != null) {
@@ -99,9 +109,10 @@ public class PublisherHelper {
             selectedPath = repositoryPath;
           }
 
-          filename = publishDialog.getFilename();
+         // filename = publishDialog.getFilename();
           
-          String originalValue = replaceAttributeValue("report", "catalog", filename, publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
+          
+          String originalValue = replaceAttributeValue("report", "catalog", workspace.getModelName(), publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
           
           //ModelerWorkspaceUtil.populateDomain(workspace);
           
@@ -181,6 +192,8 @@ public class PublisherHelper {
 
         publishDialog.setFileMode(setShowModel);
         publishDialog.setPathTemplate(serverPathTemplate);
+        publishDialog.setPath(cachedPath);
+        publishDialog.setSelectedServer(cachedServer);
         try{
           publishDialog.showDialog();
         } catch(Exception e){
@@ -189,8 +202,10 @@ public class PublisherHelper {
         if (publishDialog.isAccepted()) {
           // now try to publish
           String selectedPath = publishDialog.getPath();
+          cachedPath = selectedPath;
           // we always publish to {solution}/resources/metadata
           BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
+          cachedServer = biServerConnection;
           publisher.setBiServerConnection(biServerConnection);
           boolean publishDatasource = publishDialog.isPublishDataSource();
           String repositoryPath = null;
@@ -250,16 +265,23 @@ public class PublisherHelper {
         publishDialog.setFolderTreeDepth(treeDepth);
         publishDialog.setFileMode(true);
         publishDialog.setDatabaseMeta(databaseMeta);
-        publishDialog.setFilename(modelName);
+        String name = prpt.substring(prpt.lastIndexOf(File.separator)+1, prpt.indexOf(".prpt"));
+        publishDialog.setFilename(name);
         publishDialog.setCheckDatasources(checkDatasources);
         publishDialog.setPathTemplate(serverPathTemplate);
+        publishDialog.setPath(cachedPath);
+        publishDialog.setSelectedServer(cachedServer);
+        publishDialog.setModelName(workspace.getModelName());
         publishDialog.showDialog();
         if (publishDialog.isAccepted()) {
           // now try to publish
           String thePrptPublishingPath = publishDialog.getPath();
+          cachedPath = thePrptPublishingPath;
           // we always publish to {solution}/resources/metadata
           BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
           publisher.setBiServerConnection(biServerConnection);
+
+          cachedServer = biServerConnection;
           boolean publishDatasource = publishDialog.isPublishDataSource();
           String theXmiPublishingPath = null;
           if(serverPathTemplate != null) {

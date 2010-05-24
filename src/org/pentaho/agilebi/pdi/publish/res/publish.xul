@@ -10,8 +10,8 @@
 
 	<vbox flex="1" id="mainVBox">
 		
-		<label value="${Spoon.Perspectives.AgileBi.Publish.Filename}"/>
-	  <textbox id="filename" padding="1" spacing="1"/>
+		<label value="${Spoon.Perspectives.AgileBi.Publish.Filename}:"/>
+	  <label id="filename" padding="1" spacing="1" readonly="true"/>
 	        
 		<!-- groupbox id="serverGroupBox" height="50" padding="1" spacing="1">
 			<caption label="${Spoon.Perspectives.AgileBi.Publish.Server}"/>
@@ -31,7 +31,7 @@
           
           <label value="${Spoon.Perspectives.AgileBi.Publish.Folder}" />
           <hbox>
-            <textbox id="folderTextbox" flex="1" readonly="true"/>
+            <textbox id="folderTextbox" flex="1" readonly="false"/>
             <button id="browseBtn" label="${Spoon.Perspectives.AgileBi.Publish.Browse}" onclick="dialog.browseServer()" disabled="true"/>
 	        </hbox>
 	        

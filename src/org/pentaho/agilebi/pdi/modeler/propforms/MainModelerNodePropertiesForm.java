@@ -58,8 +58,12 @@ public class MainModelerNodePropertiesForm extends AbstractModelerNodeForm<MainM
   public void setObject(MainModelNode dim) {
     if(this.dim != null){
       this.dim.removePropertyChangeListener(nameListener);
+      this.dim.removePropertyChangeListener(propListener);
     }
     this.dim = dim;
+    if(dim == null){
+      return;
+    }
     this.dim.addPropertyChangeListener("name", nameListener);
     name.setValue(dim.getName());
     messageLabel.setValue(dim.getValidationMessagesString());

@@ -49,6 +49,9 @@ public class GenericPropertiesForm extends AbstractModelerNodeForm<AbstractMetaD
       this.node.removePropertyChangeListener(validListener);
     }
     this.node = node;
+    if(node == null){
+      return;
+    }
     this.node.addPropertyChangeListener("valid", validListener);
     messageLabel.setValue(node.getValidationMessagesString());
     messageBox.setVisible(node.getValidationMessages().size() > 0);

@@ -384,7 +384,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     String extension = ".xanalyzer"; //$NON-NLS-1$
     String filename = workspace.getModelName();
     
-    String newName = PublisherHelper.publishAnalysis(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources, 
+    String newName = PublisherHelper.publishAnalysis(workspace, publishingFile, treeDepth, databaseMeta, fileName, checkDatasources, 
         true, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
     
     this.setName(newName );

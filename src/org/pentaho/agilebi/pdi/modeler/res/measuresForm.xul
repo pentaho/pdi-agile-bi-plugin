@@ -28,7 +28,7 @@
       </hbox>
     </vbox>
     <groupbox>
-      <caption label="${source}"/>
+      <caption label="${source_column}"/>
       <hbox flex="1">
         <label id="measure_column_name" value="" flex="1"/>
         <button image="images/edit.png"
@@ -36,7 +36,7 @@
         
       </hbox>
     </groupbox>
-  
+    
     <spacer height="5"/>
   
     <groupbox>

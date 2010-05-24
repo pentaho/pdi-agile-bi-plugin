@@ -131,7 +131,6 @@ public class EmbeddedWizard
 
       XulDomContainer mainWizardContainer = loader.loadXul(MAIN_WIZARD_PANEL);
       new WizardContentPanel(wizardController).addContent(mainWizardContainer);
-      mainWizardContainer.setOuterContext(null);
       wizardController.registerMainXULContainer(mainWizardContainer);
       wizardController.onLoad();
 

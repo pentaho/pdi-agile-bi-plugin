@@ -61,7 +61,11 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     if(fieldMeta != null){
       fieldMeta.removePropertyChangeListener(propListener);
     }
-    this.fieldMeta = null;
+    this.fieldMeta = t;
+    if(t == null){
+      return;
+    }
+    
     t.addPropertyChangeListener("valid", propListener);
     t.addPropertyChangeListener("logicalColumn", propListener);
     

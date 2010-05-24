@@ -62,6 +62,9 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
     }
     
     this.dim = dim;
+    if(dim == null){
+      return;
+    }
     this.dim.addPropertyChangeListener("valid", validListener);
     this.dim.addPropertyChangeListener("logicalColumn", validListener);
     

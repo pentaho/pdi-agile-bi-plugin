@@ -171,20 +171,8 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     bf.createBinding(publishModel, "filename", "filename", "value");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
     
     bf.setBindingType(Type.ONE_WAY);
-    bf.createBinding(publishModel, "selectedFolder", folderTextbox, "value", new BindingConvertor<SolutionObject, String>(){
-      @Override
-      public String sourceToTarget(SolutionObject arg0) {
-        String folderName = "";
-        SolutionObject node = arg0;
-        while(node != null && node.getCmisObject() != null){
-          folderName = "/"+node.getCmisObject().findStringProperty(CmisObject.LOCALIZEDNAME, null) + folderName ;
-          node = (SolutionObject) node.getParent();
-        }
-        return folderName;
-      }
-      @Override
-      public SolutionObject targetToSource(String arg0) {return null;}
-    });
+
+    bf.createBinding(publishModel, "path", folderTextbox, "value"); 
     
     Binding serverListBinding = bf.createBinding(publishModel.getServerCollection(), "children", serverMenuList, "elements"); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -248,7 +236,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       }
     });
     
-    bf.createBinding(publishModel, "filename", publishModelCheck, "label", new BindingConvertor<String, String>(){
+    Binding modelNameBinding = bf.createBinding(publishModel, "modelName", publishModelCheck, "label", new BindingConvertor<String, String>(){
       @Override
       public String sourceToTarget(String value) {
         return BaseMessages.getString(getClass(), "Spoon.Perspectives.AgileBi.Publish.Model", value);
@@ -261,11 +249,13 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     
     bf.createBinding(publishModelCheck, "checked", publishModel, "publishXmi");
 
-    bf.createBinding(publishModel, "valid", "publish_accept", "!disabled");
+    Binding validBinding = bf.createBinding(publishModel, "valid", "publish_accept", "!disabled");
     
     try {
       serverListBinding.fireSourceChanged();
       serverListBindingIdx.fireSourceChanged();
+      validBinding.fireSourceChanged();
+      modelNameBinding.fireSourceChanged();
     } catch (Exception e) {
       e.printStackTrace();
     } 
@@ -284,7 +274,41 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   }
   
   public void browseServer(){
-    folderSelectionDialog.show();
+    if(publishModel.isConnected() == false){
+
+      try{
+        XulWaitBox wait = (XulWaitBox) document.createElement("waitbox");
+        wait.setTitle(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Title"));
+        wait.setMessage(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Message"));
+        wait.setIndeterminate(true);
+        wait.setDialogParent(this.getDialog().getRootObject());
+        wait.setRunnable(new WaitBoxRunnable(wait){
+
+          @Override
+          public void cancel() {          
+          }
+
+          @Override
+          public void run() {
+            connect();
+            this.waitBox.stop();
+            publishModel.setConnected(true);
+            document.invokeLater(new Runnable(){
+              public void run() {
+                folderSelectionDialog.show(); 
+              }
+            });
+          }
+        });
+        wait.start();
+      } catch(XulException e){ //could not create the wait dialog
+        logger.debug(e);
+        connect();
+        folderSelectionDialog.show();
+      }
+    } else {
+      folderSelectionDialog.show(); 
+    }
   }
   
   public void folderAccept(){
@@ -356,7 +380,39 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     
     publishDataSource = !doNotPublishDatasource  && publishDatasourceCheck.isChecked();
     accepted = true;
-    onDialogAccept();
+    if(publishModel.isConnected() == false){
+      try{
+        XulWaitBox wait = (XulWaitBox) document.createElement("waitbox");
+        wait.setTitle(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Title"));
+        wait.setMessage(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Message"));
+        wait.setIndeterminate(true);
+        wait.setDialogParent(this.getDialog().getRootObject());
+        wait.setRunnable(new WaitBoxRunnable(wait){
+
+          @Override
+          public void cancel() {          
+          }
+
+          @Override
+          public void run() {
+            connect();
+            this.waitBox.stop();
+            document.invokeLater(new Runnable(){
+              public void run() {
+                onDialogAccept();
+              }
+            });
+          }
+        });
+        wait.start();
+      } catch(XulException e){ //could not create the wait dialog
+        logger.debug(e);
+        connect();
+        onDialogAccept();
+      }
+    } else {
+      onDialogAccept();
+    }
   }
 
   public void cancelClick() {
@@ -380,6 +436,8 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       publishModel.setSelectedFolder(null);
       checkDatasources();
     } catch (Exception e) { 
+      logger.error(e);
+      e.printStackTrace();
       SpoonFactory.getInstance().messageBox( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.CouldNotGetDataSources", e.getLocalizedMessage() ),  //$NON-NLS-1$
       BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
     }      
@@ -426,35 +484,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   
   public void setSelectedServer(BiServerConnection selectedServer){
     currentFolder = null;
-    //datasourceLabel.setValue( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.DatasourceUnknown") ); //$NON-NLS-1$
-    if ( selectedServer != null ) {
-      
-      try{
-        XulWaitBox wait = (XulWaitBox) document.createElement("waitbox");
-        wait.setTitle(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Title"));
-        wait.setMessage(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Message"));
-        wait.setIndeterminate(true);
-        wait.setDialogParent(this.getDialog().getRootObject());
-        wait.setRunnable(new WaitBoxRunnable(wait){
-
-          @Override
-          public void cancel() {          
-          }
-
-          @Override
-          public void run() {
-            connect();
-            this.waitBox.stop();
-          }
-          
-        });
-        wait.start();
-      } catch(XulException e){ //could not create the wait dialog
-        logger.debug(e);
-        connect();
-      }
-      
-    }
+    publishModel.setSelectedConnection(selectedServer);
   }
 
 
@@ -554,13 +584,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
 
   public String getPath() {
    
-    if( publishModel.getSelectedFolder() == null ) {
-      return null;
-    } else {
-      // validate the user supplied string
-      // TODO: implement adhoc path
-      return publishModel.getNavigationService().getRepositoryPath(publishModel.getSelectedFolder().getCmisObject());
-    }
+   return publishModel.getPath();
     
   }
 
@@ -617,5 +641,12 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     publishModelCheck.setVisible(b);
   }
   
+  public void setPath(String path){
+    publishModel.setPath(path);
+  }
+  
+  public void setModelName(String name){
+    publishModel.setModelName(name);
+  }
 }
 

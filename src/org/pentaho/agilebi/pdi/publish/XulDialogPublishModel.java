@@ -22,6 +22,9 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
   private boolean publishXmi = true;
   private BiPlatformRepositoryClient client;
   private boolean isValid;
+  private boolean connected;
+  private String path;
+  private String modelName;
   
   public XulDialogPublishModel(BiServerConfig config){
     this.setServerCollection(config.getServerConnections());
@@ -109,6 +112,9 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
   public void setSelectedFolder(SolutionObject selectedFolder) {
     SolutionObject prevVal = this.selectedFolder;
     this.selectedFolder = selectedFolder;
+    if(getNavigationService() != null && getSelectedFolder() != null){
+      setPath(getNavigationService().getRepositoryPath(getSelectedFolder().getCmisObject()));
+    }
     firePropertyChange("selectedFolder", prevVal, this.selectedFolder);
     calculateValidity();
   }
@@ -131,7 +137,7 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
   
   private void calculateValidity(){
     this.isValid = StringUtils.isNotEmpty(this.getFilename())
-      && this.selectedFolder != null
+      && this.path != null
       && this.selectedConnection != null;
     firePropertyChange("valid", null, isValid);
   }
@@ -139,4 +145,33 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
   public boolean isValid(){
     return isValid;
   }
+
+  public boolean isConnected() {
+    return connected;
+  }
+
+  public void setConnected(boolean connected) {
+    this.connected = connected;
+  }
+  
+  public String getPath(){
+    return path;
+  }
+  public void setPath(String path){
+    String prevVal = this.path;
+    this.path = path;
+    firePropertyChange("path", prevVal, this.path);
+    calculateValidity();
+  }
+
+  public String getModelName() {
+    return modelName;
+  }
+
+  public void setModelName(String modelName) {
+    String prevVal = this.modelName;
+    this.modelName = modelName;
+    firePropertyChange("modelName", prevVal, this.modelName);
+  }
+  
 }

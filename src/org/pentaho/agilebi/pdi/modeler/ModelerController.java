@@ -65,6 +65,8 @@ import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingConvertor;
+import org.pentaho.ui.xul.binding.BindingException;
+import org.pentaho.ui.xul.binding.BindingExceptionHandler;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.binding.Binding.Type;
@@ -358,7 +360,7 @@ public class ModelerController extends AbstractXulEventHandler{
   public void init() throws ModelerException{
 
     bf.setDocument(document);
-    
+
     dimensionTree = (XulTree) document.getElementById("dimensionTree"); //$NON-NLS-1$
     visualizationList = (XulMenuList)document.getElementById("visualizationlist"); //$NON-NLS-1$
     propDeck = (XulDeck) document.getElementById("propertiesdeck"); //$NON-NLS-1$
@@ -768,13 +770,18 @@ public class ModelerController extends AbstractXulEventHandler{
   private Binding modelNameBinding;
   
   
+  private ModelerNodePropertiesForm selectedForm;
   public void setDimTreeSelectionChanged(Object selection){
     selectedTreeItem = selection;
     if(selection != null && selection instanceof AbstractMetaDataModelNode){
       AbstractMetaDataModelNode node = (AbstractMetaDataModelNode) selection;
       ModelerNodePropertiesForm form = propertiesForms.get(node.getPropertiesForm());
       if(form != null){
+        if(selectedForm != null && selectedForm != form){
+          selectedForm.setObject(null);
+        }
         form.activate((AbstractMetaDataModelNode) selection);
+        selectedForm = form;
         return;
       }
     }

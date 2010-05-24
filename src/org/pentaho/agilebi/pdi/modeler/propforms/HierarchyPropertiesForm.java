@@ -46,6 +46,9 @@ public class HierarchyPropertiesForm extends AbstractModelerNodeForm<HierarchyMe
       this.dim.removePropertyChangeListener(nameListener);
     }
     this.dim = dim;
+    if(dim == null){
+      return;
+    }
     this.dim.addPropertyChangeListener("name", nameListener);
     name.setValue(dim.getName());
     messageLabel.setValue(dim.getValidationMessagesString());
