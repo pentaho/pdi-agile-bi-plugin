@@ -39,6 +39,16 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.dom4j.DocumentHelper;
 import org.pentaho.agilebi.pdi.publish.BiServerConnection;
+import org.pentaho.agilebi.pdi.publish.SolutionObject;
+import org.pentaho.commons.util.repository.exception.ConstraintViolationException;
+import org.pentaho.commons.util.repository.exception.FilterNotValidException;
+import org.pentaho.commons.util.repository.exception.FolderNotValidException;
+import org.pentaho.commons.util.repository.exception.InvalidArgumentException;
+import org.pentaho.commons.util.repository.exception.ObjectNotFoundException;
+import org.pentaho.commons.util.repository.exception.OperationNotSupportedException;
+import org.pentaho.commons.util.repository.exception.PermissionDeniedException;
+import org.pentaho.commons.util.repository.exception.RuntimeException;
+import org.pentaho.commons.util.repository.exception.UpdateConflictException;
 import org.pentaho.commons.util.repository.type.CmisObject;
 import org.pentaho.commons.util.repository.type.PropertiesBase;
 import org.pentaho.commons.util.repository.type.TypesOfFileableObjects;
@@ -57,6 +67,8 @@ import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServi
 import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClientNavigationService;
 import org.pentaho.platform.util.client.PublisherUtil;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * A utility class for publishing models to a BI server. Also helps synchronize database connections.
@@ -383,6 +395,44 @@ public class ModelServerPublish {
       publishFile(theXmiPublishingPath, theXmi, true);
     }
   }
+  
+  public boolean checkForExistingFile(String path, String name){
+    try {
+      if(path == null || name == null){
+        return false;
+      }
+      List<String> folders = Arrays.asList(path.split(""+ISolutionRepository.SEPARATOR));
+      int idx = 0;
+      CmisObject folder = null;
+      while(folders.size() > 0){
+        folder = findFolder(folders.get(idx), null);
+        if(folder == null){
+          return false;
+        }
+        folders.remove(idx);
+      }
+      List<CmisObject> files = navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, folder.findIdProperty( PropertiesBase.OBJECTID, null ), new TypesOfFileableObjects( TypesOfFileableObjects.DOCUMENTS), 1, null, false, false);
+      for(CmisObject f : files){
+        if(f.findStringProperty( CmisObject.LOCALIZEDNAME, null ).equals(name)){
+          return true;
+        }
+      }
+      
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+  private CmisObject findFolder(String folder, CmisObject parent) throws Exception{
+    List<CmisObject> solutions = navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, (parent != null)? parent.findIdProperty( PropertiesBase.OBJECTID, null ) : "", new TypesOfFileableObjects( TypesOfFileableObjects.FOLDERS ), 1, null, false, false);
+    for(CmisObject obj : solutions){
+      if(obj.findStringProperty( CmisObject.LOCALIZEDNAME, null ).equals(folder)){
+        return obj;
+      }
+    }
+    return null;
+  }
+  
   
   public boolean checkDataSource( boolean autoMode ) throws KettleDatabaseException, ConnectionServiceException {
     // check the data source

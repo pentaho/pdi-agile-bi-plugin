@@ -326,6 +326,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
     spoon.addMenuLast();
+    wvmeta.setFilename(reportName);
     AgileBiVisualizationPerspective.getInstance().setNameForTab(wvmeta.getTab(), getPathAndFilename(fname)[1].replace("."+this.getExtension(), ""));
 
     return true;

@@ -215,9 +215,10 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       }
       
     };
-    bf.createBinding(serverMenuList, "selectedItem", "editServerBtn", "disabled", btnConvertor);    //$NON-NLS-1$ //$NON-NLS-2$
-    bf.createBinding(serverMenuList, "selectedItem", "deleteServerBtn", "disabled", btnConvertor);    //$NON-NLS-1$ //$NON-NLS-2$
-    bf.createBinding(serverMenuList, "selectedItem", "browseBtn", "disabled", btnConvertor);
+
+    bf.createBinding(publishModel, "selectedConnection", "editServerBtn", "disabled", btnConvertor);    //$NON-NLS-1$ //$NON-NLS-2$
+    bf.createBinding(publishModel, "selectedConnection", "deleteServerBtn", "disabled", btnConvertor);    //$NON-NLS-1$ //$NON-NLS-2$
+    bf.createBinding(publishModel, "selectedConnection", "browseBtn", "disabled", btnConvertor);
 
     //folder selection dialog
     folderSelectionDialog = (XulDialog) document.getElementById("folderSelectionDialog");
@@ -257,6 +258,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       serverListBindingIdx.fireSourceChanged();
       validBinding.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
+      BiServerConnection conn = publishModel.getSelectedConnection();
     } catch (Exception e) {
       e.printStackTrace();
     } 

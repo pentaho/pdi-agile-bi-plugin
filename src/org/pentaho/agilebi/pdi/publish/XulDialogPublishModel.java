@@ -51,9 +51,7 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
   public void setServerCollection(BiServerConnectionCollection serverCollection) {
     this.serverCollection = serverCollection;
     firePropertyChange("serverCollection", null, this.serverCollection);
-    if(selectedConnection == null && serverCollection != null && serverCollection.size() > 0){
-      setSelectedConnection(serverCollection.get(0));
-    }
+    
     calculateValidity();
   }
 

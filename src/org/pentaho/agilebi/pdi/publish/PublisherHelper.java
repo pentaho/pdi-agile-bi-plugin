@@ -73,7 +73,7 @@ public class PublisherHelper {
         if(filename != null){
           filename = filename.substring(0, filename.indexOf(".xanalyzer"));
         }
-        publishDialog.setFilename(filename);
+        publishDialog.setFilename(publishingFile);
         publishDialog.setCheckDatasources(checkDatasources);
 
         publishDialog.setFileMode(setShowModel);
