@@ -39,6 +39,7 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.dom4j.DocumentHelper;
 import org.pentaho.agilebi.pdi.publish.BiServerConnection;
+import org.pentaho.agilebi.pdi.publish.PublishOverwriteDelegate;
 import org.pentaho.agilebi.pdi.publish.SolutionObject;
 import org.pentaho.commons.util.repository.exception.ConstraintViolationException;
 import org.pentaho.commons.util.repository.exception.FilterNotValidException;
@@ -59,6 +60,7 @@ import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.util.MondrianModelExporter;
+import org.pentaho.platform.api.engine.ISolutionFile;
 import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.platform.dataaccess.client.ConnectionServiceClient;
 import org.pentaho.platform.dataaccess.datasource.IConnection;
@@ -67,6 +69,7 @@ import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServi
 import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClientNavigationService;
 import org.pentaho.platform.util.client.PublisherUtil;
+import org.pentaho.platform.util.client.ServiceException;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 
@@ -100,6 +103,7 @@ public class ModelServerPublish {
   private int serviceClientStatus = 0;
   
   private BiPlatformRepositoryClientNavigationService navigationService;
+  private PublishOverwriteDelegate overwriteDelegate;
   
   public ModelServerPublish() {
   }
@@ -192,15 +196,7 @@ public class ModelServerPublish {
    * @throws Exception
    */
   public List<CmisObject> getRepositoryFiles( CmisObject folder, int depth, boolean foldersOnly ) throws Exception {
-    
-    BiPlatformRepositoryClient client = new BiPlatformRepositoryClient();
-    
-    client.setServerUri( biServerConnection.getUrl() );
-    client.setUserId(biServerConnection.getUserId());
-    client.setPassword( biServerConnection.getPassword() );
-    
-    client.connect();
-    navigationService = client.getNavigationService();
+    getNavigationService();
     
     TypesOfFileableObjects folderTypes;
     if( foldersOnly ) {
@@ -213,11 +209,22 @@ public class ModelServerPublish {
     if( folder != null ) {
       startLocation = folder.findIdProperty( PropertiesBase.OBJECTID, null );
     }
-    List<CmisObject> objects = navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, startLocation, folderTypes, depth, null, false, false); 
+    List<CmisObject> objects = getNavigationService().getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, startLocation, folderTypes, depth, null, false, false); 
     return objects;
   }
   
   public int publishFile( String repositoryPath, File[] files, boolean showFeedback ) {
+    
+    for(int i=0; i< files.length; i++){
+      if(checkForExistingFile(repositoryPath, files[i].getName())){
+        boolean overwrite = overwriteDelegate.handleOverwriteNotification(files[i].getName());
+        if(overwrite == false){
+          return PublisherUtil.FILE_EXISTS;
+        }
+      }
+    }
+    
+    
     String DEFAULT_PUBLISH_URL = biServerConnection.getUrl()+"RepositoryFilePublisher"; //$NON-NLS-1$
     int result = PublisherUtil.publish(DEFAULT_PUBLISH_URL, repositoryPath, files, biServerConnection.getPublishPassword(), biServerConnection.getUserId(), biServerConnection.getPassword(), true, true); 
 
@@ -371,28 +378,32 @@ public class ModelServerPublish {
    * @throws Exception
    */
   public void publishToServer( String schemaName, String jndiName, String modelName, String repositoryPath, String selectedPath, boolean publishDatasource, boolean showFeedback, boolean isExistentDatasource, String fileName) throws Exception {
+    
+    File files[] = { new File(fileName) };
+    publishFile(selectedPath, files, false);
 
     if( publishDatasource ) {
       DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
       publishDataSource(databaseMeta, isExistentDatasource);    
     }
     publishOlapSchemaToServer( schemaName, jndiName , modelName, repositoryPath, showFeedback );
-    File files[] = { new File(fileName) };
-    publishFile(selectedPath, files, false);
   }
   
   public void publishPrptToServer(String theXmiPublishingPath, String thePrptPublishingPath, boolean publishDatasource, boolean isExistentDatasource, boolean publishXmi, String xmi, String prpt) throws Exception {
 
-    if( publishDatasource ) {
-      DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
-      publishDataSource(databaseMeta, isExistentDatasource);    
-    }
     File thePrpt[] = { new File(prpt) };
-    publishFile(thePrptPublishingPath, thePrpt, !publishXmi /*show feedback here if not publishing xmi*/);
-    
+    int result = publishFile(thePrptPublishingPath, thePrpt, !publishXmi /*show feedback here if not publishing xmi*/);
+    if(result != PublisherUtil.FILE_ADD_SUCCESSFUL){
+      return;
+    }
+
     if(publishXmi){
       File theXmi[] = { new File(xmi) };
       publishFile(theXmiPublishingPath, theXmi, true);
+    }
+    if( publishDatasource ) {
+      DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
+      publishDataSource(databaseMeta, isExistentDatasource);    
     }
   }
   
@@ -401,19 +412,19 @@ public class ModelServerPublish {
       if(path == null || name == null){
         return false;
       }
-      List<String> folders = Arrays.asList(path.split(""+ISolutionRepository.SEPARATOR));
+      List<String> folders = new ArrayList(Arrays.asList(path.split(""+ISolutionRepository.SEPARATOR)));
       int idx = 0;
       CmisObject folder = null;
       while(folders.size() > 0){
-        folder = findFolder(folders.get(idx), null);
+        folder = findFolder(folders.get(idx), folder);
         if(folder == null){
           return false;
         }
         folders.remove(idx);
       }
-      List<CmisObject> files = navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, folder.findIdProperty( PropertiesBase.OBJECTID, null ), new TypesOfFileableObjects( TypesOfFileableObjects.DOCUMENTS), 1, null, false, false);
+      List<CmisObject> files = getNavigationService().getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, folder.findIdProperty( PropertiesBase.OBJECTID, null ), new TypesOfFileableObjects( TypesOfFileableObjects.ANY), 1, null, false, false);
       for(CmisObject f : files){
-        if(f.findStringProperty( CmisObject.LOCALIZEDNAME, null ).equals(name)){
+        if(f.findStringProperty( CmisObject.NAME, null ).equals(name)){
           return true;
         }
       }
@@ -424,9 +435,9 @@ public class ModelServerPublish {
     return false;
   }
   private CmisObject findFolder(String folder, CmisObject parent) throws Exception{
-    List<CmisObject> solutions = navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, (parent != null)? parent.findIdProperty( PropertiesBase.OBJECTID, null ) : "", new TypesOfFileableObjects( TypesOfFileableObjects.FOLDERS ), 1, null, false, false);
+    List<CmisObject> solutions = getNavigationService().getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, (parent != null)? parent.findIdProperty( PropertiesBase.OBJECTID, null ) : "", new TypesOfFileableObjects( TypesOfFileableObjects.FOLDERS ), 1, null, false, false);
     for(CmisObject obj : solutions){
-      if(obj.findStringProperty( CmisObject.LOCALIZEDNAME, null ).equals(folder)){
+      if(obj.findStringProperty( CmisObject.NAME, null ).equals(folder)){
         return obj;
       }
     }
@@ -590,7 +601,27 @@ public class ModelServerPublish {
   }
 
   public BiPlatformRepositoryClientNavigationService getNavigationService() {
+    if(navigationService == null){
+
+      BiPlatformRepositoryClient client = new BiPlatformRepositoryClient();
+      
+      client.setServerUri( biServerConnection.getUrl() );
+      client.setUserId(biServerConnection.getUserId());
+      client.setPassword( biServerConnection.getPassword() );
+      
+      try {
+        client.connect();
+      } catch (ServiceException e) {
+        e.printStackTrace();
+        return null;
+      }
+      navigationService = client.getNavigationService();
+    }
     return navigationService;
+  }
+  
+  public void setOverwriteDelegate(PublishOverwriteDelegate del){
+    this.overwriteDelegate = del;
   }
   
 }

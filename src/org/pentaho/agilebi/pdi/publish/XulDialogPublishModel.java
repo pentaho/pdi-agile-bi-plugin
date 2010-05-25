@@ -7,11 +7,9 @@ import org.pentaho.commons.util.repository.type.CmisObject;
 import org.pentaho.commons.util.repository.type.TypesOfFileableObjects;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClientNavigationService;
-import org.pentaho.platform.util.client.ServiceException;
-import org.pentaho.platform.util.logging.Logger;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
 
-public class XulDialogPublishModel extends XulEventSourceAdapter{
+public class XulDialogPublishModel extends XulEventSourceAdapter {
   private BiServerConnection selectedConnection;
   private BiServerConnectionCollection serverCollection;
   private String filename;
@@ -173,5 +171,7 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
     this.modelName = modelName;
     firePropertyChange("modelName", prevVal, this.modelName);
   }
+
   
+
 }

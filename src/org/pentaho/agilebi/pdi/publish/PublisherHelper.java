@@ -51,6 +51,7 @@ public class PublisherHelper {
 
   private static String cachedPath;
   private static BiServerConnection cachedServer;
+  public static PublishOverwriteDelegate overwriteDelegate;
   
   public static String publishAnalysis(ModelerWorkspace workspace, String publishingFile,
       int treeDepth, DatabaseMeta databaseMeta, String filename, boolean checkDatasources, 
@@ -64,6 +65,7 @@ public class PublisherHelper {
       }
 
       ModelServerPublish publisher = new ModelServerPublish();
+      publisher.setOverwriteDelegate(overwriteDelegate);
       publisher.setModel(workspace);
       Spoon spoon = ((Spoon) SpoonFactory.getInstance());
       try {
@@ -111,26 +113,27 @@ public class PublisherHelper {
 
          // filename = publishDialog.getFilename();
           
+          publishingFile = publishingFile + extension;
           
           String originalValue = replaceAttributeValue("report", "catalog", workspace.getModelName(), publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
           
-          //ModelerWorkspaceUtil.populateDomain(workspace);
-          
+          try{
 
-          File tempF = new File(new File(System.getProperty("java.io.tmpdir")), publishDialog.getFilename()+extension);
-          if(tempF.exists() == false){
-            tempF.createNewFile();
+            File tempF = new File(new File(System.getProperty("java.io.tmpdir")), publishDialog.getFilename()+extension);
+            if(tempF.exists() == false){
+              tempF.createNewFile();
+            }
+            tempF.deleteOnExit();
+            IOUtils.copy(new FileInputStream(new File(publishingFile)), new FileOutputStream(tempF));
+            
+            publisher
+                .publishToServer(
+                    workspace.getModelName() + ".mondrian.xml", databaseName, filename, repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
+          
+          } finally{
+            replaceAttributeValue("report", "catalog", originalValue, publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
+             
           }
-          tempF.deleteOnExit();
-          IOUtils.copy(new FileInputStream(new File(publishingFile)), new FileOutputStream(tempF));
-          
-          publisher
-              .publishToServer(
-                  workspace.getModelName() + ".mondrian.xml", databaseName, filename, repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
-          
-
-          replaceAttributeValue("report", "catalog", originalValue, publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
-          
         }
       } catch (XulException e) {
         e.printStackTrace();
@@ -181,6 +184,7 @@ public class PublisherHelper {
       }
 
       ModelServerPublish publisher = new ModelServerPublish();
+      publisher.setOverwriteDelegate(overwriteDelegate);
       publisher.setModel(workspace);
       Spoon spoon = ((Spoon) SpoonFactory.getInstance());
       try {
@@ -258,6 +262,7 @@ public class PublisherHelper {
       }
 
       ModelServerPublish publisher = new ModelServerPublish();
+      publisher.setOverwriteDelegate(overwriteDelegate);
       publisher.setModel(workspace);
       Spoon spoon = ((Spoon) SpoonFactory.getInstance());
       try {

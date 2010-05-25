@@ -65,7 +65,7 @@ import bsh.This;
  * @author jamesdixon
  *
  */
-public class XulDialogPublish extends AbstractSwtXulDialogController implements BindingExceptionHandler {
+public class XulDialogPublish extends AbstractSwtXulDialogController implements BindingExceptionHandler, PublishOverwriteDelegate{
 
   private static Log logger = LogFactory.getLog(XulDialogPublish.class);
   
@@ -148,7 +148,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
    * buttons status.
    */
   public void init() {
-    
+    PublisherHelper.overwriteDelegate = this;
     biServerConfig = BiServerConfig.getInstance();
 
     publishModel = new XulDialogPublishModel(biServerConfig);
@@ -661,5 +661,25 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   public void setModelName(String name){
     publishModel.setModelName(name);
   }
+  
+
+  public boolean handleOverwriteNotification(String name) {
+    try {
+      XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
+      confirm.setModalParent(this.getDialog().getRootObject());
+      confirm.setTitle(BaseMessages.getString(getClass(), "Publish.Overwrite.Title"));
+      confirm.setMessage(BaseMessages.getString(getClass(), "Publish.Overwrite.Message", name));
+      
+      if(confirm.open() == SWT.YES){
+        return true;
+      }
+      
+    } catch (XulException e) {
+      logger.error(e);
+      return false;
+    }
+    return false;
+  }
+  
 }
 
