@@ -53,7 +53,7 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
   };
   
   public AbstractMetaDataModelNode() {
-    this.image = getValidImage();
+    this.image = getInvalidImage();
   }
   
 
@@ -121,8 +121,8 @@ public abstract class AbstractMetaDataModelNode<T extends AbstractMetaDataModelN
     String prevMessages = getValidationMessagesString();
     validate();
     if(suppressEvents == false){
-      this.firePropertyChange("valid", prevValid, valid);
       this.firePropertyChange("validationMessagesString", prevMessages, getValidationMessagesString());
+      this.firePropertyChange("valid", prevValid, valid);
     }
     if(prevValid != valid){
       if (valid) {
