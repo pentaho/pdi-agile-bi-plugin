@@ -1,5 +1,5 @@
 /*
-OutputStepModelerSource.java * This program is free software; you can redistribute it and/or modify it under the
+ * This program is free software; you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License, version 2.1 as published by the Free Software
  * Foundation.
  *
@@ -12,7 +12,7 @@ OutputStepModelerSource.java * This program is free software; you can redistribu
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2009 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2010 Pentaho Corporation..  All rights reserved.
  */
 package org.pentaho.agilebi.pdi.modeler;
 
