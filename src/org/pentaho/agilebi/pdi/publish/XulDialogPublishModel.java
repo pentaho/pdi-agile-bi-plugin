@@ -41,7 +41,7 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
       setConnected(false);
     }
     firePropertyChange("selectedConnection", prevVal, this.selectedConnection);
-
+    calculateValidity();
   }
 
   public BiServerConnectionCollection getServerCollection() {
@@ -137,14 +137,13 @@ public class XulDialogPublishModel extends XulEventSourceAdapter{
   }
   
   private void calculateValidity(){
-    this.isValid = StringUtils.isNotEmpty(this.getFilename())
-      && this.path != null
-      && this.selectedConnection != null;
-    firePropertyChange("valid", null, isValid);
+    firePropertyChange("valid", null, isValid());
   }
   
   public boolean isValid(){
-    return isValid;
+    return StringUtils.isNotEmpty(this.getFilename())
+      && this.path != null
+      && this.selectedConnection != null;
   }
 
   public boolean isConnected() {

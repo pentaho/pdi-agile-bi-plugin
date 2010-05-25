@@ -256,9 +256,8 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     try {
       serverListBinding.fireSourceChanged();
       serverListBindingIdx.fireSourceChanged();
-      validBinding.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
-      BiServerConnection conn = publishModel.getSelectedConnection();
+      validBinding.fireSourceChanged();
     } catch (Exception e) {
       e.printStackTrace();
     } 
