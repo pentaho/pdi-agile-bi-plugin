@@ -39,7 +39,10 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
 
   private PropertyChangeListener validListener = new PropertyChangeListener(){
 
-    public void propertyChange(PropertyChangeEvent arg0) {
+    public void propertyChange(PropertyChangeEvent evt) {
+      if(!evt.getPropertyName().equals("valid") && !evt.getPropertyName().equals("logicalColumn")){
+        return;
+      }
       showValidations();
     }
   };
@@ -59,8 +62,7 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
     if(dim == null){
       return;
     }
-    this.dim.addPropertyChangeListener("valid", validListener);
-    this.dim.addPropertyChangeListener("logicalColumn", validListener);
+    this.dim.addPropertyChangeListener( validListener);
     
     name.setValue(dim.getName());
     setColumnName(dim.getLogicalColumn());

@@ -31,8 +31,12 @@ public class GenericPropertiesForm extends AbstractModelerNodeForm<AbstractMetaD
   private XulLabel messageLabel;
   private AbstractMetaDataModelNode node;
   private PropertyChangeListener validListener = new PropertyChangeListener(){
-    public void propertyChange(PropertyChangeEvent arg0) {
+    public void propertyChange(PropertyChangeEvent evt) {
+      if(!evt.getPropertyName().equals("valid")){
+        return;
+      }
       showValidations();
+      
     }
   };
   
@@ -52,7 +56,7 @@ public class GenericPropertiesForm extends AbstractModelerNodeForm<AbstractMetaD
     if(node == null){
       return;
     }
-    this.node.addPropertyChangeListener("valid", validListener);
+    this.node.addPropertyChangeListener(validListener);
     showValidations();
   }
   

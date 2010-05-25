@@ -33,8 +33,21 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
 
   private PropertyChangeListener propListener = new PropertyChangeListener(){
 
-    public void propertyChange(PropertyChangeEvent arg0) {
+    public void propertyChange(PropertyChangeEvent evt) {
+      if(!evt.getPropertyName().equals("logicalColumn")){
+        return;
+      }
       setObject(fieldMeta);
+    }
+  };
+  
+  private PropertyChangeListener validListener = new PropertyChangeListener(){
+
+    public void propertyChange(PropertyChangeEvent evt) {
+      if(!evt.getPropertyName().equals("valid")){
+        return;
+      }
+      showValidations();
     }
   };
   
@@ -56,9 +69,15 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     bf.createBinding(this, "columnName", "measure_column_name", "value");
 
   }
+  
+  private void showValidations(){
+    setNotValid(!fieldMeta.isValid());
+    setValidMessages(fieldMeta.getValidationMessagesString());
+  }
 
   public void setObject(MeasureMetaData t) {
     if(fieldMeta != null){
+      fieldMeta.removePropertyChangeListener(validListener);
       fieldMeta.removePropertyChangeListener(propListener);
     }
     this.fieldMeta = t;
@@ -66,16 +85,16 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
       return;
     }
     
-    t.addPropertyChangeListener("valid", propListener);
-    t.addPropertyChangeListener("logicalColumn", propListener);
+    t.addPropertyChangeListener(validListener);
+    t.addPropertyChangeListener(propListener);
     
     setDisplayName(t.getName());
     setFormat(t.getFormat());
     setAggTypes(t.getAggTypeDescValues());
     setAggTypeDesc(t.getAggTypeDesc());
     setValidMessages(t.getValidationMessagesString());
-    setNotValid(!t.isValid());
     setColumnName(t.getLogicalColumn());
+    showValidations();
     this.fieldMeta = t;
   }
   

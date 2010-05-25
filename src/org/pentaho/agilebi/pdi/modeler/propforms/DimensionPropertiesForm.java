@@ -33,7 +33,10 @@ public class DimensionPropertiesForm extends AbstractModelerNodeForm<DimensionMe
 
   private PropertyChangeListener propListener = new PropertyChangeListener(){
 
-    public void propertyChange(PropertyChangeEvent arg0) {
+    public void propertyChange(PropertyChangeEvent evt) {
+      if(!evt.getPropertyName().equals("valid")){
+        return;
+      }
       showValidations();
     }
   };
@@ -50,7 +53,7 @@ public class DimensionPropertiesForm extends AbstractModelerNodeForm<DimensionMe
     if(dim == null){
       return;
     }
-    dim.addPropertyChangeListener("valid", propListener);
+    dim.addPropertyChangeListener(propListener);
     name.setValue(dim.getName());
     showValidations();
   }
