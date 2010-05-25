@@ -76,6 +76,7 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
     messageBox.setVisible(dim.getValidationMessages().size() > 0);
     level_message_label.setValue(dim.getValidationMessagesString());
     setNotValid(!dim.isValid());
+    setColumnName(dim.getLogicalColumn());
   }
   
   public void init() {

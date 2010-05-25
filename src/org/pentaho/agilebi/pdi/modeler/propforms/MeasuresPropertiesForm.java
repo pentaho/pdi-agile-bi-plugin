@@ -37,7 +37,7 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
       if(!evt.getPropertyName().equals("logicalColumn")){
         return;
       }
-      setObject(fieldMeta);
+      setColumnName(fieldMeta.getLogicalColumn());
     }
   };
   
