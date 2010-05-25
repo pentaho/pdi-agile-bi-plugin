@@ -40,16 +40,11 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
   private PropertyChangeListener validListener = new PropertyChangeListener(){
 
     public void propertyChange(PropertyChangeEvent arg0) {
-      setObject(dim);
+      showValidations();
     }
   };
   
   private LevelMetaData dim;
-  private PropertyChangeListener nameListener = new PropertyChangeListener() {
-    public void propertyChange(PropertyChangeEvent arg0) {
-      setName(dim.getName());
-    }
-  };
 
   public LevelsPropertiesForm() {
     super("levelprops");
@@ -57,7 +52,6 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
 
   public void setObject(LevelMetaData dim) {
     if (this.dim != null) {
-      this.dim.removePropertyChangeListener(nameListener);
       this.dim.removePropertyChangeListener(validListener);
     }
     
@@ -68,17 +62,17 @@ public class LevelsPropertiesForm extends AbstractModelerNodeForm<LevelMetaData>
     this.dim.addPropertyChangeListener("valid", validListener);
     this.dim.addPropertyChangeListener("logicalColumn", validListener);
     
-    this.dim.addPropertyChangeListener("name", nameListener);
-
-    
     name.setValue(dim.getName());
-    messageBox.setVisible(dim.getValidationMessages().size() > 0);
     setColumnName(dim.getLogicalColumn());
-    
+    showValidations();
+  }
+
+  private void showValidations(){
+    messageBox.setVisible(dim.getValidationMessages().size() > 0);
     level_message_label.setValue(dim.getValidationMessagesString());
     setNotValid(!dim.isValid());
   }
-
+  
   public void init() {
     super.init();
     bf.createBinding(this, "notValid", "level_message", "visible");

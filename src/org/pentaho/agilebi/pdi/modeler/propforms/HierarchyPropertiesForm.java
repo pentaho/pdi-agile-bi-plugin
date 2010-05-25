@@ -31,26 +31,20 @@ public class HierarchyPropertiesForm extends AbstractModelerNodeForm<HierarchyMe
   private XulVbox messageBox;
   private XulLabel messageLabel;
   
-  private PropertyChangeListener nameListener = new PropertyChangeListener(){
-    public void propertyChange(PropertyChangeEvent arg0) {
-      setName(dim.getName());
-    }
-  };
-  
   public HierarchyPropertiesForm(){
     super("hierarchyprops");
   }
   
   public void setObject(HierarchyMetaData dim) {
-    if(this.dim != null){
-      this.dim.removePropertyChangeListener(nameListener);
-    }
     this.dim = dim;
     if(dim == null){
       return;
     }
-    this.dim.addPropertyChangeListener("name", nameListener);
     name.setValue(dim.getName());
+    showValidations();
+  }
+  
+  private void showValidations(){
     messageLabel.setValue(dim.getValidationMessagesString());
     messageBox.setVisible(dim.getValidationMessages().size() > 0);
   }

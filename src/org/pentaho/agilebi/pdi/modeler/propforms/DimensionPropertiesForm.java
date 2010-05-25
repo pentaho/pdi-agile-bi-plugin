@@ -30,16 +30,11 @@ public class DimensionPropertiesForm extends AbstractModelerNodeForm<DimensionMe
   private DimensionMetaData dim;
   private XulVbox messageBox;
   private XulLabel messageLabel;
-  private PropertyChangeListener nameListener = new PropertyChangeListener(){
-    public void propertyChange(PropertyChangeEvent arg0) {
-      setName(dim.getName());
-    }
-  };
 
   private PropertyChangeListener propListener = new PropertyChangeListener(){
 
     public void propertyChange(PropertyChangeEvent arg0) {
-      setObject(dim);
+      showValidations();
     }
   };
   
@@ -49,16 +44,17 @@ public class DimensionPropertiesForm extends AbstractModelerNodeForm<DimensionMe
   
   public void setObject(DimensionMetaData dim) {
     if(this.dim != null){
-      this.dim.removePropertyChangeListener(nameListener);
       this.dim.removePropertyChangeListener(propListener);
     }
     this.dim = dim;
     if(dim == null){
       return;
     }
-    this.dim.addPropertyChangeListener("name", nameListener);
     dim.addPropertyChangeListener("valid", propListener);
     name.setValue(dim.getName());
+    showValidations();
+  }
+  private void showValidations(){
     messageLabel.setValue(dim.getValidationMessagesString());
     messageBox.setVisible(dim.getValidationMessages().size() > 0);
   }

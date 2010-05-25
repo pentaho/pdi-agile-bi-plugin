@@ -41,15 +41,10 @@ public class MainModelerNodePropertiesForm extends AbstractModelerNodeForm<MainM
   private PropertyChangeListener propListener = new PropertyChangeListener(){
 
     public void propertyChange(PropertyChangeEvent arg0) {
-      setObject(dim);
+      showValidations();
     }
   };
   
-  private PropertyChangeListener nameListener = new PropertyChangeListener(){
-    public void propertyChange(PropertyChangeEvent arg0) {
-      setName(dim.getName());
-    }
-  };
   
   public MainModelerNodePropertiesForm(){
     super("mainprops");
@@ -57,18 +52,20 @@ public class MainModelerNodePropertiesForm extends AbstractModelerNodeForm<MainM
   
   public void setObject(MainModelNode dim) {
     if(this.dim != null){
-      this.dim.removePropertyChangeListener(nameListener);
       this.dim.removePropertyChangeListener(propListener);
     }
     this.dim = dim;
     if(dim == null){
       return;
-    }
-    this.dim.addPropertyChangeListener("name", nameListener);
+    };
     name.setValue(dim.getName());
+    showValidations();
+    dim.addPropertyChangeListener("valid", propListener);
+  }
+
+  private void showValidations(){
     messageLabel.setValue(dim.getValidationMessagesString());
     messageBox.setVisible(dim.getValidationMessages().size() > 0);
-    dim.addPropertyChangeListener("valid", propListener);
   }
 
   public void init() {

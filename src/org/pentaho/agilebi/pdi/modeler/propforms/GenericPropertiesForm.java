@@ -32,7 +32,7 @@ public class GenericPropertiesForm extends AbstractModelerNodeForm<AbstractMetaD
   private AbstractMetaDataModelNode node;
   private PropertyChangeListener validListener = new PropertyChangeListener(){
     public void propertyChange(PropertyChangeEvent arg0) {
-      setObject(node);
+      showValidations();
     }
   };
   
@@ -53,6 +53,10 @@ public class GenericPropertiesForm extends AbstractModelerNodeForm<AbstractMetaD
       return;
     }
     this.node.addPropertyChangeListener("valid", validListener);
+    showValidations();
+  }
+  
+  private void showValidations(){
     messageLabel.setValue(node.getValidationMessagesString());
     messageBox.setVisible(node.getValidationMessages().size() > 0);
   }
