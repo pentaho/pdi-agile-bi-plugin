@@ -64,8 +64,10 @@ public class MainModelerNodePropertiesForm extends AbstractModelerNodeForm<MainM
   }
 
   private void showValidations(){
-    messageLabel.setValue(dim.getValidationMessagesString());
-    messageBox.setVisible(dim.getValidationMessages().size() > 0);
+    if(dim != null){
+      messageLabel.setValue(dim.getValidationMessagesString());
+      messageBox.setVisible(dim.getValidationMessages().size() > 0);
+    }
   }
 
   public void init() {

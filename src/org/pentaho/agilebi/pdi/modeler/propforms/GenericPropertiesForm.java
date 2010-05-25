@@ -57,6 +57,9 @@ public class GenericPropertiesForm extends AbstractModelerNodeForm<AbstractMetaD
   }
   
   private void showValidations(){
+    if(node == null){
+      return;
+    }
     messageLabel.setValue(node.getValidationMessagesString());
     messageBox.setVisible(node.getValidationMessages().size() > 0);
   }

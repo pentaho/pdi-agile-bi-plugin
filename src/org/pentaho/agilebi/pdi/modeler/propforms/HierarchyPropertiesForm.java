@@ -45,6 +45,9 @@ public class HierarchyPropertiesForm extends AbstractModelerNodeForm<HierarchyMe
   }
   
   private void showValidations(){
+    if(dim == null){
+      return;
+    }
     messageLabel.setValue(dim.getValidationMessagesString());
     messageBox.setVisible(dim.getValidationMessages().size() > 0);
   }
