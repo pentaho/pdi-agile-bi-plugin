@@ -48,6 +48,9 @@ import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.util.XmiParser;
+import org.pentaho.platform.api.engine.ICacheManager;
+import org.pentaho.platform.engine.core.system.PentahoSystem;
+import org.pentaho.platform.plugin.action.mondrian.catalog.MondrianCatalogHelper;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
@@ -170,6 +173,9 @@ public class AnalyzerVisualization extends AbstractVisualization {
       if(theFileName == null) {
         theFileName = "models/" + model.getModelName() + ".xmi";
       }
+
+      // flush the cache before creating an analyzer visualization
+      flushAnalyzerCache();
       
       AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, theFileName, model.getModelName(), null, null);
       theController.setModel(model);
@@ -185,6 +191,13 @@ public class AnalyzerVisualization extends AbstractVisualization {
       throw new RuntimeException(e);
     }
   }
+	
+	private void flushAnalyzerCache() {
+    ICacheManager cacheMgr = PentahoSystem.getCacheManager(null);
+    if (cacheMgr != null) {
+      cacheMgr.clearRegionCache("mondrian-catalog-cache"); //$NON-NLS-1$
+    }
+	}
 
 	private void createTabForBrowser(Composite composite, AnalyzerVisualizationController controller, ModelerWorkspace model) throws KettleException {
 
@@ -305,7 +318,11 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	    theController.setModel(model);
 	    theXulContainer.addEventHandler(theController);
 			
-      createTabForBrowser(theMainBox, theController, model);      
+      createTabForBrowser(theMainBox, theController, model);
+
+      // flush the cache before opening an analyzer visualization
+      flushAnalyzerCache();
+            
       theController.openReport(fname);
       
       String fullPath = f.getAbsolutePath();
