@@ -152,7 +152,10 @@ public class EmbeddedWizard
       if (wizardController.getEditorModel().isEditing())
       {
         wizardController.setActiveStep(0);
-        ((LookAndFeelStep)wizardController.getStep(0)).setSelectedTemplateByPath(original.getAttribute("http://reporting.pentaho.org/namespaces/engine/attributes/wizard", "template").toString());
+        Object origTemp = original.getAttribute("http://reporting.pentaho.org/namespaces/engine/attributes/wizard", "template");
+        if(origTemp != null){
+          ((LookAndFeelStep)wizardController.getStep(0)).setSelectedTemplateByPath(origTemp.toString());
+        }
         if (wizardController.getStep(0).isValid())
         {
           wizardController.setActiveStep(1); // initializes the data
