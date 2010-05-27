@@ -469,6 +469,7 @@ public class ModelerWorkspaceUtil {
     	aModel.setFileName(fileName);
     	aModel.resolveConnectionFromDomain();
     	aModel.refresh();
+        ModelerWorkspaceUtil.populateDomain(aModel);
     	aModel.setDirty(false);
     } catch (Exception e){
       logger.info(e);

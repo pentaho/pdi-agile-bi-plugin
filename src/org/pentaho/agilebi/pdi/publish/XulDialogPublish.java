@@ -148,7 +148,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
    * buttons status.
    */
   public void init() {
-    PublisherHelper.overwriteDelegate = this;
+    ModelServerPublish.overwriteDelegate = this;
     biServerConfig = BiServerConfig.getInstance();
 
     publishModel = new XulDialogPublishModel(biServerConfig);
