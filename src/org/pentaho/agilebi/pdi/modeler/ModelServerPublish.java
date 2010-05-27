@@ -103,7 +103,9 @@ public class ModelServerPublish {
   private int serviceClientStatus = 0;
   
   private BiPlatformRepositoryClientNavigationService navigationService;
-  private PublishOverwriteDelegate overwriteDelegate;
+  
+  //TODO: find a better way to communicate the UI delegate
+  public static PublishOverwriteDelegate overwriteDelegate;
   
   public ModelServerPublish() {
   }
@@ -618,10 +620,6 @@ public class ModelServerPublish {
       navigationService = client.getNavigationService();
     }
     return navigationService;
-  }
-  
-  public void setOverwriteDelegate(PublishOverwriteDelegate del){
-    this.overwriteDelegate = del;
   }
   
 }

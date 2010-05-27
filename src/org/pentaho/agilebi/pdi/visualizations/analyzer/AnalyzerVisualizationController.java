@@ -371,7 +371,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
   
   public void publish() throws ModelerException{
     EngineMetaInterface engineMeta = spoon.getActiveMeta();
-    String publishingFile = engineMeta.getFilename();
+    String publishingFile = new File(engineMeta.getFilename()).getName();
     int treeDepth = 100;
     DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
     boolean checkDatasources = true; 
