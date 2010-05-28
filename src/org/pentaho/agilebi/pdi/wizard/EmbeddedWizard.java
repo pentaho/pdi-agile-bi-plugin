@@ -164,7 +164,10 @@ public class EmbeddedWizard
             wizardController.setActiveStep(2);
           }
         }
+      } else {
+        ((LookAndFeelStep)wizardController.getStep(0)).setSelectedTemplate(0);
       }
+      
 
       dialog.show();
 
