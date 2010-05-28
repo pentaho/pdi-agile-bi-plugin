@@ -371,7 +371,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
   
   public void publish() throws ModelerException{
     EngineMetaInterface engineMeta = spoon.getActiveMeta();
-    String publishingFile = new File(engineMeta.getFilename()).getName();
+    String publishingFile = engineMeta.getFilename();
     int treeDepth = 100;
     DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
     boolean checkDatasources = true; 
@@ -382,9 +382,9 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
     String databaseName = workspace.getDatabaseName();
     String extension = ".xanalyzer"; //$NON-NLS-1$
-    String filename = workspace.getModelName();
+    String filename = new File(publishingFile).getName();
     
-    String newName = PublisherHelper.publishAnalysis(workspace, publishingFile, treeDepth, databaseMeta, fileName, checkDatasources, 
+    String newName = PublisherHelper.publishAnalysis(workspace, filename, treeDepth, databaseMeta, publishingFile, checkDatasources, 
         true, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
     
     this.setName(newName );
