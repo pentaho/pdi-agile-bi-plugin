@@ -316,7 +316,8 @@ public class PRPTVisualization extends AbstractVisualization {
       
       ((Composite) tabAndPanel.panel.getManagedObject()).layout(true);
       AgileBiVisualizationPerspective.getInstance().setSelectedMeta(meta);
-
+      Spoon.getInstance().enableMenus();
+      
     } catch(Exception e){
       logger.error(e);
     }

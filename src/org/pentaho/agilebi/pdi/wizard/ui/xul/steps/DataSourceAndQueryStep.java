@@ -39,6 +39,7 @@ import org.pentaho.metadata.query.model.util.QueryXmlHelper;
 import org.pentaho.metadata.repository.IMetadataDomainRepository;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.CompoundDataFactory;
+import org.pentaho.reporting.engine.classic.core.DataFactory;
 import org.pentaho.reporting.engine.classic.core.MetaAttributeNames;
 import org.pentaho.reporting.engine.classic.core.ReportDataFactoryException;
 import org.pentaho.reporting.engine.classic.core.states.datarow.StaticDataRow;
@@ -224,6 +225,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
   public void stepActivating()
   {
     super.stepActivating();
+    
     if (model != null && df == null) {
 
       if (getEditorModel().getReportDefinition().getDataFactory() != null && getEditorModel().getReportDefinition().getDataFactory()
@@ -242,11 +244,25 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       getEditorModel().getReportDefinition().setDataFactory(df);
 
     } else { // editing existing
-      try {
-        df = (PmdDataFactory)
-        getEditorModel().getReportDefinition().getDataFactory();
-      } catch (ClassCastException e) {
-        df = (PmdDataFactory)((CompoundDataFactory)getEditorModel().getReportDefinition().getDataFactory()).getDataFactoryForQuery(DEFAULT);
+      DataFactory savedDf = getEditorModel().getReportDefinition().getDataFactory();
+      if (savedDf instanceof PmdDataFactory) {
+        df = (PmdDataFactory) savedDf;
+      } else {
+        df = (PmdDataFactory)((CompoundDataFactory)savedDf).getDataFactoryForQuery(DEFAULT);
+      }
+      
+      // Couldn't find anything to edit so we gotta create something new.
+      if (df == null) {
+        df = new PmdDataFactory();
+        PmdConnectionProvider connectionProvider = new PmdConnectionProvider();
+        df.setConnectionProvider(connectionProvider);
+        if (model != null) {
+          df.setXmiFile(model.getFileName());
+        }
+        df.setDomainId(DEFAULT);
+      }
+      if (getEditorModel() != null) {
+        getEditorModel().getReportDefinition().setDataFactory(df);
       }
     }
 
@@ -295,9 +311,12 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
         final DataAttributes attributes = dataSchema.getAttributes(name);
         final String source = (String) attributes.getMetaAttribute(MetaAttributeNames.Core.NAMESPACE, MetaAttributeNames.Core.SOURCE, String.class, dataAttributeContext);
         if ( !source.equals("environment") && !source.equals("parameter") ) {
-          items.add((String) attributes.getMetaAttribute
-              (MetaAttributeNames.Formatting.NAMESPACE, MetaAttributeNames.Formatting.LABEL,
-                  String.class, dataAttributeContext));
+          String displayStr = (String) attributes.getMetaAttribute
+          (MetaAttributeNames.Formatting.NAMESPACE, MetaAttributeNames.Formatting.LABEL,
+              String.class, dataAttributeContext);
+          if (displayStr != null && displayStr.length() > 0) {
+            items.add(displayStr);
+          }
         }
       }
       
