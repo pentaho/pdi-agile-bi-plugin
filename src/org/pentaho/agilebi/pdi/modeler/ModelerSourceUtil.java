@@ -18,9 +18,14 @@ package org.pentaho.agilebi.pdi.modeler;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.pentaho.di.core.database.Database;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.di.core.exception.KettleDatabaseException;
+import org.pentaho.di.core.row.RowMetaInterface;
+import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.automodel.SchemaTable;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
@@ -38,8 +43,35 @@ public class ModelerSourceUtil {
   private static ModelGenerator generator = new ModelGenerator();
   private static Log logger = LogFactory.getLog(ModelerSourceUtil.class);
 
+  public static void verifyTableExistsAndMayBeQuoted(DatabaseMeta databaseMeta, String schemaName, String tableName) throws ModelerException {
+    Database database = new Database(databaseMeta);
+    String quotedSchema = schemaName;
+    if (!StringUtils.isBlank(quotedSchema)) {
+      quotedSchema = databaseMeta.getStartQuote() + quotedSchema + databaseMeta.getEndQuote();
+    }
+    String quotedTable = tableName;
+    if (!StringUtils.isBlank(quotedTable)) {
+      quotedTable = databaseMeta.getStartQuote() + quotedTable + databaseMeta.getEndQuote();
+    }
+    String schemaTableCombination =  databaseMeta.getSchemaTableCombination(quotedSchema, quotedTable);
+    
+    try {
+      database.connect();
+      database.getTableFields(schemaTableCombination);
+    } catch (KettleDatabaseException e) {
+      throw new ModelerException(BaseMessages.getString(ModelerSourceUtil.class, "ModelerSourceUtil.FAILED_TO_GET_TABLE_FIELDS", schemaTableCombination), e); //$NON-NLS-1$
+    } finally {
+      database.disconnect();
+    }
+  }
+  
   public static Domain generateDomain(DatabaseMeta databaseMeta, String schemaName, String tableName)
       throws ModelerException {
+    
+    // before generating model, let's check that the table exists and can be quoted. 
+    // Mondrian quotes tables, so we need to force this check.
+    verifyTableExistsAndMayBeQuoted(databaseMeta, schemaName, tableName);
+    
   	Domain domain = null;
   	try {
 	    // modelName, databaseMeta, , "joe", tableOutputMeta.getTablename(), profiles);
