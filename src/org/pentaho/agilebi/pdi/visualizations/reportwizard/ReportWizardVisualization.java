@@ -70,7 +70,7 @@ public class ReportWizardVisualization implements IVisualization {
     return null;
   }
 
-  public void createVisualizationFromModel(ModelerWorkspace model) {
+  public void createVisualizationFromModel(ModelerWorkspace model, boolean tempModel) {
     // TODO Auto-generated method stub
     
   }

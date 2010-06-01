@@ -198,7 +198,7 @@ public class PRPTVisualization extends AbstractVisualization {
   public void syncMetaName(EngineMetaInterface meta, String name) {
   }
 
-  public void createVisualizationFromModel(final ModelerWorkspace model) {
+  public void createVisualizationFromModel(final ModelerWorkspace model, final boolean tempModel) {
 
 
     
@@ -232,7 +232,7 @@ public class PRPTVisualization extends AbstractVisualization {
               engineBoot.start();
             }
             model.setAutoModel(false);
-            EmbeddedWizard wizard = new EmbeddedWizard(model);
+            EmbeddedWizard wizard = new EmbeddedWizard(model, tempModel);
             waitBox.stop();
             wizard.run(null);
           } catch (final Exception e) {
@@ -262,7 +262,7 @@ public class PRPTVisualization extends AbstractVisualization {
     
   }
   
-  public void createVisualizationFromMasterReport(MasterReport rpt){
+  public void createVisualizationFromMasterReport(MasterReport rpt, boolean tempModel){
     try{
       
       if(ClassicEngineBoot.getInstance().isBootDone() == false){
@@ -307,7 +307,7 @@ public class PRPTVisualization extends AbstractVisualization {
       model.setDomain(domain);
       model.setModelName(domain.getLogicalModels().get(0).getName(Locale.getDefault().toString()));
       model.setFileName(theXmiFile); 
-      model.setTemporary(false);
+      model.setTemporary(tempModel);
       controller.setModel(model);
       theXulContainer.addEventHandler(controller);
       

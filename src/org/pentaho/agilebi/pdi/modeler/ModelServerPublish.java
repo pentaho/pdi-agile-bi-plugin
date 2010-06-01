@@ -70,6 +70,7 @@ import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClientNavigationService;
 import org.pentaho.platform.util.client.PublisherUtil;
 import org.pentaho.platform.util.client.ServiceException;
+import org.pentaho.platform.util.logging.Logger;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 
@@ -321,21 +322,26 @@ public class ModelServerPublish {
   } catch (IOException e) {
       throw new Exception(e.getMessage(), e);
   }
-  if (serviceClientStatus != HttpStatus.SC_OK) {
-      if (serviceClientStatus == HttpStatus.SC_MOVED_TEMPORARILY) {
-          throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Errors.InvalidUser")); //$NON-NLS-1$
-      } else {
-          throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Errors.UnknownError", Integer.toString(serviceClientStatus)) ); //$NON-NLS-1$
-      }
-  } else {
+//  if (serviceClientStatus != HttpStatus.SC_OK) {
+//      if (serviceClientStatus == HttpStatus.SC_MOVED_TEMPORARILY) {
+//          throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Errors.InvalidUser")); //$NON-NLS-1$
+//      } else {
+//          throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Errors.UnknownError", Integer.toString(serviceClientStatus)) ); //$NON-NLS-1$
+//      }
+//  } else {
       try {
           String postResult = filePost.getResponseBodyAsString();
           int publishResult = Integer.parseInt(postResult.trim());
           return publishResult;
+          
       } catch (IOException e) {
-          throw new Exception(e);
+        e.printStackTrace();
+        return ModelServerPublish.PUBLISH_UNKNOWN_PROBLEM;
+      } catch(NumberFormatException e){
+        e.printStackTrace();
+        return ModelServerPublish.PUBLISH_UNKNOWN_PROBLEM;
       }
-  }
+//  }
 }
   
   private HttpClient getClient( String serverUserId, String serverPassword) {
@@ -388,7 +394,7 @@ public class ModelServerPublish {
       DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
       publishDataSource(databaseMeta, isExistentDatasource);    
     }
-    publishOlapSchemaToServer( schemaName, jndiName , modelName, repositoryPath, showFeedback );
+    publishOlapSchemaToServer( schemaName, jndiName , modelName, repositoryPath, true );
   }
   
   public void publishPrptToServer(String theXmiPublishingPath, String thePrptPublishingPath, boolean publishDatasource, boolean isExistentDatasource, boolean publishXmi, String xmi, String prpt) throws Exception {

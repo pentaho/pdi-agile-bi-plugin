@@ -831,16 +831,17 @@ public class ModelerController extends AbstractXulEventHandler{
     }
 
     try {
-      if (workspace.getFileName() == null) {
-        ModelerHelper theHelper = ModelerHelper.getInstance();
-        workspace.setAutoModel(false);
-        theHelper.createTemporaryModel(workspace, false);
-      }
       VisualizationManager theManager = VisualizationManager.getInstance();
       IVisualization theVisualization = theManager.getVisualization(visualizationList.getSelectedItem());
+      if (workspace.getFileName() == null) { //temp model
+        ModelerHelper theHelper = ModelerHelper.getInstance();
+        ModelerWorkspace tempModel = theHelper.clone(this.workspace);
+        theVisualization.createVisualizationFromModel(tempModel, true);
+      } else {
+        theVisualization.createVisualizationFromModel(workspace, false);
+      }
       if (theVisualization != null) {
         // TODO: Find a better name for the cube, maybe just workspace name?
-        theVisualization.createVisualizationFromModel(workspace);
       }
       Spoon.getInstance().enableMenus();
     } catch (Exception e) {
