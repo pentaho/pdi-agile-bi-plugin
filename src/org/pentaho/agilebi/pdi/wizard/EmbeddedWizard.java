@@ -64,21 +64,22 @@ public class EmbeddedWizard
   private XulDialog dialog;
 
   private PreviewWizardController wizardController;
-
+  private boolean tempModel;
   public EmbeddedWizard() {
-    this(null);
+    this(null, false);
   }
   
-  public EmbeddedWizard(ModelerWorkspace model)
+  public EmbeddedWizard(ModelerWorkspace model, boolean tempModel)
   {
     this.model = model;
+    this.tempModel = tempModel;
     init();
   }
 
   private void init()
   {
 
-    wizardController = new PreviewWizardController(new WizardEditorModel(), new DefaultBindingFactory());
+    wizardController = new PreviewWizardController(new WizardEditorModel(), new DefaultBindingFactory(), tempModel);
 
     // add the steps ..
     wizardController.addStep(new LookAndFeelStep());

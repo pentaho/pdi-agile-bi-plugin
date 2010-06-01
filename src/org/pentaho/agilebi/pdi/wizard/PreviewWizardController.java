@@ -41,9 +41,11 @@ public class PreviewWizardController extends LinearWizardController {
 
 	private static Log logger = LogFactory.getLog(PreviewWizardController.class);
 	private XulDomContainer theXulContainer;
+	private boolean tempModel;
 
-	public PreviewWizardController(WizardEditorModel aModel, DefaultBindingFactory aFactory) {
+	public PreviewWizardController(WizardEditorModel aModel, DefaultBindingFactory aFactory, boolean tempModel) {
 		super(aModel, aFactory);
+		this.tempModel = tempModel;
 	}
 
 	
@@ -81,7 +83,7 @@ public class PreviewWizardController extends LinearWizardController {
 			VisualizationManager theManager = VisualizationManager.getInstance();
 			PRPTVisualization theVisualization = (PRPTVisualization) theManager.getVisualization("Report Wizard");
 			if (theVisualization != null) {
-				theVisualization.createVisualizationFromMasterReport(element);
+				theVisualization.createVisualizationFromMasterReport(element, tempModel);
 			}
 			((XulDialog) document.getElementById("main_wizard_window")).hide();
 		} catch (Exception e) {

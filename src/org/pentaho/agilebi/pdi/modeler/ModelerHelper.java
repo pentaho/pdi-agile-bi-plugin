@@ -18,7 +18,9 @@ package org.pentaho.agilebi.pdi.modeler;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.apache.commons.io.IOUtils;
@@ -221,7 +223,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
             }
             model.setAutoModel(true);
             createTemporaryModel(model, true);
-            EmbeddedWizard wizard = new EmbeddedWizard(model);
+            EmbeddedWizard wizard = new EmbeddedWizard(model, true);
             waitBox.stop();
             wizard.run(null);
           } catch (final Exception e) {
@@ -260,7 +262,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     if(theVisualization != null) {
       if (model.getFileName() != null) {
         // TODO: Find a better name for the cube, maybe just model name?
-        theVisualization.createVisualizationFromModel(model);
+        theVisualization.createVisualizationFromModel(model, true);
         Spoon.getInstance().enableMenus();
       } else {
         throw new UnsupportedOperationException("TODO: prompt to save model before visualization");
@@ -268,7 +270,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     }
   }
   
-  public void createTemporaryModel(ModelerWorkspace model, boolean saveName) throws ModelerException {
+  public String createTemporaryModel(ModelerWorkspace model, boolean saveName) throws ModelerException {
     //give it a temporary name
     File modelsDir = new File(TEMP_MODELS_FOLDER); //$NON-NLS-1$
     modelsDir.mkdirs();
@@ -293,6 +295,24 @@ public class ModelerHelper extends AbstractXulEventHandler {
     ModelerWorkspaceUtil.autoModelFlat(model);
     ModelerWorkspaceUtil.populateDomain(model);
     ModelerWorkspaceUtil.saveWorkspace( model, fileName);
+    return fileName;
+  }
+  
+  public ModelerWorkspace clone(ModelerWorkspace model) throws ModelerException{
+    String fileName = createTemporaryModel(model, false);
+    
+    ModelerWorkspace newModel = new ModelerWorkspace();
+    
+    newModel.setTemporary(true);
+    newModel.setDirty(false);
+    String xml;
+    try {
+      xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fileName))), "UTF-8");
+      ModelerWorkspaceUtil.loadWorkspace(fileName, xml, newModel);
+    } catch (Exception e) {
+      throw new ModelerException(e);
+    } //$NON-NLS-1$
+    return newModel;
   }
   
   public void databaseModelItem() {

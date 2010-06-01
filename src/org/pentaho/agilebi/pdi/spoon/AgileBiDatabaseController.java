@@ -103,7 +103,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 		if (theVisualization != null) {
 			if (model.getFileName() != null) {
 				// TODO: Find a better name for the cube, maybe just model name?
-				theVisualization.createVisualizationFromModel(model);
+				theVisualization.createVisualizationFromModel(model, true);
 			} else {
 				throw new UnsupportedOperationException("TODO: prompt to save model before visualization");
 			}

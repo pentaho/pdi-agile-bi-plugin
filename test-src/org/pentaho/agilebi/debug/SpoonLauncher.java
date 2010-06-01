@@ -16,6 +16,8 @@
  */
 package org.pentaho.agilebi.debug;
 
+import org.eclipse.swt.graphics.DeviceData;
+import org.eclipse.swt.widgets.Display;
 import org.pentaho.di.ui.spoon.Spoon;
 
 public class SpoonLauncher {

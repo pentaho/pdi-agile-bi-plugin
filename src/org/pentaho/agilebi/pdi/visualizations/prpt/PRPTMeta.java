@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.pentaho.agilebi.pdi.HasXulController;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
+import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.visualizations.SaveAwareMeta;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.ProgressMonitorListener;
@@ -44,7 +45,8 @@ public class PRPTMeta implements EngineMetaInterface, HasXulController, SaveAwar
   }
   
   public boolean canSave() {
-    return true;
+    ModelerWorkspace workspace = controller.getModel();
+    return !workspace.isTemporary();    
   }  
   
   public PRPTMeta(PRPTVisualizationController controller) {

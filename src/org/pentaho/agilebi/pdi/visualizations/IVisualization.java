@@ -34,7 +34,7 @@ public interface IVisualization extends FileListener {
 	public int getOrder();
 
 	// should change this to "new"
-	public void createVisualizationFromModel(ModelerWorkspace model);
+	public void createVisualizationFromModel(ModelerWorkspace model, boolean tempModel);
 
 	public String getExtension();
 	

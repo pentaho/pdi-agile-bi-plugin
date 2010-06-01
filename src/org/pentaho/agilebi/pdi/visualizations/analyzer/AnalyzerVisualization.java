@@ -161,7 +161,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
     return str;
 	}
 	
-	public void createVisualizationFromModel(ModelerWorkspace model) {
+	public void createVisualizationFromModel(ModelerWorkspace model, boolean tempModel) {
 		
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
