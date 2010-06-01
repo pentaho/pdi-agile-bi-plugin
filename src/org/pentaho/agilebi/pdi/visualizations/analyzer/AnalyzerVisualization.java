@@ -57,36 +57,36 @@ import org.pentaho.ui.xul.swt.SwtXulRunner;
 import org.w3c.dom.Node;
 
 public class AnalyzerVisualization extends AbstractVisualization {
-    
-    public static final String WEB_VISUALIZATION = "org/pentaho/agilebi/pdi/visualizations/analyzer/analyzer_visualization_browser.xul";
+	
+	public static final String WEB_VISUALIZATION = "org/pentaho/agilebi/pdi/visualizations/analyzer/analyzer_visualization_browser.xul";
 
-    private String newUrl;
-    private String openUrl;
-    private String saveJavascript;
-    
-    private String refreshDataJavascript;
-    private String refreshModelJavascript;
-    
+	private String newUrl;
+	private String openUrl;
+	private String saveJavascript;
+	
+	private String refreshDataJavascript;
+	private String refreshModelJavascript;
+	
   private String getStateJavascript;
   private String setStateJavascript;
   private String reportName;
-    
-    public String getNewUrl() {
-        return newUrl;
-    }
+	
+	public String getNewUrl() {
+		return newUrl;
+	}
 
-    public void setNewUrl(String aUrl) {
+	public void setNewUrl(String aUrl) {
     newUrl = aUrl;
   }
-    
-    public String getOpenUrl() {
-      return openUrl;
-    }
-    
-    public void setOpenUrl(String openUrl) {
-      this.openUrl = openUrl;
-    }
-    
+	
+	public String getOpenUrl() {
+	  return openUrl;
+	}
+	
+	public void setOpenUrl(String openUrl) {
+	  this.openUrl = openUrl;
+	}
+	
 
   public void setSaveJavascript(String saveJavascript) {
     this.saveJavascript = saveJavascript;
@@ -122,50 +122,50 @@ public class AnalyzerVisualization extends AbstractVisualization {
   }
 
   
-    public String generateOpenUrl(String filename) {
-      // path, filename
-      String pathAndFilename[] = getPathAndFilename(filename);
-      String str = replaceField(openUrl, "path", pathAndFilename[0], true); //$NON-NLS-1$
-      str = replaceField(str, "filename", pathAndFilename[1], true); //$NON-NLS-1$
-      str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
-      return str;
-    }
-    
-    private String replaceField(String str, String fieldName, String value, boolean urlEncode) {
-      if (urlEncode) {
-        value = URLEncoder.encode(value);
-      }
-      return str.replaceAll("\\$\\{"+fieldName+"\\}", value); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    
-    public String generateNewUrl(String fileLocation, String modelId) {
+	public String generateOpenUrl(String filename) {
+	  // path, filename
+	  String pathAndFilename[] = getPathAndFilename(filename);
+	  String str = replaceField(openUrl, "path", pathAndFilename[0], true); //$NON-NLS-1$
+	  str = replaceField(str, "filename", pathAndFilename[1], true); //$NON-NLS-1$
+	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
+	  return str;
+	}
+	
+	private String replaceField(String str, String fieldName, String value, boolean urlEncode) {
+	  if (urlEncode) {
+	    value = URLEncoder.encode(value);
+	  }
+	  return str.replaceAll("\\$\\{"+fieldName+"\\}", value); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+	
+	public String generateNewUrl(String fileLocation, String modelId) {
     String str = replaceField(newUrl, "modelLocation", fileLocation, true); //$NON-NLS-1$
     str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
-      str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
+	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
     return str;
-    }
-    
-    public String generateRefreshDataJavascript(String fileLocation, String modelId) { 
+	}
+	
+	public String generateRefreshDataJavascript(String fileLocation, String modelId) { 
     String str = replaceField(refreshDataJavascript, "modelLocation", fileLocation, true);
     str = replaceField(str, "modelId", modelId, true);
-      str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
+	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
     return str;
-    }
-    
-    public String generateRefreshModelJavascript(String fileLocation, String modelId) {
-      String str = replaceField(refreshModelJavascript, "modelLocation", fileLocation, true); //$NON-NLS-1$
-      str = str.replaceAll("tmpview", reportName); //$NON-NLS-1$
-      str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
-      str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
+	}
+	
+	public String generateRefreshModelJavascript(String fileLocation, String modelId) {
+	  String str = replaceField(refreshModelJavascript, "modelLocation", fileLocation, true); //$NON-NLS-1$
+	  str = str.replaceAll("tmpview", reportName); //$NON-NLS-1$
+	  str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
+	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
     str = replaceField(str, "basedir", new File("").getAbsolutePath(), true); //$NON-NLS-1$ //$NON-NLS-2$
     return str;
-    }
-    
-    public void createVisualizationFromModel(ModelerWorkspace model) {
-        
+	}
+	
+	public void createVisualizationFromModel(ModelerWorkspace model) {
+		
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     try {
-        SwtXulLoader theXulLoader = new SwtXulLoader();
+    	SwtXulLoader theXulLoader = new SwtXulLoader();
 
       theXulLoader.registerClassLoader(getClass().getClassLoader());
       
@@ -179,27 +179,27 @@ public class AnalyzerVisualization extends AbstractVisualization {
       
       AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, theFileName, model.getModelName(), null, null);
       theController.setModel(model);
-        XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION, new PDIMessages(IVisualization.class));
-            theXulContainer.addEventHandler(theController);
-            Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject();
-            SwtXulRunner theRunner = new SwtXulRunner();
-            theRunner.addContainer(theXulContainer);
-            theRunner.initialize();
+    	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION, new PDIMessages(IVisualization.class));
+			theXulContainer.addEventHandler(theController);
+			Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject();
+			SwtXulRunner theRunner = new SwtXulRunner();
+			theRunner.addContainer(theXulContainer);
+			theRunner.initialize();
       createTabForBrowser(theMainBox, theController, model);   
       reportName = "Unsaved Report"; //$NON-NLS-1$
     } catch (Throwable e) {
       throw new RuntimeException(e);
     }
   }
-    
-    private void flushAnalyzerCache() {
+	
+	private void flushAnalyzerCache() {
     ICacheManager cacheMgr = PentahoSystem.getCacheManager(null);
     if (cacheMgr != null) {
       cacheMgr.clearRegionCache("mondrian-catalog-cache"); //$NON-NLS-1$
     }
-    }
+	}
 
-    private void createTabForBrowser(Composite composite, AnalyzerVisualizationController controller, ModelerWorkspace model) throws KettleException {
+	private void createTabForBrowser(Composite composite, AnalyzerVisualizationController controller, ModelerWorkspace model) throws KettleException {
 
     SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiVisualizationPerspective.class);
     XulTabAndPanel tabAndPanel = AgileBiVisualizationPerspective.getInstance().createTab();
@@ -223,10 +223,10 @@ public class AnalyzerVisualization extends AbstractVisualization {
     AgileBiVisualizationPerspective.getInstance().setModel(model);    
     AgileBiVisualizationPerspective.getInstance().setSelectedMeta(controller.getMeta());
     Spoon.getInstance().enableMenus();
-    }
-    
-    public static Document getXAnalyzerDocument( File file ) throws Exception {
-      
+	}
+	
+	public static Document getXAnalyzerDocument( File file ) throws Exception {
+	  
     FileInputStream in = new FileInputStream( file );
     StringBuilder sb = new StringBuilder();
     byte b[] = new byte[2048];
@@ -239,25 +239,25 @@ public class AnalyzerVisualization extends AbstractVisualization {
     Document doc = DocumentHelper.parseText(sb.toString());
 
     return doc;
-    }
-    
-    public static String getDocumentText( Document doc, String xPath ) throws JaxenException {
+	}
+	
+	public static String getDocumentText( Document doc, String xPath ) throws JaxenException {
     Dom4jXPath xpath = new Dom4jXPath( xPath );
     HashMap<String, String> map = new HashMap<String, String>();
     map.put( "pho", "http://www.pentaho.com");  //$NON-NLS-1$//$NON-NLS-2$
     xpath.setNamespaceContext( new SimpleNamespaceContext( map));
     org.dom4j.Node node = (org.dom4j.Node) xpath.selectSingleNode( doc);
     return node.getText();
-    }
+	}
 
-     public static void setDocumentText( Document doc, String xPath, String value ) throws JaxenException {
-        Dom4jXPath xpath = new Dom4jXPath( xPath );
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put( "pho", "http://www.pentaho.com");  //$NON-NLS-1$//$NON-NLS-2$
-        xpath.setNamespaceContext( new SimpleNamespaceContext( map));
-        org.dom4j.Node node = (org.dom4j.Node) xpath.selectSingleNode( doc);
-        node.setText( value );
-      }
+	 public static void setDocumentText( Document doc, String xPath, String value ) throws JaxenException {
+	    Dom4jXPath xpath = new Dom4jXPath( xPath );
+	    HashMap<String, String> map = new HashMap<String, String>();
+	    map.put( "pho", "http://www.pentaho.com");  //$NON-NLS-1$//$NON-NLS-2$
+	    xpath.setNamespaceContext( new SimpleNamespaceContext( map));
+	    org.dom4j.Node node = (org.dom4j.Node) xpath.selectSingleNode( doc);
+	    node.setText( value );
+	  }
 
   public boolean open(Node transNode, String fname, boolean importfile) {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
@@ -290,34 +290,35 @@ public class AnalyzerVisualization extends AbstractVisualization {
       SwtXulLoader theXulLoader = new SwtXulLoader();
       theXulLoader.registerClassLoader(getClass().getClassLoader());
       AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, modelFileName, modelId, f.toString(), f.getName());
-        XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION, new PDIMessages(IVisualization.class));
-            theXulContainer.addEventHandler(theController);
-            Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject(); //$NON-NLS-1$
-            SwtXulRunner theRunner = new SwtXulRunner();
-            theRunner.addContainer(theXulContainer);
-            theRunner.initialize();
-            
-            ModelerWorkspace model = new ModelerWorkspace();
-        XmiParser parser = new XmiParser();
-        FileInputStream inputStream = new FileInputStream(new File(modelFileName));
-        Domain domain = parser.parseXmi(inputStream);
-        inputStream.close();
-        
-        LogicalModel logical = domain.getLogicalModels().get(0);
-        Object property = logical.getProperty("source_type"); //$NON-NLS-1$
-        if( property != null ) {
-          IModelerSource theSource = ModelerSourceFactory.generateSource(property.toString());
-          theSource.initialize(domain);   
-          model.setModelSource(theSource);
-        }
-      
-        model.setDomain(domain);
-        model.setModelName(domain.getId());
-        model.setFileName(modelFileName); 
-        model.setTemporary(false);
-        theController.setModel(model);
-        theXulContainer.addEventHandler(theController);
-            
+      theController.setDirty(false);
+    	XulDomContainer theXulContainer = theXulLoader.loadXul(WEB_VISUALIZATION, new PDIMessages(IVisualization.class));
+			theXulContainer.addEventHandler(theController);
+			Composite theMainBox = (Composite) theXulContainer.getDocumentRoot().getElementById("mainVBox").getManagedObject(); //$NON-NLS-1$
+			SwtXulRunner theRunner = new SwtXulRunner();
+			theRunner.addContainer(theXulContainer);
+			theRunner.initialize();
+			
+			ModelerWorkspace model = new ModelerWorkspace();
+	    XmiParser parser = new XmiParser();
+	    FileInputStream inputStream = new FileInputStream(new File(modelFileName));
+	    Domain domain = parser.parseXmi(inputStream);
+	    inputStream.close();
+	    
+	    LogicalModel logical = domain.getLogicalModels().get(0);
+	    Object property = logical.getProperty("source_type"); //$NON-NLS-1$
+	    if( property != null ) {
+	      IModelerSource theSource = ModelerSourceFactory.generateSource(property.toString());
+	      theSource.initialize(domain);   
+	      model.setModelSource(theSource);
+	    }
+	  
+	    model.setDomain(domain);
+	    model.setModelName(domain.getId());
+	    model.setFileName(modelFileName); 
+	    model.setTemporary(false);
+	    theController.setModel(model);
+	    theXulContainer.addEventHandler(theController);
+			
       createTabForBrowser(theMainBox, theController, model);
 
       // flush the cache before opening an analyzer visualization

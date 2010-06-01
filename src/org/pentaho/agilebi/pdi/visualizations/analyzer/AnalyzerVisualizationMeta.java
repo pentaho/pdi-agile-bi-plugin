@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.pentaho.agilebi.pdi.HasXulController;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.pdi.visualizations.SaveAwareMeta;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.ProgressMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
@@ -33,7 +34,7 @@ import org.pentaho.di.repository.RepositoryObjectType;
 import org.pentaho.ui.xul.components.XulTab;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 
-public class AnalyzerVisualizationMeta implements EngineMetaInterface, HasXulController {
+public class AnalyzerVisualizationMeta implements EngineMetaInterface, HasXulController, SaveAwareMeta {
 
   AnalyzerVisualizationController browser;
   XulTab tab;
@@ -44,6 +45,7 @@ public class AnalyzerVisualizationMeta implements EngineMetaInterface, HasXulCon
   
   public void save(String filename) {
     this.browser.save(filename);
+    browser.setDirty(false);
   }
   
   public void clearChanged() {
@@ -256,4 +258,10 @@ public class AnalyzerVisualizationMeta implements EngineMetaInterface, HasXulCon
     ModelerWorkspace workspace = browser.getModel();
     return !workspace.isTemporary();    
   }
+
+  public boolean isDirty() {
+    return browser.isDirty();
+  }
+  
+  
 }

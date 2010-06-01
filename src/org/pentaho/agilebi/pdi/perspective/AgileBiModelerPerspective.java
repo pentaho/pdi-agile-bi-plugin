@@ -168,6 +168,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       ModelerWorkspace theModel = new ModelerWorkspace();
       theModel.setTemporary(false);
+      theModel.setDirty(false);
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
       ModelerWorkspaceUtil.loadWorkspace(fname, xml, theModel);
       
@@ -253,7 +254,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
   }
 
   public boolean onTabClose(final int pos) throws XulException{
-    if(models.get(0).isDirty()){
+    if(models.get(pos).isDirty()){
       XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox"); //$NON-NLS-1$
       confirm.setTitle(BaseMessages.getString(this.getClass(), "Modeler.Perspective.unsavedChanges")); //$NON-NLS-1$
       confirm.setMessage(BaseMessages.getString(this.getClass(), "Modeler.Perspective.unsavedChangesMessage")); //$NON-NLS-1$

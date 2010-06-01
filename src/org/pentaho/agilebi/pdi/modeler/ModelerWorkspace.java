@@ -74,7 +74,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   private Domain domain;
   
-  private boolean dirty;
+  private boolean dirty = true;
   
   // full path to file
   private String fileName;

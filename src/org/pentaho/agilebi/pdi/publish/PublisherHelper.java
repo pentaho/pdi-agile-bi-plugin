@@ -53,7 +53,7 @@ public class PublisherHelper {
   private static BiServerConnection cachedServer;
   
   public static String publishAnalysis(ModelerWorkspace workspace, String publishingFile,
-      int treeDepth, DatabaseMeta databaseMeta, String filename, boolean checkDatasources, 
+      int treeDepth, DatabaseMeta databaseMeta, String fullPathtoFile, boolean checkDatasources, 
       boolean setShowModel, boolean showFolders, boolean showCurrentFolder, String serverPathTemplate, String extension, String databaseName ) throws ModelerException {
     try {
 
@@ -70,10 +70,8 @@ public class PublisherHelper {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
         publishDialog.setFolderTreeDepth(treeDepth);
         publishDialog.setDatabaseMeta(databaseMeta);
-        if(filename != null){
-          filename = filename.substring(0, filename.indexOf(".xanalyzer"));
-        }
-        publishDialog.setFilename(filename);
+        
+        publishDialog.setFilename(publishingFile);
         publishDialog.setCheckDatasources(checkDatasources);
 
         publishDialog.setFileMode(setShowModel);
@@ -111,25 +109,27 @@ public class PublisherHelper {
 
          // filename = publishDialog.getFilename();
           
-          
-          String originalValue = replaceAttributeValue("report", "catalog", workspace.getModelName(), publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
-          
           try{
-
-            File tempF = new File(new File(System.getProperty("java.io.tmpdir")), publishDialog.getFilename());
+            File tempDir = new File("tmp");
+            if(tempDir.exists() == false){
+              tempDir.mkdir();
+            }
+            File tempF = new File(tempDir, publishDialog.getFilename());
             if(tempF.exists() == false){
               tempF.createNewFile();
             }
+
             tempF.deleteOnExit();
-            IOUtils.copy(new FileInputStream(new File(publishingFile)), new FileOutputStream(tempF));
-            
+            IOUtils.copy(new FileInputStream(new File(fullPathtoFile)), new FileOutputStream(tempF));
+
+            replaceAttributeValue("report", "catalog", workspace.getModelName(), tempF.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
+                        
             publisher
                 .publishToServer(
                     workspace.getModelName() + ".mondrian.xml", databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
           
           } finally{
-            replaceAttributeValue("report", "catalog", originalValue, publishingFile); //$NON-NLS-1$ //$NON-NLS-2$
-             
+            
           }
         }
       } catch (XulException e) {
@@ -140,7 +140,7 @@ public class PublisherHelper {
     } catch (Exception e) {
       throw new ModelerException(e);
     }
-    return filename;
+    return fullPathtoFile;
   }
   
   
@@ -224,7 +224,11 @@ public class PublisherHelper {
 
           filename = publishDialog.getFilename();
 
-          File tempF = new File(new File(System.getProperty("java.io.tmpdir")), publishDialog.getFilename()+extension);
+          File tempDir = new File("tmp");
+          if(tempDir.exists() == false){
+            tempDir.mkdir();
+          }
+          File tempF = new File(tempDir, publishDialog.getFilename()+extension);
           if(tempF.exists() == false){
             tempF.createNewFile();
           }
@@ -265,7 +269,7 @@ public class PublisherHelper {
         publishDialog.setFolderTreeDepth(treeDepth);
         publishDialog.setFileMode(true);
         publishDialog.setDatabaseMeta(databaseMeta);
-        String name = prpt.substring(prpt.lastIndexOf(File.separator)+1, prpt.indexOf(".prpt"));
+        String name = prpt.substring(prpt.lastIndexOf(File.separator)+1);
         publishDialog.setFilename(name);
         publishDialog.setCheckDatasources(checkDatasources);
         publishDialog.setPathTemplate(serverPathTemplate);
@@ -308,7 +312,11 @@ public class PublisherHelper {
           thePmdDataFactory.setQuery("default", theQuery); //$NON-NLS-1$
           
           try {
-            File tempF = new File(new File(System.getProperty("java.io.tmpdir")), publishDialog.getFilename()+".prpt");
+            File tempDir = new File("tmp");
+            if(tempDir.exists() == false){
+              tempDir.mkdir();
+            }
+            File tempF = new File(tempDir, publishDialog.getFilename());
             if(tempF.exists() == false){
               tempF.createNewFile();
             }

@@ -42,6 +42,7 @@ import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.publish.PublisherHelper;
+import org.pentaho.agilebi.pdi.visualizations.AbstractVisualization;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.di.core.EngineMetaInterface;
@@ -84,6 +85,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	private String factTableName;
 	private XulEditpanel propPanel;
 	private ModelerWorkspace workspace;
+	private boolean dirty = true;
 
 	private static Log logger = LogFactory.getLog(AnalyzerVisualizationController.class);
 	private String fileName;
@@ -182,6 +184,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	public void save() {
 		try {
       spoon.saveToFile(meta);
+      setDirty(false);
     } catch (KettleException e) {
       logger.error(e);
       showErrorDialog(BaseMessages.getString(IVisualization.class,"error_saving"));
@@ -191,6 +194,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	public void saveAs() {
 	  try{
 	    spoon.saveFileAs(meta);
+	    setDirty(false);
     } catch (KettleException e) {
       logger.error(e);
       showErrorDialog(BaseMessages.getString(IVisualization.class,"error_saving"));
@@ -370,6 +374,18 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
   }
   
   public void publish() throws ModelerException{
+    if(isDirty()){
+      XulMessageBox msg;
+      try {
+        msg = (XulMessageBox) document.createElement("messagebox");
+        msg.setTitle(BaseMessages.getString(AbstractVisualization.class, "Publish.UnsavedChangesWarning.Title"));
+        msg.setMessage(BaseMessages.getString(AbstractVisualization.class, "Publish.UnsavedChangesWarning.Message"));
+        msg.open();
+      } catch (XulException e) {
+        throw new ModelerException(e);
+      }
+      return;
+    }
     EngineMetaInterface engineMeta = spoon.getActiveMeta();
     String publishingFile = engineMeta.getFilename();
     int treeDepth = 100;
@@ -398,4 +414,13 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
   public ModelerWorkspace getModel() {
     return this.workspace;
   }
+
+  public boolean isDirty() {
+    return dirty;
+  }
+
+  public void setDirty(boolean dirty) {
+    this.dirty = dirty;
+  }
+  
 }
