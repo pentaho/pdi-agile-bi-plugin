@@ -38,6 +38,8 @@ import org.pentaho.agilebi.pdi.modeler.ModelerException;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
+import org.pentaho.agilebi.pdi.perspective.AbstractPerspective.CloseConfirmXulDialogCallback;
+import org.pentaho.agilebi.pdi.visualizations.SaveAwareMeta;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
@@ -48,6 +50,7 @@ import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.DefaultBinding;
+import org.pentaho.ui.xul.components.XulConfirmBox;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.w3c.dom.Node;
 
@@ -130,6 +133,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   
   public boolean open(Node transNode, String fname, boolean importfile) {
     try {
+      
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       ModelerWorkspace model = new ModelerWorkspace();
       createTabForModel(model,AgileBiModelerPerspective.createShortName(fname));
@@ -201,8 +205,24 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   }
   
   public boolean onTabClose(final int pos) throws XulException{
+    if(((SaveAwareMeta) this.getActiveMeta()).isDirty()){
+      XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox"); //$NON-NLS-1$
+      confirm.setTitle(BaseMessages.getString(this.getClass(), "Modeler.Perspective.unsavedChanges")); //$NON-NLS-1$
+      confirm.setMessage(BaseMessages.getString(this.getClass(), "Modeler.Perspective.unsavedChangesMessage")); //$NON-NLS-1$
+      
+      CloseConfirmXulDialogCallback callback = new CloseConfirmXulDialogCallback();
+      confirm.addDialogCallback(callback);
+      confirm.open();
+      if(callback.closeIt){
+        return true;
+      } else {
+        return false;
+      }
+      
+    }
     return true;
   }
+  
   
 
   @Override

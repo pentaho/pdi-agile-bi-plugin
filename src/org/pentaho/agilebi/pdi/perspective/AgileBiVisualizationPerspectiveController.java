@@ -33,6 +33,7 @@ public class AgileBiVisualizationPerspectiveController extends AbstractXulEventH
   private BindingFactory bf = new DefaultBindingFactory();
   private Binding itemBinding;
   private HasXulController meta;
+  private boolean dirty = true;
   
   @Override
   public String getName() {
@@ -74,6 +75,16 @@ public class AgileBiVisualizationPerspectiveController extends AbstractXulEventH
     }
     ((PropertyPanelController) meta.getController()).togglePropertiesPanel();
   }
+
+  public boolean isDirty() {
+    return dirty;
+  }
+
+  public void setDirty(boolean dirty) {
+    this.dirty = dirty;
+  }
+  
+  
   
   
 }

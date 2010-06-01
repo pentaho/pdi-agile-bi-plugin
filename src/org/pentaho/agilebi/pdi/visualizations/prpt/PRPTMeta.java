@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.pentaho.agilebi.pdi.HasXulController;
 import org.pentaho.agilebi.pdi.modeler.ModelerException;
+import org.pentaho.agilebi.pdi.visualizations.SaveAwareMeta;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.ProgressMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
@@ -33,7 +34,7 @@ import org.pentaho.di.repository.RepositoryObjectType;
 import org.pentaho.ui.xul.components.XulTab;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 
-public class PRPTMeta implements EngineMetaInterface, HasXulController {
+public class PRPTMeta implements EngineMetaInterface, HasXulController, SaveAwareMeta {
 
   PRPTVisualizationController controller;
   XulTab tab;
@@ -239,6 +240,10 @@ public class PRPTMeta implements EngineMetaInterface, HasXulController {
     return controller;
   }
 
+  public boolean isDirty() {
+    return controller.isDirty();
+  }
+  
   
   
 }

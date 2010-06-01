@@ -30,6 +30,7 @@ import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.pdi.modeler.XulUI;
 import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.pdi.publish.PublisherHelper;
+import org.pentaho.agilebi.pdi.visualizations.AbstractVisualization;
 import org.pentaho.agilebi.pdi.visualizations.IVisualization;
 import org.pentaho.agilebi.pdi.visualizations.PropertyPanelController;
 import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
@@ -73,6 +74,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   private XulEditpanel propPanel;
   private XulMenuList zoomList;
   private ModelerWorkspace model;
+  private boolean dirty = true;
   
 
   private TreeMap<Double, String> zoomMap = new TreeMap<Double, String>();
@@ -199,6 +201,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     
     try {
       BundleWriter.writeReportToZipFile(report, new File(fileName));
+      setDirty(false);
     } catch (Exception e) {
       throw new ModelerException(e);
     }
@@ -208,6 +211,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   public void save(){
     try {
       spoon.saveToFile(meta);
+      setDirty(false);
     } catch (KettleException e) {
       logger.error(e);
       showErrorDialog(BaseMessages.getString(IVisualization.class,"error_saving"));
@@ -294,7 +298,19 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   }
   
   public void publish() throws ModelerException {
-    
+
+    if(isDirty()){
+      XulMessageBox msg;
+      try {
+        msg = (XulMessageBox) document.createElement("messagebox");
+        msg.setTitle(BaseMessages.getString(AbstractVisualization.class, "Publish.UnsavedChangesWarning.Title"));
+        msg.setMessage(BaseMessages.getString(AbstractVisualization.class, "Publish.UnsavedChangesWarning.Message"));
+        msg.open();
+      } catch (XulException e) {
+        throw new ModelerException(e);
+      }
+      return;
+    }
     int treeDepth = -1; //infinite
     DatabaseMeta databaseMeta = model.getModelSource().getDatabaseMeta();
     boolean checkDatasources = true;
@@ -381,5 +397,13 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   
   public ModelerWorkspace getModel() {
     return this.model;
+  }
+
+  public boolean isDirty() {
+    return dirty;
+  }
+
+  public void setDirty(boolean dirty) {
+    this.dirty = dirty;
   }
 }

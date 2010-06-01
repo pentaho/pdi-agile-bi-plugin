@@ -130,6 +130,7 @@ public class PRPTVisualization extends AbstractVisualization {
       
       PRPTVisualizationController controller = new PRPTVisualizationController(meta, masterReport);
       controller.setFileName(fname);
+      controller.setDirty(false);
       PmdDataFactory theDataFactory = (PmdDataFactory) masterReport.getDataFactory();
       String theXmiFile = theDataFactory.getXmiFile();
       
@@ -174,6 +175,7 @@ public class PRPTVisualization extends AbstractVisualization {
     try{
       PRPTMeta prptMeta = (PRPTMeta) meta;
       prptMeta.save(fname);
+      prptMeta.controller.setDirty(false);
 
       if(fname.endsWith(".prpt") == false){
         fname +=".prpt";
@@ -283,7 +285,7 @@ public class PRPTVisualization extends AbstractVisualization {
       AgileBiVisualizationPerspective.getInstance().setMetaForTab(tabAndPanel.tab, meta);
       meta.setTab(tabAndPanel.tab);
       
-      PRPTVisualizationController controller = new PRPTVisualizationController(meta, rpt);      
+      PRPTVisualizationController controller = new PRPTVisualizationController(meta, rpt);  
       
       PmdDataFactory theDataFactory = (PmdDataFactory) rpt.getDataFactory();
       String theXmiFile = theDataFactory.getXmiFile();
