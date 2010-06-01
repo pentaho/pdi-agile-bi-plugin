@@ -79,8 +79,8 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     if(fieldMeta != null){
       fieldMeta.removePropertyChangeListener(validListener);
       fieldMeta.removePropertyChangeListener(propListener);
+      fieldMeta = null;
     }
-    this.fieldMeta = t;
     if(t == null){
       return;
     }
@@ -94,8 +94,8 @@ public class MeasuresPropertiesForm extends AbstractModelerNodeForm<MeasureMetaD
     setAggTypeDesc(t.getAggTypeDesc());
     setValidMessages(t.getValidationMessagesString());
     setColumnName(t.getLogicalColumn());
-    showValidations();
     this.fieldMeta = t;
+    showValidations();
   }
   
   public void setColumnName(LogicalColumn col){
