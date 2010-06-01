@@ -30,6 +30,7 @@ import org.pentaho.agilebi.pdi.PDIMessages;
 import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.spoon.FileListener;
+import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveListener;
 import org.pentaho.ui.xul.XulComponent;
@@ -311,6 +312,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   public void setSelectedMeta(EngineMetaInterface meta){
     EngineMetaInterface prevVal = this.selectedMeta;
     this.selectedMeta = meta;
+    Spoon.getInstance().enableMenus();
     firePropertyChange("selectedMeta", prevVal, meta);
   }
   
