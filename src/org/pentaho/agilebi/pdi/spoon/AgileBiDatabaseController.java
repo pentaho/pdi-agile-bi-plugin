@@ -85,6 +85,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 		}
 		try {
 			ModelerWorkspace model = new ModelerWorkspace();
+			model.setAutoModel(true);
 			ModelerWorkspaceUtil.populateModelFromSource(model, source);
 			quickVisualize(model);
 		} catch (Exception e) {

@@ -292,7 +292,9 @@ public class ModelerHelper extends AbstractXulEventHandler {
       model.setFileName(fileName);
     }
     model.setModelName(modelName);
-    ModelerWorkspaceUtil.autoModelFlat(model);
+    if(model.isAutoModel()){
+      ModelerWorkspaceUtil.autoModelFlat(model);
+    }
     ModelerWorkspaceUtil.populateDomain(model);
     ModelerWorkspaceUtil.saveWorkspace( model, fileName);
     return fileName;
