@@ -89,7 +89,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   public ModelerWorkspace() {
     
-    this.autoModel = true;
+    this.autoModel = false;
     this.isTemporary = true;
     
     setModel(new MainModelNode());
