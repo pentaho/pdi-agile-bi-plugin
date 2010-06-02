@@ -41,7 +41,7 @@ PentahoSystem which is initialized after Spring
   <bean id="IAclPublisher" class="org.pentaho.platform.engine.security.acls.AclPublisher" scope="singleton" />
   <bean id="IAclVoter" class="org.pentaho.platform.engine.security.acls.voter.PentahoAllowAnonymousAclVoter" scope="singleton" />
   <bean id="IVersionHelper" class="org.pentaho.platform.util.VersionHelper" scope="singleton" />
-  <bean id="ICacheManager" class="org.pentaho.platform.plugin.services.cache.CacheManager" scope="singleton" />
+  <bean id="ICacheManager" class="org.pentaho.platform.engine.core.system.SimpleMapCacheManager" scope="singleton" />
   <!-- <bean id="IScheduler" class="org.pentaho.platform.scheduler.QuartzScheduler" scope="session" />-->
   
   <bean id="IConditionalExecution" class="org.pentaho.platform.plugin.condition.javascript.ConditionalExecution" scope="prototype" />
