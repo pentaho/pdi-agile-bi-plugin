@@ -303,7 +303,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
 
   public EngineMetaInterface getActiveMeta() {
     int idx = tabbox.getSelectedIndex();
-    if( idx == -1 ) {
+    if( idx == -1 || idx >= tabbox.getTabs().getChildNodes().size()) {
       return null;
     }
     return metas.get(tabbox.getTabs().getChildNodes().get( idx ));
