@@ -52,6 +52,7 @@ import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.LogicalTable;
+import org.pentaho.metadata.model.concept.IConcept;
 import org.pentaho.metadata.model.concept.types.AggregationType;
 import org.pentaho.metadata.model.concept.types.DataType;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
@@ -61,6 +62,7 @@ import org.pentaho.metadata.model.olap.OlapDimensionUsage;
 import org.pentaho.metadata.model.olap.OlapHierarchy;
 import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
 import org.pentaho.metadata.model.olap.OlapMeasure;
+import org.pentaho.metadata.util.Util;
 import org.pentaho.metadata.util.XmiParser;
 
 /** 
@@ -283,7 +285,20 @@ public class ModelerWorkspaceUtil {
 
     // Add all measures
     for (MeasureMetaData f : model.getModel().getMeasures()) {
+      if (f.getLogicalColumn() == null) {
+        continue;
+      }
       LogicalColumn lCol = logicalModel.findLogicalColumn(f.getLogicalColumn().getId());
+      if (cat.getLogicalColumns().contains(lCol)) {
+        // clone the logical column
+        // all measures must have a unique logical column
+        // because of different names and aggregates
+        lCol = (LogicalColumn)lCol.clone();
+        lCol.setId(Util.uniquify(lCol.getId(), logicalModel.getLogicalTables().get(0).getLogicalColumns()));
+        logicalModel.getLogicalTables().get(0).addLogicalColumn(lCol);
+        f.setLogicalColumn(lCol);
+      }
+      
       lCol.setName(new LocalizedString(Locale.getDefault().toString(), f.getName()));
       AggregationType type = AggregationType.valueOf(f.getAggTypeDesc());
       if (type != AggregationType.NONE) {
@@ -321,6 +336,9 @@ public class ModelerWorkspaceUtil {
       for (HierarchyMetaData hier : dim) {
         for (int j = 0; j < hier.size(); j++) {
           LevelMetaData level = hier.get(j);
+          if (level.getLogicalColumn() == null) {
+            continue;
+          }
           LogicalColumn lCol = logicalModel.findLogicalColumn(level.getLogicalColumn().getId());
           if(cat.getLogicalColumns().contains(lCol)){
             continue;
@@ -359,8 +377,10 @@ public class ModelerWorkspaceUtil {
           for (LevelMetaData lvl : hier) {
             OlapHierarchyLevel level = new OlapHierarchyLevel(hierarchy);
             level.setName(lvl.getName());
-            LogicalColumn lvlColumn = logicalModel.findLogicalColumn(lvl.getLogicalColumn().getId());
-            level.setReferenceColumn(lvlColumn);
+            if (lvl.getLogicalColumn() != null) {
+              LogicalColumn lvlColumn = logicalModel.findLogicalColumn(lvl.getLogicalColumn().getId());
+              level.setReferenceColumn(lvlColumn);
+            }
             level.setHavingUniqueMembers(lvl.isUniqueMembers());
             levels.add(level);
           }
@@ -394,7 +414,9 @@ public class ModelerWorkspaceUtil {
       for (MeasureMetaData f : model.getModel().getMeasures()) {
 
         OlapMeasure measure = new OlapMeasure();
-        f.getLogicalColumn().setAggregationType(AggregationType.valueOf(f.getAggTypeDesc()));
+        if (f.getAggTypeDesc() != null) {
+          f.getLogicalColumn().setAggregationType(AggregationType.valueOf(f.getAggTypeDesc()));
+        }
         measure.setLogicalColumn(f.getLogicalColumn());
         measures.add(measure);
       }
@@ -432,7 +454,7 @@ public class ModelerWorkspaceUtil {
 	    }
 
   	} catch (Exception e) {
-  		logger.info(e.getLocalizedMessage());
+  		logger.error("error", e);
   		throw new ModelerException(e);
   	}
   }
@@ -472,7 +494,7 @@ public class ModelerWorkspaceUtil {
         ModelerWorkspaceUtil.populateDomain(aModel);
     	aModel.setDirty(false);
     } catch (Exception e){
-      logger.info(e);
+      logger.error("error", e);
       if(e instanceof ModelerException){
         throw (ModelerException) e;
       }

@@ -37,6 +37,7 @@ import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.LogicalTable;
+import org.pentaho.metadata.model.SqlPhysicalColumn;
 import org.pentaho.metadata.model.SqlPhysicalModel;
 import org.pentaho.metadata.model.olap.OlapCube;
 import org.pentaho.metadata.model.olap.OlapDimension;
@@ -44,6 +45,8 @@ import org.pentaho.metadata.model.olap.OlapHierarchy;
 import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
 import org.pentaho.metadata.model.olap.OlapMeasure;
 import org.pentaho.metadata.util.ThinModelConverter;
+import org.pentaho.metadata.util.Util;
+import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
 import org.pentaho.agilebi.pdi.publish.BiServerConfig;
 
@@ -365,6 +368,19 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
           for(AvailableField fm : availableFields){
             if(fm.getLogicalColumn().getId().equals(measure.getLogicalColumn().getId())){
               found = true;
+            } else {
+              if (StringUtils.equals((String)fm.getLogicalColumn().getProperty(SqlPhysicalColumn.TARGET_COLUMN), 
+                     (String)measure.getLogicalColumn().getProperty(SqlPhysicalColumn.TARGET_COLUMN))) 
+              {
+                // clone the logical column into the new model
+                // this is necessary because a model may contain 
+                // multiple measures, each with their own 
+                // default aggregation and name
+                LogicalColumn lCol = (LogicalColumn)fm.getLogicalColumn().clone();
+                lCol.setId(Util.uniquify(lCol.getId(),  newDomain.getLogicalModels().get(0).getLogicalTables().get(0).getLogicalColumns()));
+                newDomain.getLogicalModels().get(0).getLogicalTables().get(0).addLogicalColumn(lCol);              
+                found = true;
+              }
             }
           }
         }
