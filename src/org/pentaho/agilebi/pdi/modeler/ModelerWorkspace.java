@@ -84,7 +84,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   private boolean modelIsChanging;
   
-  private boolean autoModel;
   
   private boolean isTemporary;
   
@@ -92,7 +91,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   public ModelerWorkspace() {
     
-    this.autoModel = false;
     this.isTemporary = true;
     
     setModel(new MainModelNode());
@@ -573,15 +571,6 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
   
   public boolean isModelChanging(){
     return modelIsChanging;
-  }
-  
-  public boolean isAutoModel() {
-    return this.autoModel;
-  }
-  
-  //TODO: remove this flag and correct quick visualize code to ModelerWorkspaceUtil.autoModelFlatInBackground where needed
-  public void setAutoModel(boolean isAutomodel) {
-    this.autoModel = isAutomodel;
   }
   
   public void setTemporary(boolean isTempoarary) {
