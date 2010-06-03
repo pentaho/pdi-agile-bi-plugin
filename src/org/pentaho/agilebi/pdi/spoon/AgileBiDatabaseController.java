@@ -85,19 +85,18 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 		}
 		try {
 			ModelerWorkspace model = new ModelerWorkspace();
-			model.setAutoModel(true);
 			ModelerWorkspaceUtil.populateModelFromSource(model, source);
-			quickVisualize(model);
+			quickVisualize(model, true);
 		} catch (Exception e) {
 			e.printStackTrace();
 			SpoonFactory.getInstance().messageBox("Could not create a modeler: " + e.getLocalizedMessage(), "Modeler Error", false, Const.ERROR);
 		}
 	}
 
-	public void quickVisualize(ModelerWorkspace model) throws ModelerException {
+	public void quickVisualize(ModelerWorkspace model, boolean autoModel) throws ModelerException {
 		
 		ModelerHelper theHelper = ModelerHelper.getInstance();
-		theHelper.createTemporaryModel(model, true);
+		theHelper.createTemporaryModel(model, true, autoModel);
 		
 		VisualizationManager theManager = VisualizationManager.getInstance();
 		IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));

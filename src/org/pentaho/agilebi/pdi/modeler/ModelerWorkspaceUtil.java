@@ -94,7 +94,7 @@ public class ModelerWorkspaceUtil {
 
   }
   
-  public static ModelerWorkspace populateModelFromSource( ModelerWorkspace model, IModelerSource source ) throws ModelerException {
+  public static ModelerWorkspace populateModelFromSource( ModelerWorkspace model, IModelerSource source) throws ModelerException {
     Domain d = source.generateDomain();
     
     model.setModelSource(source);
@@ -187,25 +187,25 @@ public class ModelerWorkspaceUtil {
    * @param tableName
    */
   public static void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
-    if(workspace.isAutoModel()) {
-      MainModelNode mainModel = new MainModelNode();
-      mainModel.setName(workspace.getModelName());
-      workspace.setModel(mainModel);
-      workspace.setModelIsChanging(true);
-  
-      List<AvailableField> fields = workspace.getAvailableFields();
-      for( AvailableField field : fields ) {
-        DataType dataType = field.getLogicalColumn().getDataType();
-        if( dataType == DataType.NUMERIC) {
-          // create a measure
-          MeasureMetaData measure = workspace.createMeasureForNode(field);
-          workspace.getModel().getMeasures().add(measure);
-        }
-        // create a dimension
-        workspace.addDimensionFromNode(field);
+
+    MainModelNode mainModel = new MainModelNode();
+    mainModel.setName(workspace.getModelName());
+    workspace.setModel(mainModel);
+    workspace.setModelIsChanging(true);
+
+    List<AvailableField> fields = workspace.getAvailableFields();
+    for( AvailableField field : fields ) {
+      DataType dataType = field.getLogicalColumn().getDataType();
+      if( dataType == DataType.NUMERIC) {
+        // create a measure
+        MeasureMetaData measure = workspace.createMeasureForNode(field);
+        workspace.getModel().getMeasures().add(measure);
       }
-      workspace.setModelIsChanging(false);
+      // create a dimension
+      workspace.addDimensionFromNode(field);
     }
+    workspace.setModelIsChanging(false);
+
   }
   
   
@@ -218,42 +218,41 @@ public class ModelerWorkspaceUtil {
    * @param tableName
    */
   public static void autoModelFlatInBackground( final ModelerWorkspace workspace ) throws ModelerException {
-    if(workspace.isAutoModel()) {
-      final Display display = Display.findDisplay(Thread.currentThread());
-      Runnable worker = new Runnable(){
 
-        public void run() {
-          MainModelNode mainModel = new MainModelNode();
-          mainModel.setName(workspace.getModelName());
-          workspace.setModel(mainModel);
-          final boolean prevChangeState = workspace.isModelChanging();
-          workspace.setModelIsChanging(true);
-      
-          List<AvailableField> fields = workspace.getAvailableFields();
-          for( AvailableField field : fields ) {
-            DataType dataType = field.getLogicalColumn().getDataType();
-            if( dataType == DataType.NUMERIC) {
-              // create a measure
-              MeasureMetaData measure = workspace.createMeasureForNode(field);
-              workspace.getModel().getMeasures().add(measure);
-            }
-            // create a dimension
-            workspace.addDimensionFromNode(field);
+    final Display display = Display.findDisplay(Thread.currentThread());
+    Runnable worker = new Runnable(){
+
+      public void run() {
+        MainModelNode mainModel = new MainModelNode();
+        mainModel.setName(workspace.getModelName());
+        workspace.setModel(mainModel);
+        final boolean prevChangeState = workspace.isModelChanging();
+        workspace.setModelIsChanging(true);
+    
+        List<AvailableField> fields = workspace.getAvailableFields();
+        for( AvailableField field : fields ) {
+          DataType dataType = field.getLogicalColumn().getDataType();
+          if( dataType == DataType.NUMERIC) {
+            // create a measure
+            MeasureMetaData measure = workspace.createMeasureForNode(field);
+            workspace.getModel().getMeasures().add(measure);
           }
-          display.syncExec(new Runnable(){
-
-            public void run() {
-
-              workspace.setModelIsChanging(prevChangeState); 
-              workspace.setSelectedNode(workspace.getModel());
-            }
-          });
+          // create a dimension
+          workspace.addDimensionFromNode(field);
         }
-      };
-      new Thread(worker).start();
+        display.syncExec(new Runnable(){
+
+          public void run() {
+
+            workspace.setModelIsChanging(prevChangeState); 
+            workspace.setSelectedNode(workspace.getModel());
+          }
+        });
+      }
+    };
+    new Thread(worker).start();
+    
       
-      
-    }
   }
   
   public static void populateDomain(ModelerWorkspace model) throws ModelerException {

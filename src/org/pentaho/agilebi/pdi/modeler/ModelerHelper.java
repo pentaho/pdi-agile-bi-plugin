@@ -221,8 +221,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
               ClassicEngineBoot engineBoot = ClassicEngineBoot.getInstance();
               engineBoot.start();
             }
-            model.setAutoModel(true);
-            createTemporaryModel(model, true);
+            createTemporaryModel(model, true, true);
             EmbeddedWizard wizard = new EmbeddedWizard(model, true);
             waitBox.stop();
             wizard.run(null);
@@ -255,8 +254,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
   }
   
   public void quickVisualize( ModelerWorkspace model ) throws ModelerException {
-    model.setAutoModel(true);
-    createTemporaryModel(model, true);
+    createTemporaryModel(model, true, true);
     VisualizationManager theManager = VisualizationManager.getInstance();
     IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));
     if(theVisualization != null) {
@@ -270,7 +268,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     }
   }
   
-  public String createTemporaryModel(ModelerWorkspace model, boolean saveName) throws ModelerException {
+  public String createTemporaryModel(ModelerWorkspace model, boolean saveName, boolean autoModel) throws ModelerException {
     //give it a temporary name
     File modelsDir = new File(TEMP_MODELS_FOLDER); //$NON-NLS-1$
     modelsDir.mkdirs();
@@ -292,7 +290,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
       model.setFileName(fileName);
     }
     model.setModelName(modelName);
-    if(model.isAutoModel()){
+    if(autoModel){
       ModelerWorkspaceUtil.autoModelFlat(model);
     }
     ModelerWorkspaceUtil.populateDomain(model);
@@ -301,7 +299,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
   }
   
   public ModelerWorkspace clone(ModelerWorkspace model) throws ModelerException{
-    String fileName = createTemporaryModel(model, false);
+    String fileName = createTemporaryModel(model, false, false);
     
     ModelerWorkspace newModel = new ModelerWorkspace();
     
