@@ -579,6 +579,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
     return this.autoModel;
   }
   
+  //TODO: remove this flag and correct quick visualize code to ModelerWorkspaceUtil.autoModelFlatInBackground where needed
   public void setAutoModel(boolean isAutomodel) {
     this.autoModel = isAutomodel;
   }

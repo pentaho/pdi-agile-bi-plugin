@@ -925,6 +925,7 @@ public class ModelerController extends AbstractXulEventHandler{
   
   public void autoPopulate(){
     try {
+      this.workspace.setAutoModel(true);
       ModelerWorkspaceUtil.autoModelFlatInBackground(this.workspace);
       this.dimensionTree.expandAll();
     } catch (ModelerException e) {
