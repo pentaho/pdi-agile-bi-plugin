@@ -377,7 +377,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter{
                 // multiple measures, each with their own 
                 // default aggregation and name
                 LogicalColumn lCol = (LogicalColumn)fm.getLogicalColumn().clone();
-                lCol.setId(Util.uniquify(lCol.getId(),  newDomain.getLogicalModels().get(0).getLogicalTables().get(0).getLogicalColumns()));
+                lCol.setId(measure.getLogicalColumn().getId());
                 newDomain.getLogicalModels().get(0).getLogicalTables().get(0).addLogicalColumn(lCol);              
                 found = true;
               }
