@@ -8,6 +8,10 @@
     <conf name="source" />
   </configurations>
 
+  <publications>
+    <artifact name="${ivy.artifact.id}" type="jar" conf="default" />
+  </publications>
+
   <dependencies defaultconf="default->default">
 
     <dependency org="commons-vfs" name="commons-vfs" rev="1.0" conf="default->default" />

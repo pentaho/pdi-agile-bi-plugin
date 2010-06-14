@@ -7,7 +7,6 @@
   </configurations>
 
   <publications>
-    <artifact name="${ivy.artifact.id}" type="zip" />
     <artifact name="${ivy.artifact.id}" type="jar" />
   </publications>
 
