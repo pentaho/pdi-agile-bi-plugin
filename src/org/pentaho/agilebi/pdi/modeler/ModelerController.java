@@ -928,7 +928,7 @@ public class ModelerController extends AbstractXulEventHandler{
       ModelerWorkspaceUtil.autoModelFlatInBackground(this.workspace);
       this.dimensionTree.expandAll();
     } catch (ModelerException e) {
-      logger.error(e.getLocalizedMessage());
+      logger.error("error", e);
     }
   }
   
