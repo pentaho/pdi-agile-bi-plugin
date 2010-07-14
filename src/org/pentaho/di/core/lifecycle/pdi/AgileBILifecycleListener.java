@@ -16,17 +16,14 @@
  */
 package org.pentaho.di.core.lifecycle.pdi;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.net.Socket;
-import java.util.Properties;
 
 import org.apache.commons.lang.ObjectUtils.Null;
 import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.impl.DefaultFileSystemManager;
-import org.pentaho.agilebi.pdi.perspective.AgileBiModelerPerspective;
-import org.pentaho.agilebi.pdi.visualizations.IVisualization;
-import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
+import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
+import org.pentaho.agilebi.spoon.visualizations.IVisualization;
+import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
 import org.pentaho.agilebi.platform.JettyServer;
 import org.pentaho.agilebi.vfs.MetadataToMondrianVfs;
 import org.pentaho.di.core.annotations.LifecyclePlugin;

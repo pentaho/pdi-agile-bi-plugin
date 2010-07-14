@@ -1,104 +1,162 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="pentaho" module="${ivy.artifact.id}" revision="${project.revision}" />
+  <info organisation="pentaho" module="${ivy.artifact.id}" revision="${project.revision}"/>
 
   <configurations>
-    <conf name="default" />
-    <conf name="test" visibility="private" />
-    <conf name="source" />
+    <conf name="default"/>
+    <conf name="test" visibility="private"/>
+    <conf name="source"/>
+    <conf name="codegen" visibility="private"/>
+    <conf name="codegen-mac" visibility="private" extends="codegen"/>
+    <conf name="codegen-win" visibility="private" extends="codegen"/>
+    <conf name="codegen-linux" visibility="private" extends="codegen"/>
+    <conf name="runtime"/>
   </configurations>
 
   <publications>
-    <artifact name="${ivy.artifact.id}" type="jar" conf="default" />
+    <artifact name="${ivy.artifact.id}" type="jar" conf="default"/>
   </publications>
 
   <dependencies defaultconf="default->default">
 
-    <dependency org="commons-vfs" name="commons-vfs" rev="1.0" conf="default->default" />
+    <dependency org="commons-vfs" name="commons-vfs" rev="1.0" conf="default->default"/>
 
-    <dependency org="pentaho" name="pentaho-metadata" rev="${dependency.pentaho-metadata.revision}" conf="default->default"
-      changing="true" />
+    <dependency org="pentaho" name="pentaho-metadata" rev="${dependency.pentaho-metadata.revision}"
+                conf="default->default"
+                changing="true"/>
     <dependency org="pentaho.kettle" name="kettle-engine" rev="${dependency.kettle.revision}" conf="default->default"
-      changing="true" />
+                changing="true"/>
     <dependency org="pentaho.kettle" name="kettle-core" rev="${dependency.kettle.revision}" conf="default->default"
-      changing="true" />
+                changing="true"/>
     <dependency org="pentaho.kettle" name="kettle-db" rev="${dependency.kettle.revision}" conf="default->default"
-      changing="true" />
+                changing="true"/>
     <dependency org="pentaho.kettle" name="kettle-ui-swt" rev="${dependency.kettle.revision}" conf="default->default"
-      changing="true" />
+                changing="true"/>
 
     <!--    exclude jetty's version of servlet api. it's checksum fails-->
-    <dependency org="org.mortbay.jetty" name="jetty-plus" rev="6.1.21" transitive="false" conf="default->default" />
+    <dependency org="org.mortbay.jetty" name="jetty-plus" rev="6.1.21" transitive="false" conf="default->default"/>
     <dependency org="org.mortbay.jetty" name="jetty" rev="6.1.21" conf="default->default">
-      <exclude org="org.mortbay.jetty" name="servlet-api-2.5" />
+      <exclude org="org.mortbay.jetty" name="servlet-api-2.5"/>
     </dependency>
-    <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="default->default" />
+    <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="default->default"/>
 
     <!-- pentaho-database and pentaho-xul-framework must match JARs required by kettle-ui-swt
 -->
     <!-- this manual sync should go away once this project is propertly ivy-ized
 -->
 
-    <dependency org="pentaho" name="pentaho-database" rev="${dependency.pentaho-database.revision}" conf="default->default"
-      changing="true" />
+    <dependency org="pentaho" name="pentaho-database" rev="${dependency.pentaho-database.revision}"
+                conf="default->default"
+                changing="true"/>
     <dependency org="pentaho" name="pentaho-database-model" rev="${dependency.pentaho-database.revision}"
-      conf="default->default" changing="true" />
+                conf="default->default" changing="true"/>
 
     <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default"
-      changing="true" />
+                changing="true"/>
     <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default"
-      changing="true" />
-    <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul" rev="${dependency.pentaho-reporting.revision}"
-      conf="default->default" changing="true" transitive="false"/>
-    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-wizard-core" rev="${dependency.pentaho-reporting.revision}"
-      conf="default->default" changing="true" transitive="false"/>
-   
-    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-core" rev="${dependency.pentaho-reporting.revision}"
-      conf="default->default" changing="true">
-      
-    </dependency> 
-    
-    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-datasource-editor-pmd" rev="${dependency.pentaho-reporting.revision}"
-      conf="default->default" changing="true" transitive="false"/>
-      
-      
-    <dependency org="pentaho-library" name="libswing" rev="1.1.5"
-      conf="default->default" changing="true" transitive="false"/>
-      
-    <dependency org="pentaho" name="mondrian" rev="${dependency.mondrian.revision}"
-      conf="default->default" changing="true" transitive="false"/>
-      
-    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-extensions-pmd" rev="${dependency.pentaho-reporting.revision}"
-      conf="default->default" changing="true" transitive="false" />
+                changing="true"/>
+    <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul"
+                rev="${dependency.pentaho-reporting.revision}"
+                conf="default->default" changing="true" transitive="false"/>
+    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-wizard-core"
+                rev="${dependency.pentaho-reporting.revision}"
+                conf="default->default" changing="true" transitive="false"/>
 
-    <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="${dependency.bi-platform.revision}" changing="true"
-      conf="default->default" />
-    <dependency org="pentaho" name="pentaho-bi-platform-engine-core" rev="${dependency.bi-platform.revision}" changing="true"
-      conf="default->default" />
-    <dependency org="pentaho" name="pentaho-bi-platform-engine-services" rev="${dependency.bi-platform.revision}" changing="true"
-      conf="default->default" />
-    <dependency org="pentaho" name="pentaho-bi-platform-repository" rev="${dependency.bi-platform.revision}" changing="true"
-      conf="default->default" />
+    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-core"
+                rev="${dependency.pentaho-reporting.revision}"
+                conf="default->default" changing="true">
+
+    </dependency>
+
+    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-datasource-editor-pmd"
+                rev="${dependency.pentaho-reporting.revision}"
+                conf="default->default" changing="true" transitive="false"/>
+
+
+    <dependency org="pentaho-library" name="libswing" rev="1.1.5"
+                conf="default->default" changing="true" transitive="false"/>
+
+    <dependency org="pentaho" name="mondrian" rev="${dependency.mondrian.revision}"
+                conf="default->default" changing="true" transitive="false"/>
+
+    <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-extensions-pmd"
+                rev="${dependency.pentaho-reporting.revision}"
+                conf="default->default" changing="true" transitive="false"/>
+
+    <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="${dependency.bi-platform.revision}"
+                changing="true"
+                conf="default->default"/>
+    <dependency org="pentaho" name="pentaho-bi-platform-engine-core" rev="${dependency.bi-platform.revision}"
+                changing="true"
+                conf="default->default"/>
+    <dependency org="pentaho" name="pentaho-bi-platform-engine-services" rev="${dependency.bi-platform.revision}"
+                changing="true"
+                conf="default->default"/>
+    <dependency org="pentaho" name="pentaho-bi-platform-repository" rev="${dependency.bi-platform.revision}"
+                changing="true"
+                conf="default->default"/>
     <dependency org="pentaho" name="pentaho-bi-platform-util" rev="${dependency.bi-platform.revision}" changing="true"
-      conf="default->default" />
+                conf="default->default"/>
 
     <!-- Pentaho -->
-    <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="${dependency.bi-platform.revision}" changing="true"
-      conf="default->default" transitive="false"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-security-userroledao" rev="${dependency.bi-platform.revision}" changing="true"
-      conf="default->default" transitive="false"/>
+    <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="${dependency.bi-platform.revision}"
+                changing="true"
+                conf="default->default" transitive="false"/>
+    <dependency org="pentaho" name="pentaho-bi-platform-security-userroledao" rev="${dependency.bi-platform.revision}"
+                changing="true"
+                conf="default->default" transitive="false"/>
     <dependency org="pentaho" name="pentaho-bi-platform-legacy" rev="${dependency.bi-platform.revision}" changing="true"
-      conf="default->default" transitive="false"/>
-    <dependency org="pentaho" name="mantle" rev="${dependency.bi-platform.revision}" changing="true" conf="default->default" 
-     transitive="false"/>
-    
-    <dependency org="org.json" name="json" rev="${dependency.json.revision}" changing="true" conf="default->default" />
-    <!-- test dependencies -->
-    <dependency org="junit" name="junit" rev="4.4" conf="test->default" />
+                conf="default->default" transitive="false"/>
+    <dependency org="pentaho" name="mantle" rev="${dependency.bi-platform.revision}" changing="true"
+                conf="default->default"
+                transitive="false"/>
 
-    <exclude org="xerces" module="xerces" conf="default->default" />
-    <exclude org="xml-apis" module="xml-apis" conf="default->default" />
-    <exclude org="org.olap4j" module="olap4j" conf="default->default" />
-    
+    <dependency org="org.json" name="json" rev="${dependency.json.revision}" changing="true" conf="default->default"/>
+    <!-- test dependencies -->
+    <dependency org="junit" name="junit" rev="4.4" conf="test->default"/>
+
+
+    <dependency org="com.google.gwt" name="gwt-servlet" rev="2.0.3" conf="default->default"/>
+
+    <!-- it doesn't matter what platform of gwt-dev we use here. GWT compile only cares about the API part of the jar -->
+    <dependency org="com.google.gwt" name="gwt-dev" rev="2.0.3" conf="default->default"/>
+    <dependency org="com.google.gwt" name="gwt-user" rev="2.0.3" conf="default->default"/>
+
+    <dependency org="org.zenica" name="gwt-datepicker" rev="r30" conf="default->default"/>
+    <dependency org="com.google.gwt" name="gwt-incubator" rev="2.0.1" conf="default->default"/>
+    <dependency org="com.allen_sauer" name="gwt-dnd" rev="3.0.1" conf="default->default"/>
+    <dependency org="com.google.code.gwtx" name="gwtx" rev="1.5.2" transitive="false" conf="default->default"/>
+
+    <dependency org="pentaho" name="pentaho-gwt-widgets" rev="${dependency.pentaho-gwt-widgets.revision}"
+                conf="default->default"
+                changing="true">
+      <artifact name="pentaho-gwt-widgets"/>
+      <artifact name="pentaho-gwt-widgets" type="source" ext="jar" m:classifier="sources"/>
+    </dependency>
+
+    <dependency org="pentaho" name="pentaho-xul-gwt" rev="${dependency.pentaho-xul.revision}"
+                conf="default->default"
+                changing="true">
+      <artifact name="pentaho-xul-gwt"/>
+      <artifact name="pentaho-xul-gwt" type="source" ext="jar" m:classifier="sources"/>
+    </dependency>
+
+    <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default"
+                changing="true">
+      <artifact name="pentaho-xul-core"/>
+      <artifact name="pentaho-xul-core" type="source" ext="jar" m:classifier="sources"/>
+    </dependency>
+
+    <dependency org="pentaho" name="pentaho-metadata" rev="TRUNK-SNAPSHOT" changing="true"
+                transitive="false" conf="default->default">
+      <artifact name="pentaho-metadata"/>
+      <artifact name="pentaho-metadata" type="source" ext="jar" m:classifier="sources"/>
+    </dependency>
+
+    <exclude org="xerces" module="xerces" conf="default->default"/>
+    <exclude org="xml-apis" module="xml-apis" conf="default->default"/>
+    <exclude org="org.olap4j" module="olap4j" conf="default->default"/>
+
+
   </dependencies>
 </ivy-module>

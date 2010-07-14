@@ -19,7 +19,7 @@ package org.pentaho.agilebi.test;
 import java.io.File;
 
 import org.junit.Test;
-import org.pentaho.agilebi.pdi.visualizations.xul.PrptViewerTag;
+import org.pentaho.agilebi.spoon.visualizations.xul.PrptViewerTag;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.libraries.resourceloader.Resource;

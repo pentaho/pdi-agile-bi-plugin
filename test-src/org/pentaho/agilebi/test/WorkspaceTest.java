@@ -16,22 +16,19 @@
  */
 package org.pentaho.agilebi.test;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.agilebi.pdi.modeler.AvailableField;
-import org.pentaho.agilebi.pdi.modeler.ModelerController;
-import org.pentaho.agilebi.pdi.modeler.ModelerException;
-import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.pdi.modeler.ModelerWorkspaceUtil;
-import org.pentaho.agilebi.pdi.modeler.nodes.DimensionMetaData;
-import org.pentaho.agilebi.pdi.modeler.nodes.DimensionMetaDataCollection;
-import org.pentaho.agilebi.pdi.modeler.nodes.HierarchyMetaData;
-import org.pentaho.agilebi.pdi.modeler.nodes.LevelMetaData;
+import org.pentaho.agilebi.modeler.nodes.AvailableField;
+import org.pentaho.agilebi.modeler.ModelerController;
+import org.pentaho.agilebi.modeler.ModelerException;
+import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.modeler.nodes.DimensionMetaData;
+import org.pentaho.agilebi.modeler.nodes.DimensionMetaDataCollection;
+import org.pentaho.agilebi.modeler.nodes.HierarchyMetaData;
+import org.pentaho.agilebi.modeler.nodes.LevelMetaData;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;

@@ -15,16 +15,14 @@
  * Copyright (c) 2010 Pentaho Corporation..  All rights reserved.
  */
 package org.pentaho.agilebi.test;
-import java.io.File;
 
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pentaho.agilebi.pdi.modeler.IModelerSource;
-import org.pentaho.agilebi.pdi.modeler.ModelerException;
-import org.pentaho.agilebi.pdi.visualizations.IVisualization;
-import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
+import org.pentaho.agilebi.modeler.IModelerSource;
+import org.pentaho.agilebi.modeler.ModelerException;
+import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;

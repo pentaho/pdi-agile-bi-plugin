@@ -21,8 +21,8 @@ import java.io.File;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.pentaho.agilebi.pdi.visualizations.IVisualization;
-import org.pentaho.agilebi.pdi.visualizations.VisualizationManager;
+import org.pentaho.agilebi.spoon.visualizations.IVisualization;
+import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
 
 @SuppressWarnings("nls")
 public class VisualizationApiTest {

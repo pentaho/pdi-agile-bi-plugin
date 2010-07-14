@@ -16,10 +16,9 @@
  */
 package org.pentaho.agilebi.debug;
 
-import org.pentaho.agilebi.pdi.modeler.ModelerController;
-import org.pentaho.agilebi.pdi.modeler.ModelerException;
-import org.pentaho.agilebi.pdi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.pdi.modeler.XulUI;
+import org.pentaho.agilebi.modeler.ModelerException;
+import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.spoon.XulUI;
 
 public class DebugXulUI {
 
