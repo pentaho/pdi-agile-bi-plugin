@@ -4,14 +4,17 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.pentaho.agilebi.modeler.IModelerMessages;
-import org.pentaho.agilebi.modeler.nodes.AvailableField;
 import org.pentaho.agilebi.modeler.ColResolverController;
+import org.pentaho.agilebi.modeler.IModelerMessages;
 import org.pentaho.agilebi.modeler.ModelerController;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.modeler.nodes.AvailableFieldCollection;
-import org.pentaho.agilebi.modeler.propforms.*;
-import org.pentaho.agilebi.modeler.services.IModelerService;
+import org.pentaho.agilebi.modeler.propforms.AbstractModelerNodeForm;
+import org.pentaho.agilebi.modeler.propforms.DimensionPropertiesForm;
+import org.pentaho.agilebi.modeler.propforms.GenericPropertiesForm;
+import org.pentaho.agilebi.modeler.propforms.HierarchyPropertiesForm;
+import org.pentaho.agilebi.modeler.propforms.LevelsPropertiesForm;
+import org.pentaho.agilebi.modeler.propforms.MainModelerNodePropertiesForm;
+import org.pentaho.agilebi.modeler.propforms.MeasuresPropertiesForm;
 import org.pentaho.agilebi.modeler.services.IModelerServiceAsync;
 import org.pentaho.agilebi.modeler.services.impl.GwtModelerServiceImpl;
 import org.pentaho.gwt.widgets.client.utils.i18n.ResourceBundle;
@@ -25,14 +28,12 @@ import org.pentaho.ui.xul.gwt.binding.GwtBindingFactory;
 import org.pentaho.ui.xul.gwt.util.AsyncXulLoader;
 import org.pentaho.ui.xul.gwt.util.IXulLoaderCallback;
 
-import java.util.List;
-
 public class GwtModelerEntryPoint implements EntryPoint, IXulLoaderCallback {
 
   private Domain domain;
   public void onModuleLoad() {
     IModelerServiceAsync service = new GwtModelerServiceImpl();
-    service.generateDomain(new XulServiceCallback<Domain>(){
+    service.generateDomain("ORDERS", null, "testing", new XulServiceCallback<Domain>(){
       public void success( Domain domain) {
         GwtModelerEntryPoint.this.domain = domain;
         AsyncXulLoader.loadXulFromUrl("panel.xul", "modeler", GwtModelerEntryPoint.this); //$NON-NLS-1$//$NON-NLS-2$
@@ -51,7 +52,7 @@ public class GwtModelerEntryPoint implements EntryPoint, IXulLoaderCallback {
     XulDomContainer container = gwtXulRunner.getXulDomContainers().get(0);
 
 
-    ModelerWorkspace model = new ModelerWorkspace();
+    ModelerWorkspace model = new ModelerWorkspace(new GwtModelerWorkspaceHelper());
     GwtModelerWorkspaceHelper helper = new GwtModelerWorkspaceHelper();
     model.setWorkspaceHelper(helper);
     model.setDomain(this.domain);

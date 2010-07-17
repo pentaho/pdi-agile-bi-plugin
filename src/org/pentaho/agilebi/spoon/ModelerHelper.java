@@ -156,7 +156,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
   public void createModelerTabFromOutputStep() throws ModelerException {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
 
-    ModelerWorkspace model = new ModelerWorkspace();
+    ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
     
     populateModelFromOutputStep(model);
     
@@ -168,7 +168,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
 
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
 
-    ModelerWorkspace model = new ModelerWorkspace();
+    ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
     model.setModelSource(source);
     ModelerWorkspaceUtil.populateModelFromSource(model, source);
     
@@ -179,7 +179,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
   // TODO: replace this code after M1
   public Domain loadDomain(String fname){
     try{
-      ModelerWorkspace model = new ModelerWorkspace();
+      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
       ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);
       return model.getDomain();
@@ -239,7 +239,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
         }
 
         try{
-          ModelerWorkspace model = new ModelerWorkspace();
+          ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
           quickVisualize( model );
         } catch(Exception e){
@@ -256,7 +256,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     }
 
     try{
-      ModelerWorkspace model = new ModelerWorkspace();
+      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
       populateModelFromOutputStep(model);
       quickVisualize( model );
     } catch(Exception e){
@@ -288,7 +288,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
         public void run() {
           
           try {
-            ModelerWorkspace model = new ModelerWorkspace();
+            ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
             populateModelFromOutputStep(model);
 
             ObjectUtilities.setClassLoader(getClass().getClassLoader());
@@ -370,7 +370,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     if(autoModel){
       model.getWorkspaceHelper().autoModelFlat(model);
     }
-    ModelerWorkspaceUtil.populateDomain(model);
+    model.getWorkspaceHelper().populateDomain(model);
     ModelerWorkspaceUtil.saveWorkspace( model, fileName);
     return fileName;
   }
@@ -378,7 +378,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
   public ModelerWorkspace clone(ModelerWorkspace model) throws ModelerException{
     String fileName = createTemporaryModel(model, false, false);
     
-    ModelerWorkspace newModel = new ModelerWorkspace();
+    ModelerWorkspace newModel = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
     
     newModel.setTemporary(true);
     newModel.setDirty(false);
@@ -403,7 +403,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
           
         TableModelerSource source = new TableModelerSource( databaseMeta, std.getTableName(), std.getSchemaName());
         try{
-          ModelerWorkspace model = new ModelerWorkspace();
+          ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
           AgileBiModelerPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
         } catch(Exception e){
@@ -416,7 +416,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
   
   public void createEmptyModel() {
     try {
-      ModelerWorkspace model = new ModelerWorkspace();
+      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
       AgileBiModelerPerspective.getInstance().createTabForModel(model, MODELER_NAME);
       SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiModelerPerspective.class);
     } catch (Exception e) {

@@ -29,6 +29,7 @@ import org.pentaho.agilebi.modeler.nodes.DimensionMetaData;
 import org.pentaho.agilebi.modeler.nodes.DimensionMetaDataCollection;
 import org.pentaho.agilebi.modeler.nodes.HierarchyMetaData;
 import org.pentaho.agilebi.modeler.nodes.LevelMetaData;
+import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.LogicalModel;
@@ -106,7 +107,7 @@ public class WorkspaceTest {
   
   @Test
   public void testMoveAvailableToMeasures() throws ModelerException{
-    ModelerWorkspace work = new ModelerWorkspace();
+    ModelerWorkspace work = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
     work.setDomain(domain);
     AvailableField field = new AvailableField();
     field.setName("Test name");
@@ -116,7 +117,7 @@ public class WorkspaceTest {
     work.addMeasure(work.createMeasureForNode(field));
     Assert.assertEquals(1, work.getModel().getMeasures().size());
     
-    ModelerWorkspaceUtil.populateDomain(work);
+    work.getWorkspaceHelper().populateDomain(work);
     
     
     // one logicalColumn in the category
@@ -131,7 +132,7 @@ public class WorkspaceTest {
   
   @Test
   public void testMeasuresValidation(){
-    ModelerWorkspace work = new ModelerWorkspace();
+    ModelerWorkspace work = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
     work.setDomain(domain);
     AvailableField field = new AvailableField();
     field.setName("Test name");
@@ -149,7 +150,7 @@ public class WorkspaceTest {
 
   @Test
   public void testDimensionPopulate(){
-    ModelerWorkspace work = new ModelerWorkspace();
+    ModelerWorkspace work = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
     work.setDomain(domain);
     AvailableField field = new AvailableField();
     field.setName("Test name");
@@ -174,7 +175,7 @@ public class WorkspaceTest {
   @Test
   public void testControllerMoveToMeasures(){
 
-    ModelerWorkspace work = new ModelerWorkspace();
+    ModelerWorkspace work = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
     AvailableField availableField = new AvailableField();
     availableField.setName("Available Field");
     availableField.setLogicalColumn(logicalColumn2);
@@ -208,7 +209,7 @@ public class WorkspaceTest {
 
   @Test
   public void testDimensionValidation(){
-    ModelerWorkspace work = new ModelerWorkspace();
+    ModelerWorkspace work = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
     work.setDomain(domain);
     AvailableField field = new AvailableField();
     field.setName("Test name");
@@ -228,7 +229,7 @@ public class WorkspaceTest {
 
   @Test
   public void testGetAvailableFields(){
-    ModelerWorkspace work = new ModelerWorkspace();
+    ModelerWorkspace work = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
     work.setDomain(domain);
     
     Assert.assertEquals(2, work.getAvailableFields().size());

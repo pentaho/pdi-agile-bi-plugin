@@ -93,7 +93,7 @@ public class AgileBiModelerPerspectiveController extends AbstractXulEventHandler
     try {
       ModelerWorkspace model = this.meta.getController().getModel();
       if (model.isValid()) {
-        ModelerWorkspaceUtil.populateDomain(model);
+        model.getWorkspaceHelper().populateDomain(model);
         LogicalModel lModel = model.getDomain().getLogicalModels().get(0);
 
         FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell(), SWT.SAVE);

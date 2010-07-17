@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.pentaho.agilebi.modeler.*;
 import org.pentaho.agilebi.spoon.ModelerEngineMeta;
 import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.XulUI;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
@@ -155,7 +156,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
         }
       }
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-      ModelerWorkspace theModel = new ModelerWorkspace();
+      ModelerWorkspace theModel = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
       theModel.setTemporary(false);
       theModel.setDirty(false);
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
@@ -269,7 +270,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
   public void exportSchema() {
     try {
       if (this.model.isValid()) {
-        ModelerWorkspaceUtil.populateDomain(this.model);
+        this.model.getWorkspaceHelper().populateDomain(this.model);
         LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
 
         FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell(), SWT.SAVE);

@@ -74,10 +74,6 @@ public class ModelerController extends AbstractXulEventHandler {
 
   private IModelerMessages messages;
 
-  public ModelerController() {
-    this.workspace = new ModelerWorkspace();
-  }
-
   public ModelerController( ModelerWorkspace workspace ) {
     this.workspace = workspace;
   }

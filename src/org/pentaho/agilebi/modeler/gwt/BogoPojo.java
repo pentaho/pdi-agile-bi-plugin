@@ -20,6 +20,13 @@ import org.pentaho.metadata.model.concept.types.RelationshipType;
 import org.pentaho.metadata.model.concept.types.TableType;
 import org.pentaho.metadata.model.concept.types.TargetColumnType;
 import org.pentaho.metadata.model.concept.types.TargetTableType;
+import org.pentaho.metadata.model.olap.OlapCube;
+import org.pentaho.metadata.model.olap.OlapDimension;
+import org.pentaho.metadata.model.olap.OlapDimensionUsage;
+import org.pentaho.metadata.model.olap.OlapHierarchy;
+import org.pentaho.metadata.model.olap.OlapHierarchyLevel;
+import org.pentaho.metadata.model.olap.OlapMeasure;
+
 import java.lang.Boolean;
 /*
  * This class is a workaround for GWT. GWT is not able to compile these classes are they have been used in a map
@@ -46,6 +53,12 @@ public class BogoPojo implements Serializable {
   Color color;
   ColumnWidth columnWidth;
   Boolean booleanValue;
+  OlapDimension olapDim;
+  OlapCube olapcube;
+  OlapMeasure olapMeasure;
+  OlapHierarchy olapHier;
+  OlapHierarchyLevel level;
+  OlapDimensionUsage dimUsage;
 
   public Boolean getBooleanValue() {
     return booleanValue;
@@ -154,5 +167,53 @@ public class BogoPojo implements Serializable {
   }
   public FieldType getFieldType() {
     return fieldType;
+  }
+
+  public OlapDimension getOlapDim() {
+    return olapDim;
+  }
+
+  public void setOlapDim( OlapDimension olapDim ) {
+    this.olapDim = olapDim;
+  }
+
+  public OlapCube getOlapcube() {
+    return olapcube;
+  }
+
+  public void setOlapcube( OlapCube olapcube ) {
+    this.olapcube = olapcube;
+  }
+
+  public OlapMeasure getOlapMeasure() {
+    return olapMeasure;
+  }
+
+  public void setOlapMeasure( OlapMeasure olapMeasure ) {
+    this.olapMeasure = olapMeasure;
+  }
+
+  public OlapHierarchy getOlapHier() {
+    return olapHier;
+  }
+
+  public void setOlapHier( OlapHierarchy olapHier ) {
+    this.olapHier = olapHier;
+  }
+
+  public OlapHierarchyLevel getLevel() {
+    return level;
+  }
+
+  public void setLevel( OlapHierarchyLevel level ) {
+    this.level = level;
+  }
+
+  public OlapDimensionUsage getDimUsage() {
+    return dimUsage;
+  }
+
+  public void setDimUsage( OlapDimensionUsage dimUsage ) {
+    this.dimUsage = dimUsage;
   }
 }

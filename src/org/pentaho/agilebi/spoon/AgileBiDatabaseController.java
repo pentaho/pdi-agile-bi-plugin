@@ -61,7 +61,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 		this.dbExplorerController.close();
 		TableModelerSource source = new TableModelerSource(this.dbExplorerController.getDatabaseMeta(), this.dbExplorerController.getSelectedTable(), this.dbExplorerController.getSelectedSchema());
 		try {
-			ModelerWorkspace model = new ModelerWorkspace();
+			ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
 			ModelerWorkspaceUtil.populateModelFromSource(model, source);
 
 			AgileBiModelerPerspective.getInstance().createTabForModel(model, MODELER_NAME);
@@ -81,7 +81,7 @@ public class AgileBiDatabaseController extends AbstractXulEventHandler {
 			source.setSchemaName(""); //$NON-NLS-1$
 		}
 		try {
-			ModelerWorkspace model = new ModelerWorkspace();
+			ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
 			ModelerWorkspaceUtil.populateModelFromSource(model, source);
 			quickVisualize(model, true);
 		} catch (Exception e) {

@@ -29,6 +29,7 @@ import org.pentaho.agilebi.spoon.ModelerSourceFactory;
 import org.pentaho.agilebi.spoon.PDIMessages;
 import org.pentaho.agilebi.modeler.IModelerSource;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.perspective.AbstractPerspective.XulTabAndPanel;
 import org.pentaho.agilebi.spoon.perspective.AgileBiVisualizationPerspective;
 import org.pentaho.agilebi.spoon.visualizations.AbstractVisualization;
@@ -302,7 +303,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 			theRunner.addContainer(theXulContainer);
 			theRunner.initialize();
 			
-			ModelerWorkspace model = new ModelerWorkspace();
+			ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
 	    XmiParser parser = new XmiParser();
 	    FileInputStream inputStream = new FileInputStream(new File(modelFileName));
 	    Domain domain = parser.parseXmi(inputStream);

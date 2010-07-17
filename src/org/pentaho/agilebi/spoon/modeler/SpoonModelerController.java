@@ -6,6 +6,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.pentaho.agilebi.modeler.*;
 import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.TableModelerSource;
 import org.pentaho.agilebi.spoon.publish.PublisherHelper;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
@@ -48,6 +49,9 @@ public class SpoonModelerController extends ModelerController {
   private List<String> visualizationNames;
   private Binding visualizationsBinding;
 
+  public SpoonModelerController(){
+    super(new ModelerWorkspace(new SpoonModelerWorkspaceHelper()));
+  }
   public void init() throws ModelerException{
 
     visualizationList = (XulMenuList)document.getElementById("visualizationlist"); //$NON-NLS-1$
@@ -172,7 +176,7 @@ public class SpoonModelerController extends ModelerController {
     String databaseName = workspace.getDatabaseName();
     String extension = ".xmi"; //$NON-NLS-1$
     String filename = workspace.getModelName();
-    ModelerWorkspaceUtil.populateDomain(workspace);
+    workspace.getWorkspaceHelper().populateDomain(workspace);
     String fileName = PublisherHelper.publish(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources,
         false, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
     workspace.getModel().setName(fileName);

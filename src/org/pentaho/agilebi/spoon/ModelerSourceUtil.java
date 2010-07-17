@@ -116,7 +116,7 @@ public class ModelerSourceUtil {
     return domain;
   }
   
-  private static void setRoleAccess( String role, int rights, IConcept concept ) {
+  public static void setRoleAccess( String role, int rights, IConcept concept ) {
     SecurityOwner owner = new SecurityOwner(SecurityOwner.OwnerType.ROLE, role );
     Security security = (Security)concept.getProperty(DefaultPropertyID.SECURITY.getId());
     if( security == null ) {

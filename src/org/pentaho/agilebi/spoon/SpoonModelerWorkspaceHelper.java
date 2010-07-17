@@ -1,6 +1,7 @@
 package org.pentaho.agilebi.spoon;
 
 import org.eclipse.swt.widgets.Display;
+import org.pentaho.agilebi.modeler.BaseModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.IModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
@@ -17,7 +18,7 @@ import java.util.List;
  * User: nbaker
  * Date: Jul 14, 2010
  */
-public class SpoonModelerWorkspaceHelper implements IModelerWorkspaceHelper {
+public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper implements IModelerWorkspaceHelper {
 
 
   /**

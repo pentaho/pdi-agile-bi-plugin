@@ -1,5 +1,6 @@
 package org.pentaho.agilebi.modeler.gwt;
 
+import org.pentaho.agilebi.modeler.BaseModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.IModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
@@ -16,7 +17,11 @@ import java.util.List;
  * User: nbaker
  * Date: Jul 14, 2010
  */
-public class GwtModelerWorkspaceHelper implements IModelerWorkspaceHelper {
+public class GwtModelerWorkspaceHelper extends BaseModelerWorkspaceHelper implements IModelerWorkspaceHelper {
+
+  public GwtModelerWorkspaceHelper(){
+    BogoPojo bogo = new BogoPojo();
+  }
 
   public void autoModelFlatInBackground( ModelerWorkspace workspace ) throws ModelerException {
     autoModelFlat(workspace);

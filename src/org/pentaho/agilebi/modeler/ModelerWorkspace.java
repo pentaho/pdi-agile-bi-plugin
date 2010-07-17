@@ -85,9 +85,10 @@ public class ModelerWorkspace extends XulEventSourceAdapter implements Serializa
   private AbstractMetaDataModelNode selectedNode;
   private IModelerWorkspaceHelper workspaceHelper;
 
-  public ModelerWorkspace() {
+  public ModelerWorkspace(IModelerWorkspaceHelper helper) {
 
     this.isTemporary = true;
+    this.workspaceHelper = helper;
 
     setModel(new MainModelNode());
 

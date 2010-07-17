@@ -18,11 +18,8 @@ import org.pentaho.ui.xul.XulServiceCallback;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: nbaker
  * Date: Jun 18, 2010
- * Time: 4:21:54 PM
- * To change this template use File | Settings | File Templates.
  */
 public class GwtModelerServiceImpl implements IModelerServiceAsync {
   IGwtModelerServiceAsync delegate;
@@ -37,8 +34,8 @@ public class GwtModelerServiceImpl implements IModelerServiceAsync {
     return delegate;
   }
 
-  public void generateDomain( final XulServiceCallback<Domain> callback){
-    getDelegate().generateDomain(new AsyncCallback<Domain>() {
+  public void generateDomain(String tableName, String query, String datasourceName, final XulServiceCallback<Domain> callback){
+    getDelegate().generateDomain(tableName, query, datasourceName, new AsyncCallback<Domain>() {
       public void onFailure( Throwable throwable ) {
         callback.error("Error getting Workspace", throwable);
       }
@@ -57,5 +54,17 @@ public class GwtModelerServiceImpl implements IModelerServiceAsync {
       return baseUrl + "gwtrpc/modelerService";//$NON-NLS-1$
     }
     return moduleUrl + "modelerService";//$NON-NLS-1$
+  }
+
+  public void serializeModels( Domain domain, String name, final XulServiceCallback<Void> callback ) {
+    getDelegate().serializeModels(domain, name, new AsyncCallback<Void>() {
+      public void onFailure( Throwable throwable ) {
+        callback.error("Error saving models", throwable);
+      }
+
+      public void onSuccess( Void v) {
+        callback.success(v);
+      }
+    });
   }
 }

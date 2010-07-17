@@ -7,12 +7,10 @@ import org.pentaho.metadata.model.Domain;
 import org.pentaho.ui.xul.XulServiceCallback;
 
 /**
- * Created by IntelliJ IDEA.
  * User: nbaker
  * Date: Jun 23, 2010
- * Time: 10:19:00 AM
- * To change this template use File | Settings | File Templates.
  */
 public interface IModelerServiceAsync {
-  void generateDomain( XulServiceCallback<Domain> callback);
+  void generateDomain(String tableName, String query, String datasourceName, XulServiceCallback<Domain> callback);
+  void serializeModels(Domain domain, String name, XulServiceCallback<Void> callback);
 }

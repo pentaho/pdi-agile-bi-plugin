@@ -7,12 +7,15 @@ import org.pentaho.agilebi.modeler.gwt.BogoPojo;
 import org.pentaho.agilebi.modeler.nodes.AvailableField;
 import org.pentaho.agilebi.modeler.nodes.AvailableFieldCollection;
 import org.pentaho.agilebi.modeler.nodes.MainModelNode;
+import org.pentaho.agilebi.modeler.services.IModelerService;
 import org.pentaho.agilebi.spoon.ModelerSourceUtil;
+import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.TableModelerSource;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.Props;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.database.HypersonicDatabaseMeta;
+import org.pentaho.di.core.database.MySQLDatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.metadata.model.Domain;
 
@@ -20,11 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: nbaker
  * Date: Jun 18, 2010
- * Time: 4:16:28 PM
- * To change this template use File | Settings | File Templates.
  */
 public class GwtModelerDebugServlet extends RemoteServiceServlet implements IGwtModelerService {
 
@@ -36,21 +36,21 @@ public class GwtModelerDebugServlet extends RemoteServiceServlet implements IGwt
       e.printStackTrace();
     }
   }
-  public Domain generateDomain() {
+  public Domain generateDomain(String tableName, String query, String datasourceName) throws Exception{
 
     try{
       DatabaseMeta database = new DatabaseMeta();
-      database.setDatabaseInterface(new HypersonicDatabaseMeta());
-      database.setDatabaseType("hypersonic");
-      database.setUsername("sa");
+      database.setDatabaseInterface(new MySQLDatabaseMeta());
+      database.setDatabaseType("mysql");
+      database.setUsername("root");
       database.setPassword("");
       database.setAccessType(DatabaseMeta.TYPE_ACCESS_NATIVE);
       database.setHostname("localhost");
-      database.setDBName("sampledata");
-      database.setDBPort("9001");
+      database.setDBName("hibernate");
+      database.setDBPort("3306");
 
-      TableModelerSource source = new TableModelerSource(database, "ORDERS", null);
-      ModelerWorkspace model = new ModelerWorkspace();
+      TableModelerSource source = new TableModelerSource(database, tableName, null);
+      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
       Domain d = null;
       try {
         d = source.generateDomain();
@@ -68,5 +68,9 @@ public class GwtModelerDebugServlet extends RemoteServiceServlet implements IGwt
 
   public BogoPojo gwtWorkaround ( BogoPojo pojo){
     return new BogoPojo();
+  }
+
+  public void serializeModels(Domain domain, String name) throws Exception{
+    // Do nothing in debug mode.
   }
 }

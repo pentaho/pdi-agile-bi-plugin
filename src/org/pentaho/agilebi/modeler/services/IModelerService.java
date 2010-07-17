@@ -1,6 +1,7 @@
 package org.pentaho.agilebi.modeler.services;
 
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.modeler.gwt.BogoPojo;
 import org.pentaho.agilebi.modeler.nodes.AvailableField;
 import org.pentaho.agilebi.modeler.nodes.AvailableFieldCollection;
 import org.pentaho.agilebi.modeler.nodes.MainModelNode;
@@ -17,5 +18,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface IModelerService {
-  Domain generateDomain();
+  Domain generateDomain(String tableName, String query, String datasourceName) throws Exception;
+  BogoPojo gwtWorkaround ( BogoPojo pojo);
+  void serializeModels(Domain domain, String name) throws Exception;
 }

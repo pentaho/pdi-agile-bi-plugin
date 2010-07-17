@@ -24,6 +24,7 @@ import org.pentaho.agilebi.spoon.ModelerEngineMeta;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.XulUI;
 import org.pentaho.agilebi.spoon.visualizations.SaveAwareMeta;
 import org.pentaho.di.core.EngineMetaInterface;
@@ -127,7 +128,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
     try {
       
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-      ModelerWorkspace model = new ModelerWorkspace();
+      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
       createTabForModel(model, createShortName(fname));
 
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$

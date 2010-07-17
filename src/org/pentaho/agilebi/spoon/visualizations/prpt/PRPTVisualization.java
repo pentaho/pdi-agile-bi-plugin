@@ -24,6 +24,7 @@ import org.pentaho.agilebi.spoon.ModelerHelper;
 import org.pentaho.agilebi.spoon.ModelerSourceFactory;
 import org.pentaho.agilebi.spoon.PDIMessages;
 import org.pentaho.agilebi.modeler.*;
+import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.XulUI;
 import org.pentaho.agilebi.spoon.perspective.AbstractPerspective.XulTabAndPanel;
 import org.pentaho.agilebi.spoon.perspective.AgileBiVisualizationPerspective;
@@ -132,7 +133,7 @@ public class PRPTVisualization extends AbstractVisualization {
       PmdDataFactory theDataFactory = (PmdDataFactory) masterReport.getDataFactory();
       String theXmiFile = theDataFactory.getXmiFile();
       
-      ModelerWorkspace model = new ModelerWorkspace();
+      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
       XmiParser parser = new XmiParser();
       FileInputStream inputStream = new FileInputStream(new File(theXmiFile));
       Domain domain = parser.parseXmi(inputStream);
@@ -298,7 +299,7 @@ public class PRPTVisualization extends AbstractVisualization {
       Domain domain = parser.parseXmi(inputStream);
       inputStream.close();      
       
-      ModelerWorkspace model = new ModelerWorkspace();
+      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
       LogicalModel logical = domain.getLogicalModels().get(0);
       Object property = logical.getProperty("source_type"); //$NON-NLS-1$
       if( property != null ) {

@@ -18,13 +18,14 @@ package org.pentaho.agilebi.debug;
 
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.XulUI;
 
 public class DebugXulUI {
 
   public static void main(String[] args){
     try {
-      new XulUI(null, new ModelerWorkspace()).startDebugWindow();
+      new XulUI(null, new ModelerWorkspace(new SpoonModelerWorkspaceHelper())).startDebugWindow();
     } catch (ModelerException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
