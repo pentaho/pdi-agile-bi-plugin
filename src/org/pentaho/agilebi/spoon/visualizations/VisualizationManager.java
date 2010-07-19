@@ -16,12 +16,18 @@
  */
 package org.pentaho.agilebi.spoon.visualizations;
 
-import edu.emory.mathcs.backport.java.util.Collections;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import java.io.File;
-import java.util.*;
+
 
 public class VisualizationManager {
 

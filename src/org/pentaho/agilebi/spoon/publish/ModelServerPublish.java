@@ -16,7 +16,20 @@
  */
 package org.pentaho.agilebi.spoon.publish;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -26,12 +39,9 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.dom4j.DocumentHelper;
-import org.pentaho.agilebi.modeler.IModelerSource;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.spoon.modeler.ISpoonModelerSource;
-import org.pentaho.agilebi.spoon.publish.BiServerConnection;
-import org.pentaho.agilebi.spoon.publish.PublishOverwriteDelegate;
 import org.pentaho.commons.util.repository.type.CmisObject;
 import org.pentaho.commons.util.repository.type.PropertiesBase;
 import org.pentaho.commons.util.repository.type.TypesOfFileableObjects;
@@ -51,13 +61,6 @@ import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClientNavigationService;
 import org.pentaho.platform.util.client.PublisherUtil;
 import org.pentaho.platform.util.client.ServiceException;
-
-import java.io.*;
-import java.net.URLEncoder;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * A utility class for publishing models to a BI server. Also helps synchronize database connections.

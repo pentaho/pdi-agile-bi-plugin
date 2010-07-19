@@ -25,12 +25,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -42,15 +42,6 @@ import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.spoon.publish.BiServerConnection;
 import org.pentaho.agilebi.spoon.publish.PublishOverwriteDelegate;
-import org.pentaho.commons.util.repository.exception.ConstraintViolationException;
-import org.pentaho.commons.util.repository.exception.FilterNotValidException;
-import org.pentaho.commons.util.repository.exception.FolderNotValidException;
-import org.pentaho.commons.util.repository.exception.InvalidArgumentException;
-import org.pentaho.commons.util.repository.exception.ObjectNotFoundException;
-import org.pentaho.commons.util.repository.exception.OperationNotSupportedException;
-import org.pentaho.commons.util.repository.exception.PermissionDeniedException;
-import org.pentaho.commons.util.repository.exception.RuntimeException;
-import org.pentaho.commons.util.repository.exception.UpdateConflictException;
 import org.pentaho.commons.util.repository.type.CmisObject;
 import org.pentaho.commons.util.repository.type.PropertiesBase;
 import org.pentaho.commons.util.repository.type.TypesOfFileableObjects;
@@ -61,7 +52,6 @@ import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.util.MondrianModelExporter;
-import org.pentaho.platform.api.engine.ISolutionFile;
 import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.platform.dataaccess.client.ConnectionServiceClient;
 import org.pentaho.platform.dataaccess.datasource.IConnection;
@@ -71,9 +61,8 @@ import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClientNavigationService;
 import org.pentaho.platform.util.client.PublisherUtil;
 import org.pentaho.platform.util.client.ServiceException;
-import org.pentaho.platform.util.logging.Logger;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
+
 
 /**
  * A utility class for publishing models to a BI server. Also helps synchronize database connections.
