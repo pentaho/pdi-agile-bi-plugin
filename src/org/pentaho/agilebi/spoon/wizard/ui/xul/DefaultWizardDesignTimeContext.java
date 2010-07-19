@@ -23,6 +23,8 @@ import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.designtime.DesignTimeContext;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaModel;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.WizardEditorModel;
+import org.pentaho.reporting.libraries.designtime.swing.settings.DefaultLocaleSettings;
+import org.pentaho.reporting.libraries.designtime.swing.settings.LocaleSettings;
 
 import java.awt.*;
 
@@ -66,5 +68,9 @@ public class DefaultWizardDesignTimeContext implements DesignTimeContext
   {
 //    ExceptionDialog.showExceptionDialog(parentWindow, "Non-Fatal Error", e.getMessage(), e);
     logger.info("Context received user error", e);
+  }
+
+  public LocaleSettings getLocaleSettings() {
+    return new DefaultLocaleSettings();
   }
 }
