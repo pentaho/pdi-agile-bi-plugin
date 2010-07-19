@@ -74,7 +74,7 @@
                 conf="default->default" changing="true" transitive="false"/>
 
 
-    <dependency org="pentaho-library" name="libswing" rev="1.1.5"
+    <dependency org="pentaho-library" name="libswing" rev="TRUNK-SNAPSHOT"
                 conf="default->default" changing="true" transitive="false"/>
 
     <dependency org="pentaho" name="mondrian" rev="${dependency.mondrian.revision}"
