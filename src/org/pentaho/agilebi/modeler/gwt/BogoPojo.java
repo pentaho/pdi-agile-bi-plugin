@@ -53,6 +53,12 @@ public class BogoPojo implements Serializable {
   Color color;
   ColumnWidth columnWidth;
   Boolean booleanValue;
+  OlapDimension olapDim;
+  OlapCube olapcube;
+  OlapMeasure olapMeasure;
+  OlapHierarchy olapHier;
+  OlapHierarchyLevel level;
+  OlapDimensionUsage dimUsage;
 
   public Boolean getBooleanValue() {
     return booleanValue;
@@ -163,4 +169,51 @@ public class BogoPojo implements Serializable {
     return fieldType;
   }
 
+  public OlapDimension getOlapDim() {
+    return olapDim;
+  }
+
+  public void setOlapDim( OlapDimension olapDim ) {
+    this.olapDim = olapDim;
+  }
+
+  public OlapCube getOlapcube() {
+    return olapcube;
+  }
+
+  public void setOlapcube( OlapCube olapcube ) {
+    this.olapcube = olapcube;
+  }
+
+  public OlapMeasure getOlapMeasure() {
+    return olapMeasure;
+  }
+
+  public void setOlapMeasure( OlapMeasure olapMeasure ) {
+    this.olapMeasure = olapMeasure;
+  }
+
+  public OlapHierarchy getOlapHier() {
+    return olapHier;
+  }
+
+  public void setOlapHier( OlapHierarchy olapHier ) {
+    this.olapHier = olapHier;
+  }
+
+  public OlapHierarchyLevel getLevel() {
+    return level;
+  }
+
+  public void setLevel( OlapHierarchyLevel level ) {
+    this.level = level;
+  }
+
+  public OlapDimensionUsage getDimUsage() {
+    return dimUsage;
+  }
+
+  public void setDimUsage( OlapDimensionUsage dimUsage ) {
+    this.dimUsage = dimUsage;
+  }
 }
