@@ -21,11 +21,13 @@ import org.pentaho.agilebi.modeler.propforms.AbstractModelerNodeForm;
 import org.pentaho.agilebi.modeler.propforms.ModelerNodePropertiesForm;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.ui.xul.XulComponent;
+import org.pentaho.ui.xul.XulEventSource;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.Binding.Type;
 import org.pentaho.ui.xul.binding.BindingConvertor;
 import org.pentaho.ui.xul.binding.BindingFactory;
+import org.pentaho.ui.xul.binding.FactoryBasedBindingProvider;
 import org.pentaho.ui.xul.components.XulConfirmBox;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMessageBox;
@@ -91,6 +93,7 @@ public class ModelerController extends AbstractXulEventHandler {
   }
 
   public void onDimensionTreeDrop( DropEvent event ) {
+
 
     boolean prevChangeState = workspace.isModelChanging();
     workspace.setModelIsChanging(true);

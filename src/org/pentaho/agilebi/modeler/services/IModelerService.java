@@ -18,7 +18,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface IModelerService {
-  Domain generateDomain(String tableName, String query, String datasourceName) throws Exception;
+  Domain generateDomain(String connectionName, String tableName, String query, String datasourceName) throws Exception;
   BogoPojo gwtWorkaround ( BogoPojo pojo);
   void serializeModels(Domain domain, String name) throws Exception;
 }

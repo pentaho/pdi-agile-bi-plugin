@@ -11,6 +11,6 @@ import org.pentaho.ui.xul.XulServiceCallback;
  * Date: Jun 23, 2010
  */
 public interface IModelerServiceAsync {
-  void generateDomain(String tableName, String query, String datasourceName, XulServiceCallback<Domain> callback);
+  void generateDomain(String connectionName, String tableName, String query, String datasourceName, XulServiceCallback<Domain> callback);
   void serializeModels(Domain domain, String name, XulServiceCallback<Void> callback);
 }

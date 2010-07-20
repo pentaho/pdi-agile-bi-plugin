@@ -15,7 +15,7 @@ import org.pentaho.metadata.model.Domain;
  * To change this template use File | Settings | File Templates.
  */
 public interface IGwtModelerServiceAsync {
-  void generateDomain(String tableName, String query, String datasourceName, AsyncCallback<Domain> domain);
+  void generateDomain(String connectionName, String tableName, String query, String datasourceName, AsyncCallback<Domain> domain);
 
   /**
    * This is a method for the Gwt workaround. This should not be used by any client at all

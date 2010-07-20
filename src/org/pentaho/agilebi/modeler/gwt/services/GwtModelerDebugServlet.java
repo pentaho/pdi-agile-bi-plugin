@@ -36,7 +36,7 @@ public class GwtModelerDebugServlet extends RemoteServiceServlet implements IGwt
       e.printStackTrace();
     }
   }
-  public Domain generateDomain(String tableName, String query, String datasourceName) throws Exception{
+  public Domain generateDomain(String connectionName, String tableName, String query, String datasourceName) throws Exception{
 
     try{
       DatabaseMeta database = new DatabaseMeta();

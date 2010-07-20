@@ -41,12 +41,13 @@ public class InlineSqlModelerSource implements ISpoonModelerSource {
   private String query, datasourceName;
   private static Log logger = LogFactory.getLog(InlineSqlModelerSource.class);
   private DatasourceServiceImpl datasourceImpl = new DatasourceServiceImpl();
+  private String connectionName;
 
 	public static final String SOURCE_TYPE = InlineSqlModelerSource.class.getSimpleName();
 
-  public InlineSqlModelerSource( DatabaseMeta meta, String query, String datasourceName){
-    this.databaseMeta = meta;
+  public InlineSqlModelerSource( String connectionName, String query, String datasourceName){
     this.query = query;
+    this.connectionName = connectionName;
     this.datasourceName = datasourceName;
   }
 
@@ -56,7 +57,7 @@ public class InlineSqlModelerSource implements ISpoonModelerSource {
 
   public Domain generateDomain() throws ModelerException {
     try{
-      BusinessData bd =  datasourceImpl.generateLogicalModel(datasourceName, databaseMeta.getName(), query, "10");
+      BusinessData bd =  datasourceImpl.generateLogicalModel(datasourceName, connectionName, query, "10");
       return bd.getDomain();
     } catch(DatasourceServiceException dce){
       throw new ModelerException(dce);
