@@ -33,7 +33,7 @@ public class GwtModelerEntryPoint implements EntryPoint, IXulLoaderCallback {
   private Domain domain;
   public void onModuleLoad() {
     IModelerServiceAsync service = new GwtModelerServiceImpl();
-    service.generateDomain(null, "ORDERS", null, "testing", new XulServiceCallback<Domain>(){
+    service.generateDomain(null, "ORDERS", "GENERIC", null, "testing", new XulServiceCallback<Domain>(){
       public void success( Domain domain) {
         GwtModelerEntryPoint.this.domain = domain;
         AsyncXulLoader.loadXulFromUrl("panel.xul", "modeler", GwtModelerEntryPoint.this); //$NON-NLS-1$//$NON-NLS-2$
