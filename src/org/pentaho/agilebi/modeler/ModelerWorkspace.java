@@ -457,9 +457,7 @@ public class ModelerWorkspace extends XulEventSourceAdapter implements Serializa
       fm.setLogicalColumn(c);
       fm.setName(c.getPhysicalColumn().getName("en_US"));//TODO GWT i18n: Locale.getDefault().toString()));
       fm.setDisplayName(c.getName("en_US"));//TODO GWT i18n: Locale.getDefault().toString()));
-      if(c.getAggregationType() != null){
-        fm.setAggTypeDesc(c.getAggregationType().toString());
-      }
+      fm.setAggTypeDesc(c.getAggregationType().toString());
       availableFields.add(fm);
     }
 
