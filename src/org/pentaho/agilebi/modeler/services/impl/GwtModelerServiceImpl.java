@@ -56,13 +56,13 @@ public class GwtModelerServiceImpl implements IModelerServiceAsync {
     return moduleUrl + "modelerService";//$NON-NLS-1$
   }
 
-  public void serializeModels( Domain domain, String name, final XulServiceCallback<Void> callback ) {
-    getDelegate().serializeModels(domain, name, new AsyncCallback<Void>() {
+  public void serializeModels( Domain domain, String name, final XulServiceCallback<String> callback ) {
+    getDelegate().serializeModels(domain, name, new AsyncCallback<String>() {
       public void onFailure( Throwable throwable ) {
         callback.error("Error saving models", throwable);
       }
 
-      public void onSuccess( Void v) {
+      public void onSuccess( String v) {
         callback.success(v);
       }
     });

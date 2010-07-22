@@ -23,5 +23,5 @@ public interface IGwtModelerServiceAsync {
    * @return BogoPojo
    */      
   void gwtWorkaround (BogoPojo pojo, AsyncCallback<BogoPojo> callback);
-  void serializeModels(Domain domain, String name, AsyncCallback<Void> callback); 
+  void serializeModels(Domain domain, String name, AsyncCallback<String> callback); 
 }

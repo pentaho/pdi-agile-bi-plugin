@@ -70,7 +70,8 @@ public class GwtModelerDebugServlet extends RemoteServiceServlet implements IGwt
     return new BogoPojo();
   }
 
-  public void serializeModels(Domain domain, String name) throws Exception{
+  public String serializeModels(Domain domain, String name) throws Exception{
     // Do nothing in debug mode.
+    return null;
   }
 }
