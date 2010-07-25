@@ -31,13 +31,13 @@ public class AgileBISpoonPlugin implements SpoonPluginInterface{
   public void applyToContainer(String category, XulDomContainer container) throws XulException {
     container.registerClassLoader(getClass().getClassLoader());
     if(category.equals("spoon")){
-      container.loadOverlay("org/pentaho/agilebi/pdi/spoon/spoon_overlays.xul");
+      container.loadOverlay("org/pentaho/agilebi/spoon/spoon_overlays.xul");
       container.addEventHandler(ModelerHelper.getInstance());
     } else if(category.equals("trans-graph")){
-      container.loadOverlay("org/pentaho/agilebi/pdi/spoon/trans_overlay.xul");
+      container.loadOverlay("org/pentaho/agilebi/spoon/trans_overlay.xul");
       container.addEventHandler(ModelerHelper.getInstance());
     } else if(category.equals("database_dialog")){
-      container.loadOverlay("org/pentaho/agilebi/pdi/spoon/database_dialog_overlay.xul");
+      container.loadOverlay("org/pentaho/agilebi/spoon/database_dialog_overlay.xul");
       container.addEventHandler(new AgileBiDatabaseController());
     } 
   }

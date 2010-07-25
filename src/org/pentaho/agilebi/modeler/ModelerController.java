@@ -70,11 +70,10 @@ public class ModelerController extends AbstractXulEventHandler {
 
   private ColResolverController colController;
 
-  private XulEditpanel propPanel;
 
   private IModelerWorkspaceHelper workspaceHelper;
 
-  private IModelerMessages messages;
+  protected IModelerMessages messages;
 
   public ModelerController( ModelerWorkspace workspace ) {
     this.workspace = workspace;
@@ -231,33 +230,6 @@ public class ModelerController extends AbstractXulEventHandler {
 
     dimensionTree = (XulTree) document.getElementById("dimensionTree"); //$NON-NLS-1$
     propDeck = (XulDeck) document.getElementById("propertiesdeck"); //$NON-NLS-1$
-//    propPanel = (XulEditpanel) document.getElementById("propertiesPanel"); //$NON-NLS-1$
-
-    XulLabel sourceLabel = (XulLabel) document.getElementById(SOURCE_NAME_LABEL_ID);
-    String connectionName = ""; //$NON-NLS-1$
-    String tableName = ""; //$NON-NLS-1$
-
-    //TODO: migrate this code elsewhere or remove it entirely
-//    if( workspace.getModelSource() != null && workspace.getModelSource() instanceof OutputStepModelerSource) {
-//      // for now just list the first table in the first physical workspace
-//      DatabaseMeta databaseMeta = workspace.getModelSource().getDatabaseMeta();
-//      if( databaseMeta != null ) {
-//        connectionName = databaseMeta.getName();
-//      }
-//      List<IPhysicalModel> physicalModels = workspace.getDomain().getPhysicalModels();
-//      if( physicalModels != null && physicalModels.size() > 0 ) {
-//        List<? extends IPhysicalTable> tables = physicalModels.get(0).getPhysicalTables();
-//        if( tables != null && tables.size() > 0 ) {
-//          // TODO where is the locale coming from? And why do we need one here?
-//          tableName = tables.get(0).getName("en_US");
-//        }
-//      }
-//    } else if (workspace.getModelSource() != null && workspace.getModelSource() instanceof TableModelerSource) {
-//      tableName = workspace.getModelSource().getTableName();
-//    }
-
-    sourceLabel.setValue(tableName);
-    bf.createBinding(workspace, "sourceName", sourceLabel, "value"); //$NON-NLS-1$//$NON-NLS-2$
 
     bf.setBindingType(Type.ONE_WAY);
     fieldListBinding = bf.createBinding(workspace, "availableFields", FIELD_LIST_ID,
@@ -311,35 +283,6 @@ public class ModelerController extends AbstractXulEventHandler {
         });
 
 
-    //TODO: move all this datasource stuff into models! use the existing property form validation to show messages.
-    datasourceButtonBinding = bf.createBinding(sourceLabel, "value", "datasource_button", "visible",
-        new BindingConvertor<Object, Boolean>() { //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-
-          public Boolean sourceToTarget( Object value ) {
-
-            boolean isVisible = (value == null || "".equals(value.toString()));
-            XulVbox messageBox = (XulVbox) document.getElementById("main_message"); //$NON-NLS-1$
-            messageBox.setVisible(isVisible);
-
-            XulComponent datsourceError = document.getElementById("datasource_message_label");
-            datsourceError.setVisible(isVisible);
-
-            XulComponent refreshButton = document.getElementById("refreshButton"); //$NON-NLS-1$
-            //refreshButton.setDisabled(isVisible);
-
-            XulComponent addFieldButton = document.getElementById("addField"); //$NON-NLS-1$
-            addFieldButton.setDisabled(isVisible);
-
-            XulComponent autoPopulateButton = document.getElementById("autoPopulateButton"); //$NON-NLS-1$
-            //autoPopulateButton.setDisabled(isVisible);
-
-            return isVisible;
-          }
-
-          public Object targetToSource( Boolean value ) {
-            return null;
-          }
-        });
 
 
     bf.createBinding(dimensionTree, "selectedItem", "measureBtn", "disabled",
@@ -352,10 +295,6 @@ public class ModelerController extends AbstractXulEventHandler {
         new ButtonConvertor(HierarchyMetaData.class)); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 
     bf.setBindingType(Type.BI_DIRECTIONAL);
-    //modelNameBinding = bf.createBinding(workspace, "modelName", "modelname", "value"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-
-    //bf.createBinding(this.propPanel, "visible", this, "propVisible"); //$NON-NLS-1$//$NON-NLS-2$
-
     fireBindings();
 
     dimensionTree.setSelectedItems(Collections.singletonList(workspace.getModel()));
@@ -371,17 +310,10 @@ public class ModelerController extends AbstractXulEventHandler {
         autoPopulate();
       } else {
         XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox"); //$NON-NLS-1$
-        confirm.setTitle("auto_populate_title"); //$NON-NLS-1$
-        confirm.setMessage("auto_populate_msg"); //$NON-NLS-1$
-        confirm.setAcceptLabel("yes"); //$NON-NLS-1$
-        confirm.setCancelLabel("no"); //$NON-NLS-1$
-
-//
-//          XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox"); //$NON-NLS-1$
-//          confirm.setTitle(BaseMessages.getString(this.getClass(), "auto_populate_title")); //$NON-NLS-1$
-//          confirm.setMessage(BaseMessages.getString(this.getClass(), "auto_populate_msg")); //$NON-NLS-1$
-//          confirm.setAcceptLabel(BaseMessages.getString(this.getClass(), "yes")); //$NON-NLS-1$
-//          confirm.setCancelLabel(BaseMessages.getString(this.getClass(), "no")); //$NON-NLS-1$
+        confirm.setTitle(this.messages.getString("auto_populate_title")); //$NON-NLS-1$
+        confirm.setMessage(this.messages.getString("auto_populate_msg")); //$NON-NLS-1$
+        confirm.setAcceptLabel(this.messages.getString("yes")); //$NON-NLS-1$
+        confirm.setCancelLabel(this.messages.getString("no")); //$NON-NLS-1$
 
         confirm.addDialogCallback(new XulDialogCallback() {
           public void onClose( XulComponent sender, Status returnCode, Object retVal ) {
@@ -402,12 +334,9 @@ public class ModelerController extends AbstractXulEventHandler {
 
   protected void fireBindings() throws ModelerException {
     try {
-      datasourceButtonBinding.fireSourceChanged();
       fieldListBinding.fireSourceChanged();
       selectedFieldsBinding.fireSourceChanged();
       modelTreeBinding.fireSourceChanged();
-      //modelNameBinding.fireSourceChanged();
-      //visualizationsBinding.fireSourceChanged();
     } catch (Exception e) {
       e.printStackTrace();//logger.info("Error firing off initial bindings", e);
       throw new ModelerException(e);
@@ -433,10 +362,8 @@ public class ModelerController extends AbstractXulEventHandler {
   public void showNewMeasureDialog() {
     try {
       XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox"); //$NON-NLS-1$
-      prompt.setTitle(
-          "NewMeasureTitle");//messages.getString(ModelerController.class, "ModelerController.NewMeasureTitle")); //$NON-NLS-1$
-      prompt.setMessage(
-          "NewMeasureText");//messages.getString(ModelerController.class, "ModelerController.NewMeasureText")); //$NON-NLS-1$
+      prompt.setTitle(messages.getString("ModelerController.NewMeasureTitle")); //$NON-NLS-1$
+      prompt.setMessage(messages.getString("ModelerController.NewMeasureText")); //$NON-NLS-1$
       prompt.addDialogCallback(new XulDialogCallback() {
 
         public void onClose( XulComponent sender, Status returnCode, Object retVal ) {
@@ -478,10 +405,8 @@ public class ModelerController extends AbstractXulEventHandler {
   public void showNewHierarchyDialog() {
     try {
       XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox"); //$NON-NLS-1$
-      prompt.setTitle(
-          "NewHierarchyTitle");//messages.getString(ModelerController.class, "ModelerController.NewHierarchyTitle")); //$NON-NLS-1$
-      prompt.setMessage(
-          "NewHierarchyText");//messages.getString(ModelerController.class, "ModelerController.NewHierarchyText")); //$NON-NLS-1$
+      prompt.setTitle(messages.getString("ModelerController.NewHierarchyTitle")); //$NON-NLS-1$
+      prompt.setMessage(messages.getString("ModelerController.NewHierarchyText")); //$NON-NLS-1$
       prompt.addDialogCallback(new XulDialogCallback() {
 
         public void onClose( XulComponent sender, Status returnCode, Object retVal ) {
@@ -513,10 +438,8 @@ public class ModelerController extends AbstractXulEventHandler {
 
     try {
       XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox"); //$NON-NLS-1$
-      prompt.setTitle(
-          "NewLevelTitle");//messages.getString(ModelerController.class, "ModelerController.NewLevelTitle")); //$NON-NLS-1$
-      prompt.setMessage(
-          "NewLevelTitle");//messages.getString(ModelerController.class, "ModelerController.NewLevelText")); //$NON-NLS-1$
+      prompt.setTitle(messages.getString("ModelerController.NewLevelTitle")); //$NON-NLS-1$
+      prompt.setMessage(messages.getString("ModelerController.NewLevelText")); //$NON-NLS-1$
       prompt.addDialogCallback(new XulDialogCallback() {
 
         public void onClose( XulComponent sender, Status returnCode, Object retVal ) {
@@ -557,9 +480,9 @@ public class ModelerController extends AbstractXulEventHandler {
     try {
       XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox"); //$NON-NLS-1$
       prompt.setTitle(
-          "NewDimentionTitle");//messages.getString(ModelerController.class, "ModelerController.NewDimensionTitle")); //$NON-NLS-1$
+          messages.getString("ModelerController.NewDimensionTitle")); //$NON-NLS-1$
       prompt.setMessage(
-          "NewHierarchyText");//messages.getString(ModelerController.class, "ModelerController.NewDimensionText")); //$NON-NLS-1$
+          messages.getString("ModelerController.NewDimensionText")); //$NON-NLS-1$
       prompt.addDialogCallback(new XulDialogCallback() {
 
         public void onClose( XulComponent sender, Status returnCode, Object retVal ) {
@@ -613,7 +536,6 @@ public class ModelerController extends AbstractXulEventHandler {
   private Binding visualizationsBinding;
 
   private Binding modelTreeBinding;
-  private Binding datasourceButtonBinding;
 
   private Binding modelNameBinding;
 
@@ -667,7 +589,7 @@ public class ModelerController extends AbstractXulEventHandler {
   protected void showValidationMessages() {
 
     StringBuffer validationErrors = new StringBuffer(
-        "Model contains erors");//messages.getString(ModelerController.class, "model_contains_errors")); //$NON-NLS-1$
+        messages.getString("model_contains_errors")); //$NON-NLS-1$
     for (String msg : workspace.getValidationMessages()) {
       validationErrors.append(msg);
       validationErrors.append("\n"); //$NON-NLS-1$
@@ -675,7 +597,7 @@ public class ModelerController extends AbstractXulEventHandler {
     }
     try {
       XulMessageBox msg = (XulMessageBox) document.createElement("messagebox"); //$NON-NLS-1$
-      msg.setTitle("modelNotValid");//messages.getString(ModelerController.class, "model_not_valid")); //$NON-NLS-1$
+      msg.setTitle(messages.getString("model_not_valid")); //$NON-NLS-1$
       msg.setMessage(validationErrors.toString());
       msg.open();
     } catch (XulException e) {
@@ -683,18 +605,6 @@ public class ModelerController extends AbstractXulEventHandler {
     }
   }
 
-  public boolean saveWorkspace( String fileName ) throws ModelerException {
-    workspace.getModel().validateTree();
-    if (workspace.isValid() == false) {
-      showValidationMessages();
-      return false;
-    }
-    //TODO: GWT remove save ModelerWorkspaceUtil.saveWorkspace(workspace, fileName);
-    workspace.setFileName(fileName);
-    workspace.setDirty(false);
-    workspace.setTemporary(false);
-    return true;
-  }
 
   @Bindable
   public void resolveMissingColumn() {
@@ -796,5 +706,17 @@ public class ModelerController extends AbstractXulEventHandler {
 
   public void setMessages( IModelerMessages messages ) {
     this.messages = messages;
+  }
+
+  public boolean saveWorkspace( String fileName ) throws ModelerException {
+    workspace.getModel().validateTree();
+    if (workspace.isValid() == false) {
+      showValidationMessages();
+      return false;
+    }
+    workspace.setFileName(fileName);
+    workspace.setDirty(false);
+    workspace.setTemporary(false);
+    return true;
   }
 }

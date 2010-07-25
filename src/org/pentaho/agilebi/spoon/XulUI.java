@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.pentaho.agilebi.spoon.PDIMessages;
 import org.pentaho.agilebi.modeler.*;
 import org.pentaho.agilebi.modeler.propforms.*;
+import org.pentaho.agilebi.spoon.modeler.SpoonModelerController;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.spoon.ChangedWarningInterface;
 import org.pentaho.di.ui.spoon.TabItemInterface;
@@ -55,14 +56,16 @@ public class XulUI implements TabItemInterface {
       SwtXulLoader loader = new SwtXulLoader();
       loader.registerClassLoader(getClass().getClassLoader());
       loader.setOuterContext(shell);
-      container = loader.loadXul("org/pentaho/agilebi/pdi/modeler/res/panel.xul", new PDIMessages(this.getClass())); //$NON-NLS-1$
+      container = loader.loadXul("org/pentaho/agilebi/modeler/res/panel.xul", new PDIMessages(ModelerWorkspace.class)); //$NON-NLS-1$
 
       
-      controller = new ModelerController(model);
+      controller = new SpoonModelerController(model);
       this.meta = new ModelerEngineMeta(controller);
       BindingFactory bf = new DefaultBindingFactory();
       bf.setDocument(container.getDocumentRoot());
       container.addEventHandler(controller);
+      controller.setBindingFactory(bf);
+      controller.setWorkspaceHelper(new SpoonModelerWorkspaceHelper());
       
       AbstractModelerNodeForm propController = new MeasuresPropertiesForm();
       container.addEventHandler(propController);

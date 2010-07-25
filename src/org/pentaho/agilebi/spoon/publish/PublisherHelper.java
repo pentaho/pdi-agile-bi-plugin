@@ -54,9 +54,9 @@ public class PublisherHelper {
     try {
 
       if (StringUtils.isEmpty(publishingFile)) {
-        SpoonFactory.getInstance().messageBox(BaseMessages.getString(XulUI.class,"ModelServerPublish.Publish.UnsavedModel"), //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox(BaseMessages.getString(ModelerWorkspace.class,"ModelServerPublish.Publish.UnsavedModel"), //$NON-NLS-1$
             "Dialog Error", false, Const.ERROR); //$NON-NLS-1$
-        throw new ModelerException(BaseMessages.getString(XulUI.class,"ModelServerPublish.Publish.UnsavedModel")) ;
+        throw new ModelerException(BaseMessages.getString(ModelerWorkspace.class,"ModelServerPublish.Publish.UnsavedModel")) ;
       }
 
       ModelServerPublish publisher = new ModelServerPublish();
@@ -171,9 +171,9 @@ public class PublisherHelper {
     try {
 
       if (StringUtils.isEmpty(publishingFile)) {
-        SpoonFactory.getInstance().messageBox(BaseMessages.getString(XulUI.class,"ModelServerPublish.Publish.UnsavedModel"), //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox(BaseMessages.getString(ModelerWorkspace.class,"ModelServerPublish.Publish.UnsavedModel"), //$NON-NLS-1$
             "Dialog Error", false, Const.ERROR); //$NON-NLS-1$
-        throw new ModelerException(BaseMessages.getString(XulUI.class,"ModelServerPublish.Publish.UnsavedModel")) ;
+        throw new ModelerException(BaseMessages.getString(ModelerWorkspace.class,"ModelServerPublish.Publish.UnsavedModel")) ;
       }
 
       ModelServerPublish publisher = new ModelServerPublish();
@@ -252,7 +252,7 @@ public class PublisherHelper {
     try {
 
       if (StringUtils.isEmpty(prpt)) {
-        SpoonFactory.getInstance().messageBox(BaseMessages.getString(XulUI.class,"ModelServerPublish.Publish.UnsavedModel"), //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox(BaseMessages.getString(ModelerWorkspace.class,"ModelServerPublish.Publish.UnsavedModel"), //$NON-NLS-1$
             "Dialog Error", false, Const.ERROR); //$NON-NLS-1$
         return;
       }

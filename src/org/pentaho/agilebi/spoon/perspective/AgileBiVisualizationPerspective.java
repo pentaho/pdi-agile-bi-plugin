@@ -56,7 +56,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   private AgileBiVisualizationPerspectiveController controller = new AgileBiVisualizationPerspectiveController();
   
   private AgileBiVisualizationPerspective(){
-    super("org/pentaho/agilebi/pdi/spoon/perspective/perspective.xul");
+    super("org/pentaho/agilebi/spoon/perspective/perspective.xul");
   }
   
   public static AgileBiVisualizationPerspective getInstance(){
@@ -74,7 +74,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
   public InputStream getPerspectiveIcon() {
     ClassLoader loader = getClass().getClassLoader();
-    return loader.getResourceAsStream("org/pentaho/agilebi/pdi/spoon/perspective/analyzer.png");
+    return loader.getResourceAsStream("org/pentaho/agilebi/spoon/perspective/analyzer.png");
   }
 
   public String getId() {
@@ -172,7 +172,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
       }
 
       public String getOverlayUri() {
-        return "org/pentaho/agilebi/pdi/spoon/perspective/visualization_perspective_overlay.xul"; //$NON-NLS-1$
+        return "org/pentaho/agilebi/spoon/perspective/visualization_perspective_overlay.xul"; //$NON-NLS-1$
         
       }
 

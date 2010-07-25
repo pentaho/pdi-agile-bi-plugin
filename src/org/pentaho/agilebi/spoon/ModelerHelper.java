@@ -276,10 +276,10 @@ public class ModelerHelper extends AbstractXulEventHandler {
       box = (XulWaitBox) document.createElement("waitbox");
       box.setIndeterminate(true);
       box.setCanCancel(false);
-      box.setTitle(BaseMessages.getString(XulUI.class, "wait_dialog_title"));
-      box.setMessage(BaseMessages.getString(XulUI.class, "wait_dialog_message"));
+      box.setTitle(BaseMessages.getString(ModelerWorkspace.class, "wait_dialog_title"));
+      box.setMessage(BaseMessages.getString(ModelerWorkspace.class, "wait_dialog_message"));
       
-      box.setCancelLabel(BaseMessages.getString(XulUI.class, "wait_dialog_btn"));
+      box.setCancelLabel(BaseMessages.getString(ModelerWorkspace.class, "wait_dialog_btn"));
       
       box.setDialogParent(((Spoon)SpoonFactory.getInstance()).getShell());
       box.setRunnable(new WaitBoxRunnable(box){

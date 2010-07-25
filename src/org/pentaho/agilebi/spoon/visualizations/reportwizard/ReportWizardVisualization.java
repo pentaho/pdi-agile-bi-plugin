@@ -31,7 +31,7 @@ public class ReportWizardVisualization implements IVisualization {
 	private int order;
 	
 	public String getTitle() {
-		return BaseMessages.getString(XulUI.class, "ReportWizard.Option");
+		return BaseMessages.getString(ModelerWorkspace.class, "ReportWizard.Option");
 	}
 
 	public void setTitle(String aDescription) {

@@ -18,6 +18,7 @@ package org.pentaho.agilebi.spoon.publish;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.spoon.publish.ModelServerPublish;
 import org.pentaho.agilebi.spoon.XulUI;
 import org.pentaho.di.core.Const;
@@ -55,24 +56,24 @@ public class BiServerConfigUtil {
       int result = PublisherUtil.publish(DEFAULT_PUBLISH_URL, "system/tmp", files, biServerConnection.getPublishPassword(), biServerConnection.getUserId(), biServerConnection.getPassword(), true, false); //$NON-NLS-1$
 
       if( result == PublisherUtil.FILE_ADD_SUCCESSFUL ) {
-        SpoonFactory.getInstance().messageBox( BaseMessages.getString(XulUI.class, "XulDialogBiServerConfig.Test.Passed" ),  //$NON-NLS-1$
-            BaseMessages.getString(XulUI.class, "XulDialogBiServerConfig.Test.Title" ), false, Const.INFO);  //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspace.class, "XulDialogBiServerConfig.Test.Passed" ),  //$NON-NLS-1$
+            BaseMessages.getString(ModelerWorkspace.class, "XulDialogBiServerConfig.Test.Title" ), false, Const.INFO);  //$NON-NLS-1$
       }
       else if( result == PublisherUtil.FILE_ADD_INVALID_USER_CREDENTIALS ) {
-        SpoonFactory.getInstance().messageBox( BaseMessages.getString(XulUI.class, "XulDialogBiServerConfig.Test.BadCredential" ),  //$NON-NLS-1$
-            BaseMessages.getString(XulUI.class, "XulDialogBiServerConfig.Test.Failed" ), false, Const.ERROR);  //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspace.class, "XulDialogBiServerConfig.Test.BadCredential" ),  //$NON-NLS-1$
+            BaseMessages.getString(ModelerWorkspace.class, "XulDialogBiServerConfig.Test.Failed" ), false, Const.ERROR);  //$NON-NLS-1$
       }
       else if( result == PublisherUtil.FILE_ADD_INVALID_PUBLISH_PASSWORD ) {
-        SpoonFactory.getInstance().messageBox( BaseMessages.getString(XulUI.class, "XulDialogBiServerConfig.Test.BadPublishPassword" ),  //$NON-NLS-1$
-            BaseMessages.getString(XulUI.class, "XulDialogBiServerConfig.Test.Failed" ), false, Const.ERROR);  //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspace.class, "XulDialogBiServerConfig.Test.BadPublishPassword" ),  //$NON-NLS-1$
+            BaseMessages.getString(ModelerWorkspace.class, "XulDialogBiServerConfig.Test.Failed" ), false, Const.ERROR);  //$NON-NLS-1$
       }
       else if( result == PublisherUtil.FILE_ADD_FAILED ) {
-        SpoonFactory.getInstance().messageBox( BaseMessages.getString(XulUI.class, "XulDialogBiServerConfig.Test.UnknownFail" ),  //$NON-NLS-1$
-            BaseMessages.getString(XulUI.class, "XulDialogBiServerConfig.Test.Failed" ), false, Const.ERROR);  //$NON-NLS-1$
+        SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspace.class, "XulDialogBiServerConfig.Test.UnknownFail" ),  //$NON-NLS-1$
+            BaseMessages.getString(ModelerWorkspace.class, "XulDialogBiServerConfig.Test.Failed" ), false, Const.ERROR);  //$NON-NLS-1$
       }
       
     } catch (Exception e) {
-      SpoonFactory.getInstance().messageBox( e.getLocalizedMessage(), BaseMessages.getString(XulUI.class, "XulDialogBiServerConfig.Test.Failed" ), false, Const.ERROR);  //$NON-NLS-1$
+      SpoonFactory.getInstance().messageBox( e.getLocalizedMessage(), BaseMessages.getString(ModelerWorkspace.class, "XulDialogBiServerConfig.Test.Failed" ), false, Const.ERROR);  //$NON-NLS-1$
     }
   }
   

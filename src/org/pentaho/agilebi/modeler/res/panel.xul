@@ -5,31 +5,44 @@
   xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" height="600"
   width="800" onload="propertiesForm.init(),modeler.init()" xmlns:pen="http://www.pentaho.org/2008/xul">
 
+  <pen:include src="columnResolver.xul" />
 
   <vbox flex="1" id="mainVBox" spacing="0" padding="0">
-<!--
+
     <toolbar mode="full">
+      <toolbaritem><label value="${new}:" /></toolbaritem>
+      <toolbaritem>
+        <menulist id="visualizationlist" label="">
+          <menupopup>
+            <menuitem label="Dummy Visualization" />
+          </menupopup>
+        </menulist>
+        </toolbaritem>
+      
       <toolbarbutton label="${go}" id="exploreButton" onclick="modeler.visualize()" />
       <toolbarbutton image="images/publish.png" id="publishButton" onclick="modeler.publish()" tooltiptext="${publish}"/>
       
     </toolbar>
--->
+
     <hbox flex="1">
 
         
-      <groupbox width="250">
+      <editpanel width="250">
         <caption label="Data" />
-
+        
         <toolbar mode="icons">
+          <toolbaritem>
+            <label value="${available}:" />
+          </toolbaritem>
           <toolbarspacer flex="1"/>
           <toolbarbutton id="refreshButton" onclick="modeler.refreshFields()" image="images/refresh.png" />
           <toolbarbutton id="autoPopulateButton" image="images/autogen_model.png" onclick="modeler.showAutopopulatePrompt()" tooltiptext="${autopopulate_model}"/>
           <toolbarbutton id="addField" image="images/insert_to_model.png" onclick="modeler.addField()" tooltiptext="${add}"/>
         </toolbar>
-
+      
         <listbox id="fieldList" flex="1" seltype="multi"
           pen:binding="name" ondrag="modeler.onFieldListDrag()"
-          pen:drageffect="copy" rows="29">
+          pen:drageffect="copy">
           <listitem label="field" />
           <listitem label="field" />
           <listitem label="field" />
@@ -37,9 +50,9 @@
           <listitem label="field" />
           <listitem label="field" />
         </listbox>
-      </groupbox>
+      </editpanel>
       
-      <groupbox flex="1">
+      <editpanel flex="1">
         <caption label="Model" />
         <toolbar id="schema-toolbar" mode="icons">
               <toolbarspacer flex="1"/>
@@ -51,7 +64,7 @@
   			  <toolbarbutton image="images/16x16_Up.png" onclick="modeler.moveFieldUp()" tooltiptext="${move_field_up}"/>
   			  <toolbarbutton image="images/remove.png" onclick="modeler.removeField()" tooltiptext="${remove_field}"/>
   		</toolbar>
-        <tree id="dimensionTree" flex="1" height="500" editable="false"
+        <tree id="dimensionTree" flex="1" editable="false"
           ondrag="modeler.onDimensionTreeDrag()" pen:drageffect="move"
           ondrop="modeler.onDimensionTreeDrop()" hiddenrootnode="false" preserveselection="true">
           <treecols>
@@ -71,230 +84,17 @@
             </treeitem>
           </treechildren>
         </tree>
-      </groupbox>
+      </editpanel>
 
         
-      <groupbox type="closable" width="250" id="propertiesPanel">
+      <editpanel type="closable" width="250" id="propertiesPanel">
         <caption label="${properties}" />
         <deck id="propertiesdeck" flex="1">
           <vbox/>
-          <vbox id="measuresprops"
-  flex="1" spacing="4">
-  <vbox bgcolor="#FFFFCC" id="messages2">
-    <grid spacing="3">
-      <columns>
-        <column/>
-        <column flex="1"/>
-      </columns>
-      <rows>
-        <row flex="1">
-          <image src="images/warning.png" />
-          <label id="messages2label" flex="1" multiline="true"
-            value="This is a test to see how a warning message will appear." />
-        </row>
-
-     </rows>
-    </grid>
-      <hbox flex="1">
-      <spacer flex="1"/>
-        <button id="fixMeasuresColumnsBtn" label="${missing_column}"
-          onclick="modeler.resolveMissingColumn()" visible="true" />
-      <spacer flex="1"/>
-      </hbox>
-    </vbox>
-    <groupbox>
-      <caption label="${source_column}"/>
-      <hbox flex="1">
-        <label id="measure_column_name" value="" flex="1"/>
-        <button image="images/edit.png"
-            onclick="modeler.changeColumn()"  />
-
-      </hbox>
-    </groupbox>
-
-    <spacer height="5"/>
-
-    <groupbox>
-      <caption label="${details}"/>
-
-      <label value="${display_name}:" />
-      <textbox id="displayname" />
-      <label value="${aggregation}:" />
-      <menulist id="aggregationtype">
-        <menupopup>
-          <menuitem label="SUM" />
-          <menuitem label="AVERAGE" />
-          <menuitem label="MINIMUM" />
-          <menuitem label="MAXIMUM" />
-        </menupopup>
-      </menulist>
-      <label value="${format}:" />
-      <menulist id="formatstring">
-        <menupopup>
-          <menuitem label="NONE" />
-          <menuitem label="#,###;(#,###)" />
-          <menuitem label="#,###.00;(#,###.00)" />
-          <menuitem label="\$ #,###;(\$ #,###)" />
-          <menuitem label="\$ #,###.00;(\$ #,###.00)" />
-          <menuitem label="#.#%;(#.#%)" />
-        </menupopup>
-      </menulist>
-    </groupbox>
-</vbox>
-
-  <vbox id="dimensionprops">
-    <vbox bgcolor="#FFFFCC" id="dimension_message">
-      <grid spacing="3">
-        <columns>
-          <column/>
-          <column flex="1"/>
-        </columns>
-        <rows>
-          <row flex="1">
-            <image src="images/warning.png" />
-            <label id="dimension_message_label" flex="1" multiline="true"
-              value="This is a test to see how a warning message will appear." />
-          </row>
-
-       </rows>
-      </grid>
-    </vbox>
-    <groupbox>
-      <caption label="${details}"/>
-      <label value="${dimension_name}:" />
-      <textbox id="dimension_name" />
-    </groupbox>
-
-  </vbox>
-
-  <vbox id="mainprops">
-    <vbox bgcolor="#FFFFCC" id="main_message">
-      <grid spacing="3">
-        <columns>
-          <column/>
-          <column flex="1"/>
-        </columns>
-        <rows>
-          <row >
-            <image src="images/warning.png" />
-                    <label id="mainnode_message_label" flex="1" multiline="true"
-                    value="${undefined_ds}" />
-          </row>
-          <row flex="1">
-            <label id="datasource_message_label" flex="1" multiline="true"
-                value="${undefined_ds}" />
-            <spacer/>
-          </row>
-
-       </rows>
-      </grid>
-    </vbox>
-    <groupbox>
-      <caption label="${details}"/>
-      <label value="${model_name}:" />
-      <textbox id="main_name" />
-      <label value="${source}:" />
-      <label id="source_name" value="some source" />
-      <hbox>
-        <button id="datasource_button" label="Select" onclick="modeler.editDataSource()" tooltiptext="${select_edit_ds}"/>
-        <spacer flex="1"/>
-      </hbox>
-    </groupbox>
-
-  </vbox>
-
-
-    <vbox id="hierarchyprops">
-    <vbox bgcolor="#FFFFCC" id="hierarchy_message">
-      <grid spacing="3">
-        <columns>
-          <column/>
-          <column flex="1"/>
-        </columns>
-        <rows>
-          <row flex="1">
-            <image src="images/warning.png" />
-            <label id="hierarchy_message_label" flex="1" multiline="true"
-              value="This is a test to see how a warning message will appear." />
-          </row>
-
-       </rows>
-      </grid>
-    </vbox>
-    <groupbox>
-      <caption label="${details}"/>
-      <label value="${hierarchy_name}:" />
-      <textbox id="hierarchy_name" />
-    </groupbox>
-
-  </vbox>
-
-  <vbox id="genericProps">
-    <vbox bgcolor="#FFFFCC" id="generic_message">
-      <grid spacing="3">
-        <columns>
-          <column/>
-          <column flex="1"/>
-        </columns>
-        <rows>
-          <row flex="1">
-            <image src="images/warning.png" />
-            <label id="generic_message_label" flex="1" multiline="true"
-              value="This is a test to see how a warning message will appear." />
-          </row>
-
-       </rows>
-      </grid>
-  </vbox>
-  </vbox>
-
-  <vbox id="levelprops">
-  <vbox bgcolor="#FFFFCC" id="level_message">
-    <grid spacing="3">
-      <columns>
-        <column/>
-        <column flex="1"/>
-      </columns>
-      <rows>
-        <row flex="1">
-          <image src="images/warning.png" />
-          <label id="level_message_label" flex="1" multiline="true"
-            value="This is a test to see how a warning message will appear." />
-        </row>
-
-     </rows>
-    </grid>
-      <hbox flex="1">
-      <spacer flex="1"/>
-        <button id="fixLevelColumnsBtn" label="${missing_columns}"
-          onclick="modeler.resolveMissingColumn()" visible="true" />
-      <spacer flex="1"/>
-      </hbox>
-    </vbox>
-
-
-    <groupbox>
-      <caption label="${source_column}"/>
-      <hbox flex="1">
-        <label id="level_source_col" value="" flex="1"/>
-        <button image="images/edit.png"
-            onclick="modeler.changeColumn()"  />
-
-      </hbox>
-    </groupbox>
-
-    <spacer height="5"/>
-
-    <groupbox>
-      <caption label="${details}"/>
-      <label value="${level_name}:" />
-      <textbox id="level_name" />
-    </groupbox>
-  </vbox>
-
-
+          <pen:include src="measuresForm.xul" />
+          <pen:include src="cubeForms.xul" ignoreroot="true" />
         </deck>
-      </groupbox>
+      </editpanel>
           
     </hbox>
   </vbox>

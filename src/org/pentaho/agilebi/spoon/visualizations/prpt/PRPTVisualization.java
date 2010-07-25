@@ -216,10 +216,10 @@ public class PRPTVisualization extends AbstractVisualization {
       box.setIndeterminate(true);
       box.setMaximum(10);
       box.setCanCancel(false);
-      box.setTitle(BaseMessages.getString(XulUI.class, "wait_dialog_title"));
-      box.setMessage(BaseMessages.getString(XulUI.class, "wait_dialog_message"));
+      box.setTitle(BaseMessages.getString(ModelerWorkspace.class, "wait_dialog_title"));
+      box.setMessage(BaseMessages.getString(ModelerWorkspace.class, "wait_dialog_message"));
       
-      box.setCancelLabel(BaseMessages.getString(XulUI.class, "wait_dialog_btn"));
+      box.setCancelLabel(BaseMessages.getString(ModelerWorkspace.class, "wait_dialog_btn"));
       
       box.setDialogParent(((Spoon)SpoonFactory.getInstance()).getShell());
       box.setRunnable(new WaitBoxRunnable(box){

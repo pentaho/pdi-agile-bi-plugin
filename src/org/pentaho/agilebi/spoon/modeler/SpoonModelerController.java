@@ -5,9 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.pentaho.agilebi.modeler.*;
-import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
-import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
-import org.pentaho.agilebi.spoon.TableModelerSource;
+import org.pentaho.agilebi.spoon.*;
 import org.pentaho.agilebi.spoon.publish.PublisherHelper;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
@@ -25,11 +23,17 @@ import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.delegates.SpoonDBDelegate;
+import org.pentaho.metadata.model.IPhysicalModel;
+import org.pentaho.metadata.model.IPhysicalTable;
 import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
+import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.binding.Binding;
+import org.pentaho.ui.xul.binding.BindingConvertor;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMenuList;
+import org.pentaho.ui.xul.containers.XulEditpanel;
+import org.pentaho.ui.xul.containers.XulVbox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,15 +53,97 @@ public class SpoonModelerController extends ModelerController {
   private List<String> visualizationNames;
   private Binding visualizationsBinding;
 
+  private Binding datasourceButtonBinding;
+
+  private XulEditpanel propPanel;
+
   public SpoonModelerController(){
-    super(new ModelerWorkspace(new SpoonModelerWorkspaceHelper()));
+    this(new ModelerWorkspace(new SpoonModelerWorkspaceHelper()));
   }
+
+  public SpoonModelerController(ModelerWorkspace work){
+    super(work);
+    super.setMessages(new SpoonModelerMessages());
+  }
+
   public void init() throws ModelerException{
 
+    propPanel = (XulEditpanel) document.getElementById("propertiesPanel"); //$NON-NLS-1$
     visualizationList = (XulMenuList)document.getElementById("visualizationlist"); //$NON-NLS-1$
     bf.createBinding(workspace, "selectedVisualization", visualizationList, "selectedItem"); //$NON-NLS-1$//$NON-NLS-2$
+    bf.setBindingType(Binding.Type.ONE_WAY);
        visualizationsBinding = bf.createBinding(this, "visualizationNames", visualizationList, "elements"); //$NON-NLS-1$//$NON-NLS-2$
 
+
+    //TODO: migrate this "source" code elsewhere or remove it entirely
+
+    XulLabel sourceLabel = (XulLabel) document.getElementById(SOURCE_NAME_LABEL_ID);
+    String connectionName = ""; //$NON-NLS-1$
+    String tableName = ""; //$NON-NLS-1$
+
+    bf.createBinding(workspace, "sourceName", sourceLabel, "value"); //$NON-NLS-1$//$NON-NLS-2$
+
+    if( workspace.getModelSource() != null && workspace.getModelSource() instanceof OutputStepModelerSource) {
+      // for now just list the first table in the first physical workspace
+      DatabaseMeta databaseMeta = ((ISpoonModelerSource) workspace.getModelSource()).getDatabaseMeta();
+      if( databaseMeta != null ) {
+        connectionName = databaseMeta.getName();
+      }
+      List<IPhysicalModel> physicalModels = workspace.getDomain().getPhysicalModels();
+      if( physicalModels != null && physicalModels.size() > 0 ) {
+        List<? extends IPhysicalTable> tables = physicalModels.get(0).getPhysicalTables();
+        if( tables != null && tables.size() > 0 ) {
+          // TODO where is the locale coming from? And why do we need one here?
+          tableName = tables.get(0).getName("en_US");
+        }
+      }
+    } else if (workspace.getModelSource() != null && workspace.getModelSource() instanceof TableModelerSource) {
+      tableName = workspace.getModelSource().getTableName();
+    }
+
+    sourceLabel.setValue(tableName);
+
+
+    //TODO: move all this datasource stuff into models! use the existing property form validation to show messages.
+    datasourceButtonBinding = bf.createBinding(sourceLabel, "value", "datasource_button", "visible",
+        new BindingConvertor<Object, Boolean>() { //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+
+          public Boolean sourceToTarget( Object value ) {
+
+            boolean isVisible = (value == null || "".equals(value.toString()));
+            XulVbox messageBox = (XulVbox) document.getElementById("main_message"); //$NON-NLS-1$
+            messageBox.setVisible(isVisible);
+
+            XulComponent datsourceError = document.getElementById("datasource_message_label");
+            datsourceError.setVisible(isVisible);
+
+            XulComponent refreshButton = document.getElementById("refreshButton"); //$NON-NLS-1$
+            //refreshButton.setDisabled(isVisible);
+
+            XulComponent addFieldButton = document.getElementById("addField"); //$NON-NLS-1$
+            addFieldButton.setDisabled(isVisible);
+
+            XulComponent autoPopulateButton = document.getElementById("autoPopulateButton"); //$NON-NLS-1$
+            //autoPopulateButton.setDisabled(isVisible);
+
+            return isVisible;
+          }
+
+          public Object targetToSource( Boolean value ) {
+            return null;
+          }
+        });
+//    Binding modelNameBinding = bf.createBinding(workspace, "modelName", "modelname", "value"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+
+    bf.createBinding(this.propPanel, "visible", this, "propVisible"); //$NON-NLS-1$//$NON-NLS-2$
+
+    try{
+      datasourceButtonBinding.fireSourceChanged();
+//      modelNameBinding.fireSourceChanged();
+      visualizationsBinding.fireSourceChanged();
+    } catch(Exception e){
+      throw new ModelerException(e);
+    }
     super.init();
   }
 
@@ -216,6 +302,20 @@ public class SpoonModelerController extends ModelerController {
   		this.visualizationNames = theManager.getVisualizationNames();
   	}
   	return this.visualizationNames;
+  }
+
+
+  public boolean saveWorkspace( String fileName ) throws ModelerException {
+    workspace.getModel().validateTree();
+    if (workspace.isValid() == false) {
+      showValidationMessages();
+      return false;
+    }
+    ModelerWorkspaceUtil.saveWorkspace(workspace, fileName);
+    workspace.setFileName(fileName);
+    workspace.setDirty(false);
+    workspace.setTemporary(false);
+    return true;
   }
 
 }

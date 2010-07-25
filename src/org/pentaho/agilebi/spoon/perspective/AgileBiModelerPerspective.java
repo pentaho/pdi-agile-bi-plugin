@@ -68,7 +68,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
   BindingFactory bf = new DefaultBindingFactory();
   
   private AgileBiModelerPerspective() {
-    super("org/pentaho/agilebi/pdi/spoon/perspective/perspective.xul");
+    super("org/pentaho/agilebi/spoon/perspective/perspective.xul");
     setDefaultExtension("xmi");
     bf.setDocument(document);
   }
@@ -83,7 +83,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
 
   public InputStream getPerspectiveIcon() {
     ClassLoader loader = getClass().getClassLoader();
-    return loader.getResourceAsStream("org/pentaho/agilebi/pdi/spoon/perspective/blueprint.png");
+    return loader.getResourceAsStream("org/pentaho/agilebi/spoon/perspective/blueprint.png");
   }
 
   public String getId() {
@@ -217,7 +217,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
       }
 
       public String getOverlayUri() {
-        return "org/pentaho/agilebi/pdi/spoon/perspective/modeler_perspective_overlay.xul"; //$NON-NLS-1$
+        return "org/pentaho/agilebi/spoon/perspective/modeler_perspective_overlay.xul"; //$NON-NLS-1$
         
       }
 
