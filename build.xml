@@ -106,6 +106,7 @@
 
 			<include name="gwt-dev-*.jar"/>
 			<include name="gwt-user-*.jar"/>
+			<include name="slf4j-*.jar"/>
 
 			<!-- second, remove unnecessary jars -->
 
