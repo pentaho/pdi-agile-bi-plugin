@@ -16,8 +16,8 @@
  */
 package org.pentaho.agilebi.spoon;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -44,7 +44,7 @@ public class XulUI implements TabItemInterface {
   ModelerController controller;
   EngineMetaInterface meta;
 
-  private static Log logger = LogFactory.getLog(XulUI.class);
+  private static Logger logger = LoggerFactory.getLogger(XulUI.class);
   
   
   public ChangedWarningInterface getChangedWarning() {
@@ -114,7 +114,7 @@ public class XulUI implements TabItemInterface {
       runner.initialize();
       container.loadPerspective("ov1");
     } catch(Exception e){
-      logger.info(e);
+      logger.info("error initializing", e);
       throw new ModelerException(e);
     }
   }

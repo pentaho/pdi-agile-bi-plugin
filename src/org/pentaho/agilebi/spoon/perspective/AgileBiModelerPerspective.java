@@ -17,8 +17,8 @@
 package org.pentaho.agilebi.spoon.perspective;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dom4j.DocumentHelper;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -58,7 +58,7 @@ import java.util.*;
 
 public class AgileBiModelerPerspective extends AbstractPerspective implements SpoonPerspective, FileListener{
 
-  private Log logger = LogFactory.getLog(AgileBiModelerPerspective.class);
+  private Logger logger = LoggerFactory.getLogger(AgileBiModelerPerspective.class);
   private static final AgileBiModelerPerspective INSTANCE = new AgileBiModelerPerspective();
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
   private XulMenuitem modelPropItem;
@@ -182,12 +182,11 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
       }
       
     } catch(ModelerException e){
-      logger.error(e);
-      logger.error(e);
+      logger.error("Error opening file", e);
     } catch(IOException e){
-      logger.error(e);
+      logger.error("Error opening file", e);
     } catch (KettleException e) {
-      logger.error(e);
+      logger.error("Error opening file", e);
     } 
     
     return false;
@@ -301,7 +300,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
         MessageDialog.openError(Spoon.getInstance().getShell(), "", validationErrors.toString());
       }
     } catch (Exception e) {
-      logger.error(e);
+      logger.error("Error exporting Schema", e);
       MessageDialog.openError(Spoon.getInstance().getShell(), "", e.getMessage());
     }
   }

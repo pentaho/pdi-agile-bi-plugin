@@ -16,8 +16,8 @@
  */
 package org.pentaho.agilebi.spoon.perspective;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.spoon.PDIMessages;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
@@ -50,7 +50,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
 
   protected XulDomContainer container;
   protected XulRunner runner;
-  private Log logger = LogFactory.getLog(AgileBiModelerPerspective.class);
+  private Logger logger = LoggerFactory.getLogger(AgileBiModelerPerspective.class);
   protected Document document;
   protected XulTabs tabs;
   protected XulTabpanels panels;
@@ -98,7 +98,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
       
     } catch(Exception e){
       // TODO: throw exception
-      logger.error(e);
+      logger.error("Error initializing perspective", e);
     }
   }
   

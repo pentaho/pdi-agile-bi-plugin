@@ -16,8 +16,8 @@
  */
 package org.pentaho.agilebi.spoon;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.pentaho.agilebi.modeler.IModelerSource;
 import org.pentaho.agilebi.spoon.OutputStepModelerSource;
 import org.pentaho.agilebi.spoon.TableModelerSource;
@@ -33,7 +33,7 @@ public class ModelerSourceFactory {
     outputSources.put(TableModelerSource.SOURCE_TYPE, TableModelerSource.class);
   }
   
-  private static Log logger = LogFactory.getLog(ModelerSourceFactory.class);
+  private static Logger logger = LoggerFactory.getLogger(ModelerSourceFactory.class);
   
   public static IModelerSource generateSource(String type){
     Class<? extends IModelerSource> clz = outputSources.get(type);

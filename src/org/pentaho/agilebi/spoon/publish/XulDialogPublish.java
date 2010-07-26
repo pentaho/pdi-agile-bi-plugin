@@ -16,8 +16,8 @@
  */
 package org.pentaho.agilebi.spoon.publish;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.pentaho.agilebi.spoon.publish.ModelServerPublish;
@@ -51,7 +51,7 @@ import java.util.List;
  */
 public class XulDialogPublish extends AbstractSwtXulDialogController implements BindingExceptionHandler, PublishOverwriteDelegate{
 
-  private static Log logger = LogFactory.getLog(XulDialogPublish.class);
+  private static Logger logger = LoggerFactory.getLogger(XulDialogPublish.class);
   
   private int folderTreeDepth = 99;
   
@@ -122,7 +122,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   }
 
   @Override
-  public Log getLogger() {
+  public Logger getLogger() {
     return logger;
   }
   
@@ -291,7 +291,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
         });
         wait.start();
       } catch(XulException e){ //could not create the wait dialog
-        logger.debug(e);
+        logger.debug("Error browsing server", e);
         connect();
         folderSelectionDialog.show();
       }
@@ -329,7 +329,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
           }
         } catch (Exception e) {
           folder = null;
-          logger.error(e);
+          logger.error("Error navigating path", e);
         }
       }
     }
@@ -398,7 +398,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
         });
         wait.start();
       } catch(XulException e){ //could not create the wait dialog
-        logger.debug(e);
+        logger.debug("error connecting", e);
         connect();
         onDialogAccept();
       }
@@ -428,7 +428,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       // create the publisher object
       publishModel.setSelectedFolder(null);
     } catch (Exception e) {
-      logger.error(e);
+      logger.error("Error connecting", e);
       e.printStackTrace();
       SpoonFactory.getInstance().messageBox( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.CouldNotGetDataSources", e.getLocalizedMessage() ),  //$NON-NLS-1$
       BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Error"), false, Const.ERROR); //$NON-NLS-1$
@@ -519,7 +519,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
         }
 
         public void onError(XulComponent sender, Throwable t) {
-          logger.error(t);
+          logger.error("Error deleting server", t);
           biServerConfig.getServerConnections().remove(publishModel.getSelectedConnection());
           biServerConfig.save();
           publishModel.setSelectedConnection(null);
@@ -528,7 +528,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       });
       confirm.open();
     } catch (XulException e) {
-      logger.error(e);
+      logger.error("Error deleting server", e);
 
       biServerConfig.getServerConnections().remove(this.publishModel.getSelectedConnection());
       biServerConfig.save();
@@ -605,11 +605,11 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   public void handleException(BindingException t) {
     PublishException ex = extractPublishException(t);
     if(ex == null){
-      logger.error(t);
+      logger.error("Unknown Exception", t);
       t.printStackTrace();
       return;
     }
-    logger.error(ex);
+    logger.error("Unknown exception", ex);
     try {
       XulMessageBox msg = (XulMessageBox) document.createElement("messagebox");
       msg.setTitle(BaseMessages.getString(getClass(), "connection.error.title"));
@@ -659,7 +659,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       }
       
     } catch (XulException e) {
-      logger.error(e);
+      logger.error("Errpr showing overwrite notification", e);
       return false;
     }
     return false;

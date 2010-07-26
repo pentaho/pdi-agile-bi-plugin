@@ -17,8 +17,8 @@
 package org.pentaho.agilebi.spoon;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.modeler.*;
 import org.pentaho.agilebi.modeler.nodes.*;
@@ -45,7 +45,7 @@ import java.util.Locale;
  */
 public class ModelerWorkspaceUtil {
 
-  private static Log logger = LogFactory.getLog(ModelerWorkspaceUtil.class);
+  private static Logger logger = LoggerFactory.getLogger(ModelerWorkspaceUtil.class);
 
   
   public static ModelerWorkspace populateModelFromSource( ModelerWorkspace model, IModelerSource source) throws

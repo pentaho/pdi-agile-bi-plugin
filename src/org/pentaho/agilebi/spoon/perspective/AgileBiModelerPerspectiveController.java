@@ -16,8 +16,8 @@
  */
 package org.pentaho.agilebi.spoon.perspective;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dom4j.DocumentHelper;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -42,7 +42,7 @@ import java.util.Locale;
 
 public class AgileBiModelerPerspectiveController extends AbstractXulEventHandler {
 
-  private Log logger = LogFactory.getLog(AgileBiModelerPerspective.class);
+  private Logger logger = LoggerFactory.getLogger(AgileBiModelerPerspective.class);
   private XulMenuitem modelPropItem;
   BindingFactory bf = new DefaultBindingFactory();
   
@@ -124,7 +124,7 @@ public class AgileBiModelerPerspectiveController extends AbstractXulEventHandler
         MessageDialog.openError(Spoon.getInstance().getShell(), "", validationErrors.toString());
       }
     } catch (Exception e) {
-      logger.error(e);
+      logger.error("Error exporting schema", e);
       MessageDialog.openError(Spoon.getInstance().getShell(), "", e.getMessage());
     }
   }

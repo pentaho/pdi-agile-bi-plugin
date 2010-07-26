@@ -17,8 +17,8 @@
 package org.pentaho.agilebi.spoon.visualizations.analyzer;
 
 import mondrian.rolap.agg.AggregationManager;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.modeler.ModelerException;
@@ -78,7 +78,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	private ModelerWorkspace workspace;
 	private boolean dirty = true;
 
-	private static Log logger = LogFactory.getLog(AnalyzerVisualizationController.class);
+	private static Logger logger = LoggerFactory.getLogger(AnalyzerVisualizationController.class);
 	private String fileName;
 
 	public AnalyzerVisualizationController(Composite parent, final AnalyzerVisualization visualization, String xmiFileLocation, String modelId, String aVisFileLocaiton, String fileName) throws SWTError {
@@ -144,7 +144,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 			this.modelNameBinding.fireSourceChanged();
 			this.factTableNameBinding.fireSourceChanged();
 		} catch (Exception e) {
-			logger.info(e);
+			logger.info("Error firing bindings", e);
 		}
 	}
 
@@ -177,7 +177,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
       spoon.saveToFile(meta);
       setDirty(false);
     } catch (KettleException e) {
-      logger.error(e);
+      logger.error("error saving", e);
       showErrorDialog(BaseMessages.getString(IVisualization.class,"error_saving"));
     }
 	}
@@ -187,7 +187,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	    spoon.saveFileAs(meta);
 	    setDirty(false);
     } catch (KettleException e) {
-      logger.error(e);
+      logger.error("error saving", e);
       showErrorDialog(BaseMessages.getString(IVisualization.class,"error_saving"));
     }
   }

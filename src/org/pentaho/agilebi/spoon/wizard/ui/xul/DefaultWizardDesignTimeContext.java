@@ -17,8 +17,8 @@
 
 package org.pentaho.agilebi.spoon.wizard.ui.xul;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.designtime.DesignTimeContext;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaModel;
@@ -35,7 +35,7 @@ import java.awt.*;
  */
 public class DefaultWizardDesignTimeContext implements DesignTimeContext
 {
-  private static final Log logger = LogFactory.getLog(DefaultWizardDesignTimeContext.class);
+  private static final Logger logger = LoggerFactory.getLogger(DefaultWizardDesignTimeContext.class);
   private WizardEditorModel editorModel;
 
   public DefaultWizardDesignTimeContext(final WizardEditorModel editorModel)

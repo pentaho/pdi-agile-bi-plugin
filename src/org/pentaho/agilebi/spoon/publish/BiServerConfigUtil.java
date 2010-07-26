@@ -16,8 +16,8 @@
  */
 package org.pentaho.agilebi.spoon.publish;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.spoon.publish.ModelServerPublish;
 import org.pentaho.agilebi.spoon.XulUI;
@@ -35,7 +35,7 @@ import java.io.File;
  */
 public class BiServerConfigUtil {
 
-  private static Log logger = LogFactory.getLog(BiServerConfigUtil.class);
+  private static Logger logger = LoggerFactory.getLogger(BiServerConfigUtil.class);
 
   
   /**

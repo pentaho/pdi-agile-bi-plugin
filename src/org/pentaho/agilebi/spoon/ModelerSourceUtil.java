@@ -17,8 +17,8 @@
 package org.pentaho.agilebi.spoon;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.pentaho.agilebi.spoon.ModelGenerator;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.di.core.database.Database;
@@ -42,7 +42,7 @@ public class ModelerSourceUtil {
 
   public static final String DEFAULT_ROLE_NAME = "Authenticated"; //$NON-NLS-1$
   private static ModelGenerator generator = new ModelGenerator();
-  private static Log logger = LogFactory.getLog(ModelerSourceUtil.class);
+  private static Logger logger = LoggerFactory.getLogger(ModelerSourceUtil.class);
 
   public static void verifyTableExistsAndMayBeQuoted(DatabaseMeta databaseMeta, String schemaName, String tableName) throws
                                                                                                                      ModelerException {

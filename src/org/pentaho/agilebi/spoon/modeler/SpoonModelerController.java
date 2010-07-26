@@ -1,7 +1,7 @@
 package org.pentaho.agilebi.spoon.modeler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.pentaho.agilebi.modeler.*;
@@ -47,7 +47,7 @@ import java.util.List;
  */
 public class SpoonModelerController extends ModelerController {
   private ModelerControllerDBRegistry databaseInterface = new ModelerControllerDBRegistry();
-  private static Log logger = LogFactory.getLog(SpoonModelerController.class);
+  private static Logger logger = LoggerFactory.getLogger(SpoonModelerController.class);
   private XulMenuList visualizationList;
 
   private List<String> visualizationNames;
@@ -243,7 +243,7 @@ public class SpoonModelerController extends ModelerController {
     try{
       openVisualizer();
     } catch(Exception e){
-      logger.info(e);
+      logger.info("Error visualizing", e);
       throw new ModelerException(e);
     }
   }
@@ -290,7 +290,7 @@ public class SpoonModelerController extends ModelerController {
         // TODO: Find a better name for the cube, maybe just workspace name?
       }
     } catch (Exception e) {
-      logger.error(e);
+      logger.error("Error visualizing", e);
     }
   }
 

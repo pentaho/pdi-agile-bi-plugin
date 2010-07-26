@@ -64,7 +64,7 @@ import java.util.List;
 public class DataSourceAndQueryStep extends AbstractWizardStep
 {
 
-  private static final String DATASOURCE_AND_QUERY_STEP_OVERLAY = "org/pentaho/agilebi/pdi/wizard/ui/xul/res/datasource_and_query_step_Overlay.xul"; //$NON-NLS-1$
+  private static final String DATASOURCE_AND_QUERY_STEP_OVERLAY = "org/pentaho/agilebi/spoon/wizard/ui/xul/res/datasource_and_query_step_Overlay.xul"; //$NON-NLS-1$
   private static final String HANDLER_NAME = "datasource_and_query_step_handler"; //$NON-NLS-1$
 
   private static final String CURRENT_QUERY_PROPERTY_NAME = "currentQuery"; //$NON-NLS-1$

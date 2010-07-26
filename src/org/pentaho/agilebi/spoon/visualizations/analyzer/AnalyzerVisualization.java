@@ -59,7 +59,7 @@ import java.util.ResourceBundle;
 
 public class AnalyzerVisualization extends AbstractVisualization {
 	
-	public static final String WEB_VISUALIZATION = "org/pentaho/agilebi/pdi/visualizations/analyzer/analyzer_visualization_browser.xul";
+	public static final String WEB_VISUALIZATION = "org/pentaho/agilebi/spoon/visualizations/analyzer/analyzer_visualization_browser.xul";
 
 	private String newUrl;
 	private String openUrl;

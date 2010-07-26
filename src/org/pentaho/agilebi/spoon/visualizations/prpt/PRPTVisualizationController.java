@@ -16,8 +16,8 @@
  */
 package org.pentaho.agilebi.spoon.visualizations.prpt;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.spoon.ModelerHelper;
@@ -68,7 +68,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
   private Binding modelNameBinding;
   private Binding factTableNameBinding;
   private BindingFactory bf;
-  private static Log logger = LogFactory.getLog(PRPTVisualizationController.class);
+  private static Logger logger = LoggerFactory.getLogger(PRPTVisualizationController.class);
   private String factTableName, modelId;
   private PrptViewerTag viewer;
   private XulEditpanel propPanel;
@@ -152,7 +152,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
       this.modelNameBinding.fireSourceChanged();
       this.factTableNameBinding.fireSourceChanged();
     } catch (Exception e) {
-      logger.info(e);
+      logger.info("error firing bindings", e);
     }
   }
 
@@ -213,7 +213,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
       spoon.saveToFile(meta);
       setDirty(false);
     } catch (KettleException e) {
-      logger.error(e);
+      logger.error("error saving", e);
       showErrorDialog(BaseMessages.getString(IVisualization.class,"error_saving"));
     }
     
@@ -223,7 +223,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     try {
       spoon.saveFileAs(meta);
     } catch (KettleException e) {
-      logger.error(e);
+      logger.error("error saving", e);
       showErrorDialog(BaseMessages.getString(IVisualization.class,"error_saving"));
     }
   }

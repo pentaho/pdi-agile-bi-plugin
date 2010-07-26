@@ -16,8 +16,8 @@
  */
 package org.pentaho.agilebi.spoon.wizard;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
 import org.pentaho.agilebi.spoon.visualizations.prpt.PRPTVisualization;
 import org.pentaho.agilebi.spoon.visualizations.xul.PrptViewerTag;
@@ -39,7 +39,7 @@ import org.pentaho.ui.xul.swt.SwtXulRunner;
 
 public class PreviewWizardController extends LinearWizardController {
 
-	private static Log logger = LogFactory.getLog(PreviewWizardController.class);
+	private static Logger logger = LoggerFactory.getLogger(PreviewWizardController.class);
 	private XulDomContainer theXulContainer;
 	private boolean tempModel;
 
@@ -71,7 +71,7 @@ public class PreviewWizardController extends LinearWizardController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error(e);
+			logger.error("error previewing", e);
 		}
 	}
 	
@@ -88,7 +88,7 @@ public class PreviewWizardController extends LinearWizardController {
 			((XulDialog) document.getElementById("main_wizard_window")).hide();
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error(e);
+			logger.error("error finishing", e);
 		}
 	}
 

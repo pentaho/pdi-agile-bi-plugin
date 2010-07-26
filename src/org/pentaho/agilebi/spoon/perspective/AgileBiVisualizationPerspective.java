@@ -17,8 +17,8 @@
 package org.pentaho.agilebi.spoon.perspective;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.spoon.ModelerEngineMeta;
 import org.pentaho.agilebi.modeler.ModelerException;
@@ -49,7 +49,7 @@ import java.util.*;
 
 public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
-  private Log logger = LogFactory.getLog(AgileBiModelerPerspective.class);
+//  private Logger logger = LoggerFactory.getLogger(AgileBiModelerPerspective.class);
   private static final AgileBiVisualizationPerspective INSTANCE = new AgileBiVisualizationPerspective();
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
   private Map<ModelerWorkspace, EngineMetaInterface> metas = new HashMap<ModelerWorkspace, EngineMetaInterface>();
@@ -118,9 +118,9 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
       setSelectedMeta(xul.getMeta());
       
     } catch (KettleException e) {
-      logger.error(e);
+      e.printStackTrace();//logger.error(e);
     } catch (ModelerException e) {
-      logger.error(e);
+      e.printStackTrace();//logger.error(e);
     }
   }
   

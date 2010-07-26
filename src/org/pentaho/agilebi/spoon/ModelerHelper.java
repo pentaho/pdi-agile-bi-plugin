@@ -17,8 +17,8 @@
 package org.pentaho.agilebi.spoon;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.modeler.*;
@@ -62,7 +62,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
 
   private static ModelerHelper instance = null;
     
-  private static Log logger = LogFactory.getLog(ModelerHelper.class);
+  private static Logger logger = LoggerFactory.getLogger(ModelerHelper.class);
   
   private ModelerHelper() {
     File modelsDir = new File(TEMP_MODELS_FOLDER);
@@ -123,7 +123,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
     try {
       rowMeta = transMeta.getStepFields(stepMeta);
     } catch (KettleException e) {
-    	logger.info(e);
+    	logger.info("Error getting step fields", e);
     	Throwable rootCause = e;
     	while (rootCause.getCause() != null && rootCause != rootCause.getCause()) {
     	  rootCause = rootCause.getCause();
@@ -219,7 +219,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
       SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiModelerPerspective.class);
       
     } catch(Exception e){
-      logger.error(e);
+      logger.error("Error opening modeler", e);
       new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating modeler", e); 
     }
   }
@@ -243,7 +243,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
           quickVisualize( model );
         } catch(Exception e){
-          logger.error(e);
+          logger.error("Error opening visualization", e);
           new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error executing Quick Visualize", e);
         }
       }
@@ -260,7 +260,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
       populateModelFromOutputStep(model);
       quickVisualize( model );
     } catch(Exception e){
-      logger.error(e);
+      logger.error("Error visualizing", e);
       new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
     }
 
@@ -303,7 +303,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
             waitBox.stop();
             wizard.run(null);
           } catch (final Exception e) {
-            logger.error(e);
+            logger.error("Error booting reporting engine", e);
             Display.getDefault().asyncExec(new Runnable(){
               public void run() {
                 new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
@@ -323,7 +323,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
       });
       box.start();
     } catch (XulException e1) {
-      logger.error(e1);
+      logger.error("error creating PRPT", e1);
       new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e1);
     }
 
@@ -407,7 +407,7 @@ public class ModelerHelper extends AbstractXulEventHandler {
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
           AgileBiModelerPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
         } catch(Exception e){
-          logger.error(e);
+          logger.error("Error creating model", e);
           new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating Modeler", e);
         }
       }

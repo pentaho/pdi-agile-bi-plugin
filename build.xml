@@ -103,8 +103,10 @@
 			<include name="eigenbase-*.jar"/>
 			<include name="commons-math-*.jar"/>
 			<include name="javacup-*.jar"/>
-			
-			
+
+			<include name="gwt-dev-*.jar"/>
+			<include name="gwt-user-*.jar"/>
+
 			<!-- second, remove unnecessary jars -->
 
 			<!-- batik -->

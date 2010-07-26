@@ -55,7 +55,7 @@ public class ModelerController extends AbstractXulEventHandler {
 
   protected static final String SOURCE_NAME_LABEL_ID = "source_name"; //$NON-NLS-1$
 
-//  private static Log logger = LogFactory.getLog(ModelerController.class);
+//  private static Logger logger = LoggerFactory.getLogger(ModelerController.class);
 
   protected ModelerWorkspace workspace;
 

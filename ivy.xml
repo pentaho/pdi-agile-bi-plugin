@@ -112,6 +112,9 @@
                 conf="default->default"
                 transitive="false"/>
 
+      <dependency org="org.slf4j" name="slf4j-api" rev="1.5.8" conf="default->default" />
+      <dependency org="org.slf4j" name="slf4j-jcl" rev="1.5.8" conf="default->default" />
+
     <dependency org="org.json" name="json" rev="${dependency.json.revision}" changing="true" conf="default->default"/>
     <!-- test dependencies -->
     <dependency org="junit" name="junit" rev="4.4" conf="test->default"/>

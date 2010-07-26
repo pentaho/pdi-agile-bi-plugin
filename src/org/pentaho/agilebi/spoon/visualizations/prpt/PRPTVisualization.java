@@ -16,8 +16,8 @@
  */
 package org.pentaho.agilebi.spoon.visualizations.prpt;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.spoon.ModelerHelper;
@@ -67,7 +67,7 @@ public class PRPTVisualization extends AbstractVisualization {
     System.setProperty("org.jpedal.suppressViewerPopups", "true");
   }
   
-  private static Log logger = LogFactory.getLog(PRPTVisualization.class);
+  private static Logger logger = LoggerFactory.getLogger(PRPTVisualization.class);
   
   public void createVisualizationFromModel(String modelFileLocation, String modelId) {
     // TODO Auto-generated method stub
@@ -121,7 +121,7 @@ public class PRPTVisualization extends AbstractVisualization {
       SwtXulLoader theXulLoader = new SwtXulLoader();
       theXulLoader.registerClassLoader(getClass().getClassLoader());
       theXulLoader.register("PRPT", "org.pentaho.agilebi.spoon.visualizations.xul.PrptViewerTag"); //$NON-NLS-1$ //$NON-NLS-2$
-      XulDomContainer theXulContainer = theXulLoader.loadXul("org/pentaho/agilebi/pdi/visualizations/prpt/prptVisualization.xul", new PDIMessages(IVisualization.class)); //$NON-NLS-1$
+      XulDomContainer theXulContainer = theXulLoader.loadXul("org/pentaho/agilebi/spoon/visualizations/prpt/prptVisualization.xul", new PDIMessages(IVisualization.class)); //$NON-NLS-1$
       
       PRPTMeta meta = new PRPTMeta();
       meta.setTab(tabAndPanel.tab);
@@ -189,7 +189,7 @@ public class PRPTVisualization extends AbstractVisualization {
       spoon.addMenuLast();
       return true;
     } catch(ModelerException e){
-      logger.error(e);
+      logger.error("error saving", e);
       return false;
     }
   }
@@ -240,7 +240,7 @@ public class PRPTVisualization extends AbstractVisualization {
             waitBox.stop();
             wizard.run(null);
           } catch (final Exception e) {
-            logger.error(e);
+            logger.error("Error initializing reporting", e);
             Display.getDefault().asyncExec(new Runnable(){
               public void run() {
                 new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
@@ -260,7 +260,7 @@ public class PRPTVisualization extends AbstractVisualization {
       });
       box.start();
     } catch (Exception e1) {
-      logger.error(e1);
+      logger.error("Error creating visualization", e1);
       new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e1);
     }
     
@@ -325,7 +325,7 @@ public class PRPTVisualization extends AbstractVisualization {
       Spoon.getInstance().enableMenus();
       
     } catch(Exception e){
-      logger.error(e);
+      logger.error("Error creating visualization", e);
     }
   }
   public String[] getPathAndFilename(String filename) {

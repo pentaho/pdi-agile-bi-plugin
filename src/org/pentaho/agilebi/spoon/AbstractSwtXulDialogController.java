@@ -16,7 +16,7 @@
  */
 package org.pentaho.agilebi.spoon;
 
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.pentaho.di.ui.spoon.XulSpoonSettingsManager;
@@ -102,7 +102,7 @@ public abstract class AbstractSwtXulDialogController extends AbstractXulDialogCo
     return swtDialog;
   }
   
-  public abstract Log getLogger();
+  public abstract Logger getLogger();
 
   /**
    * Returns the XulDomContainer for the XUL document

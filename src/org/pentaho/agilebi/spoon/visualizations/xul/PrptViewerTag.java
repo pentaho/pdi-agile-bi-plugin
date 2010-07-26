@@ -16,8 +16,8 @@
  */
 package org.pentaho.agilebi.spoon.visualizations.xul;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.browser.Browser;
@@ -62,7 +62,7 @@ public class PrptViewerTag extends SwtElement{
   private Combo combo;
   private XulDomContainer domContainer;
   
-  private static Log log = LogFactory.getLog(PrptViewerTag.class);
+  private static Logger log = LoggerFactory.getLogger(PrptViewerTag.class);
 
   private TreeMap<Double, String> zoomMap = new TreeMap<Double, String>();
   {
@@ -337,7 +337,7 @@ public class PrptViewerTag extends SwtElement{
         
       });
     } catch(Exception e){
-      log.error(e);
+      log.error("error loading PRPT", e);
     }
   }
   
