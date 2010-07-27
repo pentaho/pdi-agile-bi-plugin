@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,8 +84,6 @@ import org.pentaho.ui.xul.dnd.DropEvent;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.ui.xul.util.AbstractModelNode;
 import org.pentaho.ui.xul.util.XulDialogCallback;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * XUL Event Handler for the modeling interface. This class interacts with a ModelerModel to store state.
@@ -572,7 +571,7 @@ public class ModelerController extends AbstractXulEventHandler{
     boolean showCurrentFolder = false;
     String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
       "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
-    String databaseName = workspace.getDatabaseName();
+    String databaseName = PublisherHelper.getBiServerCompatibleDatabaseName(workspace.getDatabaseName());
     String extension = ".xmi"; //$NON-NLS-1$
     String filename = workspace.getModelName();
     ModelerWorkspaceUtil.populateDomain(workspace);

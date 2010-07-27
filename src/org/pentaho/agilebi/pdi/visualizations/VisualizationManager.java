@@ -18,6 +18,7 @@ package org.pentaho.agilebi.pdi.visualizations;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -26,8 +27,6 @@ import java.util.Map;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class VisualizationManager {
 

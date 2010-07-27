@@ -18,6 +18,7 @@ package org.pentaho.agilebi.pdi.modeler.nodes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -31,8 +32,6 @@ import org.pentaho.di.i18n.LanguageChoice;
 import org.pentaho.metadata.model.LogicalColumn;
 import org.pentaho.metadata.model.concept.types.DataType;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * @author wseyler
