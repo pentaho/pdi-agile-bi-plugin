@@ -259,7 +259,7 @@ public class SpoonModelerController extends ModelerController {
     boolean showCurrentFolder = false;
     String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
       "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
-    String databaseName = workspace.getDatabaseName();
+    String databaseName = PublisherHelper.getBiServerCompatibleDatabaseName(workspace.getDatabaseName());
     String extension = ".xmi"; //$NON-NLS-1$
     String filename = workspace.getModelName();
     workspace.getWorkspaceHelper().populateDomain(workspace);

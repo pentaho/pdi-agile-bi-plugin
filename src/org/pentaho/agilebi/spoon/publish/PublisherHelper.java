@@ -336,4 +336,12 @@ public class PublisherHelper {
     }
   }
 
+  public static String getBiServerCompatibleDatabaseName(String name) {
+    if (name == null) {
+      return null;
+    }
+    // replace spaces with underscores
+    return name.replaceAll("\\s", "_");
+  }
+  
 }

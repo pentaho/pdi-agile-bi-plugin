@@ -154,7 +154,7 @@ public class ModelServerPublish {
     }
     
     // compare the local database meta with the remote connection
-    String connectionName = databaseMeta.getName();
+    String connectionName = PublisherHelper.getBiServerCompatibleDatabaseName(databaseMeta.getName());
     IConnection connection = getRemoteConnection( connectionName, false );
     if( connection == null ) {
       // the connection does not exist (with the same name) on the remote BI server 
@@ -243,7 +243,7 @@ public class ModelServerPublish {
     // create a new connection object and populate it from the databaseMeta
     Connection connection = new Connection();
     connection.setDriverClass(databaseMeta.getDriverClass());
-    connection.setName(databaseMeta.getName());
+    connection.setName(PublisherHelper.getBiServerCompatibleDatabaseName(databaseMeta.getName()));
     connection.setPassword(databaseMeta.getPassword());
     connection.setUrl(databaseMeta.getURL());
     connection.setUsername(databaseMeta.getUsername());
