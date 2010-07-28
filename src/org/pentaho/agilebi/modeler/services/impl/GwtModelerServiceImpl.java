@@ -37,7 +37,7 @@ public class GwtModelerServiceImpl implements IModelerServiceAsync {
   public void generateDomain(String connectionName, String tableName, String dbType, String query, String datasourceName, final XulServiceCallback<Domain> callback){
     getDelegate().generateDomain(connectionName, tableName, dbType, query, datasourceName, new AsyncCallback<Domain>() {
       public void onFailure( Throwable throwable ) {
-        callback.error("Error getting Workspace", throwable);
+        callback.error("Error generating Metadata Domain§", throwable);
       }
 
       public void onSuccess( Domain domain) {

@@ -16,6 +16,7 @@
  */
 package org.pentaho.agilebi.modeler.nodes;
 
+import org.pentaho.agilebi.modeler.ModelerController;
 import org.pentaho.agilebi.modeler.propforms.MainModelerNodePropertiesForm;
 import org.pentaho.agilebi.modeler.propforms.ModelerNodePropertiesForm;
 import org.pentaho.ui.xul.stereotype.Bindable;
@@ -50,7 +51,7 @@ public class MainModelNode extends AbstractMetaDataModelNode<AbstractMetaDataMod
 
   @Bindable
   public String getDisplayName() {
-    return "mainNode";//BaseMessages.getString(ModelerWorkspace.class, "Main.Model.Name.Template", getName());
+    return ModelerController.MESSAGES.getString("Main.Model.Name.Template", getName());
   }
 
   @Bindable

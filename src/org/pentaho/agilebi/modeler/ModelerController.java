@@ -75,6 +75,9 @@ public class ModelerController extends AbstractXulEventHandler {
 
   protected IModelerMessages messages;
 
+  // TODO: Nodes are referencing the main bundle. Static location seems natural, evaluate better place.
+  public static IModelerMessages MESSAGES;
+
   public ModelerController( ModelerWorkspace workspace ) {
     this.workspace = workspace;
   }
@@ -706,6 +709,7 @@ public class ModelerController extends AbstractXulEventHandler {
 
   public void setMessages( IModelerMessages messages ) {
     this.messages = messages;
+    ModelerController.MESSAGES = messages;
   }
 
   public boolean saveWorkspace( String fileName ) throws ModelerException {

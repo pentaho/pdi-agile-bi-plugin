@@ -186,7 +186,7 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
           queryString = df.getQuery(DEFAULT);
           editor.setQuery(queryString);
         }
-        editor.addOverlay(new DefaultXulOverlay("org/pentaho/agilebi/pdi/wizard/ui/xul/res/mqleditor-overlay.xul"));
+        editor.addOverlay(new DefaultXulOverlay("org/pentaho/agilebi/spoon/wizard/ui/xul/res/mqleditor-overlay.xul"));
         editor.show();
         if (editor.getOkClicked()) {
           queryString = editor.getQuery();

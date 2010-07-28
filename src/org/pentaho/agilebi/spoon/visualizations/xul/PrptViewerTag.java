@@ -152,7 +152,7 @@ public class PrptViewerTag extends SwtElement{
       
       toolbar = new ToolBar(toolbarPanel, SWT.HORIZONTAL);
       ToolItem item = new ToolItem(toolbar, SWT.PUSH);
-      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/begining.png", domContainer, d);
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/begining.png", domContainer, d);
       item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
@@ -161,7 +161,7 @@ public class PrptViewerTag extends SwtElement{
       });
       
       item = new ToolItem(toolbar, SWT.PUSH);
-      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/back.png", domContainer, d);
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/back.png", domContainer, d);
       item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
@@ -170,7 +170,7 @@ public class PrptViewerTag extends SwtElement{
       });
       
       item = new ToolItem(toolbar, SWT.PUSH);
-      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/forward.png", domContainer, d);
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/forward.png", domContainer, d);
       item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
@@ -179,7 +179,7 @@ public class PrptViewerTag extends SwtElement{
       });
       
       item = new ToolItem(toolbar, SWT.PUSH);
-      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/end.png", domContainer, d);
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/end.png", domContainer, d);
       item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
@@ -190,7 +190,7 @@ public class PrptViewerTag extends SwtElement{
       new ToolItem(toolbar, SWT.SEPARATOR);
       
       item = new ToolItem(toolbar, SWT.PUSH);
-      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/minus.png", domContainer, d);
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/minus.png", domContainer, d);
       item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
@@ -200,7 +200,7 @@ public class PrptViewerTag extends SwtElement{
       
 
       item = new ToolItem(toolbar, SWT.PUSH);
-      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/pdi/visualizations/prpt/images/plus.png", domContainer, d);
+      img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/plus.png", domContainer, d);
       item.setImage(img);
       item.addSelectionListener(new SelectionAdapter(){
         public void widgetSelected(SelectionEvent se) {
