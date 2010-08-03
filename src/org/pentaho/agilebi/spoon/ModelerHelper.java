@@ -64,9 +64,13 @@ public class ModelerHelper extends AbstractXulEventHandler {
     
   private static Logger logger = LoggerFactory.getLogger(ModelerHelper.class);
 
-  // TODO: move this messenging initializaiton somewhere more appropriate
   static{
-    ModelerController.MESSAGES = new SpoonModelerMessages();
+
+    try {
+      ModelerMessagesHolder.setMessages(new SpoonModelerMessages());
+    } catch (IllegalStateException e) {
+      // someone else set this first, ignore this error
+    }
   }
   private ModelerHelper() {
     File modelsDir = new File(TEMP_MODELS_FOLDER);

@@ -63,7 +63,6 @@ public class SpoonModelerController extends ModelerController {
 
   public SpoonModelerController(ModelerWorkspace work){
     super(work);
-    super.setMessages(new SpoonModelerMessages());
   }
 
   public void init() throws ModelerException{

@@ -73,10 +73,10 @@ public class ModelerController extends AbstractXulEventHandler {
 
   private IModelerWorkspaceHelper workspaceHelper;
 
-  protected IModelerMessages messages;
-
-  // TODO: Nodes are referencing the main bundle. Static location seems natural, evaluate better place.
-  public static IModelerMessages MESSAGES;
+//  protected IModelerMessages messages;
+//
+//  // TODO: Nodes are referencing the main bundle. Static location seems natural, evaluate better place.
+//  public static IModelerMessages MESSAGES;
 
   public ModelerController( ModelerWorkspace workspace ) {
     this.workspace = workspace;
@@ -313,10 +313,10 @@ public class ModelerController extends AbstractXulEventHandler {
         autoPopulate();
       } else {
         XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox"); //$NON-NLS-1$
-        confirm.setTitle(this.messages.getString("auto_populate_title")); //$NON-NLS-1$
-        confirm.setMessage(this.messages.getString("auto_populate_msg")); //$NON-NLS-1$
-        confirm.setAcceptLabel(this.messages.getString("yes")); //$NON-NLS-1$
-        confirm.setCancelLabel(this.messages.getString("no")); //$NON-NLS-1$
+        confirm.setTitle(ModelerMessagesHolder.getMessages().getString("auto_populate_title")); //$NON-NLS-1$
+        confirm.setMessage(ModelerMessagesHolder.getMessages().getString("auto_populate_msg")); //$NON-NLS-1$
+        confirm.setAcceptLabel(ModelerMessagesHolder.getMessages().getString("yes")); //$NON-NLS-1$
+        confirm.setCancelLabel(ModelerMessagesHolder.getMessages().getString("no")); //$NON-NLS-1$
 
         confirm.addDialogCallback(new XulDialogCallback() {
           public void onClose( XulComponent sender, Status returnCode, Object retVal ) {
@@ -365,8 +365,8 @@ public class ModelerController extends AbstractXulEventHandler {
   public void showNewMeasureDialog() {
     try {
       XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox"); //$NON-NLS-1$
-      prompt.setTitle(messages.getString("ModelerController.NewMeasureTitle")); //$NON-NLS-1$
-      prompt.setMessage(messages.getString("ModelerController.NewMeasureText")); //$NON-NLS-1$
+      prompt.setTitle(ModelerMessagesHolder.getMessages().getString("ModelerController.NewMeasureTitle")); //$NON-NLS-1$
+      prompt.setMessage(ModelerMessagesHolder.getMessages().getString("ModelerController.NewMeasureText")); //$NON-NLS-1$
       prompt.addDialogCallback(new XulDialogCallback() {
 
         public void onClose( XulComponent sender, Status returnCode, Object retVal ) {
@@ -408,8 +408,8 @@ public class ModelerController extends AbstractXulEventHandler {
   public void showNewHierarchyDialog() {
     try {
       XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox"); //$NON-NLS-1$
-      prompt.setTitle(messages.getString("ModelerController.NewHierarchyTitle")); //$NON-NLS-1$
-      prompt.setMessage(messages.getString("ModelerController.NewHierarchyText")); //$NON-NLS-1$
+      prompt.setTitle(ModelerMessagesHolder.getMessages().getString("ModelerController.NewHierarchyTitle")); //$NON-NLS-1$
+      prompt.setMessage(ModelerMessagesHolder.getMessages().getString("ModelerController.NewHierarchyText")); //$NON-NLS-1$
       prompt.addDialogCallback(new XulDialogCallback() {
 
         public void onClose( XulComponent sender, Status returnCode, Object retVal ) {
@@ -441,8 +441,8 @@ public class ModelerController extends AbstractXulEventHandler {
 
     try {
       XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox"); //$NON-NLS-1$
-      prompt.setTitle(messages.getString("ModelerController.NewLevelTitle")); //$NON-NLS-1$
-      prompt.setMessage(messages.getString("ModelerController.NewLevelText")); //$NON-NLS-1$
+      prompt.setTitle(ModelerMessagesHolder.getMessages().getString("ModelerController.NewLevelTitle")); //$NON-NLS-1$
+      prompt.setMessage(ModelerMessagesHolder.getMessages().getString("ModelerController.NewLevelText")); //$NON-NLS-1$
       prompt.addDialogCallback(new XulDialogCallback() {
 
         public void onClose( XulComponent sender, Status returnCode, Object retVal ) {
@@ -483,9 +483,9 @@ public class ModelerController extends AbstractXulEventHandler {
     try {
       XulPromptBox prompt = (XulPromptBox) document.createElement("promptbox"); //$NON-NLS-1$
       prompt.setTitle(
-          messages.getString("ModelerController.NewDimensionTitle")); //$NON-NLS-1$
+          ModelerMessagesHolder.getMessages().getString("ModelerController.NewDimensionTitle")); //$NON-NLS-1$
       prompt.setMessage(
-          messages.getString("ModelerController.NewDimensionText")); //$NON-NLS-1$
+          ModelerMessagesHolder.getMessages().getString("ModelerController.NewDimensionText")); //$NON-NLS-1$
       prompt.addDialogCallback(new XulDialogCallback() {
 
         public void onClose( XulComponent sender, Status returnCode, Object retVal ) {
@@ -592,7 +592,7 @@ public class ModelerController extends AbstractXulEventHandler {
   protected void showValidationMessages() {
 
     StringBuffer validationErrors = new StringBuffer(
-        messages.getString("model_contains_errors")); //$NON-NLS-1$
+        ModelerMessagesHolder.getMessages().getString("model_contains_errors")); //$NON-NLS-1$
     for (String msg : workspace.getValidationMessages()) {
       validationErrors.append(msg);
       validationErrors.append("\n"); //$NON-NLS-1$
@@ -600,7 +600,7 @@ public class ModelerController extends AbstractXulEventHandler {
     }
     try {
       XulMessageBox msg = (XulMessageBox) document.createElement("messagebox"); //$NON-NLS-1$
-      msg.setTitle(messages.getString("model_not_valid")); //$NON-NLS-1$
+      msg.setTitle(ModelerMessagesHolder.getMessages().getString("model_not_valid")); //$NON-NLS-1$
       msg.setMessage(validationErrors.toString());
       msg.open();
     } catch (XulException e) {
@@ -703,14 +703,14 @@ public class ModelerController extends AbstractXulEventHandler {
     this.workspaceHelper = workspaceHelper;
   }
 
-  public IModelerMessages getMessages() {
-    return messages;
-  }
-
-  public void setMessages( IModelerMessages messages ) {
-    this.messages = messages;
-    ModelerController.MESSAGES = messages;
-  }
+//  public IModelerMessages getMessages() {
+//    return messages;
+//  }
+//
+//  public void setMessages( IModelerMessages messages ) {
+//    this.messages = messages;
+//    ModelerController.MESSAGES = messages;
+//  }
 
   public boolean saveWorkspace( String fileName ) throws ModelerException {
     workspace.getModel().validateTree();

@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.pentaho.agilebi.modeler.ColResolverController;
 import org.pentaho.agilebi.modeler.IModelerMessages;
 import org.pentaho.agilebi.modeler.ModelerController;
+import org.pentaho.agilebi.modeler.ModelerMessagesHolder;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.modeler.propforms.AbstractModelerNodeForm;
 import org.pentaho.agilebi.modeler.propforms.DimensionPropertiesForm;
@@ -58,7 +59,13 @@ public class GwtModelerEntryPoint implements EntryPoint, IXulLoaderCallback {
     model.setDomain(this.domain);
     ModelerController controller = new ModelerController(model);
     controller.setWorkspaceHelper(helper);
-    controller.setMessages(messages);
+    
+    try {
+      ModelerMessagesHolder.setMessages(messages);
+    } catch (IllegalStateException e) {
+      // ignore, it was already set by someone else
+    }
+    
     BindingFactory bf = new GwtBindingFactory(container.getDocumentRoot());
     controller.setBindingFactory(bf);
     container.addEventHandler(controller);

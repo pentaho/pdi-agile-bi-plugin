@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.pentaho.agilebi.modeler.*;
 import org.pentaho.agilebi.spoon.ModelerEngineMeta;
 import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.spoon.SpoonModelerMessages;
 import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.XulUI;
 import org.pentaho.di.core.EngineMetaInterface;
@@ -71,6 +72,11 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
     super("org/pentaho/agilebi/spoon/perspective/perspective.xul");
     setDefaultExtension("xmi");
     bf.setDocument(document);
+    try {
+      ModelerMessagesHolder.setMessages(new SpoonModelerMessages());
+    } catch (IllegalStateException e) {
+      // someone else set this first, ignore the error
+    }
   }
   
   public static AgileBiModelerPerspective getInstance() {
