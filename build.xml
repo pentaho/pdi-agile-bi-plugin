@@ -75,7 +75,7 @@
   			<mkdir dir="${report-designer.unzip.dir}"/>
   			<unzip dest="${report-designer.unzip.dir}">
   				<fileset dir="${report-designer-assembly.dir}">
-  				        <include name="prd-ee-${dependency.pentaho-reporting.revision}.zip"/>
+  				        <include name="prd-ce-${dependency.pentaho-reporting.revision}.zip"/>
   			    </fileset>
   			</unzip>
   	
