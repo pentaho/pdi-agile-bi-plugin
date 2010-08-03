@@ -30,6 +30,10 @@
 	            value="${bin.dir}/platform-unzip"
 	            description="Location of platform assembly zip" />
 	
+	<property name="report-designer.unzip.dir"
+				value="${bin.dir}/report-designer-unzip"
+				description="Location of expanded report designer assembly zip" />
+		
 	<property name="kettle.dist.dir"
 				value="../Kettle"
     			description="Location of kettle spoon zip" />
@@ -53,6 +57,7 @@
 		<delete dir="${dist.dir}" />
 		<delete dir="${stage.dir}" />
 		<delete dir="${platform.unzip.dir}" />
+		<delete dir="${report-designer.unzip.dir}" />
 	</target>
 
     <!--
@@ -66,9 +71,17 @@
   </target>
 	
   <target name="assemble-report-wizard">
-  	<!-- copy wizard templates into agile-bi plugin -->
+  	<!-- Step 1: Unzip a PRD zip into staging dir -->
+  			<mkdir dir="${report-designer.unzip.dir}"/>
+  			<unzip dest="${report-designer.unzip.dir}">
+  				<fileset dir="${report-designer-assembly.dir}">
+  				        <include name="prd-ee-${dependency.pentaho-reporting.revision}.zip"/>
+  			    </fileset>
+  			</unzip>
+  	
+  	<!-- Step 2: Copy wizard templates into agile-bi plugin -->
     <copy todir="${approot.stage.dir}/templates" overwrite="true">
-      <fileset dir="${report-designer-assembly.dir}/resource/templates"/>
+      <fileset dir="${report-designer.unzip.dir}/report-designer/templates"/>
     </copy>
   </target>
 	
