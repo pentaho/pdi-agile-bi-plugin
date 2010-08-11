@@ -11,14 +11,12 @@ import org.pentaho.ui.xul.XulServiceCallback;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: nbaker
  * Date: Jun 18, 2010
- * Time: 4:20:31 PM
- * To change this template use File | Settings | File Templates.
  */
 public interface IModelerService {
   Domain generateDomain(String connectionName, String tableName, String dbType, String query, String datasourceName) throws Exception;
   BogoPojo gwtWorkaround ( BogoPojo pojo);
   String serializeModels(Domain domain, String name) throws Exception;
+  Domain loadDomain(String id) throws Exception;
 }

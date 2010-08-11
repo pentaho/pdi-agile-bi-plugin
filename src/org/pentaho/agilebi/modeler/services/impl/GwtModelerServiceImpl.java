@@ -67,4 +67,16 @@ public class GwtModelerServiceImpl implements IModelerServiceAsync {
       }
     });
   }
+
+  public void loadDomain(String id, final XulServiceCallback<Domain> callback) {
+    getDelegate().loadDomain(id, new AsyncCallback<Domain>(){
+      public void onFailure(Throwable throwable) {
+        callback.error("Error loading domain", throwable);
+      }
+
+      public void onSuccess(Domain domain) {
+        callback.success(domain);
+      }
+    });
+  }
 }

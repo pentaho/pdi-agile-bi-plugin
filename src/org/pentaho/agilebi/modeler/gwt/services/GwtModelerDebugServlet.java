@@ -18,7 +18,10 @@ import org.pentaho.di.core.database.HypersonicDatabaseMeta;
 import org.pentaho.di.core.database.MySQLDatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.metadata.model.Domain;
+import org.pentaho.metadata.util.XmiParser;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,5 +76,15 @@ public class GwtModelerDebugServlet extends RemoteServiceServlet implements IGwt
   public String serializeModels(Domain domain, String name) throws Exception{
     // Do nothing in debug mode.
     return null;
+  }
+
+  public Domain loadDomain(String id) throws Exception{
+    XmiParser parser = new XmiParser();
+    try {
+      return parser.parseXmi(new FileInputStream(new File("test-res/example_olap.xmi")));
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
   }
 }
