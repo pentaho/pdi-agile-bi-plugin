@@ -94,6 +94,7 @@ public class ModelerController extends AbstractXulEventHandler {
     // todo, disable dragging of Root elements once we've updated the tree UI
   }
 
+  @Bindable
   public void onDimensionTreeDrop( DropEvent event ) {
 
 
