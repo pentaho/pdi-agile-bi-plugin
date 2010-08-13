@@ -323,6 +323,10 @@ public class ModelerWorkspace extends XulEventSourceAdapter implements Serializa
       return;
     }
     Domain newDomain = source.generateDomain();
+    refresh(newDomain);
+  }
+
+  public void refresh(Domain newDomain) throws ModelerException {
 
     // Add in new logicalColumns
     for (LogicalColumn lc : newDomain.getLogicalModels().get(0).getLogicalTables().get(0).getLogicalColumns()) {
