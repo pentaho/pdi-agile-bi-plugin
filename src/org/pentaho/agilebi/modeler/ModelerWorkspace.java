@@ -353,6 +353,8 @@ public class ModelerWorkspace extends XulEventSourceAdapter implements Serializa
       }
     }
 
+
+
     // Remove logicalColumns that no longer exist.
     List<AvailableField> toRemove = new ArrayList<AvailableField>();
     for (AvailableField fm : availableFields) {
@@ -401,24 +403,28 @@ public class ModelerWorkspace extends XulEventSourceAdapter implements Serializa
       }
     }
 
-    for (DimensionMetaData dm : model.getDimensions()) {
-      for (HierarchyMetaData hm : dm) {
-        for (LevelMetaData lm : hm) {
-          boolean found = false;
-          if (lm.getLogicalColumn() != null) {
-            inner:
-            for (AvailableField fm : availableFields) {
-              if (fm.getLogicalColumn().getId().equals(lm.getLogicalColumn().getId())) {
-                found = true;
-                break inner;
+    try{
+      for (DimensionMetaData dm : model.getDimensions()) {
+        for (HierarchyMetaData hm : dm) {
+          for (LevelMetaData lm : hm) {
+            boolean found = false;
+            if (lm.getLogicalColumn() != null) {
+              inner:
+              for (AvailableField fm : availableFields) {
+                if (fm.getLogicalColumn().getId().equals(lm.getLogicalColumn().getId())) {
+                  found = true;
+                  break inner;
+                }
               }
             }
-          }
-          if (!found) {
-            lm.setLogicalColumn(null);
+            if (!found) {
+              lm.setLogicalColumn(null);
+            }
           }
         }
       }
+    } catch(Exception e){
+      e.printStackTrace();
     }
 
     // replace the domain with the new domain, which
