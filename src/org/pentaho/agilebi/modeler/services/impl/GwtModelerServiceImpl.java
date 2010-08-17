@@ -5,6 +5,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.pentaho.agilebi.modeler.nodes.AvailableField;
+import org.pentaho.agilebi.modeler.gwt.BogoPojo;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.modeler.gwt.services.IGwtModelerService;
 import org.pentaho.agilebi.modeler.gwt.services.IGwtModelerServiceAsync;
@@ -24,7 +25,18 @@ import java.util.List;
 public class GwtModelerServiceImpl implements IModelerServiceAsync {
   IGwtModelerServiceAsync delegate;
 
+  public void gwtWorkaround(BogoPojo bogo, final XulServiceCallback<BogoPojo> callback){
+    getDelegate().gwtWorkaround(bogo, new AsyncCallback<BogoPojo>(){
+      public void onFailure( Throwable throwable ) {
+        callback.error("Error saving models", throwable);
+      }
 
+      public void onSuccess( BogoPojo v) {
+        callback.success(v);
+      }
+    });
+
+  }
   private IGwtModelerServiceAsync getDelegate(){
     if(delegate == null){
       delegate = (IGwtModelerServiceAsync) GWT.create(IGwtModelerService.class);
