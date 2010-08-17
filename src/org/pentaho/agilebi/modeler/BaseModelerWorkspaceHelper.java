@@ -70,7 +70,7 @@ public abstract class BaseModelerWorkspaceHelper implements IModelerWorkspaceHel
       cat = new Category();
       logicalModel.addCategory(cat);
     }
-    cat.setId("DACCESS_1");
+    cat.setId("MODEL_1");
     cat.getLogicalColumns().clear();
 
     // Add all measures
