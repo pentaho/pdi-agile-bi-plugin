@@ -3,6 +3,7 @@ package org.pentaho.agilebi.modeler.gwt;
 
 import java.io.Serializable;
 
+import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.LogicalTable;
 import org.pentaho.metadata.model.concept.security.RowLevelSecurity;
 import org.pentaho.metadata.model.concept.security.Security;
@@ -61,6 +62,15 @@ public class BogoPojo implements Serializable {
   OlapHierarchyLevel level;
   OlapDimensionUsage dimUsage;
   LogicalTable lTable;
+  LogicalModel lModel;
+
+  public LogicalModel getlModel() {
+    return lModel;
+  }
+
+  public void setlModel(LogicalModel lModel) {
+    this.lModel = lModel;
+  }
 
   public LogicalTable getlTable() {
     return lTable;
