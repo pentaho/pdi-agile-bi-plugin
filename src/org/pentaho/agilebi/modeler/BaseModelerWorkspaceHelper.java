@@ -59,6 +59,7 @@ public abstract class BaseModelerWorkspaceHelper implements IModelerWorkspaceHel
     }
 
     LogicalModel logicalModel = domain.getLogicalModels().get(0);
+    logicalModel.setId("MODEL_1");
     logicalModel.setName( new LocalizedString( LocaleHolder.getLocaleAsString(), model.getModelName() ) );
 
     Category cat;
@@ -70,7 +71,7 @@ public abstract class BaseModelerWorkspaceHelper implements IModelerWorkspaceHel
       cat = new Category();
       logicalModel.addCategory(cat);
     }
-    cat.setId("MODEL_1");
+    cat.setId(model.getModelName());
     cat.getLogicalColumns().clear();
 
     // Add all measures
