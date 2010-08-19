@@ -104,6 +104,8 @@ public abstract class BaseModelerWorkspaceHelper implements IModelerWorkspaceHel
       }
       if (formatMask != null) {
         lCol.setProperty("mask", formatMask); //$NON-NLS-1$
+      } else if(lCol.getDataType() == DataType.NUMERIC){
+        lCol.setProperty("mask", "#");
       } else {
         // remove old mask that might have been set
         if (lCol.getChildProperty("mask") != null) { //$NON-NLS-1$
