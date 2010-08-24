@@ -94,6 +94,71 @@ public class ModelerController extends AbstractXulEventHandler {
     // todo, disable dragging of Root elements once we've updated the tree UI
   }
 
+
+  @Bindable
+  public void checkDropLocation(DropEvent event){
+
+    List<Object> data = event.getDataTransfer().getData();
+    for (Object obj : data) {
+      if (obj instanceof AvailableField) {
+        AvailableField availableField = (AvailableField) obj;
+        // depending on the parent
+        if (event.getDropParent() == null) {
+          event.setAccepted(false);
+          return;
+        } else if (event.getDropParent() instanceof MeasuresCollection) {
+          event.setAccepted(true);
+          return;
+        } else if (event.getDropParent() instanceof DimensionMetaDataCollection) {
+          event.setAccepted(true);
+          return;
+        } else if (event.getDropParent() instanceof DimensionMetaData) {
+          event.setAccepted(true);
+          return;
+        } else if (event.getDropParent() instanceof HierarchyMetaData) {
+          event.setAccepted(true);
+          return;
+        } else if (event.getDropParent() instanceof LevelMetaData) {
+          event.setAccepted(false);
+          return;
+        }
+      } else if (obj instanceof LevelMetaData) {
+        LevelMetaData level = (LevelMetaData) obj;
+        if (event.getDropParent() instanceof HierarchyMetaData) {
+          event.setAccepted(true);
+          return;
+        } else if (event.getDropParent() instanceof DimensionMetaData) {
+          event.setAccepted(true);
+          return;
+        } else if (event.getDropParent() == null) {
+          event.setAccepted(true);
+          return;
+        }
+      } else if (obj instanceof HierarchyMetaData) {
+        HierarchyMetaData hierarchy = (HierarchyMetaData) obj;
+        if (event.getDropParent() == null) {
+          event.setAccepted(true);
+          return;
+        } else if (event.getDropParent() instanceof DimensionMetaData) {
+          event.setAccepted(true);
+          return;
+        }
+      } else if (obj instanceof DimensionMetaData) {
+        if (event.getDropParent() == null) {
+          event.setAccepted(true);
+          return;
+        }
+      } else if (obj instanceof MeasureMetaData) {
+        if (event.getDropParent() instanceof MeasuresCollection) {
+          event.setAccepted(true);
+          return;
+        }
+      }
+
+    }
+    event.setAccepted(false);
+  }
+
   @Bindable
   public void onDimensionTreeDrop( DropEvent event ) {
 
@@ -724,4 +789,13 @@ public class ModelerController extends AbstractXulEventHandler {
     workspace.setTemporary(false);
     return true;
   }
+
+  @Bindable
+  public void clearFields(){
+    workspace.setModelIsChanging(true);
+    workspace.getModel().getDimensions().clear();
+    workspace.getModel().getMeasures().clear();
+    workspace.setModelIsChanging(false, true);
+  }
+
 }
