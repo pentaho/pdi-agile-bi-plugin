@@ -130,10 +130,7 @@ public class ModelerController extends AbstractXulEventHandler {
         } else if (event.getDropParent() instanceof DimensionMetaData) {
           event.setAccepted(true);
           return;
-        } else if (event.getDropParent() == null) {
-          event.setAccepted(true);
-          return;
-        }
+        } 
       } else if (obj instanceof HierarchyMetaData) {
         HierarchyMetaData hierarchy = (HierarchyMetaData) obj;
         if (event.getDropParent() == null) {
