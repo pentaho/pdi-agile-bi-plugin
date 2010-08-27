@@ -141,7 +141,7 @@ public class ModelerController extends AbstractXulEventHandler {
           return;
         }
       } else if (obj instanceof DimensionMetaData) {
-        if (event.getDropParent() == null) {
+        if (event.getDropParent() instanceof DimensionMetaDataCollection) {
           event.setAccepted(true);
           return;
         }
@@ -225,7 +225,10 @@ public class ModelerController extends AbstractXulEventHandler {
           newdata.add(hierarchy);
         }
       } else if (obj instanceof DimensionMetaData) {
-        if (event.getDropParent() == null) {
+
+        if (event.getDropParent() instanceof DimensionMetaDataCollection) {
+          newdata.add((DimensionMetaData) obj);
+        } else if (event.getDropParent() == null) {
           newdata.add((DimensionMetaData) obj);
           // TODO: this will also need to resolve level LogicalColumns
         }
