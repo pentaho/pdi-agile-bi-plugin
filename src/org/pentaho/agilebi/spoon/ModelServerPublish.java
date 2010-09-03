@@ -556,7 +556,8 @@ public class ModelServerPublish {
     publishFile.createNewFile();
 
     LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
-
+    String catName = lModel.getName(Locale.getDefault().toString());
+    lModel.setProperty("MondrianCatalogRef", catName); //$NON-NLS-1$
     MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
     String mondrianSchema = exporter.createMondrianModelXML();
 
