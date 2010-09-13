@@ -326,6 +326,7 @@
 
 
 		<!-- remove solution folders that aren't necessary -->
+		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/data-access"/>
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/data-access-plugin"/>
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/BIRT"/>
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/reporting"/>
