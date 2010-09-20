@@ -100,7 +100,7 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
 
   @Bindable
   public String getFormat() {
-    if (format == null || "".equals(format)) {
+    if (format == null || "".equals(format) || "#".equals(format)) {
       return FORMAT_NONE;
     }
     return format;
@@ -108,7 +108,6 @@ public class MeasureMetaData extends AbstractMetaDataModelNode implements Serial
 
   @Bindable
   public void setFormat( String format ) {
-
     this.format = format;
   }
 
