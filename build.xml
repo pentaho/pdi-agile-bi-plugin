@@ -397,12 +397,12 @@
 			</unzip>
 	</target>
 	
-	<target name="publish-jar" depends="install-antcontrib,create-pom,ivy.deliver">
- 
-	    <antcall target="maven-publish-artifact">
+	<target name="publish-nojar" depends="install-antcontrib,create-pom,ivy.deliver">
+ 	    <antcall target="maven-publish-artifact">
 	      <param name="publish.pomFile" value="${ivy.artifact.pomfile}" />
 	      <param name="publish.file" value="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar" />
 	    </antcall>
-	  </target>
+	</target>
+	
 	
 </project>
