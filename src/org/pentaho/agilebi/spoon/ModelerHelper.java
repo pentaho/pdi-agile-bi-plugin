@@ -17,6 +17,7 @@
 package org.pentaho.agilebi.spoon;
 
 import org.apache.commons.io.IOUtils;
+import org.pentaho.agilebi.modeler.util.TableModelerSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.swt.SWT;

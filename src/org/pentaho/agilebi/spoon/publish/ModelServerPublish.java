@@ -41,7 +41,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.dom4j.DocumentHelper;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.spoon.modeler.ISpoonModelerSource;
+import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
 import org.pentaho.commons.util.repository.type.CmisObject;
 import org.pentaho.commons.util.repository.type.PropertiesBase;
 import org.pentaho.commons.util.repository.type.TypesOfFileableObjects;

@@ -17,12 +17,12 @@
 package org.pentaho.agilebi.spoon;
 
 import org.apache.commons.lang.StringUtils;
+import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.modeler.*;
 import org.pentaho.agilebi.modeler.nodes.*;
-import org.pentaho.agilebi.spoon.ModelerSourceFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.model.*;
 import org.pentaho.metadata.model.concept.types.AggregationType;

@@ -1,5 +1,7 @@
 package org.pentaho.agilebi.spoon.modeler;
 
+import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
+import org.pentaho.agilebi.modeler.util.TableModelerSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.swt.SWT;

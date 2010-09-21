@@ -21,6 +21,8 @@ import java.net.Socket;
 import org.apache.commons.lang.ObjectUtils.Null;
 import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.impl.DefaultFileSystemManager;
+import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
+import org.pentaho.agilebi.spoon.OutputStepModelerSource;
 import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
@@ -41,7 +43,7 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
 	public static int consolePort;
   public void onStart(LifeEventHandler arg0) throws LifecycleException {
     try {
-      
+
       // because we're outside of the default classpath,
       // META-INF/providers.xml is not loaded, so instead,
       // we register our VFS provider programmatically
@@ -67,7 +69,7 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
       if(!portFound){
         throw new IllegalStateException("Could not find an open port to start the Agile-BI server on");
       }
-      
+
       AgileBILifecycleListener.consolePort = port;
       JettyServer server = new JettyServer("localhost", port); //$NON-NLS-1$
       server.startServer();
@@ -75,13 +77,14 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
       e.printStackTrace();
     }
 
+    ModelerSourceFactory.registerSourceType(OutputStepModelerSource.OUTPUTSTEP_SOURCE_TYPE, OutputStepModelerSource.class);
     ((Spoon) SpoonFactory.getInstance()).addFileListener(AgileBiModelerPerspective.getInstance());
-    
+
     for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {
       ((Spoon) SpoonFactory.getInstance()).addFileListener(viz);
     }
   }
-  
+
   public void onExit(LifeEventHandler arg0) throws LifecycleException {
   }
 
@@ -102,8 +105,8 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
 
   public void setValue(Object value) {
     // TODO Auto-generated method stub
-    
+
   }
-  
-  
+
+
 }
