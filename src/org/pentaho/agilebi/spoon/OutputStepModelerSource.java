@@ -17,7 +17,8 @@
 package org.pentaho.agilebi.spoon;
 
 import org.pentaho.agilebi.modeler.ModelerException;
-import org.pentaho.agilebi.spoon.ModelerSourceUtil;
+import org.pentaho.agilebi.modeler.util.ModelerSourceUtil;
+import org.pentaho.agilebi.modeler.util.TableModelerSource;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;

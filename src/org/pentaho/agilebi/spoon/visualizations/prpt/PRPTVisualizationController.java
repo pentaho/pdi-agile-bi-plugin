@@ -16,12 +16,12 @@
  */
 package org.pentaho.agilebi.spoon.visualizations.prpt;
 
+import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.spoon.ModelerHelper;
-import org.pentaho.agilebi.spoon.modeler.ISpoonModelerSource;
 import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.spoon.publish.PublisherHelper;
 import org.pentaho.agilebi.spoon.visualizations.AbstractVisualization;

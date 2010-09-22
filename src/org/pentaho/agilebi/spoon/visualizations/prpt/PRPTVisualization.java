@@ -16,12 +16,12 @@
  */
 package org.pentaho.agilebi.spoon.visualizations.prpt;
 
+import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.spoon.ModelerHelper;
-import org.pentaho.agilebi.spoon.ModelerSourceFactory;
 import org.pentaho.agilebi.spoon.PDIMessages;
 import org.pentaho.agilebi.modeler.*;
 import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
