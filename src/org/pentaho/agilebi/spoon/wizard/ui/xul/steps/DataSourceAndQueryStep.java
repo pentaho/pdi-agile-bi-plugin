@@ -119,7 +119,12 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
           String mqlString = new QueryXmlHelper().toXML(mqlQuery);
           
 
-          PmdDataFactory df = (PmdDataFactory) getEditorModel().getReportDefinition().getDataFactory();
+          MasterReport masterReport = (MasterReport) getEditorModel().getReportDefinition();
+          PmdDataFactory df = (PmdDataFactory) masterReport.getDataFactory();
+            df.initialize(masterReport.getConfiguration(), 
+                masterReport.getResourceManager(), 
+                masterReport.getContentBase(), 
+                masterReport.getResourceBundleFactory());
           df.setQuery("default", mqlString);
           
           PmdPreviewWorker worker = new PmdPreviewWorker(df, "default", 0,  limit);
