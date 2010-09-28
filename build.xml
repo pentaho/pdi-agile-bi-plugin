@@ -321,8 +321,12 @@
 	</servlet-mapping>]]></replacetoken>
 	    	<replacevalue></replacevalue>
 	    </replace>
-
-
+	    <replace file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/web.xml">
+	    	<replacetoken><![CDATA[<listener>
+	            <listener-class>org.pentaho.platform.web.http.context.SampleDataStartupListener</listener-class>
+	        </listener>]]></replacetoken>
+	    	<replacevalue></replacevalue>
+	    </replace>
 
 
 		<!-- remove solution folders that aren't necessary -->
