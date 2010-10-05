@@ -387,7 +387,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     boolean showCurrentFolder = true;
     String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
     "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
-    String databaseName = workspace.getDatabaseName();
+    String databaseName = PublisherHelper.getBiServerCompatibleDatabaseName(workspace.getDatabaseName());
     String extension = ".xanalyzer"; //$NON-NLS-1$
     String filename = new File(publishingFile).getName();
     
