@@ -55,8 +55,7 @@ import org.w3c.dom.Node;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class AnalyzerVisualizationController extends AbstractXulEventHandler implements FileListener, PropertyPanelController {
 
@@ -119,8 +118,13 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }
-	  
-	  theLocation = theLocation + "?command=open&solution=&path=&action=" + aReport + "&edit=true&showFieldList=true";
+
+    // to make sure the report reflects any modifications to the underlying model
+    // we must clear the cache & save the report. see AGILEBI-471
+    // this is what the flush=true parameter is for.
+    // also, the rnd param is to make sure that the browser does not display a cached version of the requested report
+    long avoidBrowserCache = Calendar.getInstance().getTimeInMillis();
+	  theLocation = theLocation + "?command=open&solution=&path=&action=" + aReport + "&edit=true&showFieldList=true&flush=true&rnd=" + avoidBrowserCache;
 	  this.browser.setSrc(theLocation);
 	}
 

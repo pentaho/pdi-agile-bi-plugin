@@ -16,6 +16,7 @@
  */
 package org.pentaho.agilebi.spoon.visualizations.analyzer;
 
+import mondrian.rolap.agg.AggregationManager;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.eclipse.swt.SWT;
@@ -202,6 +203,8 @@ public class AnalyzerVisualization extends AbstractVisualization {
     if (cacheMgr != null) {
       cacheMgr.clearRegionCache("mondrian-catalog-cache"); //$NON-NLS-1$
     }
+
+    
 	}
 
 	private void createTabForBrowser(Composite composite, AnalyzerVisualizationController controller, ModelerWorkspace model) throws KettleException {
@@ -302,7 +305,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 			SwtXulRunner theRunner = new SwtXulRunner();
 			theRunner.addContainer(theXulContainer);
 			theRunner.initialize();
-			
+
 			ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
 	    XmiParser parser = new XmiParser();
 	    FileInputStream inputStream = new FileInputStream(new File(modelFileName));
@@ -328,7 +331,6 @@ public class AnalyzerVisualization extends AbstractVisualization {
 
       // flush the cache before opening an analyzer visualization
       flushAnalyzerCache();
-            
       theController.openReport(fname);
       
       String fullPath = f.getAbsolutePath();
