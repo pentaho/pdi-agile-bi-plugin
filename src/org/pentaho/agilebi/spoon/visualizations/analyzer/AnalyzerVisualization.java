@@ -57,6 +57,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Calendar;
 
 public class AnalyzerVisualization extends AbstractVisualization {
 	
@@ -144,6 +145,10 @@ public class AnalyzerVisualization extends AbstractVisualization {
     String str = replaceField(newUrl, "modelLocation", fileLocation, true); //$NON-NLS-1$
     str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
 	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
+
+    // the rnd param is to make sure that the browser does not display a cached version of the requested report
+    long avoidBrowserCache = Calendar.getInstance().getTimeInMillis();
+    str += "&rnd=" + avoidBrowserCache;
     return str;
 	}
 	
