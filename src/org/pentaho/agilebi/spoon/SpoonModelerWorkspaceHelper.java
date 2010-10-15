@@ -13,6 +13,7 @@ import org.pentaho.metadata.model.concept.types.DataType;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * User: nbaker
@@ -20,6 +21,10 @@ import java.util.List;
  */
 public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper implements IModelerWorkspaceHelper {
 
+
+  public SpoonModelerWorkspaceHelper() {
+    super(Locale.getDefault().toString());
+  }
 
   /**
    * Builds an OLAP model that is attribute based.

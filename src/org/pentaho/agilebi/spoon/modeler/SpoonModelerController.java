@@ -39,6 +39,7 @@ import org.pentaho.ui.xul.containers.XulVbox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -94,8 +95,7 @@ public class SpoonModelerController extends ModelerController {
       if( physicalModels != null && physicalModels.size() > 0 ) {
         List<? extends IPhysicalTable> tables = physicalModels.get(0).getPhysicalTables();
         if( tables != null && tables.size() > 0 ) {
-          // TODO where is the locale coming from? And why do we need one here?
-          tableName = tables.get(0).getName("en_US");
+          tableName = tables.get(0).getName(Locale.getDefault().toString());
         }
       }
     } else if (workspace.getModelSource() != null && workspace.getModelSource() instanceof TableModelerSource) {

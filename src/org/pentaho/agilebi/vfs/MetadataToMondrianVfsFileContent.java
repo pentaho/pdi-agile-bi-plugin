@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.cert.Certificate;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.vfs.FileContent;
@@ -105,7 +106,7 @@ public class MetadataToMondrianVfsFileContent implements FileContent {
       XmiParser parser = new XmiParser();
       FileInputStream fis = new FileInputStream(new File(fileObject.getFileRef()));
       Domain domain = parser.parseXmi(fis);
-      String locale = "en_US";
+      String locale = Locale.getDefault().toString();
       if (domain.getLocales().size() > 0) {
         locale = domain.getLocales().get(0).getCode();
       }
