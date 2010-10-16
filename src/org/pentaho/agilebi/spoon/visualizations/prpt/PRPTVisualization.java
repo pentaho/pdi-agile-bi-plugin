@@ -17,6 +17,7 @@
 package org.pentaho.agilebi.spoon.visualizations.prpt;
 
 import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.swt.widgets.Composite;
@@ -309,7 +310,7 @@ public class PRPTVisualization extends AbstractVisualization {
       }
       
       model.setDomain(domain);
-      model.setModelName(domain.getLogicalModels().get(0).getName(Locale.getDefault().toString()));
+      model.setModelName(domain.getLogicalModels().get(0).getName(LocalizedString.DEFAULT_LOCALE));
       model.setFileName(theXmiFile); 
       model.setTemporary(tempModel);
       controller.setModel(model);

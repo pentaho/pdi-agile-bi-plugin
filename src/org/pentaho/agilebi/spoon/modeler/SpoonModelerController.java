@@ -2,6 +2,7 @@ package org.pentaho.agilebi.spoon.modeler;
 
 import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
 import org.pentaho.agilebi.modeler.util.TableModelerSource;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.swt.SWT;
@@ -95,7 +96,7 @@ public class SpoonModelerController extends ModelerController {
       if( physicalModels != null && physicalModels.size() > 0 ) {
         List<? extends IPhysicalTable> tables = physicalModels.get(0).getPhysicalTables();
         if( tables != null && tables.size() > 0 ) {
-          tableName = tables.get(0).getName(Locale.getDefault().toString());
+          tableName = tables.get(0).getName(LocalizedString.DEFAULT_LOCALE);
         }
       }
     } else if (workspace.getModelSource() != null && workspace.getModelSource() instanceof TableModelerSource) {

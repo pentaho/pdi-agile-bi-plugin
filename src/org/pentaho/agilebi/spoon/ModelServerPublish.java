@@ -51,6 +51,7 @@ import org.pentaho.di.core.exception.KettleDatabaseException;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.platform.dataaccess.client.ConnectionServiceClient;
@@ -556,9 +557,9 @@ public class ModelServerPublish {
     publishFile.createNewFile();
 
     LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
-    String catName = lModel.getName(Locale.getDefault().toString());
+    String catName = lModel.getName(LocalizedString.DEFAULT_LOCALE);
     lModel.setProperty("MondrianCatalogRef", catName); //$NON-NLS-1$
-    MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
+    MondrianModelExporter exporter = new MondrianModelExporter(lModel, LocalizedString.DEFAULT_LOCALE);
     String mondrianSchema = exporter.createMondrianModelXML();
 
     org.dom4j.Document schemaDoc = DocumentHelper.parseText(mondrianSchema);

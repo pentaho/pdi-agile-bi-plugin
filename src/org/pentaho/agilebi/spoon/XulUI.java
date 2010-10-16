@@ -16,6 +16,7 @@
  */
 package org.pentaho.agilebi.spoon;
 
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.swt.widgets.Composite;
@@ -67,7 +68,7 @@ public class XulUI implements TabItemInterface {
       controller.setBindingFactory(bf);
       controller.setWorkspaceHelper(new SpoonModelerWorkspaceHelper());
       
-      AbstractModelerNodeForm propController = new MeasuresPropertiesForm();
+      AbstractModelerNodeForm propController = new MeasuresPropertiesForm(LocalizedString.DEFAULT_LOCALE);
       container.addEventHandler(propController);
       controller.addPropertyForm(propController);
       propController.setBindingFactory(bf);
@@ -79,7 +80,7 @@ public class XulUI implements TabItemInterface {
       propController.setBindingFactory(bf);
       propController.init();
       
-      propController = new LevelsPropertiesForm();
+      propController = new LevelsPropertiesForm(LocalizedString.DEFAULT_LOCALE );
       container.addEventHandler(propController);
       controller.addPropertyForm(propController);
       propController.setBindingFactory(bf);

@@ -9,6 +9,7 @@ import org.pentaho.agilebi.modeler.nodes.AvailableField;
 import org.pentaho.agilebi.modeler.nodes.MainModelNode;
 import org.pentaho.agilebi.modeler.nodes.MeasureMetaData;
 import org.pentaho.metadata.model.concept.types.DataType;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,7 +24,7 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
 
 
   public SpoonModelerWorkspaceHelper() {
-    super(Locale.getDefault().toString());
+    super(LocalizedString.DEFAULT_LOCALE);
   }
 
   /**

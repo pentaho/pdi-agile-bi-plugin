@@ -17,6 +17,7 @@
 package org.pentaho.agilebi.spoon.visualizations.prpt;
 
 import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.pentaho.agilebi.modeler.ModelerException;
@@ -112,7 +113,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     if(xmiFileLocation != null){
 
       Domain theDomain = ModelerHelper.getInstance().loadDomain(xmiFileLocation);
-      modelId = theDomain.getLogicalModels().get(0).getName(Locale.getDefault().toString());
+      modelId = theDomain.getLogicalModels().get(0).getName(LocalizedString.DEFAULT_LOCALE);
     } else {
       modelId = BaseMessages.getString(IVisualization.class,"unavailable");
     }
@@ -190,7 +191,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
       List theTables = theModel.getPhysicalTables();
       if (theTables != null && theTables.size() > 0) {
         IPhysicalTable theTable = (IPhysicalTable) theTables.get(0);
-        theName = theTable.getName(Locale.getDefault().toString());
+        theName = theTable.getName(LocalizedString.DEFAULT_LOCALE);
       }
     }
     return theName;

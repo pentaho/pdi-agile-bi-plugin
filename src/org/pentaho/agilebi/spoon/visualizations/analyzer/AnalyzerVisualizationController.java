@@ -18,6 +18,7 @@ package org.pentaho.agilebi.spoon.visualizations.analyzer;
 
 import mondrian.rolap.agg.AggregationManager;
 import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eclipse.swt.SWTError;
@@ -137,7 +138,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 			List theTables = theModel.getPhysicalTables();
 			if (theTables != null && theTables.size() > 0) {
 				IPhysicalTable theTable = (IPhysicalTable) theTables.get(0);
-				theName = theTable.getName(Locale.getDefault().toString());
+				theName = theTable.getName(LocalizedString.DEFAULT_LOCALE);
 			}
 		}
 		return theName;

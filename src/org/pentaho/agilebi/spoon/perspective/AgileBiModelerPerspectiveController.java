@@ -16,6 +16,7 @@
  */
 package org.pentaho.agilebi.spoon.perspective;
 
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.dom4j.DocumentHelper;
@@ -101,7 +102,7 @@ public class AgileBiModelerPerspectiveController extends AbstractXulEventHandler
         fileDialog.setFilterExtensions(theExtensions);
         String theFile = fileDialog.open();
         if(theFile != null) {
-          MondrianModelExporter exporter = new MondrianModelExporter(lModel, Locale.getDefault().toString());
+          MondrianModelExporter exporter = new MondrianModelExporter(lModel, LocalizedString.DEFAULT_LOCALE);
           String mondrianSchema = exporter.createMondrianModelXML();
           logger.info(mondrianSchema);
   
