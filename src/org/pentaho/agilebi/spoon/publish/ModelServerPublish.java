@@ -83,6 +83,7 @@ public class ModelServerPublish {
   public static final int REMOTE_CONNECTION_DIFFERENT = 2;
   public static final int REMOTE_CONNECTION_SAME = 4;
   public static final int REMOTE_CONNECTION_MUST_BE_JNDI = 8;
+  private static final int DATASOURCE_DRIVER_MISSING = 9;  
   
   private BiServerConnection biServerConnection;
 
@@ -513,6 +514,11 @@ public class ModelServerPublish {
             BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
         break;
       }
+      case ModelServerPublish.DATASOURCE_DRIVER_MISSING: {
+          SpoonFactory.getInstance().messageBox( BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.DriverMissing" ),  //$NON-NLS-1$
+              BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+          break;
+      }      
       case ModelServerPublish.PUBLISH_FAILED: {
         SpoonFactory.getInstance().messageBox( BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.Failed" ),  //$NON-NLS-1$  
             BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
