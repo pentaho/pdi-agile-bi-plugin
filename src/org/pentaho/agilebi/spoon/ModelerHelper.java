@@ -39,15 +39,18 @@ import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
 import org.pentaho.di.ui.core.database.dialog.DatabaseExplorerDialog;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
+import org.pentaho.di.ui.spoon.ISpoonMenuController;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.libraries.base.util.ObjectUtilities;
+import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.WaitBoxRunnable;
 import org.pentaho.ui.xul.components.XulWaitBox;
+import org.pentaho.ui.xul.dom.Document;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.xul.swt.tab.TabItem;
 
@@ -56,7 +59,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ModelerHelper extends AbstractXulEventHandler {
+public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenuController {
 
   private static final String MODELER_NAME = "Modeler"; 
   private static final String TEMP_MODELS_FOLDER = "models";
@@ -86,6 +89,8 @@ public class ModelerHelper extends AbstractXulEventHandler {
   public static ModelerHelper getInstance() {
     if( instance == null ) {
       instance = new ModelerHelper();
+      Spoon spoon = ((Spoon)SpoonFactory.getInstance());
+      spoon.addSpoonMenuController(instance);
     }
     return instance;
   }
@@ -100,12 +105,10 @@ public class ModelerHelper extends AbstractXulEventHandler {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     TransMeta transMeta = spoon.getActiveTransformation();
     if( transMeta == null || spoon.getActiveTransGraph() == null ) {
-      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen" ), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
       return false;
     }
     StepMeta stepMeta = spoon.getActiveTransGraph().getCurrentStep();
-    if( !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
-      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+    if(stepMeta == null || !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
       return false;
     }
     return true;
@@ -432,6 +435,18 @@ public class ModelerHelper extends AbstractXulEventHandler {
       new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
     }
   }
-  
-  
+
+  public void updateMenu(Document doc) {
+	
+	  boolean isDisabled = !isValidStepSelected();
+	  XulComponent menuItem = getXulDomContainer().getDocumentRoot().getElementById("trans-graph-entry-model");
+	  if (menuItem != null) {
+		  menuItem.setDisabled(isDisabled);
+	  }
+	  
+	  menuItem = getXulDomContainer().getDocumentRoot().getElementById("trans-graph-entry-visualize");
+	  if (menuItem != null) {
+		  menuItem.setDisabled(isDisabled);
+	  }
+  }
 }
