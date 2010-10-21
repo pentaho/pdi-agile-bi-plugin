@@ -136,7 +136,7 @@ public class SpoonModelerController extends ModelerController {
           }
         });
 //    Binding modelNameBinding = bf.createBinding(workspace, "modelName", "modelname", "value"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-
+    bf.setBindingType(Binding.Type.BI_DIRECTIONAL);
     bf.createBinding(this.propPanel, "visible", this, "propVisible"); //$NON-NLS-1$//$NON-NLS-2$
 
     try{
