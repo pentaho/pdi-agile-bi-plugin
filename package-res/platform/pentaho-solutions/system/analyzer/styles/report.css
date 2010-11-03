@@ -332,6 +332,22 @@ div.active {
 	text-decoration: underline;
 }
 
+.reportImgBtn{
+    display: block;
+    float:left;
+    //border: 1px solid #888;
+    background-color: #FFF;
+    height:34px;
+    width: 34px;
+    margin-right: 4px;
+    cursor:pointer;
+}
+
+.reportImgBtn img{
+    cursor: pointer;
+}
+
+
 /* End Report Buttons Bar */
 /* Glow styles */
 
@@ -818,11 +834,20 @@ TD.dropZoneLabel {
 
 .pivotTable .pivotTableColumnHeaderSection {
 	vertical-align: bottom;
+	position:relative;
+	overflow:hidden;
+	width: auto;
+}
+
+
+.pivotTable .pivotTableColumnHeaderSection TABLE {
+	position: relative;
 }
 
 .pivotTable .pivotTableColumnHeaderContainer {
 	overflow: hidden;
 	vertical-align: bottom;
+	width: auto;
 }
 
 .pivotTable .pivotTableColumnHeaderContainer TABLE {
@@ -830,19 +855,24 @@ TD.dropZoneLabel {
 	border-bottom: 2px solid rgb(153,153,153);
 	table-layout: fixed;
 	cursor: pointer;
+	position: relative;
 }
 	
 .pivotTable .pivotTableDataSection {
 	vertical-align: top;
+	position: relative;
+	overflow: hidden;
 }
 
 .pivotTable .pivotTableDataContainer {
 	overflow: hidden;
+	position: relative;
 }
 
 .pivotTable .pivotTableDataContainer TABLE {
 	border-right: 1px solid rgb(153,153,153);
 	table-layout: fixed;
+	position: relative;
 }
 
 .pivotTable .pivotTableRowLabelSection {
@@ -853,11 +883,13 @@ TD.dropZoneLabel {
 	overflow: hidden;
 	border-right: 2px solid rgb(153,153,153);
 	vertical-align: top;
+	position: relative;
 }
 
 .pivotTable .pivotTableRowLabelContainer TABLE {
 	border-collapse: collapse;
 	cursor: pointer;
+	position: relative;
 }
 
 .pivotTable .pivotTableScrollbars {
@@ -895,6 +927,14 @@ TD.dropZoneLabel {
 
 .pivotTable .columnHeaders .columnheading:hover {
 	background-color: #fbbb12;
+}
+
+.pivotTable .columnHeaders .columnPropHeading {
+    background-color: #fff7d6;
+}
+
+.pivotTable .columnHeaders .columnPropHeading:hover {
+    background-color: #ece5c6;
 }
 
 .pivotTable .columnHeaders .member {
@@ -960,6 +1000,14 @@ TD.dropZoneLabel {
 .pivotTable .rowLabelHeaders TD DIV {
 	white-space: nowrap;
  	margin: 2px 4px;
+}
+
+.pivotTable .rowLabelHeaders .rowPropHeader {
+    background-color: #fff7d6;
+}
+
+.pivotTable .rowLabelHeaders .rowPropHeader:hover {
+    background-color: #ece5c6;
 }
 
 .pivotTable .rowHeaders TD {
@@ -1051,6 +1099,51 @@ TD.dropZoneLabel {
 
 .pivotTable .columnHeaders .highlighted {
 	color: #FFFFFF !important;
+}
+
+.pivotTable .cell-style-green {
+    background-color: #66FF66;
+}
+
+.pivotTable .cell-style-yellow {
+    background-color: yellow;
+}
+
+.pivotTable .cell-style-red {
+    background-color: #FF6666;
+}
+
+.pivotTable .cells  .databar-red
+{
+    margin: 0px;
+    background-color: #FF7D7D;
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+}
+
+.pivotTable .cells  .databar-green
+{
+    margin: 0px;
+    background-color: #7DFF7D;
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+}
+
+.pivotTable .cells  .databar-blue
+{
+    margin: 0px;
+    background-color: #AAAAFF;
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+}
+
+.pivotTable .cells .databar-wrapper
+{
+    margin: 0px;
+    position: relative;
 }
 
 .rowTruncate {
@@ -1340,9 +1433,10 @@ filter: chroma(color=pink);
 	padding-left 6px;
 	height: 19px;
 	display:block;
-	background: url(../images/report/9x9_arrow_down.png) 50px center no-repeat;
+	background: url(../images/report/9x9_arrow_down.png) 57px center no-repeat;
 	background-color:#E6E6E6;
 	color:black;
+	width: 60px;
 }
 
 .cmdActionsBtn span{
