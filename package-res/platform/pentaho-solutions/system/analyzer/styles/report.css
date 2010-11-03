@@ -30,7 +30,7 @@ div.active {
 #commonMsgText, #commonMsgBarBackground {
 	margin-left:256px;
 }
-	
+
 /* Measures and Attributes Panel */
 #fieldList {
 	position: relative;
@@ -249,7 +249,7 @@ div.active {
 	position: relative;
 	float: left;
 }
-	
+
 .btnContainer .reportBtn {
 	background-color: white;
 	border:1px #848484 solid;
@@ -296,7 +296,7 @@ div.active {
 	padding: 3px;
 	float: right;
 	display:none;
-	
+
 }
 
 .reportBtns .additional .standard {
@@ -332,6 +332,22 @@ div.active {
 	text-decoration: underline;
 }
 
+.reportImgBtn{
+    display: block;
+    float:left;
+    //border: 1px solid #888;
+    background-color: #FFF;
+    height:34px;
+    width: 34px;
+    margin-right: 4px;
+    cursor:pointer;
+}
+
+.reportImgBtn img{
+    cursor: pointer;
+}
+
+
 /* End Report Buttons Bar */
 /* Glow styles */
 
@@ -343,7 +359,7 @@ div.active {
 
 .glow .tl {background: url(../images/report/glow/tl.png) 0px 0px no-repeat;height:11px;font-size:1px;}
 .glow .t  {background: url(../images/report/glow/top.png) top repeat-x;height:11px;font-size:1px;}
-.glow .tr {background: url(../images/report/glow/tr.png) -15px 0px no-repeat;height:11px;font-size:1px;} 
+.glow .tr {background: url(../images/report/glow/tr.png) -15px 0px no-repeat;height:11px;font-size:1px;}
 .glow .l  {background: url(../images/report/glow/left.png) -4px 0px repeat-y;}
 .glow .r  {background: url(../images/report/glow/right.png) repeat-y; width:165x;}
 .glow .bl {background: url(../images/report/glow/bl.png) -7px -17px no-repeat;height:12px;font-size:1px;}
@@ -404,14 +420,14 @@ div.active {
 }
 
 .reportFormatDiv {
-	height: 24px; 
+	height: 24px;
 	width: 240px;
 	overflow: hidden;
 	float: right;
 }
 
 .reportFormatShowDiv {
-	height: 21px; 
+	height: 21px;
 	width: 100px;
 	overflow: hidden;
 	float: right;
@@ -428,7 +444,7 @@ div.active {
 	border-left: 1px solid #a1b0e5;
 	border-right: none;
 	border-bottom: none;
-}	
+}
 
 .reportDisplayFormat IMG {
 	float: left;
@@ -673,7 +689,7 @@ TD.dropZoneLabel {
 	cursor: pointer;
 	margin: 0 5px 0 2px;
 }
- 
+
 .filterItemList {
 	float: left;
 	clear: left;
@@ -712,8 +728,8 @@ TD.dropZoneLabel {
 	clear: left;
 	width: 90%;
 }
-	
-	
+
+
 /******** END NEW SKIN STYLES *************/
 /******** TEMP STYLES *************/
 .timePresets {display:none;}
@@ -818,11 +834,20 @@ TD.dropZoneLabel {
 
 .pivotTable .pivotTableColumnHeaderSection {
 	vertical-align: bottom;
+	position:relative;
+	overflow:hidden;
+	width: auto;
+}
+
+
+.pivotTable .pivotTableColumnHeaderSection TABLE {
+	position: relative;
 }
 
 .pivotTable .pivotTableColumnHeaderContainer {
 	overflow: hidden;
 	vertical-align: bottom;
+	width: auto;
 }
 
 .pivotTable .pivotTableColumnHeaderContainer TABLE {
@@ -830,19 +855,24 @@ TD.dropZoneLabel {
 	border-bottom: 2px solid rgb(153,153,153);
 	table-layout: fixed;
 	cursor: pointer;
+	position: relative;
 }
-	
+
 .pivotTable .pivotTableDataSection {
 	vertical-align: top;
+	position: relative;
+	overflow: hidden;
 }
 
 .pivotTable .pivotTableDataContainer {
 	overflow: hidden;
+	position: relative;
 }
 
 .pivotTable .pivotTableDataContainer TABLE {
 	border-right: 1px solid rgb(153,153,153);
 	table-layout: fixed;
+	position: relative;
 }
 
 .pivotTable .pivotTableRowLabelSection {
@@ -853,11 +883,13 @@ TD.dropZoneLabel {
 	overflow: hidden;
 	border-right: 2px solid rgb(153,153,153);
 	vertical-align: top;
+	position: relative;
 }
 
 .pivotTable .pivotTableRowLabelContainer TABLE {
 	border-collapse: collapse;
 	cursor: pointer;
+	position: relative;
 }
 
 .pivotTable .pivotTableScrollbars {
@@ -895,6 +927,14 @@ TD.dropZoneLabel {
 
 .pivotTable .columnHeaders .columnheading:hover {
 	background-color: #fbbb12;
+}
+
+.pivotTable .columnHeaders .columnPropHeading {
+    background-color: #fff7d6;
+}
+
+.pivotTable .columnHeaders .columnPropHeading:hover {
+    background-color: #ece5c6;
 }
 
 .pivotTable .columnHeaders .member {
@@ -949,7 +989,7 @@ TD.dropZoneLabel {
 	vertical-align: top;
 	border: 1px solid #999;
 	border-right: none;
-	_border-bottom: none;  /* show to IE only */	
+	_border-bottom: none;  /* show to IE only */
 }
 
 .pivotTable .rowLabelHeaders TD:hover {
@@ -960,6 +1000,14 @@ TD.dropZoneLabel {
 .pivotTable .rowLabelHeaders TD DIV {
 	white-space: nowrap;
  	margin: 2px 4px;
+}
+
+.pivotTable .rowLabelHeaders .rowPropHeader {
+    background-color: #fff7d6;
+}
+
+.pivotTable .rowLabelHeaders .rowPropHeader:hover {
+    background-color: #ece5c6;
 }
 
 .pivotTable .rowHeaders TD {
@@ -1053,6 +1101,51 @@ TD.dropZoneLabel {
 	color: #FFFFFF !important;
 }
 
+.pivotTable .cell-style-green {
+    background-color: #66FF66;
+}
+
+.pivotTable .cell-style-yellow {
+    background-color: yellow;
+}
+
+.pivotTable .cell-style-red {
+    background-color: #FF6666;
+}
+
+.pivotTable .cells  .databar-red
+{
+    margin: 0px;
+    background-color: #FF7D7D;
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+}
+
+.pivotTable .cells  .databar-green
+{
+    margin: 0px;
+    background-color: #7DFF7D;
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+}
+
+.pivotTable .cells  .databar-blue
+{
+    margin: 0px;
+    background-color: #AAAAFF;
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+}
+
+.pivotTable .cells .databar-wrapper
+{
+    margin: 0px;
+    position: relative;
+}
+
 .rowTruncate {
 	position: absolute;
 	left: 10px;
@@ -1136,16 +1229,16 @@ body .dojoMenuSeparator2Bottom {
 
 .pivotTable .rowLabelHeaders .resize {
 	margin-left: 0;
-	padding-left: 5px;	
+	padding-left: 5px;
 	padding-right: 0;
-	margin-right:0; 
+	margin-right:0;
 	height:100%;
 }
 .pivotTable .columnHeaders .resize {
 	margin-left: 0;
 	padding-left: 5px;
 	padding-right: 0;
-	margin-right:0; 
+	margin-right:0;
 	height:100%;
 }
 
@@ -1155,7 +1248,7 @@ body .dojoMenuSeparator2Bottom {
     position: absolute;
     width: 0px;
     bottom: 0px;
-    height: 118px; 
+    height: 118px;
     margin:0;
     padding:0;
     border: transparent  solid 2px;
@@ -1173,7 +1266,7 @@ body .dojoMenuSeparator2Bottom {
     position: absolute;
     width: 0px;
     bottom: 0px;
-    height: 118px; 
+    height: 118px;
     margin:0;
     padding:0;
     border: transparent solid 2px;
@@ -1207,7 +1300,7 @@ body .dojoMenuSeparator2Bottom {
 .rptInfoContent {
 	width: 460px;
 	background-color: #FFFFFF;
-		
+
 	font-size:85%;
 	font-family: verdana, geneva, arial, helvetica, sans-serif;
 }
@@ -1236,7 +1329,7 @@ body .dojoMenuSeparator2Bottom {
 .cvRptInfoTooltipBody_2 {
 	height: 102px;
 	width: 460px;
-	font-size:100%; 
+	font-size:100%;
 	padding-top:8px;
 }
 
@@ -1340,9 +1433,10 @@ filter: chroma(color=pink);
 	padding-left 6px;
 	height: 19px;
 	display:block;
-	background: url(../images/report/9x9_arrow_down.png) 50px center no-repeat;
+	background: url(../images/report/9x9_arrow_down.png) 57px center no-repeat;
 	background-color:#E6E6E6;
 	color:black;
+	width: 60px;
 }
 
 .cmdActionsBtn span{
