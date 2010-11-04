@@ -116,9 +116,6 @@ public class SpoonModelerController extends ModelerController {
             XulVbox messageBox = (XulVbox) document.getElementById("main_message"); //$NON-NLS-1$
             messageBox.setVisible(isVisible);
 
-            XulComponent datsourceError = document.getElementById("datasource_message_label");
-            //datsourceError.setVisible(isVisible);
-
             XulComponent refreshButton = document.getElementById("refreshButton"); //$NON-NLS-1$
             //refreshButton.setDisabled(isVisible);
 
