@@ -1,14 +1,20 @@
 package org.pentaho.agilebi.spoon.modeler;
 
-import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
-import org.pentaho.agilebi.modeler.util.TableModelerSource;
-import org.pentaho.metadata.model.concept.types.LocalizedString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
-import org.pentaho.agilebi.modeler.*;
-import org.pentaho.agilebi.spoon.*;
+import org.pentaho.agilebi.modeler.IModelerSource;
+import org.pentaho.agilebi.modeler.ModelerController;
+import org.pentaho.agilebi.modeler.ModelerException;
+import org.pentaho.agilebi.modeler.ModelerMessagesHolder;
+import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
+import org.pentaho.agilebi.modeler.util.TableModelerSource;
+import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.spoon.OutputStepModelerSource;
+import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.publish.PublisherHelper;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
@@ -28,6 +34,7 @@ import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.delegates.SpoonDBDelegate;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulComponent;
@@ -37,10 +44,8 @@ import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMenuList;
 import org.pentaho.ui.xul.containers.XulEditpanel;
 import org.pentaho.ui.xul.containers.XulVbox;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -103,11 +108,14 @@ public class SpoonModelerController extends ModelerController {
       tableName = workspace.getModelSource().getTableName();
     }
 
+    if(StringUtils.isEmpty(tableName)) {
+    	tableName = ModelerMessagesHolder.getMessages().getString("ModelerController.Datasource"); 
+    }
     sourceLabel.setValue(tableName);
 
 
     //TODO: move all this datasource stuff into models! use the existing property form validation to show messages.
-    datasourceButtonBinding = bf.createBinding(sourceLabel, "value", "datasource_button", "visible",
+    datasourceButtonBinding = bf.createBinding(workspace, "sourceName", "datasource_button", "visible",
         new BindingConvertor<Object, Boolean>() { //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 
           public Boolean sourceToTarget( Object value ) {
@@ -229,6 +237,8 @@ public class SpoonModelerController extends ModelerController {
           ModelerWorkspaceUtil.populateModelFromSource(this.workspace, theSource);
           XulLabel sourceLabel = (XulLabel) document.getElementById(this.SOURCE_NAME_LABEL_ID);
           sourceLabel.setValue(theTable);
+          workspace.setSourceName(theTable);
+          datasourceButtonBinding.fireSourceChanged();
           fireBindings();
         }
       }
