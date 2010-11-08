@@ -1140,10 +1140,15 @@ TD.dropZoneLabel {
     z-index: -1;
 }
 
+
 .pivotTable .cells .databar-wrapper
 {
-    margin: 0px;
     position: relative;
+}
+
+.pivotTable .cells .databar-wrapper DIV
+{
+    margin: 0px;
 }
 
 .rowTruncate {
