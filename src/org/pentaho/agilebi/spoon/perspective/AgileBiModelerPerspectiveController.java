@@ -16,18 +16,19 @@
  */
 package org.pentaho.agilebi.spoon.perspective;
 
-import org.pentaho.metadata.model.concept.types.LocalizedString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+
 import org.dom4j.DocumentHelper;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
-import org.pentaho.agilebi.spoon.ModelerEngineMeta;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.spoon.ModelerEngineMeta;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.binding.Binding;
@@ -35,11 +36,8 @@ import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.components.XulMenuitem;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Locale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AgileBiModelerPerspectiveController extends AbstractXulEventHandler {
 

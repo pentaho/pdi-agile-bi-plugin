@@ -24,7 +24,6 @@ import org.pentaho.agilebi.modeler.nodes.AvailableField;
 import org.pentaho.agilebi.modeler.ModelerController;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.modeler.nodes.DimensionMetaData;
 import org.pentaho.agilebi.modeler.nodes.DimensionMetaDataCollection;
 import org.pentaho.agilebi.modeler.nodes.HierarchyMetaData;

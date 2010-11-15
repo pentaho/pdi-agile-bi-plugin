@@ -18,7 +18,7 @@ package org.pentaho.agilebi.spoon;
 
 import org.pentaho.agilebi.modeler.ModelerController;
 import org.pentaho.agilebi.modeler.ModelerException;
-import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.modeler.util.ModelerWorkspaceUtil;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.ProgressMonitorListener;
 import org.pentaho.di.core.exception.KettleException;

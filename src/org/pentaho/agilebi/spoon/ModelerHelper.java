@@ -16,13 +16,20 @@
  */
 package org.pentaho.agilebi.spoon;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import org.apache.commons.io.IOUtils;
-import org.pentaho.agilebi.modeler.util.TableModelerSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.pentaho.agilebi.modeler.*;
+import org.pentaho.agilebi.modeler.IModelerSource;
+import org.pentaho.agilebi.modeler.ModelerException;
+import org.pentaho.agilebi.modeler.ModelerMessagesHolder;
+import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.modeler.util.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.modeler.util.TableModelerSource;
 import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
@@ -53,11 +60,8 @@ import org.pentaho.ui.xul.components.XulWaitBox;
 import org.pentaho.ui.xul.dom.Document;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 import org.pentaho.xul.swt.tab.TabItem;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenuController {
 

@@ -16,14 +16,23 @@
  */
 package org.pentaho.agilebi.spoon.perspective;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eclipse.swt.widgets.Composite;
-import org.pentaho.agilebi.spoon.ModelerEngineMeta;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.modeler.util.ModelerWorkspaceUtil;
+import org.pentaho.agilebi.spoon.ModelerEngineMeta;
 import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.XulUI;
 import org.pentaho.agilebi.spoon.visualizations.SaveAwareMeta;
@@ -40,12 +49,6 @@ import org.pentaho.ui.xul.binding.DefaultBinding;
 import org.pentaho.ui.xul.components.XulConfirmBox;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.w3c.dom.Node;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
 
 public class AgileBiVisualizationPerspective extends AbstractPerspective {
 

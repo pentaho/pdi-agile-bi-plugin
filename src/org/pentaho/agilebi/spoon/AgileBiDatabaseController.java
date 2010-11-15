@@ -20,8 +20,8 @@ package org.pentaho.agilebi.spoon;
 
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.modeler.util.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.modeler.util.TableModelerSource;
-import org.pentaho.agilebi.spoon.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
