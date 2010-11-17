@@ -123,13 +123,13 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     TransMeta transMeta = spoon.getActiveTransformation();
     if( transMeta == null || spoon.getActiveTransGraph() == null ) {
-      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen" ), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException(BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen")); //$NON-NLS-1$
+      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen" ), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+      throw new IllegalStateException(BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen")); //$NON-NLS-1$
     }
     StepMeta stepMeta = spoon.getActiveTransGraph().getCurrentStep();
     if( !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
-      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException(BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded")); //$NON-NLS-1$
+      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+      throw new IllegalStateException(BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded")); //$NON-NLS-1$
     }
 
     TableOutputMeta tableOutputMeta = (TableOutputMeta) stepMeta.getStepMetaInterface();
@@ -144,10 +144,10 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
     	while (rootCause.getCause() != null && rootCause != rootCause.getCause()) {
     	  rootCause = rootCause.getCause();
     	}
-      throw new ModelerException(BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta"), rootCause); //$NON-NLS-1$
+      throw new ModelerException(BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta"), rootCause); //$NON-NLS-1$
     }
     if(rowMeta == null){
-   	 throw new ModelerException(BaseMessages.getString(ModelerWorkspaceUtil.class,  "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta")); //$NON-NLS-1$
+   	 throw new ModelerException(BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta")); //$NON-NLS-1$
     }
 
 

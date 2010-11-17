@@ -16,19 +16,21 @@
  */
 package org.pentaho.agilebi.spoon.visualizations.prpt;
 
-import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
-import org.pentaho.metadata.model.concept.types.LocalizedString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Locale;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.pentaho.agilebi.modeler.IModelerSource;
+import org.pentaho.agilebi.modeler.ModelerException;
+import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
 import org.pentaho.agilebi.spoon.ModelerHelper;
 import org.pentaho.agilebi.spoon.PDIMessages;
-import org.pentaho.agilebi.modeler.*;
 import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
-import org.pentaho.agilebi.spoon.XulUI;
-import org.pentaho.agilebi.spoon.perspective.AbstractPerspective.XulTabAndPanel;
 import org.pentaho.agilebi.spoon.perspective.AgileBiVisualizationPerspective;
+import org.pentaho.agilebi.spoon.perspective.AbstractPerspective.XulTabAndPanel;
 import org.pentaho.agilebi.spoon.visualizations.AbstractVisualization;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.wizard.EmbeddedWizard;
@@ -40,6 +42,7 @@ import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.XmiParser;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
@@ -55,11 +58,9 @@ import org.pentaho.ui.xul.components.XulWaitBox;
 import org.pentaho.ui.xul.dom.Document;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Locale;
 
 public class PRPTVisualization extends AbstractVisualization {
 

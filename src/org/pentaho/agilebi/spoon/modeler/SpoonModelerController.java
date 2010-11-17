@@ -213,7 +213,7 @@ public class SpoonModelerController extends ModelerController {
         if (StringUtils.isEmpty(theTable)) {
           MessageBox theMessageBox = new MessageBox(theSpoon.getShell(), SWT.ICON_ERROR | SWT.OK);
           theMessageBox.setText(BaseMessages.getString(Spoon.class, "Spoon.Message.Warning.Warning")); //$NON-NLS-1$
-          theMessageBox.setMessage(BaseMessages.getString(ModelerController.class, "Spoon.Message.Model.EmptyTable")); //$NON-NLS-1$
+          theMessageBox.setMessage(BaseMessages.getString(ModelerWorkspace.class, "Spoon.Message.Model.EmptyTable")); //$NON-NLS-1$
           theMessageBox.open();
           return;
         }
@@ -223,7 +223,7 @@ public class SpoonModelerController extends ModelerController {
 
           MessageBox theMessageBox = new MessageBox(theSpoon.getShell(), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
           theMessageBox.setText(BaseMessages.getString(Spoon.class, "Spoon.Message.Warning.Warning")); //$NON-NLS-1$
-          theMessageBox.setMessage(BaseMessages.getString(ModelerController.class, "Spoon.Message.Model.Warning")); //$NON-NLS-1$
+          theMessageBox.setMessage(BaseMessages.getString(ModelerWorkspace.class, "Spoon.Message.Model.Warning")); //$NON-NLS-1$
 
           int theVal = theMessageBox.open();
           if(theVal == SWT.OK) {
