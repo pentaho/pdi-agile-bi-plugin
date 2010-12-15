@@ -442,15 +442,15 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
 
   public void updateMenu(Document doc) {
 	
-	  boolean isDisabled = !isValidStepSelected();
-	  XulComponent menuItem = getXulDomContainer().getDocumentRoot().getElementById("trans-graph-entry-model");
-	  if (menuItem != null) {
-		  menuItem.setDisabled(isDisabled);
-	  }
-	  
-	  menuItem = getXulDomContainer().getDocumentRoot().getElementById("trans-graph-entry-visualize");
-	  if (menuItem != null) {
-		  menuItem.setDisabled(isDisabled);
-	  }
+//	  boolean isDisabled = !isValidStepSelected();
+//	  XulComponent menuItem = getXulDomContainer().getDocumentRoot().getElementById("trans-graph-entry-model");
+//	  if (menuItem != null) {
+//		  menuItem.setDisabled(isDisabled);
+//	  }
+//
+//	  menuItem = getXulDomContainer().getDocumentRoot().getElementById("trans-graph-entry-visualize");
+//	  if (menuItem != null) {
+//		  menuItem.setDisabled(isDisabled);
+//	  }
   }
 }
