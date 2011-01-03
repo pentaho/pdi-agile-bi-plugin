@@ -22,9 +22,6 @@
 
     <dependency org="commons-vfs" name="commons-vfs" rev="1.0" conf="default->default"/>
 
-    <dependency org="pentaho" name="pentaho-metadata" rev="${dependency.pentaho-metadata.revision}"
-                conf="default->default"
-                changing="true"/>
     <dependency org="pentaho.kettle" name="kettle-engine" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
                 changing="true"/>
     <dependency org="pentaho.kettle" name="kettle-core" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
@@ -151,8 +148,8 @@
       <artifact name="pentaho-xul-core" type="source" ext="jar" m:classifier="sources"/>
     </dependency>
 
-    <dependency org="pentaho" name="pentaho-metadata" rev="TRUNK-SNAPSHOT" changing="true"
-                transitive="false" conf="default->default">
+    <dependency org="pentaho" name="pentaho-metadata" rev="${dependency.pentaho-metadata.revision}" changing="true"
+                conf="default->default">
       <artifact name="pentaho-metadata"/>
       <artifact name="pentaho-metadata" type="source" ext="jar" m:classifier="sources"/>
     </dependency>
