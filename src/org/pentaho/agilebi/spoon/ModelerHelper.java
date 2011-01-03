@@ -246,8 +246,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
       final DatabaseMeta databaseMeta = (DatabaseMeta) spoon.getSelectionObject();
       
       DatabaseExplorerDialog std = new DatabaseExplorerDialog(spoon.getShell(), SWT.NONE, databaseMeta, new ArrayList<DatabaseMeta>());
-      std.setSplitSchemaAndTable(true);
-      if (std.open() != null) {
+      if (std.open()) {
           
         TableModelerSource source = new TableModelerSource( databaseMeta, std.getTableName(), std.getSchemaName() == null ? "" : std.getSchemaName() ); //$NON-NLS-1$
         if( source.getSchemaName() == null ) {
@@ -414,8 +413,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
       final DatabaseMeta databaseMeta = (DatabaseMeta) spoon.getSelectionObject();
       
       DatabaseExplorerDialog std = new DatabaseExplorerDialog(spoon.getShell(), SWT.NONE, databaseMeta, new ArrayList<DatabaseMeta>());
-      std.setSplitSchemaAndTable(true);
-      if (std.open() != null) {
+      if (std.open()) {
           
         TableModelerSource source = new TableModelerSource( databaseMeta, std.getTableName(), std.getSchemaName());
         try{
