@@ -48,11 +48,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by IntelliJ IDEA.
  * User: nbaker
  * Date: Jun 14, 2010
- * Time: 1:14:23 PM
- * To change this template use File | Settings | File Templates.
  */
 public class SpoonModelerController extends ModelerController {
   private ModelerControllerDBRegistry databaseInterface = new ModelerControllerDBRegistry();
