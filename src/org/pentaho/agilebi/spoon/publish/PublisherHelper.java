@@ -303,8 +303,9 @@ public class PublisherHelper {
           
           // Point the mql query to the xmi instead of default.
           String theMQLQuery = thePmdDataFactory.getQuery("default"); //$NON-NLS-1$
-          String theQuery = theMQLQuery.substring(0, theMQLQuery.lastIndexOf("default")) //$NON-NLS-1$
-                            + theDomainId + theMQLQuery.substring(theMQLQuery.lastIndexOf("default") + 7, theMQLQuery.length()); //$NON-NLS-1$
+          String theQuery = theMQLQuery.substring(0, theMQLQuery.indexOf("<domain_id>")+11) //$NON-NLS-1$
+                            + theDomainId 
+                            + theMQLQuery.substring(theMQLQuery.indexOf("</domain_id>"));  //$NON-NLS-1$
           thePmdDataFactory.setQuery("default", theQuery); //$NON-NLS-1$
           
           try {
