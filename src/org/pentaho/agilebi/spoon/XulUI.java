@@ -106,6 +106,24 @@ public class XulUI implements TabItemInterface {
       propController.setBindingFactory(bf);
       propController.init();
       
+      propController = new CategoryPropertiesForm();
+      container.addEventHandler(propController);
+      controller.addPropertyForm(propController);
+      propController.setBindingFactory(bf);
+      propController.init();
+
+      propController = new FieldsPropertiesForm(LocalizedString.DEFAULT_LOCALE);
+      container.addEventHandler(propController);
+      controller.addPropertyForm(propController);
+      propController.setBindingFactory(bf);
+      propController.init();
+
+      propController = new RelationalModelNodePropertiesForm();
+      container.addEventHandler(propController);
+      controller.addPropertyForm(propController);
+      propController.setBindingFactory(bf);
+      propController.init();
+
       ColResolverController colController = new ColResolverController();
       container.addEventHandler(colController);
       controller.setColResolver(colController);
