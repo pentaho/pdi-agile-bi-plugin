@@ -193,7 +193,7 @@ public class WorkspaceTest {
     
     DimensionMetaDataCollection dimensions = work.getModel().getDimensions();
     DimensionMetaData dimension = dimensions.get(0);
-    controller.setDimTreeSelectionChanged(dimension);
+    controller.getDimTreeHelper().setTreeSelectionChanged(dimension);
 
     controller.addField();
     

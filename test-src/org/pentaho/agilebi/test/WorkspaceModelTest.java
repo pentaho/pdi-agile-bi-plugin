@@ -61,6 +61,11 @@ public class WorkspaceModelTest {
       return d;
     }
 
+    @Override
+    public Domain generateDomain(boolean dualModelingMode) throws ModelerException {
+      return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public String getDatabaseName() {
       return "TestDatabase";
     }
