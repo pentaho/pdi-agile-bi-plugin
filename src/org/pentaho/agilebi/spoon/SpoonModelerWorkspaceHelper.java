@@ -83,7 +83,6 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    * @param workspace
    * @throws ModelerException
    */
-  @Override
   public void autoModelRelationalFlat(ModelerWorkspace workspace) throws ModelerException {
     helper.autoModelRelationalFlat(workspace);
   }
@@ -93,7 +92,6 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    * @param workspace
    * @throws ModelerException
    */
-  @Override
   public void autoModelRelationalFlatInBackground(final ModelerWorkspace workspace) throws ModelerException {
 
     final Display display = Display.findDisplay(Thread.currentThread());
