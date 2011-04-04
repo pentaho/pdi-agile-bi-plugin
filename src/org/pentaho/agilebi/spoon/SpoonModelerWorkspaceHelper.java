@@ -50,7 +50,7 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
         mainModel.setName(workspace.getModelName());
         workspace.setModel(mainModel);
         final boolean prevChangeState = workspace.isModelChanging();
-        workspace.setModelIsChanging(true);
+        workspace.setModelIsChanging(true, false);
 
         List<AvailableField> fields = workspace.getAvailableOlapFields();
         for( AvailableField field : fields ) {
@@ -58,7 +58,7 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
           if( dataType == DataType.NUMERIC) {
             // create a measure
             MeasureMetaData measure = workspace.createMeasureForNode(field);
-            workspace.getModel().getMeasures().add(measure);
+            workspace.addMeasure(measure);
           }
           // create a dimension
           workspace.addDimensionFromNode(field);
@@ -66,8 +66,7 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
         display.syncExec(new Runnable(){
 
           public void run() {
-
-            workspace.setModelIsChanging(prevChangeState);
+            workspace.setModelIsChanging(prevChangeState, true);
             workspace.setSelectedNode(workspace.getModel());
           }
         });
@@ -99,12 +98,11 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
 
       public void run() {
         RelationalModelNode relationalModelNode = new RelationalModelNode();
-
         relationalModelNode.setName(workspace.getRelationalModelName());
 
         workspace.setRelationalModel(relationalModelNode);
         final boolean prevChangeState = workspace.isModelChanging();
-        workspace.setModelIsChanging(true);
+        workspace.setRelationalModelIsChanging(true, false);
 
         CategoryMetaData category = new CategoryMetaData("Category");
 
@@ -112,13 +110,12 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
         for( AvailableField field : fields ) {
           category.add(workspace.createFieldForParentWithNode(category, field));
         }
-        relationalModelNode.getCategories().add(category);
+        workspace.addCategory(category);
 
         display.syncExec(new Runnable(){
 
           public void run() {
-
-            workspace.setModelIsChanging(prevChangeState);
+            workspace.setModelIsChanging(prevChangeState, true);
             workspace.setSelectedRelationalNode(workspace.getRelationalModel());
           }
         });
