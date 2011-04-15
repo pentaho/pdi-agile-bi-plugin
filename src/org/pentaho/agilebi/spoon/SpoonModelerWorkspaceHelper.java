@@ -5,14 +5,16 @@ import org.pentaho.agilebi.modeler.BaseModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.IModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.modeler.nodes.*;
-import org.pentaho.agilebi.modeler.util.ModelerWorkspaceHelper;
+import org.pentaho.agilebi.modeler.nodes.AvailableField;
+import org.pentaho.agilebi.modeler.nodes.MainModelNode;
+import org.pentaho.agilebi.modeler.nodes.MeasureMetaData;
 import org.pentaho.metadata.model.concept.types.DataType;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * User: nbaker
@@ -20,11 +22,9 @@ import java.util.List;
  */
 public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper implements IModelerWorkspaceHelper {
 
-  ModelerWorkspaceHelper helper;
 
   public SpoonModelerWorkspaceHelper() {
     super(LocalizedString.DEFAULT_LOCALE);
-    helper = new ModelerWorkspaceHelper(LocalizedString.DEFAULT_LOCALE);
   }
 
   /**
@@ -32,7 +32,25 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    * @param workspace
    */
   public void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
-    helper.autoModelFlat(workspace);
+
+    MainModelNode mainModel = new MainModelNode();
+    mainModel.setName(workspace.getModelName());
+    workspace.setModel(mainModel);
+    workspace.setModelIsChanging(true);
+
+    List<AvailableField> fields = workspace.getAvailableFields();
+    for( AvailableField field : fields ) {
+      DataType dataType = field.getLogicalColumn().getDataType();
+      if( dataType == DataType.NUMERIC) {
+        // create a measure
+        MeasureMetaData measure = workspace.createMeasureForNode(field);
+        workspace.getModel().getMeasures().add(measure);
+      }
+      // create a dimension
+      workspace.addDimensionFromNode(field);
+    }
+    workspace.setModelIsChanging(false);
+
   }
 
 
@@ -50,15 +68,15 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
         mainModel.setName(workspace.getModelName());
         workspace.setModel(mainModel);
         final boolean prevChangeState = workspace.isModelChanging();
-        workspace.setModelIsChanging(true, false);
+        workspace.setModelIsChanging(true);
 
-        List<AvailableField> fields = workspace.getAvailableOlapFields();
+        List<AvailableField> fields = workspace.getAvailableFields();
         for( AvailableField field : fields ) {
           DataType dataType = field.getLogicalColumn().getDataType();
           if( dataType == DataType.NUMERIC) {
             // create a measure
             MeasureMetaData measure = workspace.createMeasureForNode(field);
-            workspace.addMeasure(measure);
+            workspace.getModel().getMeasures().add(measure);
           }
           // create a dimension
           workspace.addDimensionFromNode(field);
@@ -66,7 +84,8 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
         display.syncExec(new Runnable(){
 
           public void run() {
-            workspace.setModelIsChanging(prevChangeState, true);
+
+            workspace.setModelIsChanging(prevChangeState);
             workspace.setSelectedNode(workspace.getModel());
           }
         });
@@ -76,54 +95,6 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
 
 
   }
-
-  /**
-   * Builds a Relational Model that is attribute based, all available fields are added into a single Category
-   * @param workspace
-   * @throws ModelerException
-   */
-  public void autoModelRelationalFlat(ModelerWorkspace workspace) throws ModelerException {
-    helper.autoModelRelationalFlat(workspace);
-  }
-
-  /**
-   * Builds a Relational Model that is attribute based, all available fields are added into a single Category
-   * @param workspace
-   * @throws ModelerException
-   */
-  public void autoModelRelationalFlatInBackground(final ModelerWorkspace workspace) throws ModelerException {
-
-    final Display display = Display.findDisplay(Thread.currentThread());
-    Runnable worker = new Runnable(){
-
-      public void run() {
-        RelationalModelNode relationalModelNode = new RelationalModelNode();
-        relationalModelNode.setName(workspace.getRelationalModelName());
-
-        workspace.setRelationalModel(relationalModelNode);
-        final boolean prevChangeState = workspace.isModelChanging();
-        workspace.setRelationalModelIsChanging(true, false);
-
-        CategoryMetaData category = new CategoryMetaData("Category");
-
-        List<AvailableField> fields = workspace.getAvailableFields();
-        for( AvailableField field : fields ) {
-          category.add(workspace.createFieldForParentWithNode(category, field));
-        }
-        workspace.addCategory(category);
-
-        display.syncExec(new Runnable(){
-
-          public void run() {
-            workspace.setModelIsChanging(prevChangeState, true);
-            workspace.setSelectedRelationalNode(workspace.getRelationalModel());
-          }
-        });
-      }
-    };
-    new Thread(worker).start();
-  }
-
   public void sortFields( List<AvailableField> availableFields) {
     Collections.sort(availableFields, new Comparator<AvailableField>() {
       public int compare( AvailableField o1, AvailableField o2 ) {
