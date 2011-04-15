@@ -69,7 +69,9 @@
                 conf="default->default" changing="true" transitive="false"/>
 
 
-    <dependency org="pentaho-library" name="libswing" rev="TRUNK-SNAPSHOT"
+    <dependency org="pentaho-library" name="libswing" rev="${dependency.pentaho-library.revision}"
+                conf="default->default" changing="true" transitive="false"/>
+    <dependency org="pentaho-library" name="libbase" rev="${dependency.pentaho-library.revision}"
                 conf="default->default" changing="true" transitive="false"/>
 
     <dependency org="pentaho" name="mondrian" rev="${dependency.mondrian.revision}"
@@ -151,6 +153,12 @@
       <artifact name="pentaho-metadata"/>
       <artifact name="pentaho-metadata" type="source" ext="jar" m:classifier="sources"/>
     </dependency>
+
+    <dependency org="pentaho" name="pentaho-mql-editor" rev="${dependency.pentaho-mql-editor.revision}" conf="default->default" changing="true" transitive="false">
+        <artifact name="pentaho-mql-editor" />
+        <artifact name="pentaho-mql-editor" type="source" ext="jar" m:classifier="sources" />
+    </dependency>
+
 
     <dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="true"/>
 
