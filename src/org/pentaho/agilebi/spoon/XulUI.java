@@ -16,26 +16,28 @@
  */
 package org.pentaho.agilebi.spoon;
 
-import org.pentaho.metadata.model.concept.types.LocalizedString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.pentaho.agilebi.spoon.PDIMessages;
-import org.pentaho.agilebi.modeler.*;
+import org.pentaho.agilebi.modeler.ColResolverController;
+import org.pentaho.agilebi.modeler.ModelerController;
+import org.pentaho.agilebi.modeler.ModelerException;
+import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.modeler.propforms.*;
 import org.pentaho.agilebi.spoon.modeler.SpoonModelerController;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.spoon.ChangedWarningInterface;
 import org.pentaho.di.ui.spoon.TabItemInterface;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulRunner;
 import org.pentaho.ui.xul.binding.BindingFactory;
-import org.pentaho.ui.xul.binding.DefaultBindingFactory;
+import org.pentaho.ui.xul.swt.SwtBindingFactory;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class XulUI implements TabItemInterface {
 
@@ -62,7 +64,7 @@ public class XulUI implements TabItemInterface {
       
       controller = new SpoonModelerController(model);
       this.meta = new ModelerEngineMeta(controller);
-      BindingFactory bf = new DefaultBindingFactory();
+      BindingFactory bf = new SwtBindingFactory();
       bf.setDocument(container.getDocumentRoot());
       container.addEventHandler(controller);
       controller.setBindingFactory(bf);

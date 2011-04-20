@@ -5,9 +5,11 @@ import org.pentaho.agilebi.modeler.BaseModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.IModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.modeler.nodes.*;
+import org.pentaho.agilebi.modeler.nodes.AvailableField;
+import org.pentaho.agilebi.modeler.nodes.MainModelNode;
+import org.pentaho.agilebi.modeler.nodes.RelationalModelNode;
+import org.pentaho.agilebi.modeler.strategy.AutoModelStrategy;
 import org.pentaho.agilebi.modeler.util.ModelerWorkspaceHelper;
-import org.pentaho.metadata.model.concept.types.DataType;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 
 import java.util.Collections;
@@ -42,30 +44,23 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    */
   public void autoModelFlatInBackground( final ModelerWorkspace workspace ) throws ModelerException {
 
+    final AutoModelStrategy strategy = getAutoModelStrategy();
+
     final Display display = Display.findDisplay(Thread.currentThread());
     Runnable worker = new Runnable(){
 
       public void run() {
-        MainModelNode mainModel = new MainModelNode();
-        mainModel.setName(workspace.getModelName());
-        workspace.setModel(mainModel);
         final boolean prevChangeState = workspace.isModelChanging();
-        workspace.setModelIsChanging(true, false);
-
-        List<AvailableField> fields = workspace.getAvailableOlapFields();
-        for( AvailableField field : fields ) {
-          DataType dataType = field.getLogicalColumn().getDataType();
-          if( dataType == DataType.NUMERIC) {
-            // create a measure
-            MeasureMetaData measure = workspace.createMeasureForNode(field);
-            workspace.addMeasure(measure);
-          }
-          // create a dimension
-          workspace.addDimensionFromNode(field);
+        try {
+          MainModelNode node = workspace.getModel();
+          node.setSupressEvents(true);
+          strategy.autoModelOlap(workspace, node);
+        } catch (ModelerException e) {
         }
         display.syncExec(new Runnable(){
 
           public void run() {
+            workspace.getModel().setSupressEvents(false);
             workspace.setModelIsChanging(prevChangeState, true);
             workspace.setSelectedNode(workspace.getModel());
           }
@@ -93,35 +88,41 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    */
   public void autoModelRelationalFlatInBackground(final ModelerWorkspace workspace) throws ModelerException {
 
+    final AutoModelStrategy strategy = getAutoModelStrategy();
+
     final Display display = Display.findDisplay(Thread.currentThread());
     Runnable worker = new Runnable(){
 
       public void run() {
-        RelationalModelNode relationalModelNode = new RelationalModelNode();
-        relationalModelNode.setName(workspace.getRelationalModelName());
-
-        workspace.setRelationalModel(relationalModelNode);
         final boolean prevChangeState = workspace.isModelChanging();
-        workspace.setRelationalModelIsChanging(true, false);
+        try {
+          RelationalModelNode node = workspace.getRelationalModel();
+          node.setSupressEvents(true);
+          strategy.autoModelRelational(workspace, node);
+        } catch (ModelerException e) {
 
-        CategoryMetaData category = new CategoryMetaData("Category");
-
-        List<AvailableField> fields = workspace.getAvailableFields();
-        for( AvailableField field : fields ) {
-          category.add(workspace.createFieldForParentWithNode(category, field));
         }
-        workspace.addCategory(category);
-
         display.syncExec(new Runnable(){
 
           public void run() {
-            workspace.setModelIsChanging(prevChangeState, true);
+            workspace.getRelationalModel().setSupressEvents(false);
+            workspace.setRelationalModelIsChanging(prevChangeState, true);
             workspace.setSelectedRelationalNode(workspace.getRelationalModel());
           }
         });
       }
     };
     new Thread(worker).start();
+  }
+
+  @Override
+  protected MainModelNode getMainModelNode(ModelerWorkspace workspace) {
+    return new MainModelNode();
+  }
+
+  @Override
+  protected RelationalModelNode getRelationalModelNode(ModelerWorkspace workspace) {
+    return new RelationalModelNode();
   }
 
   public void sortFields( List<AvailableField> availableFields) {
@@ -147,5 +148,14 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
       }
     });
   }
+
+  public AutoModelStrategy getAutoModelStrategy() {
+    AutoModelStrategy strategy = super.getAutoModelStrategy();
+//    if (strategy instanceof SimpleAutoModelStrategy) {
+//      ((SimpleAutoModelStrategy) strategy).setSuppressUiEvents(true);
+//    }
+    return strategy;
+  }
+
 }
 

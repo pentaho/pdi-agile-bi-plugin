@@ -1,15 +1,8 @@
 package org.pentaho.agilebi.spoon.modeler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
-import org.pentaho.agilebi.modeler.IModelerSource;
-import org.pentaho.agilebi.modeler.ModelerController;
-import org.pentaho.agilebi.modeler.ModelerException;
-import org.pentaho.agilebi.modeler.ModelerMessagesHolder;
-import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.modeler.*;
 import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
 import org.pentaho.agilebi.modeler.util.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.modeler.util.TableModelerSource;
@@ -46,6 +39,9 @@ import org.pentaho.ui.xul.containers.XulEditpanel;
 import org.pentaho.ui.xul.containers.XulVbox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: nbaker
@@ -215,8 +211,8 @@ public class SpoonModelerController extends ModelerController {
           return;
         }
 
-        boolean refresh = this.workspace.getAvailableFields().isEmpty();
-        if(!StringUtils.isEmpty(theTable) && !this.workspace.getAvailableFields().isEmpty()) {
+        boolean refresh = this.workspace.getAvailableTables().isEmpty();
+        if(!StringUtils.isEmpty(theTable) && !this.workspace.getAvailableTables().isEmpty()) {
 
           MessageBox theMessageBox = new MessageBox(theSpoon.getShell(), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
           theMessageBox.setText(BaseMessages.getString(Spoon.class, "Spoon.Message.Warning.Warning")); //$NON-NLS-1$
