@@ -19,16 +19,11 @@ package org.pentaho.agilebi.spoon;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.pentaho.agilebi.modeler.ColResolverController;
-import org.pentaho.agilebi.modeler.ModelerController;
-import org.pentaho.agilebi.modeler.ModelerException;
-import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.modeler.propforms.*;
+import org.pentaho.agilebi.modeler.*;
 import org.pentaho.agilebi.spoon.modeler.SpoonModelerController;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.spoon.ChangedWarningInterface;
 import org.pentaho.di.ui.spoon.TabItemInterface;
-import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulRunner;
@@ -70,65 +65,7 @@ public class XulUI implements TabItemInterface {
       controller.setBindingFactory(bf);
       controller.setWorkspaceHelper(new SpoonModelerWorkspaceHelper());
       
-      AbstractModelerNodeForm propController = new MeasuresPropertiesForm(LocalizedString.DEFAULT_LOCALE);
-      container.addEventHandler(propController);
-      controller.addPropertyForm(propController);
-      propController.setBindingFactory(bf);
-      propController.init();
-      
-      propController = new DimensionPropertiesForm();
-      container.addEventHandler(propController);
-      controller.addPropertyForm(propController);
-      propController.setBindingFactory(bf);
-      propController.init();
-      
-      propController = new LevelsPropertiesForm(LocalizedString.DEFAULT_LOCALE );
-      container.addEventHandler(propController);
-      controller.addPropertyForm(propController);
-      propController.setBindingFactory(bf);
-      propController.init();
-      
-
-      propController = new HierarchyPropertiesForm();
-      container.addEventHandler(propController);
-      controller.addPropertyForm(propController);
-      propController.setBindingFactory(bf);
-      propController.init();
-      
-      propController = new MainModelerNodePropertiesForm();
-      container.addEventHandler(propController);
-      controller.addPropertyForm(propController);
-      propController.setBindingFactory(bf);
-      propController.init();
-      
-
-      propController = new GenericPropertiesForm();
-      container.addEventHandler(propController);
-      controller.addPropertyForm(propController);
-      propController.setBindingFactory(bf);
-      propController.init();
-      
-      propController = new CategoryPropertiesForm();
-      container.addEventHandler(propController);
-      controller.addPropertyForm(propController);
-      propController.setBindingFactory(bf);
-      propController.init();
-
-      propController = new FieldsPropertiesForm(LocalizedString.DEFAULT_LOCALE);
-      container.addEventHandler(propController);
-      controller.addPropertyForm(propController);
-      propController.setBindingFactory(bf);
-      propController.init();
-
-      propController = new RelationalModelNodePropertiesForm();
-      container.addEventHandler(propController);
-      controller.addPropertyForm(propController);
-      propController.setBindingFactory(bf);
-      propController.init();
-
-      ColResolverController colController = new ColResolverController();
-      container.addEventHandler(colController);
-      controller.setColResolver(colController);
+      ModelerUiHelper.configureControllers(container, model, bf, controller, new ColResolverController());
       
       runner = new SwtXulRunner();
       runner.addContainer(container);
