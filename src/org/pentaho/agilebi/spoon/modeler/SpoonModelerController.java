@@ -145,6 +145,7 @@ public class SpoonModelerController extends ModelerController {
       throw new ModelerException(e);
     }
     super.init();
+    setModellingMode(ModelerMode.ANALYSIS_AND_REPORTING);
   }
 
   public void editDataSource() {
