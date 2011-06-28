@@ -7,14 +7,14 @@ import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.modeler.nodes.AvailableField;
 import org.pentaho.agilebi.modeler.nodes.MainModelNode;
-import org.pentaho.agilebi.modeler.nodes.MeasureMetaData;
-import org.pentaho.metadata.model.concept.types.DataType;
+import org.pentaho.agilebi.modeler.nodes.RelationalModelNode;
+import org.pentaho.agilebi.modeler.strategy.AutoModelStrategy;
+import org.pentaho.agilebi.modeler.util.ModelerWorkspaceHelper;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * User: nbaker
@@ -22,9 +22,11 @@ import java.util.Locale;
  */
 public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper implements IModelerWorkspaceHelper {
 
+  ModelerWorkspaceHelper helper;
 
   public SpoonModelerWorkspaceHelper() {
     super(LocalizedString.DEFAULT_LOCALE);
+    helper = new ModelerWorkspaceHelper(LocalizedString.DEFAULT_LOCALE);
   }
 
   /**
@@ -32,25 +34,7 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    * @param workspace
    */
   public void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
-
-    MainModelNode mainModel = new MainModelNode();
-    mainModel.setName(workspace.getModelName());
-    workspace.setModel(mainModel);
-    workspace.setModelIsChanging(true);
-
-    List<AvailableField> fields = workspace.getAvailableFields();
-    for( AvailableField field : fields ) {
-      DataType dataType = field.getLogicalColumn().getDataType();
-      if( dataType == DataType.NUMERIC) {
-        // create a measure
-        MeasureMetaData measure = workspace.createMeasureForNode(field);
-        workspace.getModel().getMeasures().add(measure);
-      }
-      // create a dimension
-      workspace.addDimensionFromNode(field);
-    }
-    workspace.setModelIsChanging(false);
-
+    helper.autoModelFlat(workspace);
   }
 
 
@@ -60,32 +44,24 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    */
   public void autoModelFlatInBackground( final ModelerWorkspace workspace ) throws ModelerException {
 
+    final AutoModelStrategy strategy = getAutoModelStrategy();
+
     final Display display = Display.findDisplay(Thread.currentThread());
     Runnable worker = new Runnable(){
 
       public void run() {
-        MainModelNode mainModel = new MainModelNode();
-        mainModel.setName(workspace.getModelName());
-        workspace.setModel(mainModel);
         final boolean prevChangeState = workspace.isModelChanging();
-        workspace.setModelIsChanging(true);
-
-        List<AvailableField> fields = workspace.getAvailableFields();
-        for( AvailableField field : fields ) {
-          DataType dataType = field.getLogicalColumn().getDataType();
-          if( dataType == DataType.NUMERIC) {
-            // create a measure
-            MeasureMetaData measure = workspace.createMeasureForNode(field);
-            workspace.getModel().getMeasures().add(measure);
-          }
-          // create a dimension
-          workspace.addDimensionFromNode(field);
+        try {
+          MainModelNode node = workspace.getModel();
+          node.setSupressEvents(true);
+          strategy.autoModelOlap(workspace, node);
+        } catch (ModelerException e) {
         }
         display.syncExec(new Runnable(){
 
           public void run() {
-
-            workspace.setModelIsChanging(prevChangeState);
+            workspace.getModel().setSupressEvents(false);
+            workspace.setModelIsChanging(prevChangeState, true);
             workspace.setSelectedNode(workspace.getModel());
           }
         });
@@ -95,6 +71,60 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
 
 
   }
+
+  /**
+   * Builds a Relational Model that is attribute based, all available fields are added into a single Category
+   * @param workspace
+   * @throws ModelerException
+   */
+  public void autoModelRelationalFlat(ModelerWorkspace workspace) throws ModelerException {
+    helper.autoModelRelationalFlat(workspace);
+  }
+
+  /**
+   * Builds a Relational Model that is attribute based, all available fields are added into a single Category
+   * @param workspace
+   * @throws ModelerException
+   */
+  public void autoModelRelationalFlatInBackground(final ModelerWorkspace workspace) throws ModelerException {
+
+    final AutoModelStrategy strategy = getAutoModelStrategy();
+
+    final Display display = Display.findDisplay(Thread.currentThread());
+    Runnable worker = new Runnable(){
+
+      public void run() {
+        final boolean prevChangeState = workspace.isModelChanging();
+        try {
+          RelationalModelNode node = workspace.getRelationalModel();
+          node.setSupressEvents(true);
+          strategy.autoModelRelational(workspace, node);
+        } catch (ModelerException e) {
+
+        }
+        display.syncExec(new Runnable(){
+
+          public void run() {
+            workspace.getRelationalModel().setSupressEvents(false);
+            workspace.setRelationalModelIsChanging(prevChangeState, true);
+            workspace.setSelectedRelationalNode(workspace.getRelationalModel());
+          }
+        });
+      }
+    };
+    new Thread(worker).start();
+  }
+
+  @Override
+  protected MainModelNode getMainModelNode(ModelerWorkspace workspace) {
+    return new MainModelNode();
+  }
+
+  @Override
+  protected RelationalModelNode getRelationalModelNode(ModelerWorkspace workspace) {
+    return new RelationalModelNode();
+  }
+
   public void sortFields( List<AvailableField> availableFields) {
     Collections.sort(availableFields, new Comparator<AvailableField>() {
       public int compare( AvailableField o1, AvailableField o2 ) {
@@ -118,5 +148,14 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
       }
     });
   }
+
+  public AutoModelStrategy getAutoModelStrategy() {
+    AutoModelStrategy strategy = super.getAutoModelStrategy();
+//    if (strategy instanceof SimpleAutoModelStrategy) {
+//      ((SimpleAutoModelStrategy) strategy).setSuppressUiEvents(true);
+//    }
+    return strategy;
+  }
+
 }
 
