@@ -79,17 +79,16 @@ public class SpoonModelerController extends ModelerController {
     //TODO: migrate this "source" code elsewhere or remove it entirely
 
     XulLabel sourceLabel = (XulLabel) document.getElementById(SOURCE_NAME_LABEL_ID);
-    String connectionName = ""; //$NON-NLS-1$
+    XulLabel relational_sourceLabel = (XulLabel) document.getElementById(this.RELATIONAL_NAME_LABEL_ID);
+
     String tableName = ""; //$NON-NLS-1$
 
     bf.createBinding(workspace, "sourceName", sourceLabel, "value"); //$NON-NLS-1$//$NON-NLS-2$
+    bf.createBinding(workspace, "sourceName", relational_sourceLabel, "value");
 
     if( workspace.getModelSource() != null && workspace.getModelSource() instanceof OutputStepModelerSource) {
       // for now just list the first table in the first physical workspace
       DatabaseMeta databaseMeta = ((ISpoonModelerSource) workspace.getModelSource()).getDatabaseMeta();
-      if( databaseMeta != null ) {
-        connectionName = databaseMeta.getName();
-      }
       List<IPhysicalModel> physicalModels = workspace.getDomain().getPhysicalModels();
       if( physicalModels != null && physicalModels.size() > 0 ) {
         List<? extends IPhysicalTable> tables = physicalModels.get(0).getPhysicalTables();
@@ -104,36 +103,12 @@ public class SpoonModelerController extends ModelerController {
     if(StringUtils.isEmpty(tableName)) {
     	tableName = ModelerMessagesHolder.getMessages().getString("ModelerController.Datasource"); 
     }
-    sourceLabel.setValue(tableName);
 
 
     //TODO: move all this datasource stuff into models! use the existing property form validation to show messages.
-    datasourceButtonBinding = bf.createBinding(workspace, "sourceName", "datasource_button", "visible",
-        new BindingConvertor<Object, Boolean>() { //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+    datasourceButtonBinding = bf.createBinding(workspace, "sourceName", this, "sourceNameForCheck");
+    workspace.setSourceName(tableName);
 
-          public Boolean sourceToTarget( Object value ) {
-
-            boolean isVisible = (value == null || "".equals(value.toString()));
-            XulVbox messageBox = (XulVbox) document.getElementById("main_message"); //$NON-NLS-1$
-            messageBox.setVisible(isVisible);
-
-            XulComponent refreshButton = document.getElementById("refreshButton"); //$NON-NLS-1$
-            //refreshButton.setDisabled(isVisible);
-
-            XulComponent addFieldButton = document.getElementById("addField"); //$NON-NLS-1$
-            addFieldButton.setDisabled(isVisible);
-
-            XulComponent autoPopulateButton = document.getElementById("autoPopulateButton"); //$NON-NLS-1$
-            //autoPopulateButton.setDisabled(isVisible);
-
-            return isVisible;
-          }
-
-          public Object targetToSource( Boolean value ) {
-            return null;
-          }
-        });
-//    Binding modelNameBinding = bf.createBinding(workspace, "modelName", "modelname", "value"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
     bf.setBindingType(Binding.Type.BI_DIRECTIONAL);
     bf.createBinding(this.propPanel, "visible", this, "propVisible"); //$NON-NLS-1$//$NON-NLS-2$
 
@@ -229,8 +204,6 @@ public class SpoonModelerController extends ModelerController {
         if(refresh) {
           TableModelerSource theSource = new TableModelerSource(theDBMeta, theTable, null);
           ModelerWorkspaceUtil.populateModelFromSource(this.workspace, theSource);
-          XulLabel sourceLabel = (XulLabel) document.getElementById(this.SOURCE_NAME_LABEL_ID);
-          sourceLabel.setValue(theTable);
           workspace.setSourceName(theTable);
           datasourceButtonBinding.fireSourceChanged();
           fireBindings();
@@ -270,6 +243,20 @@ public class SpoonModelerController extends ModelerController {
         false, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
     workspace.getModel().setName(fileName);
     workspace.setDirty(true);
+  }
+
+  public void setSourceNameForCheck(String name){
+
+    boolean isVisible = (name == null || "".equals(name.toString()) || name.equals(ModelerMessagesHolder.getMessages().getString("ModelerController.Datasource")));
+    XulVbox messageBox = (XulVbox) document.getElementById("main_message"); //$NON-NLS-1$
+    messageBox.setVisible(isVisible);
+
+    XulComponent addFieldButton = document.getElementById("addField"); //$NON-NLS-1$
+    addFieldButton.setDisabled(isVisible);
+
+    document.getElementById("datasource_button").setVisible(isVisible);
+    document.getElementById("relational_datasource_button").setVisible(isVisible);
+
   }
 
   public void openVisualizer() {
