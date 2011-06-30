@@ -35,6 +35,7 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    */
   public void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
     helper.autoModelFlat(workspace);
+    helper.autoModelRelationalFlat(workspace);
   }
 
 
