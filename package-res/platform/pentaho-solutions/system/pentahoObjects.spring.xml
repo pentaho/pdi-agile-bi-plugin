@@ -18,7 +18,7 @@ PentahoSystem which is initialized after Spring
   
   <bean id="ISolutionEngine" class="org.pentaho.platform.engine.services.solution.SolutionEngine" scope="prototype" />
   <!-- Uncomment the following line to use a filesystem-based repository. Note: does not support ACLs.  -->
-  <bean id="ISolutionRepository" class="org.pentaho.agilebi.platform.AgileBISolutionRepository" scope="session" />
+  <bean id="ISolutionRepository" class="org.pentaho.agilebi.platform.AgileBISolutionRepository" scope="singleton" />
   <!-- Uncomment the following line to use a filesystem/db-based repository with meta information stored in a db  -->
   <!--  <bean id="ISolutionRepository" class="org.pentaho.platform.repository.solution.dbbased.DbBasedSolutionRepository" scope="session" /> -->
   <bean id="ISolutionRepositoryService" class="org.pentaho.platform.repository.solution.SolutionRepositoryServiceImpl" scope="session" />
@@ -91,7 +91,8 @@ PentahoSystem which is initialized after Spring
   </bean>
   <bean id="connection-XML" class="org.pentaho.platform.plugin.services.connections.xquery.XQConnection" scope="prototype" />
   <bean id="connection-HQL" class="org.pentaho.platform.plugin.services.connections.hql.HQLConnection" scope="prototype" />
-  
+  <bean id="IThemeManager" class="org.pentaho.platform.web.html.themes.DefaultThemeManager" scope="singleton" />
+
   <!-- actual bean defined in repository.spring.xml; aliased here -->
   <!--alias name="pentahoContentRepository" alias="IPentahoContentRepository"/-->
   
