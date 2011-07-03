@@ -406,6 +406,10 @@
       <servlet-name>BrowserLocale</servlet-name>
       <jsp-file>/jsp/browserLocale.jsp</jsp-file>
     </servlet>
+	<servlet>
+    <servlet-name>ThemeServlet</servlet-name>
+    <servlet-class>org.pentaho.platform.web.servlet.ThemeServlet</servlet-class>
+  </servlet>
   	<!--   End BISERVER-3640 -->
 
 	<!-- ================================= merged servlets =================================== -->
@@ -831,7 +835,12 @@
 	<servlet-mapping>
 		<servlet-name>SampleFlashDashboard</servlet-name>
 		<url-pattern>/SampleFlashDashboard</url-pattern>
-	</servlet-mapping>	
+	</servlet-mapping>
+  
+   	<servlet-mapping>
+		<servlet-name>ThemeServlet</servlet-name>
+		<url-pattern>/js/themes.js</url-pattern>
+	</servlet-mapping>
     <!-- [END SAMPLE SERVLET MAPPINGS] -->
 
 	<!-- insert additional servlet mappings -->
