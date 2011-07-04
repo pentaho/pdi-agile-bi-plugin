@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin title="common-ui">
+   <static-paths>
+     <!-- this translates to /pentaho/content/common-ui/resources/* -->
+     <static-path url="/common-ui/resources" localFolder="resources"/>
+   </static-paths>
+
+    <content-generator scope="session" id="reposvc" type="reposvc">
+        <classname>org.pentaho.common.ui.services.SolutionUrlContentGenerator</classname>
+        <title>RepositoryService</title>
+    </content-generator>
+
+</plugin>
