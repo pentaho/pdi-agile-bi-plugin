@@ -40,7 +40,7 @@ div.active {
 	font-size: .86em;
 	position: absolute;
   padding-top: 10px;
-  right: 0px;
+  left: 0px;
 
 }
 
@@ -244,11 +244,11 @@ div.active {
 /* End measures and attributes bar */
 
 .editor #reportContent {
-  padding: 10px 0px 0px 10px;
+  padding: 10px 10px 0px 0px;
 }
 
 #reportContent {
-	float: left;
+	float: right;
 	position: relative;
 }
 
