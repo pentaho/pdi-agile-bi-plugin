@@ -305,16 +305,18 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
     final DefaultDataAttributeContext dataAttributeContext = new DefaultDataAttributeContext();
 
       for ( String name : names ) {
-        final DataAttributes attributes = dataSchema.getAttributes(name);
-        final String source = (String) attributes.getMetaAttribute(MetaAttributeNames.Core.NAMESPACE, MetaAttributeNames.Core.SOURCE, String.class, dataAttributeContext);
-        if ( !source.equals("environment") && !source.equals("parameter") ) {
-          String displayStr = (String) attributes.getMetaAttribute
-          (MetaAttributeNames.Formatting.NAMESPACE, MetaAttributeNames.Formatting.LABEL,
-              String.class, dataAttributeContext);
-          if (displayStr != null && displayStr.length() > 0) {
-            items.add(displayStr);
-          }
-        }
+    	if(name.startsWith("::column::")) {
+	        final DataAttributes attributes = dataSchema.getAttributes(name);
+	        final String source = (String) attributes.getMetaAttribute(MetaAttributeNames.Core.NAMESPACE, MetaAttributeNames.Core.SOURCE, String.class, dataAttributeContext);
+	        if ( !source.equals("environment") && !source.equals("parameter") ) {
+	          String displayStr = (String) attributes.getMetaAttribute
+	          (MetaAttributeNames.Formatting.NAMESPACE, MetaAttributeNames.Formatting.LABEL,
+	              String.class, dataAttributeContext);
+	          if (displayStr != null && displayStr.length() > 0) {
+	            items.add(displayStr);
+	          }
+	        }
+    	}
       }
       
     }
