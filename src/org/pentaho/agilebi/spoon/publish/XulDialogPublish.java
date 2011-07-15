@@ -260,6 +260,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   }
   
   public void browseServer(){
+	final boolean isPublishDataSourceCheck = publishDatasourceCheck.isChecked();
     if(publishModel.isConnected() == false){
 
       try{
@@ -277,6 +278,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
           @Override
           public void run() {
             boolean connected = connect();
+            publishDataSource = !doNotPublishDatasource  && isPublishDataSourceCheck;            
             this.waitBox.stop();
             if(connected == false){
               return; 
@@ -366,8 +368,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   
     
   public void okClick() {
-    
-    publishDataSource = !doNotPublishDatasource  && publishDatasourceCheck.isChecked();
+	final boolean isPublishDataSourceCheck = publishDatasourceCheck.isChecked();
     accepted = true;
     if(publishModel.isConnected() == false){
       try{
@@ -385,6 +386,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
           @Override
           public void run() {
             boolean connected = connect();
+            publishDataSource = !doNotPublishDatasource  && isPublishDataSourceCheck;
             this.waitBox.stop();
             if(connected == false){
               return; 

@@ -153,6 +153,7 @@ public class ModelServerPublish {
     int result = 0;
     if( databaseMeta.getAccessType() != DatabaseMeta.TYPE_ACCESS_NATIVE) {
       result += REMOTE_CONNECTION_MUST_BE_JNDI;
+      return result;
     }
     
     // compare the local database meta with the remote connection
