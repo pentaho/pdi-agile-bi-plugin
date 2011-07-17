@@ -22,15 +22,17 @@
 
     <dependency org="commons-vfs" name="commons-vfs" rev="1.0" conf="default->default"/>
 
-    <dependency org="pentaho.kettle" name="kettle-engine" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
+    <dependency org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
                 changing="true"/>
-    <dependency org="pentaho.kettle" name="kettle-core" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
+    <dependency org="pentaho-kettle" name="kettle-core" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
                 changing="true"/>
-    <dependency org="pentaho.kettle" name="kettle-db" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
+    <dependency org="pentaho-kettle" name="kettle-db" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
                 changing="true"/>
-    <dependency org="pentaho.kettle" name="kettle-ui-swt" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
+    <dependency org="pentaho-kettle" name="kettle-ui-swt" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
                 changing="true"/>
-
+    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" conf="default->default" 
+                changing="true"/>
+                
     <!--    exclude jetty's version of servlet api. it's checksum fails-->
     <dependency org="org.mortbay.jetty" name="jetty-plus" rev="6.1.21" transitive="false" conf="default->default"/>
     <dependency org="org.mortbay.jetty" name="jetty" rev="6.1.21" conf="default->default">
@@ -38,14 +40,9 @@
     </dependency>
     <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="default->default"/>
 
-    <!-- pentaho-database and pentaho-xul-framework must match JARs required by kettle-ui-swt
--->
-    <!-- this manual sync should go away once this project is propertly ivy-ized
--->
+    <!-- pentaho-xul-framework must match JARs required by kettle-ui-swt -->
+    <!-- this manual sync should go away once this project is propertly ivy-ized -->
 
-    <dependency org="pentaho" name="pentaho-database" rev="${dependency.pentaho-database.revision}"
-                conf="default->default"
-                changing="true"/>
     <dependency org="pentaho" name="pentaho-database-model" rev="${dependency.pentaho-database.revision}"
                 conf="default->default" changing="true"/>
 
