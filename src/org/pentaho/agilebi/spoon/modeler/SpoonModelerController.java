@@ -177,9 +177,9 @@ public class SpoonModelerController extends ModelerController {
       if (theDBName != null) {
         SpoonDBDelegate theDelegate = new SpoonDBDelegate(theSpoon);
         DatabaseMeta theDBMeta = DatabaseMeta.findDatabase(theDatabasesInterface.getDatabases(), theDBName);
-        String theTable = theDelegate.exploreDB(theDBMeta, false);
+        String theTableAndSchema[] = theDelegate.exploreDB(theDBMeta, false);
 
-        if (StringUtils.isEmpty(theTable)) {
+        if (StringUtils.isEmpty(theTableAndSchema[1])) {
           MessageBox theMessageBox = new MessageBox(theSpoon.getShell(), SWT.ICON_ERROR | SWT.OK);
           theMessageBox.setText(BaseMessages.getString(Spoon.class, "Spoon.Message.Warning.Warning")); //$NON-NLS-1$
           theMessageBox.setMessage(BaseMessages.getString(ModelerWorkspace.class, "Spoon.Message.Model.EmptyTable")); //$NON-NLS-1$
@@ -188,7 +188,7 @@ public class SpoonModelerController extends ModelerController {
         }
 
         boolean refresh = this.workspace.getAvailableTables().isEmpty();
-        if(!StringUtils.isEmpty(theTable) && !this.workspace.getAvailableTables().isEmpty()) {
+        if(!StringUtils.isEmpty(theTableAndSchema[1]) && !this.workspace.getAvailableTables().isEmpty()) {
 
           MessageBox theMessageBox = new MessageBox(theSpoon.getShell(), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
           theMessageBox.setText(BaseMessages.getString(Spoon.class, "Spoon.Message.Warning.Warning")); //$NON-NLS-1$
@@ -202,9 +202,9 @@ public class SpoonModelerController extends ModelerController {
           }
         }
         if(refresh) {
-          TableModelerSource theSource = new TableModelerSource(theDBMeta, theTable, null);
+          TableModelerSource theSource = new TableModelerSource(theDBMeta, theTableAndSchema[1], theTableAndSchema[0]);
           ModelerWorkspaceUtil.populateModelFromSource(this.workspace, theSource);
-          workspace.setSourceName(theTable);
+          workspace.setSourceName(theTableAndSchema[1]);
           datasourceButtonBinding.fireSourceChanged();
           fireBindings();
         }
