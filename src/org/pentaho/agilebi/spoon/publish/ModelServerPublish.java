@@ -124,17 +124,19 @@ public class ModelServerPublish {
    * a cached connection is returned.
    * @return
    */
-  public IConnection getRemoteConnection( String connectionName, boolean force ) throws ConnectionServiceException {
+  public IConnection getRemoteConnection( String connectionName, boolean force ) {
     if( remoteConnection == null || force ) {
       // get information about the remote connection
       ConnectionServiceClient serviceClient = new ConnectionServiceClient();
       serviceClient.setHost(biServerConnection.getUrl());
       serviceClient.setUserId(biServerConnection.getUserId());
       serviceClient.setPassword(biServerConnection.getPassword());
-      
-      remoteConnection = serviceClient.getConnectionByName(connectionName);
-//      serviceClientStatus = serviceClient.getStatus();
 
+      try {
+    	  remoteConnection = serviceClient.getConnectionByName(connectionName);
+      } catch (ConnectionServiceException e) {
+    	  remoteConnection = null;
+      }
     }
     return remoteConnection;
   }
