@@ -17,7 +17,7 @@
     <!--
 	This is the URL to the user guide
     -->
-    <documentation-url>docs/community_user_guide.pdf</documentation-url> 
+    <documentation-url>docs/InformationMap.html</documentation-url> 
 
 	<log-file>server.log</log-file>
 	<log-level>DEBUG</log-level>
