@@ -116,6 +116,7 @@
 			<include name="eigenbase-*.jar"/>
 			<include name="commons-math-*.jar"/>
 			<include name="javacup-*.jar"/>
+			<include name="olap4j-*.jar"/>
 
 			<include name="gwt-dev-*.jar"/>
 			<include name="gwt-user-*.jar"/>
