@@ -94,7 +94,10 @@
                 conf="default->default"/>
 
     <!-- Pentaho -->
-    <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="${dependency.bi-platform.revision}"
+    <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="${dependency.bi-platform.pentaho-bi-platform-web-servlet.revision}"
+                changing="true"
+                conf="default->default" transitive="false"/>
+    <dependency org="pentaho" name="pentaho-bi-platform-plugin-actions" rev="${dependency.bi-platform.pentaho-bi-platform-plugin-actions.revision}"
                 changing="true"
                 conf="default->default" transitive="false"/>
     <dependency org="pentaho" name="pentaho-bi-platform-security-userroledao" rev="${dependency.bi-platform.revision}"
