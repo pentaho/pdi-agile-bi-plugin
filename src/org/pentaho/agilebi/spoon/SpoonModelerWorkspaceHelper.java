@@ -18,6 +18,7 @@ import org.pentaho.agilebi.modeler.util.ModelerWorkspaceHelper;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.Collections;
@@ -185,9 +186,9 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
   public static GeoContext initGeoContext() {
 
     try {
-      Reader propsReader = new FileReader(new File(GEO_CONFIG_FILE_LOCATION));
+      FileInputStream fis = new FileInputStream(new File(GEO_CONFIG_FILE_LOCATION));
       Properties props = new Properties();
-      props.load(propsReader);
+      props.load(fis);
       GeoContextPropertiesProvider config = new GeoContextPropertiesProvider(props);
 
       return GeoContextFactory.create(config);
