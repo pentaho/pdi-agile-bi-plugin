@@ -3,6 +3,7 @@ package org.pentaho.agilebi.spoon.modeler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.pentaho.agilebi.modeler.*;
+import org.pentaho.agilebi.modeler.geo.GeoContext;
 import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
 import org.pentaho.agilebi.modeler.util.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.modeler.util.TableModelerSource;
@@ -60,11 +61,12 @@ public class SpoonModelerController extends ModelerController {
   private XulEditpanel propPanel;
 
   public SpoonModelerController(){
-    this(new ModelerWorkspace(new SpoonModelerWorkspaceHelper()));
+    this(new ModelerWorkspace(new SpoonModelerWorkspaceHelper(), SpoonModelerWorkspaceHelper.initGeoContext()));
   }
 
   public SpoonModelerController(ModelerWorkspace work){
     super(work);
+    work.setGeoContext(SpoonModelerWorkspaceHelper.initGeoContext());
   }
 
   public void init() throws ModelerException{
