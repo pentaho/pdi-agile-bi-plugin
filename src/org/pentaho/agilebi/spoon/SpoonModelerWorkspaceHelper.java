@@ -5,26 +5,16 @@ import org.pentaho.agilebi.modeler.BaseModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.IModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.modeler.geo.GeoContext;
-import org.pentaho.agilebi.modeler.geo.GeoContextFactory;
-import org.pentaho.agilebi.modeler.geo.GeoContextPropertiesProvider;
 import org.pentaho.agilebi.modeler.nodes.AvailableField;
 import org.pentaho.agilebi.modeler.nodes.MainModelNode;
 import org.pentaho.agilebi.modeler.nodes.RelationalModelNode;
 import org.pentaho.agilebi.modeler.strategy.AutoModelStrategy;
-import org.pentaho.agilebi.modeler.strategy.SimpleAutoModelStrategy;
-import org.pentaho.agilebi.modeler.strategy.StarSchemaAutoModelStrategy;
 import org.pentaho.agilebi.modeler.util.ModelerWorkspaceHelper;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.Reader;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * User: nbaker
@@ -34,13 +24,9 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
 
   ModelerWorkspaceHelper helper;
 
-  GeoContext geoContext;
-  private static final String GEO_CONFIG_FILE_LOCATION = "plugins/spoon/agile-bi/geoRoles.properties"; //$NON-NLS-1$
-
   public SpoonModelerWorkspaceHelper() {
     super(LocalizedString.DEFAULT_LOCALE);
     helper = new ModelerWorkspaceHelper(LocalizedString.DEFAULT_LOCALE);
-    this.geoContext = initGeoContext();
   }
 
   /**
@@ -48,10 +34,6 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    * @param workspace
    */
   public void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
-    if(this.geoContext == null) {
-      this.geoContext = initGeoContext();
-    }
-    workspace.setGeoContext(this.geoContext);
     helper.autoModelFlat(workspace);
     helper.autoModelRelationalFlat(workspace);
   }
@@ -61,33 +43,27 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    * Builds an OLAP model that is attribute based.
    * @param workspace
    */
-  public void autoModelFlatInBackground( ModelerWorkspace workspace ) throws ModelerException {
+  public void autoModelFlatInBackground( final ModelerWorkspace workspace ) throws ModelerException {
 
-    if(this.geoContext == null) {
-      this.geoContext = initGeoContext();
-    }
-    workspace.setGeoContext(this.geoContext);
-    final ModelerWorkspace ws = workspace;
     final AutoModelStrategy strategy = getAutoModelStrategy();
 
     final Display display = Display.findDisplay(Thread.currentThread());
     Runnable worker = new Runnable(){
 
       public void run() {
-        final boolean prevChangeState = ws.isModelChanging();
+        final boolean prevChangeState = workspace.isModelChanging();
         try {
-
-          MainModelNode node = ws.getModel();
+          MainModelNode node = workspace.getModel();
           node.setSupressEvents(true);
-          strategy.autoModelOlap(ws, node);
+          strategy.autoModelOlap(workspace, node);
         } catch (ModelerException e) {
         }
         display.syncExec(new Runnable(){
 
           public void run() {
-            ws.getModel().setSupressEvents(false);
-            ws.setModelIsChanging(prevChangeState, true);
-            ws.setSelectedNode(ws.getModel());
+            workspace.getModel().setSupressEvents(false);
+            workspace.setModelIsChanging(prevChangeState, true);
+            workspace.setSelectedNode(workspace.getModel());
           }
         });
       }
@@ -176,26 +152,10 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
 
   public AutoModelStrategy getAutoModelStrategy() {
     AutoModelStrategy strategy = super.getAutoModelStrategy();
-
-    if (strategy instanceof SimpleAutoModelStrategy) {
-      ((SimpleAutoModelStrategy) strategy).setGeoContext(initGeoContext());
-    }
+//    if (strategy instanceof SimpleAutoModelStrategy) {
+//      ((SimpleAutoModelStrategy) strategy).setSuppressUiEvents(true);
+//    }
     return strategy;
-  }
-
-  public static GeoContext initGeoContext() {
-
-    try {
-      FileInputStream fis = new FileInputStream(new File(GEO_CONFIG_FILE_LOCATION));
-      Properties props = new Properties();
-      props.load(fis);
-      GeoContextPropertiesProvider config = new GeoContextPropertiesProvider(props);
-
-      return GeoContextFactory.create(config);
-    } catch (Exception e) {
-      //
-    }
-    return null;
   }
 
 }
