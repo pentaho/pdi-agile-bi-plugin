@@ -218,7 +218,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	public void refreshData() {
 		// first clear the server cache
 
-		AggregationManager.instance().getCacheControl(null).flushSchemaCache();
+		AggregationManager.instance().getCacheControl(null, null).flushSchemaCache();
 		browser.execute(visualization.generateRefreshDataJavascript(xmiFileLocation, modelId));
 	}
 
@@ -226,7 +226,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 		// first save the view
 		// if (true) throw new UnsupportedOperationException();
 		// TODO: can we do this without requiring a "remote save"?
-		AggregationManager.instance().getCacheControl(null).flushSchemaCache();
+		AggregationManager.instance().getCacheControl(null, null).flushSchemaCache();
 
 		browser.execute(visualization.generateRefreshModelJavascript(xmiFileLocation, modelId));
 		// "gCtrlr.repositoryBrowserController.remoteSave('"+modelId+"','tmp', '', 'xanalyzer', true)"
