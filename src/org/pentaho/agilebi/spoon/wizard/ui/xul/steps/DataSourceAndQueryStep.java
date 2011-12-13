@@ -115,33 +115,40 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
       MQLEditorServiceDelegate delegate = new MQLEditorServiceDelegate(getDomainRepo()) {
         @Override
         public String[][] getPreviewData(MqlQuery query, int page, int limit) {
-          org.pentaho.metadata.query.model.Query mqlQuery = convertQueryModel(query);
-          String mqlString = new QueryXmlHelper().toXML(mqlQuery);
+          try {
+            org.pentaho.metadata.query.model.Query mqlQuery = convertQueryModel(query);
+            String mqlString = new QueryXmlHelper().toXML(mqlQuery);
+
+
+            MasterReport masterReport = (MasterReport) getEditorModel().getReportDefinition();
+            PmdDataFactory df = (PmdDataFactory) masterReport.getDataFactory();
+
+            df.initialize(masterReport.getConfiguration(),
+            masterReport.getResourceManager(),
+            masterReport.getContentBase(),
+            masterReport.getResourceBundleFactory());
+            df.setQuery("default", mqlString);
+            PmdPreviewWorker worker = new PmdPreviewWorker(df, "default", 0,  limit);
+            worker.run();
+            if(worker.getException() != null){
+              worker.getException().printStackTrace();
+            }
+            TableModel model = worker.getResultTableModel();
+            int colCount = model.getColumnCount();
+            int rowCount = model.getRowCount();
+            String[][] results = new String[rowCount][colCount];
+            for(int y = 0; y < rowCount; y++ ){
+              for(int x=0; x < colCount; x++){
+                results[y][x] = ""+model.getValueAt(y, x);
+              }
+            }
+            return results;
+          } catch (ReportDataFactoryException e) {
+            getDesignTimeContext().userError(e);
+            return null;
+          }
           
 
-          MasterReport masterReport = (MasterReport) getEditorModel().getReportDefinition();
-          PmdDataFactory df = (PmdDataFactory) masterReport.getDataFactory();
-            df.initialize(masterReport.getConfiguration(), 
-                masterReport.getResourceManager(), 
-                masterReport.getContentBase(), 
-                masterReport.getResourceBundleFactory());
-          df.setQuery("default", mqlString);
-          
-          PmdPreviewWorker worker = new PmdPreviewWorker(df, "default", 0,  limit);
-          worker.run();
-          if(worker.getException() != null){
-            worker.getException().printStackTrace();
-          }
-          TableModel model = worker.getResultTableModel();
-          int colCount = model.getColumnCount();
-          int rowCount = model.getRowCount();
-          String[][] results = new String[rowCount][colCount];
-          for(int y = 0; y < rowCount; y++ ){
-            for(int x=0; x < colCount; x++){
-              results[y][x] = ""+model.getValueAt(y, x);
-            }
-          }
-          return results;
         }
       };
       return delegate;
