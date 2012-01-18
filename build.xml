@@ -241,11 +241,16 @@
 		<delete dir="approot.stage.dir}/platform/webapps/pentaho/WEB-INF/jpivot" />
 	  
 		<!-- remove solution folders that aren't necessary -->
-		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/data-access"/>
-		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/BIRT"/>
+
+		<!--<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/data-access"/>-->
+
+        <delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/BIRT"/>
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/reporting"/>
-		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/pentaho-cdf"/>
-		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/admin"/>
+
+		<!-- CDF is needed for the new analyzer visualizations -->
+        <!--<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/pentaho-cdf"/>-->
+
+        <delete dir="${approot.stage.dir}/platform/pentaho-solutions/admin"/>
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/bi-developers"/>
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/cdf"/>
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/steel-wheels"/>

@@ -70,7 +70,7 @@ PentahoSystem which is initialized after Spring
   <bean id="IServiceManager" class="org.pentaho.platform.plugin.services.pluginmgr.servicemgr.DefaultServiceManager" scope="singleton">
     <property name="serviceTypeManagers"><list>
         <ref bean="gwtServiceManager"/>
-        <ref bean="axisServiceManager"/>
+        <!--<ref bean="axisServiceManager"/>-->
       </list></property>
   </bean>
   <bean id="ITempFileDeleter" class="org.pentaho.platform.web.http.session.SessionTempFileDeleter" scope="prototype" />
@@ -98,5 +98,7 @@ PentahoSystem which is initialized after Spring
   
   <!-- actual bean defined in applicationContext-pentaho-security-*.spring.xml; aliased here -->
   <alias name="pentahoUserRoleListService" alias="IUserDetailsRoleListService"/>
-  
+
+  <bean id="ICacheExpirationRegistry" class="org.pentaho.platform.plugin.services.cache.CacheExpirationRegistry" scope="singleton" />
+
 </beans>

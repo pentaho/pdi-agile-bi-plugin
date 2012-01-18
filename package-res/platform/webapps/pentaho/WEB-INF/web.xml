@@ -177,6 +177,12 @@
 		<filter-name>Proxy Trusting Filter</filter-name>
 		<url-pattern>/SolutionRepositoryService</url-pattern>
 	</filter-mapping>
+
+  <filter-mapping>
+    <filter-name>Proxy Trusting Filter</filter-name>
+    <url-pattern>/content/geoprint</url-pattern>
+  </filter-mapping>
+
 	<!-- Filter mapping for security. Note that all objects are locked down. We could change this here as desired. -->
 	<filter-mapping>
 		<filter-name>Spring Security Filter Chain Proxy</filter-name>
@@ -413,6 +419,11 @@
   	<!--   End BISERVER-3640 -->
 
 	<!-- ================================= merged servlets =================================== -->
+	<servlet>
+    <servlet-name>CacheExpirationService</servlet-name>
+    <servlet-class>org.pentaho.platform.web.servlet.CacheExpirationService</servlet-class>
+  </servlet>
+
 	<servlet>
 		<servlet-name>AdhocWebService</servlet-name>
 		<servlet-class>org.pentaho.platform.web.servlet.AdhocWebService</servlet-class>
@@ -775,6 +786,11 @@
 		<servlet-name>ResetRepository</servlet-name>
 		<url-pattern>/ResetRepositoryService</url-pattern>
 	</servlet-mapping>
+
+	<servlet-mapping>
+    <servlet-name>CacheExpirationService</servlet-name>
+    <url-pattern>/CacheExpirationService</url-pattern>
+  </servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>AdhocWebService</servlet-name>
