@@ -42,6 +42,10 @@
 				value="."
 				description="Location of Analyzer Agile BI plugin" />
 	
+    <property name="geo.dist.dir"
+                value="."
+                description="Location of the Geo Agile BI plugin" />
+    
 	<property name="pdiwithagilebi"
 				value="pdi-ce-agile-bi" 
 				description="Name of the pdi distribution with agile bi"/>
@@ -281,6 +285,29 @@
 			</unzip>
       	  </then>
 	     </if>
+
+        <!-- Step 4: Unzip the geo dist if available -->
+        <fail message="Pentaho Geo agilebi plugin zip file is not available.">
+            <condition>
+                <not>
+                    <resourcecount count="1">
+                        <fileset id="agilebiplugin" dir="${geo.dist.dir}" includes="geo-agilebi-plugin-*.zip" />
+                    </resourcecount>
+                </not>
+            </condition>
+        </fail>
+
+        <if>
+            <available file="${geo.dist.dir}" />
+            <then>
+                <unzip dest="${approot.stage.dir}/platform/pentaho-solutions/system">
+                    <fileset dir="${geo.dist.dir}">
+                        <include name="geo-agilebi-plugin-*.zip"/>
+                    </fileset>
+                </unzip>
+            </then>
+        </if>
+
 	</target>
 	
 	
