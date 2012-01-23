@@ -135,7 +135,7 @@ public class PRPTVisualization extends AbstractVisualization {
       PmdDataFactory theDataFactory = (PmdDataFactory) masterReport.getDataFactory();
       String theXmiFile = theDataFactory.getXmiFile();
       
-      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper(), SpoonModelerWorkspaceHelper.initGeoContext());
       XmiParser parser = new XmiParser();
       FileInputStream inputStream = new FileInputStream(new File(theXmiFile));
       Domain domain = parser.parseXmi(inputStream);
@@ -301,7 +301,7 @@ public class PRPTVisualization extends AbstractVisualization {
       Domain domain = parser.parseXmi(inputStream);
       inputStream.close();      
       
-      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper(), SpoonModelerWorkspaceHelper.initGeoContext());
       LogicalModel logical = domain.getLogicalModels().get(0);
       Object property = logical.getProperty("source_type"); //$NON-NLS-1$
       if( property != null ) {

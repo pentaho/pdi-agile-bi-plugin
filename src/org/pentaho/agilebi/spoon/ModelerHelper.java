@@ -172,7 +172,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
   public void createModelerTabFromOutputStep() throws ModelerException {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
 
-    ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+    ModelerWorkspace model = createModelerWorkspace();
     
     populateModelFromOutputStep(model);
     
@@ -184,7 +184,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
 
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
 
-    ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+    ModelerWorkspace model = createModelerWorkspace();
     model.setModelSource(source);
     ModelerWorkspaceUtil.populateModelFromSource(model, source);
     
@@ -195,7 +195,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
   // TODO: replace this code after M1
   public Domain loadDomain(String fname){
     try{
-      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+      ModelerWorkspace model = createModelerWorkspace();
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$
       ModelerWorkspaceUtil.loadWorkspace(fname, xml, model);
       return model.getDomain();
@@ -254,7 +254,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
         }
 
         try{
-          ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+          ModelerWorkspace model = createModelerWorkspace();
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
           quickVisualize( model );
         } catch(Exception e){
@@ -271,7 +271,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
     }
 
     try{
-      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+      ModelerWorkspace model = createModelerWorkspace();
       populateModelFromOutputStep(model);
       quickVisualize( model );
     } catch(Exception e){
@@ -303,7 +303,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
         public void run() {
           
           try {
-            ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+            ModelerWorkspace model = createModelerWorkspace();
             populateModelFromOutputStep(model);
 
             ObjectUtilities.setClassLoader(getClass().getClassLoader());
@@ -393,7 +393,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
   public ModelerWorkspace clone(ModelerWorkspace model) throws ModelerException{
     String fileName = createTemporaryModel(model, false, false);
     
-    ModelerWorkspace newModel = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+    ModelerWorkspace newModel = createModelerWorkspace();
     
     newModel.setTemporary(true);
     newModel.setDirty(false);
@@ -417,7 +417,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
           
         TableModelerSource source = new TableModelerSource( databaseMeta, std.getTableName(), std.getSchemaName());
         try{
-          ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+          ModelerWorkspace model = createModelerWorkspace();
           ModelerWorkspaceUtil.populateModelFromSource(model, source);
           AgileBiModelerPerspective.getInstance().createTabForModel(model, getUniqueUntitledTabName(spoon, MODELER_NAME));
         } catch(Exception e){
@@ -430,12 +430,16 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
   
   public void createEmptyModel() {
     try {
-      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+      ModelerWorkspace model = createModelerWorkspace();
       AgileBiModelerPerspective.getInstance().createTabForModel(model, MODELER_NAME);
       SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiModelerPerspective.class);
     } catch (Exception e) {
       new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
     }
+  }
+
+  private ModelerWorkspace createModelerWorkspace() {
+    return new ModelerWorkspace(new SpoonModelerWorkspaceHelper(), SpoonModelerWorkspaceHelper.initGeoContext());
   }
 
   public void updateMenu(Document doc) {

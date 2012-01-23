@@ -41,6 +41,7 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
     super(LocalizedString.DEFAULT_LOCALE);
     helper = new ModelerWorkspaceHelper(LocalizedString.DEFAULT_LOCALE);
     this.geoContext = initGeoContext();
+    helper.setAutoModelStrategy(new SimpleAutoModelStrategy(LocalizedString.DEFAULT_LOCALE, this.geoContext));
   }
 
   /**
@@ -52,8 +53,10 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
       this.geoContext = initGeoContext();
     }
     workspace.setGeoContext(this.geoContext);
-    helper.autoModelFlat(workspace);
-    helper.autoModelRelationalFlat(workspace);
+    final ModelerWorkspace ws = workspace;
+    final AutoModelStrategy strategy = getAutoModelStrategy();
+    strategy.autoModelOlap(ws, ws.getModel());
+    strategy.autoModelRelational(ws, ws.getRelationalModel());
   }
 
 

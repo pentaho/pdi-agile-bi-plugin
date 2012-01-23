@@ -163,7 +163,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
         }
       }
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-      ModelerWorkspace theModel = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+      ModelerWorkspace theModel = new ModelerWorkspace(new SpoonModelerWorkspaceHelper(), SpoonModelerWorkspaceHelper.initGeoContext());
       theModel.setTemporary(false);
       theModel.setDirty(false);
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$

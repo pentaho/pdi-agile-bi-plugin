@@ -131,7 +131,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
     try {
       
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+      ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper(), SpoonModelerWorkspaceHelper.initGeoContext());
       createTabForModel(model, createShortName(fname));
 
       String xml = new String(IOUtils.toByteArray(new FileInputStream(new File(fname))), "UTF-8"); //$NON-NLS-1$

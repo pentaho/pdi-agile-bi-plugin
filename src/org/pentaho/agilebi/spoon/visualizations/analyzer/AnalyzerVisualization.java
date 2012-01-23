@@ -311,7 +311,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 			theRunner.addContainer(theXulContainer);
 			theRunner.initialize();
 
-			ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper());
+			ModelerWorkspace model = new ModelerWorkspace(new SpoonModelerWorkspaceHelper(), SpoonModelerWorkspaceHelper.initGeoContext());
 	    XmiParser parser = new XmiParser();
 	    FileInputStream inputStream = new FileInputStream(new File(modelFileName));
 	    Domain domain = parser.parseXmi(inputStream);
