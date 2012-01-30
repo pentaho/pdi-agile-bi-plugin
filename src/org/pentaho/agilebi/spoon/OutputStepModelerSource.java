@@ -49,7 +49,9 @@ public class OutputStepModelerSource extends TableModelerSource {
 
 	public Domain generateDomain() throws ModelerException {
 		Domain d = ModelerSourceUtil.generateDomain(getDatabaseMeta(), getSchemaName(), getTableName());
-    d.getLogicalModels().get(0).setProperty("SUPPORTS_OLAP", "true");
+    for(LogicalModel lModel : d.getLogicalModels()) {
+      lModel.setProperty("SUPPORTS_OLAP", "true");
+    }
     return d;
 	}
 

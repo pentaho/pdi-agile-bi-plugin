@@ -39,7 +39,9 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.dom4j.DocumentHelper;
+import org.pentaho.agilebi.modeler.BaseModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.ModelerException;
+import org.pentaho.agilebi.modeler.ModelerPerspective;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
 import org.pentaho.commons.util.repository.type.CmisObject;
@@ -563,7 +565,7 @@ public class ModelServerPublish {
     File publishFile = new File(modelsDir, schemaFilePath); 
     publishFile.createNewFile();
 
-    LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
+    LogicalModel lModel = this.model.getLogicalModel(ModelerPerspective.ANALYSIS);
 
     MondrianModelExporter exporter = new MondrianModelExporter(lModel, LocalizedString.DEFAULT_LOCALE);
     String mondrianSchema = exporter.createMondrianModelXML();

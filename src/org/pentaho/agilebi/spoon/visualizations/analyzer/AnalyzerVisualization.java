@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.jaxen.JaxenException;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.dom4j.Dom4jXPath;
+import org.pentaho.agilebi.modeler.ModelerPerspective;
 import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
 import org.pentaho.agilebi.spoon.ModelerHelper;
 import org.pentaho.agilebi.spoon.PDIMessages;
@@ -317,7 +318,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	    Domain domain = parser.parseXmi(inputStream);
 	    inputStream.close();
 	    
-	    LogicalModel logical = domain.getLogicalModels().get(0);
+	    LogicalModel logical = model.getLogicalModel(ModelerPerspective.ANALYSIS);
 	    Object property = logical.getProperty("source_type"); //$NON-NLS-1$
 	    if( property != null ) {
 	      IModelerSource theSource = ModelerSourceFactory.generateSource(property.toString());

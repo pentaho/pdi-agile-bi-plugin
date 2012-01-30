@@ -277,7 +277,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
     try {
       if (this.model.isValid()) {
         this.model.getWorkspaceHelper().populateDomain(this.model);
-        LogicalModel lModel = this.model.getDomain().getLogicalModels().get(0);
+        LogicalModel lModel = this.model.getLogicalModel(ModelerPerspective.ANALYSIS);
 
         FileDialog fileDialog = new FileDialog(Spoon.getInstance().getShell(), SWT.SAVE);
         String[] theExtensions = { "*.xml" };

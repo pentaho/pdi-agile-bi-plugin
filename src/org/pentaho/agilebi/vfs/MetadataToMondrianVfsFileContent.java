@@ -31,7 +31,9 @@ import org.apache.commons.vfs.FileObject;
 import org.apache.commons.vfs.FileSystemException;
 import org.apache.commons.vfs.RandomAccessContent;
 import org.apache.commons.vfs.util.RandomAccessMode;
+import org.pentaho.agilebi.modeler.BaseModelerWorkspaceHelper;
 import org.pentaho.metadata.model.Domain;
+import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.metadata.util.XmiParser;
 
@@ -115,8 +117,13 @@ public class MetadataToMondrianVfsFileContent implements FileContent {
         throw new Exception("Domain " + fileObject.getFileRef() + " does not contain model.");
       }
 
-      MondrianModelExporter exporter = new MondrianModelExporter(domain.getLogicalModels().get(0), locale);
+      LogicalModel lModel = domain.getLogicalModels().get(0);
+      if(domain.getLogicalModels().size() > 1) {
+        lModel = domain.getLogicalModels().get(1);
+      }
+      MondrianModelExporter exporter = new MondrianModelExporter(lModel, locale);
       String mondrianSchema = exporter.createMondrianModelXML();
+
       inputStream = new ByteArrayInputStream(mondrianSchema.getBytes());
     } catch (Exception e) {
       throw new FileSystemException(e.getLocalizedMessage(), e);
