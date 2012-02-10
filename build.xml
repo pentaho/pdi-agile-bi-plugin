@@ -251,6 +251,9 @@
         <delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/BIRT"/>
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/reporting"/>
 
+		<!-- Remove kettle plugins -->
+		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/kettle/plugins"/>
+		
 		<!-- CDF is needed for the new analyzer visualizations -->
         <!--<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/pentaho-cdf"/>-->
 
