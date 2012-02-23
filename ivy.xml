@@ -43,9 +43,6 @@
     <!-- pentaho-xul-framework must match JARs required by kettle-ui-swt -->
     <!-- this manual sync should go away once this project is propertly ivy-ized -->
 
-    <dependency org="pentaho" name="pentaho-database-model" rev="${dependency.pentaho-database.revision}"
-                conf="default->default" changing="true"/>
-
     <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default"
                 changing="true"/>
     <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul"
