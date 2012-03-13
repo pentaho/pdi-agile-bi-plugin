@@ -317,15 +317,18 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	    FileInputStream inputStream = new FileInputStream(new File(modelFileName));
 	    Domain domain = parser.parseXmi(inputStream);
 	    inputStream.close();
-	    
-	    LogicalModel logical = model.getLogicalModel(ModelerPerspective.ANALYSIS);
-	    Object property = logical.getProperty("source_type"); //$NON-NLS-1$
-	    if( property != null ) {
-	      IModelerSource theSource = ModelerSourceFactory.generateSource(property.toString());
-	      theSource.initialize(domain);   
-	      model.setModelSource(theSource);
-	    }
-	  
+	    if(model.getDomain() != null) {
+        LogicalModel logical = model.getLogicalModel(ModelerPerspective.ANALYSIS);
+        Object property = logical.getProperty("source_type"); //$NON-NLS-1$
+        if( property != null ) {
+          IModelerSource theSource = ModelerSourceFactory.generateSource(property.toString());
+          theSource.initialize(domain);
+          model.setModelSource(theSource);
+        }
+      }
+      if (domain.getId() == null) {
+        domain.setId(modelId);
+      }
 	    model.setDomain(domain);
 	    model.setModelName(domain.getId());
 	    model.setFileName(modelFileName); 
