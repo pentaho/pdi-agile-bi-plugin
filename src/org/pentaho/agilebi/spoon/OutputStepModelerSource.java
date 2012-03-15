@@ -42,7 +42,11 @@ public class OutputStepModelerSource extends TableModelerSource {
   public OutputStepModelerSource() {
     
   }
-	
+
+	public OutputStepModelerSource(String tableName, String schemaName, DatabaseMeta databaseMeta) {
+		  super( databaseMeta, tableName, schemaName );
+		}
+  
 	public OutputStepModelerSource(TableOutputMeta tableOutputMeta, DatabaseMeta databaseMeta, RowMetaInterface rowMeta) {
 	  super( databaseMeta, tableOutputMeta.getTablename(), tableOutputMeta.getSchemaName() );
 	}

@@ -19,6 +19,7 @@ package org.pentaho.agilebi.spoon;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import org.apache.commons.io.IOUtils;
@@ -43,6 +44,8 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMeta;
+import org.pentaho.di.trans.step.StepMetaInterface;
+import org.pentaho.di.trans.step.TableFrontingStep;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
 import org.pentaho.di.ui.core.database.dialog.DatabaseExplorerDialog;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
@@ -53,7 +56,6 @@ import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.libraries.base.util.ObjectUtilities;
-import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.components.WaitBoxRunnable;
 import org.pentaho.ui.xul.components.XulWaitBox;
@@ -112,12 +114,68 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
       return false;
     }
     StepMeta stepMeta = spoon.getActiveTransGraph().getCurrentStep();
-    if(stepMeta == null || !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
-      return false;
+    if(stepMeta != null && !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
+      return true;
     }
-    return true;
+    // see if we can get the objects we need
+    StepMetaInterface smi = stepMeta.getStepMetaInterface();
+    
+    if( smi instanceof TableFrontingStep ) {
+    	return true;
+    }
+    
+    DatabaseConnectionMethods connectionMethods = getDatabaseConnectionMethods(smi);
+    
+	boolean gotDatabaseMeta = connectionMethods.getDatabaseMetaMethod() != null;
+	boolean gotTableName = connectionMethods.getTableNameMethod() != null;
+    return gotDatabaseMeta && gotTableName;
   }
 
+  protected static DatabaseConnectionMethods getDatabaseConnectionMethods(StepMetaInterface smi) {
+	  DatabaseConnectionMethods connectionMethods = new DatabaseConnectionMethods();
+	  
+	  if( smi instanceof TableFrontingStep ) {
+		  TableFrontingStep step = (TableFrontingStep) smi;
+		  connectionMethods.setDatabaseMeta(step.getDatabaseMeta());
+		  connectionMethods.setTableName(step.getTableName());
+		  connectionMethods.setSchemaName(step.getSchemaName());
+		  return connectionMethods;
+	  }
+	  
+		Method methods[] = smi.getClass().getMethods();
+		for( Method m: methods) {
+			if( m.getName().equalsIgnoreCase("getDatabaseMeta")) {
+				connectionMethods.setDatabaseMetaMethod(m);
+				try {
+					DatabaseMeta databaseMeta = (DatabaseMeta) m.invoke(smi);
+					connectionMethods.setDatabaseMeta(databaseMeta);
+				} catch (Exception e) {
+					// we are just introspecting
+				}
+			}
+			if( m.getName().equalsIgnoreCase("getTableName")) {
+				connectionMethods.setTableNameMethod(m);
+				try {
+					String tableName = (String) m.invoke(smi);
+					connectionMethods.setTableName(tableName);
+				} catch (Exception e) {
+					// we are just introspecting
+				}
+			}
+			if( m.getName().equalsIgnoreCase("getSchemaName")) {
+				connectionMethods.setSchemaNameMethod(m);
+				try {
+					String schemaName = (String) m.invoke(smi);
+					connectionMethods.setSchemaName(schemaName);
+				} catch (Exception e) {
+					// we are just introspecting
+				}
+			}
+		}
+		
+		return connectionMethods;
+  }
+  
   public static ModelerWorkspace populateModelFromOutputStep(ModelerWorkspace model) throws ModelerException {
 
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
@@ -127,13 +185,20 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
       throw new IllegalStateException(BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen")); //$NON-NLS-1$
     }
     StepMeta stepMeta = spoon.getActiveTransGraph().getCurrentStep();
-    if( !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
-      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
+
+    // do it by introspection
+    StepMetaInterface smi = stepMeta.getStepMetaInterface();
+        
+    DatabaseConnectionMethods connectionMethods = getDatabaseConnectionMethods(smi);
+    DatabaseMeta databaseMeta = connectionMethods.getDatabaseMeta();
+    String tableName = connectionMethods.getTableName();
+    String schemaName = connectionMethods.getSchemaName();
+    
+		// we must have a database meta and a table name to continue, schema is optional
+    if( databaseMeta == null || tableName == null ) {
+      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.StepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
       throw new IllegalStateException(BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded")); //$NON-NLS-1$
     }
-
-    TableOutputMeta tableOutputMeta = (TableOutputMeta) stepMeta.getStepMetaInterface();
-    DatabaseMeta databaseMeta = tableOutputMeta.getDatabaseMeta();
 
     RowMetaInterface rowMeta = null;
     try {
@@ -151,7 +216,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
     }
 
 
-    OutputStepModelerSource source = new OutputStepModelerSource(tableOutputMeta, databaseMeta, rowMeta);
+    OutputStepModelerSource source = new OutputStepModelerSource(tableName, schemaName, databaseMeta);
     source.setFileName(transMeta.getFilename());
     source.setStepId(stepMeta.getStepID());
     Repository repository = transMeta.getRepository();
@@ -162,7 +227,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
 
 
     model.setModelSource(source);
-    model.setModelName(tableOutputMeta.getTablename());
+    model.setModelName(tableName);
     model.setDomain(d);
 
     return model;
