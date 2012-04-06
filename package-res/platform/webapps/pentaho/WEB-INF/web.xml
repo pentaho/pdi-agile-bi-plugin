@@ -327,6 +327,16 @@
     </servlet>
 
 	<servlet>
+      <servlet-name>RequireJSServlet</servlet-name>
+      <servlet-class>org.pentaho.platform.web.servlet.RequireJSServlet</servlet-class>
+    </servlet>
+	<servlet>
+	  <servlet-name>LocalizationServlet</servlet-name>
+	  <servlet-class>org.pentaho.platform.web.servlet.LocalizationServlet</servlet-class>
+	</servlet>
+
+
+	<servlet>
 		<servlet-name>Pivot</servlet-name>
 		<jsp-file>/jsp/Pivot.jsp</jsp-file>
 	</servlet>
@@ -589,6 +599,17 @@
 	<servlet-mapping>
 		<servlet-name>PluggableUploadFileServlet</servlet-name>
 		<url-pattern>/upload/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping>
+		<servlet-name>RequireJSServlet</servlet-name>
+		<url-pattern>/js/require-cfg.js</url-pattern>
+	</servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>LocalizationServlet</servlet-name>
+    <url-pattern>/i18n</url-pattern>
 	</servlet-mapping>
 
 	<!-- Pentaho JSPs -->
