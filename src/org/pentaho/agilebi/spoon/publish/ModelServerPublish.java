@@ -57,7 +57,6 @@ import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.platform.dataaccess.client.ConnectionServiceClient;
-import org.pentaho.platform.dataaccess.datasource.IConnection;
 import org.pentaho.platform.dataaccess.datasource.beans.Connection;
 import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServiceException;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
@@ -89,7 +88,7 @@ public class ModelServerPublish {
   
   private BiServerConnection biServerConnection;
 
-  private IConnection remoteConnection;
+  private Connection remoteConnection;
   
   private ModelerWorkspace model;
   
@@ -108,14 +107,14 @@ public class ModelServerPublish {
    * @return
    * @throws ConnectionServiceException
    */
-  public List<IConnection> listRemoteConnections() throws ConnectionServiceException {
+  public List<Connection> listRemoteConnections() throws ConnectionServiceException {
       // get information about the remote connection
       ConnectionServiceClient serviceClient = new ConnectionServiceClient();
       serviceClient.setHost(biServerConnection.getUrl());
       serviceClient.setUserId(biServerConnection.getUserId());
       serviceClient.setPassword(biServerConnection.getPassword());
       
-      List<IConnection> connections = serviceClient.getConnections();
+      List<Connection> connections = serviceClient.getConnections();
 //      serviceClientStatus = serviceClient.getStatus();
       return connections;
   }
@@ -126,7 +125,7 @@ public class ModelServerPublish {
    * a cached connection is returned.
    * @return
    */
-  public IConnection getRemoteConnection( String connectionName, boolean force ) {
+  public Connection getRemoteConnection( String connectionName, boolean force ) {
     if( remoteConnection == null || force ) {
       // get information about the remote connection
       ConnectionServiceClient serviceClient = new ConnectionServiceClient();
@@ -162,7 +161,7 @@ public class ModelServerPublish {
     
     // compare the local database meta with the remote connection
     String connectionName = PublisherHelper.getBiServerCompatibleDatabaseName(databaseMeta.getName());
-    IConnection connection = getRemoteConnection( connectionName, false );
+    Connection connection = getRemoteConnection( connectionName, false );
     if( connection == null ) {
       // the connection does not exist (with the same name) on the remote BI server 
       result += REMOTE_CONNECTION_MISSING;
