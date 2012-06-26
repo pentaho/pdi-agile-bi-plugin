@@ -36,6 +36,8 @@ import org.pentaho.agilebi.spoon.ModelerEngineMeta;
 import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.XulUI;
 import org.pentaho.agilebi.spoon.visualizations.SaveAwareMeta;
+import org.pentaho.agilebi.spoon.visualizations.analyzer.AnalyzerVisualizationController;
+import org.pentaho.agilebi.spoon.visualizations.analyzer.AnalyzerVisualizationMeta;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
@@ -52,6 +54,7 @@ import org.w3c.dom.Node;
 
 public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
+	public static final String PERSPECTIVE_ID = "020-agilebiVisualization"; //$NON-NLS-1$
 //  private Logger logger = LoggerFactory.getLogger(AgileBiModelerPerspective.class);
   private static final AgileBiVisualizationPerspective INSTANCE = new AgileBiVisualizationPerspective();
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
@@ -59,7 +62,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   private AgileBiVisualizationPerspectiveController controller = new AgileBiVisualizationPerspectiveController();
   
   private AgileBiVisualizationPerspective(){
-    super("org/pentaho/agilebi/spoon/perspective/perspective.xul");
+    super("org/pentaho/agilebi/spoon/perspective/vizperspective.xul");
   }
   
   public static AgileBiVisualizationPerspective getInstance(){
@@ -81,7 +84,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
   }
 
   public String getId() {
-    return "020-agilebiVisualization"; //$NON-NLS-1$
+    return PERSPECTIVE_ID;
   }
 
   public boolean acceptsXml(String nodeName) {
@@ -111,7 +114,6 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
       if(selectedMeta != xul.getMeta()){
         setSelectedMeta(xul.getMeta());
       }
-  
       
       Binding bind = new DefaultBinding(model, "shortFileName", tabAndPanel.tab, "label"); //$NON-NLS-1$ //$NON-NLS-2$
       bind.setConversion(new NameBindingConvertor(this, tabAndPanel.tab));
@@ -197,10 +199,18 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
 
   @Override
   public String getName() {
-    return "agileBiPerspective"; //$NON-NLS-1$
+    return "agileBiVizPerspective"; //$NON-NLS-1$
   }
   
   public boolean onTabClose(final int pos) throws XulException{
+	  AnalyzerVisualizationController controller = (AnalyzerVisualizationController) ((AnalyzerVisualizationMeta)selectedMeta).getController();
+	  String contentId = PERSPECTIVE_ID+"\t"+controller.getVisFileLocation(); //$NON-NLS-1$
+	  
+	  String caller = Spoon.getInstance().getCaller(contentId);
+	  if( caller == null ) {
+		  contentId = PERSPECTIVE_ID+"\t"+controller.toString(); //$NON-NLS-1$
+	  }
+	  
     if(((SaveAwareMeta) this.getActiveMeta()).isDirty()){
       XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox"); //$NON-NLS-1$
       confirm.setTitle(BaseMessages.getString(this.getClass(), "Modeler.Perspective.unsavedChanges")); //$NON-NLS-1$
@@ -210,12 +220,14 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
       confirm.addDialogCallback(callback);
       confirm.open();
       if(callback.closeIt){
+          switchToCaller(contentId);
         return true;
       } else {
         return false;
       }
       
     }
+    switchToCaller(contentId);
     return true;
   }
   

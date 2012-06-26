@@ -54,6 +54,13 @@ import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.metadata.model.Domain;
+import org.pentaho.metadata.registry.Entity;
+import org.pentaho.metadata.registry.IMetadataRegistry;
+import org.pentaho.metadata.registry.Link;
+import org.pentaho.metadata.registry.RegistryFactory;
+import org.pentaho.metadata.registry.SimpleFileRegistry;
+import org.pentaho.metadata.registry.Type;
+import org.pentaho.metadata.registry.Verb;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.libraries.base.util.ObjectUtilities;
 import org.pentaho.ui.xul.XulException;
@@ -78,6 +85,21 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
 
     try {
       ModelerMessagesHolder.setMessages(new SpoonModelerMessages());
+      
+      RegistryFactory factory = RegistryFactory.getInstance();
+      IMetadataRegistry registry = factory.getMetadataRegistry();
+      if( registry == null ) {
+          try {
+        	  registry = new SimpleFileRegistry();
+        	  ((SimpleFileRegistry) registry).setFilePath("registry.xml"); //$NON-NLS-1$
+			factory.setMetadataRegistry(registry);
+			registry.init();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+      }
+      
     } catch (IllegalStateException e) {
       // someone else set this first, ignore this error
     }
@@ -131,7 +153,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
     return gotDatabaseMeta && gotTableName;
   }
 
-  protected static DatabaseConnectionMethods getDatabaseConnectionMethods(StepMetaInterface smi) {
+  public static DatabaseConnectionMethods getDatabaseConnectionMethods(StepMetaInterface smi) {
 	  DatabaseConnectionMethods connectionMethods = new DatabaseConnectionMethods();
 	  
 	  if( smi instanceof TableFrontingStep ) {
@@ -230,6 +252,21 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
     model.setModelName(tableName);
     model.setDomain(d);
 
+    RegistryFactory factory = RegistryFactory.getInstance();
+    IMetadataRegistry registry = factory.getMetadataRegistry();
+    Entity tableEntity = new Entity(databaseMeta.getName()+"~"+schemaName+"~"+tableName, tableName, Type.TYPE_PHYSICAL_TABLE.getId());
+    String transFileName = Spoon.getInstance().getActiveTransformation().getFilename();
+    Entity transEntity = new Entity(transFileName, Spoon.getInstance().getActiveTransformation().getName(), Type.TYPE_TRANSFORMATION.getId());
+    registry.addEntity(transEntity);
+    registry.addEntity(tableEntity);
+    Link link = new Link( transEntity, Verb.VERB_POPULATES, tableEntity );
+    registry.addLink(link);
+    try {
+		registry.commit();
+	} catch (Exception e) {
+		logger.error("Could not commit metadata registry", e);
+	}
+    
     return model;
   }
   
@@ -410,21 +447,36 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
 
   }
   
+  public void quickVisualize( ModelerWorkspace model, String name, String fileName ) throws ModelerException {
+	    createTemporaryModel(model, true, true);
+	    VisualizationManager theManager = VisualizationManager.getInstance();
+	    IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));
+	    if(theVisualization != null) {
+	      if (model.getFileName() != null) {
+	        // TODO: Find a better name for the cube, maybe just model name?
+	        theVisualization.createVisualizationFromModel(model, true);
+	        Spoon.getInstance().enableMenus();
+	      } else {
+	        throw new UnsupportedOperationException("TODO: prompt to save model before visualization");
+	      }
+	    }
+	  }
+
   public void quickVisualize( ModelerWorkspace model ) throws ModelerException {
-    createTemporaryModel(model, true, true);
-    VisualizationManager theManager = VisualizationManager.getInstance();
-    IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));
-    if(theVisualization != null) {
-      if (model.getFileName() != null) {
-        // TODO: Find a better name for the cube, maybe just model name?
-        theVisualization.createVisualizationFromModel(model, true);
-        Spoon.getInstance().enableMenus();
-      } else {
-        throw new UnsupportedOperationException("TODO: prompt to save model before visualization");
-      }
-    }
-  }
-  
+	    createTemporaryModel(model, true, true);
+	    VisualizationManager theManager = VisualizationManager.getInstance();
+	    IVisualization theVisualization = theManager.getVisualization(theManager.getVisualizationNames().get(0));
+	    if(theVisualization != null) {
+	      if (model.getFileName() != null) {
+	        // TODO: Find a better name for the cube, maybe just model name?
+	        theVisualization.createVisualizationFromModel(model, true);
+	        Spoon.getInstance().enableMenus();
+	      } else {
+	        throw new UnsupportedOperationException("TODO: prompt to save model before visualization");
+	      }
+	    }
+	  }
+
   public String createTemporaryModel(ModelerWorkspace model, boolean saveName, boolean autoModel) throws ModelerException {
     //give it a temporary name
     File modelsDir = new File(TEMP_MODELS_FOLDER); //$NON-NLS-1$
@@ -452,6 +504,17 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
     }
     model.getWorkspaceHelper().populateDomain(model);
     ModelerWorkspaceUtil.saveWorkspace( model, fileName);
+    
+    /*
+    // link the model to the transformation
+    RegistryFactory factory = RegistryFactory.getInstance();
+    IMetadataRegistry registry = factory.getMetadataRegistry();
+    Entity modelEntity = new Entity(fileName, model.getModelName(), RegistryBase.TYPE_OLAP_MODEL.getId());
+    Entity transEntity = new Entity(transFileName, name, RegistryBase.TYPE_TRANSFORMATION.getId());
+    registry.addEntity(transEntity.getId(), transEntity);
+    registry.addEntity(modelEntity.getId(), modelEntity);
+//    Link link = new Link(modelEntity, null, transEntity); 
+ */
     return fileName;
   }
   

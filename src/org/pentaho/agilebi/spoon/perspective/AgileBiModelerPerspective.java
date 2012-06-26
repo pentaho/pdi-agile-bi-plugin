@@ -60,6 +60,8 @@ import java.util.*;
 
 public class AgileBiModelerPerspective extends AbstractPerspective implements SpoonPerspective, FileListener{
 
+	public static final String PERSPECTIVE_ID = "010-agilebi"; //$NON-NLS-1$
+
   private Logger logger = LoggerFactory.getLogger(AgileBiModelerPerspective.class);
   private static final AgileBiModelerPerspective INSTANCE = new AgileBiModelerPerspective();
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
@@ -94,7 +96,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
   }
 
   public String getId() {
-    return "010-agilebi"; //$NON-NLS-1$
+    return PERSPECTIVE_ID;
   }
 
   public boolean acceptsXml(String nodeName) {
@@ -250,6 +252,7 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
   }
 
   public boolean onTabClose(final int pos) throws XulException{
+  	String contentId = PERSPECTIVE_ID+"\t"+models.get(pos).getFileName(); //$NON-NLS-1$
     if(models.get(pos).isDirty()){
       XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox"); //$NON-NLS-1$
       confirm.setTitle(BaseMessages.getString(this.getClass(), "Modeler.Perspective.unsavedChanges")); //$NON-NLS-1$
@@ -261,12 +264,14 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
       if(callback.closeIt){
         models.remove(pos);
         metas.remove(tabbox.getTabs().getChildNodes().get(pos));
+        switchToCaller(contentId);
         return true;
       } else {
         return false;
       }
       
     } else {
+        switchToCaller(contentId);
       models.remove(pos);
       metas.remove(pos);
     }
