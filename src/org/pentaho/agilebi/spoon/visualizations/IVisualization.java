@@ -40,4 +40,8 @@ public interface IVisualization extends FileListener {
 	
 	public String getTabIconLocation();
 	
+	public String getId();
+	
+	public void setCaller( String callerId );
+	
 }

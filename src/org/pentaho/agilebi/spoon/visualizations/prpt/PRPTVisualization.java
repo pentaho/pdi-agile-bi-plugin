@@ -29,8 +29,8 @@ import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
 import org.pentaho.agilebi.spoon.ModelerHelper;
 import org.pentaho.agilebi.spoon.PDIMessages;
 import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
-import org.pentaho.agilebi.spoon.perspective.AgileBiVisualizationPerspective;
 import org.pentaho.agilebi.spoon.perspective.AbstractPerspective.XulTabAndPanel;
+import org.pentaho.agilebi.spoon.perspective.AgileBiVisualizationPerspective;
 import org.pentaho.agilebi.spoon.visualizations.AbstractVisualization;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.wizard.EmbeddedWizard;
@@ -43,6 +43,12 @@ import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
+import org.pentaho.metadata.registry.Entity;
+import org.pentaho.metadata.registry.IMetadataRegistry;
+import org.pentaho.metadata.registry.Link;
+import org.pentaho.metadata.registry.RegistryFactory;
+import org.pentaho.metadata.registry.Type;
+import org.pentaho.metadata.registry.Verb;
 import org.pentaho.metadata.util.XmiParser;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
@@ -71,11 +77,18 @@ public class PRPTVisualization extends AbstractVisualization {
   
   private static Logger logger = LoggerFactory.getLogger(PRPTVisualization.class);
   
+  private String callerId =null;
+  
   public void createVisualizationFromModel(String modelFileLocation, String modelId) {
     // TODO Auto-generated method stub
     
   }
 
+  @Override
+  public String getId() {
+	  return "REPORTING";
+  }  
+  
   public boolean accepts(String fileName) {
     return fileName.endsWith(".prpt");
   }
@@ -185,8 +198,29 @@ public class PRPTVisualization extends AbstractVisualization {
       String fullPath = f.getAbsolutePath();
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());
       spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
+      String name = getPathAndFilename(fname)[1].replace(".prpt", "");
       AgileBiVisualizationPerspective.getInstance().setNameForTab(prptMeta.getTab(), fname);
-      AgileBiVisualizationPerspective.getInstance().setNameForTab(prptMeta.getTab(), getPathAndFilename(fname)[1].replace(".prpt", ""));
+      AgileBiVisualizationPerspective.getInstance().setNameForTab(prptMeta.getTab(), name);
+      
+      // register this in the metadata registry
+      RegistryFactory factory = RegistryFactory.getInstance();
+      IMetadataRegistry registry = factory.getMetadataRegistry();
+      Entity vizEntity = new Entity(fname, name, Type.TYPE_REPORT.getId());
+      registry.addEntity(vizEntity);
+      
+      String modelId = prptMeta.controller.getModel().getFileName();
+      Entity modelEntity = registry.getEntity(modelId, Type.TYPE_OLAP_MODEL.getId());
+      if( modelEntity != null ) {
+          Link link = new Link( vizEntity, Verb.VERB_USES, modelEntity );
+          registry.addLink(link);
+      }
+      
+      try {
+  		registry.commit();
+  	} catch (Exception e) {
+  		logger.error("Could not commit metadata registry", e);
+  	}								
+      
       
       spoon.addMenuLast();
       return true;
@@ -342,4 +376,10 @@ public class PRPTVisualization extends AbstractVisualization {
     }
     return new String[]{path, fname};
   }
+  
+  @Override
+  public void setCaller( String callerId ) {
+	  this.callerId = callerId;	  
+  }
+  
 }

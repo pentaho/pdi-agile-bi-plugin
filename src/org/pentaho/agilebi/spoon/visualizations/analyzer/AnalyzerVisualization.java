@@ -16,7 +16,14 @@
  */
 package org.pentaho.agilebi.spoon.visualizations.analyzer;
 
-import mondrian.rolap.agg.AggregationManager;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URLEncoder;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.eclipse.swt.SWT;
@@ -25,12 +32,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.jaxen.JaxenException;
 import org.jaxen.SimpleNamespaceContext;
 import org.jaxen.dom4j.Dom4jXPath;
+import org.pentaho.agilebi.modeler.IModelerSource;
 import org.pentaho.agilebi.modeler.ModelerPerspective;
+import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
 import org.pentaho.agilebi.spoon.ModelerHelper;
 import org.pentaho.agilebi.spoon.PDIMessages;
-import org.pentaho.agilebi.modeler.IModelerSource;
-import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.agilebi.spoon.perspective.AbstractPerspective.XulTabAndPanel;
 import org.pentaho.agilebi.spoon.perspective.AgileBiVisualizationPerspective;
@@ -44,29 +51,32 @@ import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.registry.Entity;
+import org.pentaho.metadata.registry.IMetadataRegistry;
+import org.pentaho.metadata.registry.Link;
+import org.pentaho.metadata.registry.RegistryFactory;
+import org.pentaho.metadata.registry.Type;
+import org.pentaho.metadata.registry.Verb;
 import org.pentaho.metadata.util.XmiParser;
 import org.pentaho.platform.api.engine.ICacheManager;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Calendar;
 
 public class AnalyzerVisualization extends AbstractVisualization {
 	
 	public static final String WEB_VISUALIZATION = "org/pentaho/agilebi/spoon/visualizations/analyzer/analyzer_visualization_browser.xul";
 
+	  private static Logger logger = LoggerFactory.getLogger(AnalyzerVisualization.class);
+	
 	private String newUrl;
 	private String openUrl;
 	private String saveJavascript;
+	private String callerId;
 	
 	private String refreshDataJavascript;
 	private String refreshModelJavascript;
@@ -75,6 +85,11 @@ public class AnalyzerVisualization extends AbstractVisualization {
   private String setStateJavascript;
   private String reportName;
 	
+  @Override
+  public String getId() {
+	  return "ANALYZER";
+  }
+  
 	public String getNewUrl() {
 		return newUrl;
 	}
@@ -199,6 +214,9 @@ public class AnalyzerVisualization extends AbstractVisualization {
 			theRunner.initialize();
       createTabForBrowser(theMainBox, theController, model);   
       reportName = "Unsaved Report"; //$NON-NLS-1$
+      String contentId = AgileBiVisualizationPerspective.PERSPECTIVE_ID+"\t"+theController.toString(); //$NON-NLS-1$
+      Spoon.getInstance().addCaller(callerId, contentId);
+
     } catch (Throwable e) {
       throw new RuntimeException(e);
     }
@@ -361,8 +379,35 @@ public class AnalyzerVisualization extends AbstractVisualization {
     spoon.getProperties().addLastFile("Model", fullPath, null, false, null);
     spoon.addMenuLast();
     wvmeta.setFilename(f.getAbsolutePath());
-    AgileBiVisualizationPerspective.getInstance().setNameForTab(wvmeta.getTab(), getPathAndFilename(fname)[1].replace("."+this.getExtension(), ""));
+    String name = getPathAndFilename(fname)[1].replace("."+this.getExtension(), "");
+    AgileBiVisualizationPerspective.getInstance().setNameForTab(wvmeta.getTab(), name);
 
+    // register this in the metadata registry
+    RegistryFactory factory = RegistryFactory.getInstance();
+    IMetadataRegistry registry = factory.getMetadataRegistry();
+    Entity vizEntity = new Entity(fname, name, Type.TYPE_ANALYZER_VIEW.getId());
+    registry.addEntity(vizEntity);
+    
+    String modelId = wvmeta.browser.getModel().getFileName();
+    Entity modelEntity = registry.getEntity(modelId, Type.TYPE_OLAP_MODEL.getId());
+    if( modelEntity != null ) {
+        Link link = new Link( vizEntity, Verb.VERB_USES, modelEntity );
+        registry.addLink(link);
+    }
+    
+    try {
+		registry.commit();
+	} catch (Exception e) {
+		logger.error("Could not commit metadata registry", e);
+	}								
+    
+    String callee = this.toString();
+    String caller = Spoon.getInstance().getCaller(callee);
+    if( caller != null ) {
+    	Spoon.getInstance().removeCaller(callee);
+//    	Spoon.getInstance().addCaller(caller, newCallee);
+    }
+    
     return true;
   }
 
@@ -423,6 +468,11 @@ public class AnalyzerVisualization extends AbstractVisualization {
 
   public String[] getSupportedExtensions() {
     return new String[]{"xanalyzer"};
+  }
+  
+  @Override
+  public void setCaller( String callerId ) {
+	  this.callerId = callerId;
   }
   
 }
