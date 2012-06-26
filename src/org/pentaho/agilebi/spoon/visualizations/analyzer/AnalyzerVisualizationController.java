@@ -109,6 +109,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     this.bf.setBindingType(Type.BI_DIRECTIONAL);
     bf.createBinding(this.propPanel, "visible", this, "propVisible");
 		fireBindings();
+		setPropVisible(false);
 	}
 	
 	public void openReport(String aReport) {
