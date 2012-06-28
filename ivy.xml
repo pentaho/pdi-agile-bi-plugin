@@ -30,9 +30,9 @@
                 changing="true"/>
     <dependency org="pentaho-kettle" name="kettle-ui-swt" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
                 changing="true"/>
-    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" conf="default->default" 
+    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" conf="default->default"
                 changing="true"/>
-                
+
     <!--    exclude jetty's version of servlet api. it's checksum fails-->
     <dependency org="org.mortbay.jetty" name="jetty-plus" rev="6.1.21" transitive="false" conf="default->default"/>
     <dependency org="org.mortbay.jetty" name="jetty" rev="6.1.21" conf="default->default">
@@ -77,7 +77,8 @@
 
     <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="${dependency.data-access-plugin.revision}"
                 changing="true"
-                conf="default->default"/>
+                conf="default->default" transitive="false">
+    </dependency>
     <dependency org="pentaho" name="pentaho-bi-platform-engine-core" rev="${dependency.bi-platform.revision}"
                 changing="true"
                 conf="default->default"/>
