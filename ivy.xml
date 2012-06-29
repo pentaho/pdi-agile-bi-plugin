@@ -53,7 +53,7 @@
     <!-- this manual sync should go away once this project is propertly ivy-ized -->
 
     <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default"
-                changing="true" transitive="false"/>
+                changing="true" transitive="true"/>
     <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul"
                 rev="${dependency.pentaho-reporting.revision}"
                 conf="default->default" changing="true" transitive="false"/>
