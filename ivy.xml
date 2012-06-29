@@ -27,6 +27,8 @@
     <dependency org="dom4j" name="dom4j" rev="1.6.1" conf="default->default" transitive="false"/>
     <dependency org="jaxen" name="jaxen" rev="1.1" conf="default->default" transitive="false" />
 
+    <dependency org="org.eclipse" name="jface" rev="3.3.0-I20070606-0010" transitive="false" conf="default->default" />
+
 	<dependency org="org.springframework" name="spring" rev="2.5.6" transitive="false" conf="default->default" />
 
     <dependency org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
