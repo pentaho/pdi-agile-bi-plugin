@@ -39,7 +39,7 @@
                 changing="true"/>
     <dependency org="pentaho-kettle" name="kettle-ui-swt" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
                 changing="true"/>
-    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" transitive="false" conf="default->default" 
+    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" transitive="true" conf="default->default" 
                 changing="true"/>
                 
     <!--    exclude jetty's version of servlet api. it's checksum fails-->
