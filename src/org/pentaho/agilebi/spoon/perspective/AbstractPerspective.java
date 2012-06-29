@@ -108,7 +108,9 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   }
   
   public void switchToCaller( String content ) {
-      String caller = Spoon.getInstance().getCaller(content);
+// TODO - JD - enable in Spoon
+	  /*
+	  String caller = Spoon.getInstance().getCaller(content);
   	Class<? extends SpoonPerspective> callerClass = null;
       if( caller != null ) {
       	List<SpoonPerspective> perspectives = SpoonPerspectiveManager.getInstance().getPerspectives();
@@ -127,7 +129,7 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
     			e.printStackTrace();
     		}
     	}
-
+*/
   }
 
   public abstract String getDisplayName(Locale l);

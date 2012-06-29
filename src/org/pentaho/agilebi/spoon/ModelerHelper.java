@@ -45,7 +45,7 @@ import org.pentaho.di.repository.Repository;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
-import org.pentaho.di.trans.step.TableFrontingStep;
+import org.pentaho.di.core.ProvidesDatabaseConnectionInformation;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
 import org.pentaho.di.ui.core.database.dialog.DatabaseExplorerDialog;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
@@ -142,7 +142,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
     // see if we can get the objects we need
     StepMetaInterface smi = stepMeta.getStepMetaInterface();
     
-    if( smi instanceof TableFrontingStep ) {
+    if( smi instanceof ProvidesDatabaseConnectionInformation ) {
     	return true;
     }
     
@@ -156,8 +156,8 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
   public static DatabaseConnectionMethods getDatabaseConnectionMethods(StepMetaInterface smi) {
 	  DatabaseConnectionMethods connectionMethods = new DatabaseConnectionMethods();
 	  
-	  if( smi instanceof TableFrontingStep ) {
-		  TableFrontingStep step = (TableFrontingStep) smi;
+	  if( smi instanceof ProvidesDatabaseConnectionInformation ) {
+		  ProvidesDatabaseConnectionInformation step = (ProvidesDatabaseConnectionInformation) smi;
 		  connectionMethods.setDatabaseMeta(step.getDatabaseMeta());
 		  connectionMethods.setTableName(step.getTableName());
 		  connectionMethods.setSchemaName(step.getSchemaName());

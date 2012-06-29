@@ -215,7 +215,8 @@ public class AnalyzerVisualization extends AbstractVisualization {
       createTabForBrowser(theMainBox, theController, model);   
       reportName = "Unsaved Report"; //$NON-NLS-1$
       String contentId = AgileBiVisualizationPerspective.PERSPECTIVE_ID+"\t"+theController.toString(); //$NON-NLS-1$
-      Spoon.getInstance().addCaller(callerId, contentId);
+// TODO - JD enable this in Spoon 4.4
+//      Spoon.getInstance().addCaller(callerId, contentId);
 
     } catch (Throwable e) {
       throw new RuntimeException(e);
@@ -400,14 +401,16 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	} catch (Exception e) {
 		logger.error("Could not commit metadata registry", e);
 	}								
-    
+
+    // TODO - JD - enable this in Spoon
+    /*
     String callee = this.toString();
     String caller = Spoon.getInstance().getCaller(callee);
     if( caller != null ) {
     	Spoon.getInstance().removeCaller(callee);
 //    	Spoon.getInstance().addCaller(caller, newCallee);
     }
-    
+    */
     return true;
   }
 

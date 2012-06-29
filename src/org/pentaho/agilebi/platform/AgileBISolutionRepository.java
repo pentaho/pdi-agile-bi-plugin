@@ -40,8 +40,6 @@ import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
 import org.pentaho.platform.repository.solution.SolutionRepositoryBase;
 
-import com.google.gwt.http.client.URL;
-
 public class AgileBISolutionRepository extends SolutionRepositoryBase {
 
   private static final long serialVersionUID = -1174699308144524442L;

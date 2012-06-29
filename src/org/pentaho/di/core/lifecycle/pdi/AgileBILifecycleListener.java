@@ -73,6 +73,9 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
       AgileBILifecycleListener.consolePort = port;
       JettyServer server = new JettyServer("localhost", port); //$NON-NLS-1$
       server.startServer();
+  
+// 		need to find a more general place to do this
+//      AgileBiInstaPerspective.getInstance().onStart();
     } catch (Exception e) {
       e.printStackTrace();
     }

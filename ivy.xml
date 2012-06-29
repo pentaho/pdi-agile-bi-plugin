@@ -21,6 +21,13 @@
   <dependencies defaultconf="default->default">
 
     <dependency org="commons-vfs" name="commons-vfs" rev="1.0" conf="default->default"/>
+    <dependency org="commons-httpclient" name="commons-httpclient" rev="3.1" conf="default->default" transitive="false"/>
+    <dependency org="commons-io" name="commons-io" rev="1.4" conf="default->default" transitive="false"/>
+    <dependency org="commons-lang" name="commons-lang" rev="2.4" conf="default->default" transitive="false"/>
+    <dependency org="dom4j" name="dom4j" rev="1.6.1" conf="default->default" transitive="false"/>
+    <dependency org="jaxen" name="jaxen" rev="1.1" conf="default->default" transitive="false" />
+
+	<dependency org="org.springframework" name="spring" rev="2.5.6" transitive="false" conf="default->default" />
 
     <dependency org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
                 changing="true"/>
@@ -30,9 +37,9 @@
                 changing="true"/>
     <dependency org="pentaho-kettle" name="kettle-ui-swt" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
                 changing="true"/>
-    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" conf="default->default"
+    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" transitive="false" conf="default->default" 
                 changing="true"/>
-
+                
     <!--    exclude jetty's version of servlet api. it's checksum fails-->
     <dependency org="org.mortbay.jetty" name="jetty-plus" rev="6.1.21" transitive="false" conf="default->default"/>
     <dependency org="org.mortbay.jetty" name="jetty" rev="6.1.21" conf="default->default">
@@ -44,7 +51,7 @@
     <!-- this manual sync should go away once this project is propertly ivy-ized -->
 
     <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default"
-                changing="true"/>
+                changing="true" transitive="false"/>
     <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul"
                 rev="${dependency.pentaho-reporting.revision}"
                 conf="default->default" changing="true" transitive="false"/>
@@ -54,7 +61,7 @@
 
     <dependency org="pentaho-reporting-engine" name="pentaho-reporting-engine-classic-core"
                 rev="${dependency.pentaho-reporting.revision}"
-                conf="default->default" changing="true">
+                conf="default->default" changing="true" transitive="false">
 
     </dependency>
 
@@ -67,6 +74,15 @@
                 conf="default->default" changing="true" transitive="false"/>
     <dependency org="pentaho-library" name="libbase" rev="${dependency.libbase.revision}"
                 conf="default->default" changing="true" transitive="false"/>
+    <dependency org="pentaho-library" name="libfonts" rev="${dependency.libbase.revision}"
+                conf="default->default" changing="true" transitive="false"/>
+    <dependency org="pentaho-library" name="libloader" rev="${dependency.libbase.revision}"
+                conf="default->default" changing="true" transitive="false"/>
+    <dependency org="pentaho-library" name="librepository" rev="${dependency.libbase.revision}"
+                conf="default->default" changing="true" transitive="false"/>
+
+    <dependency org="pentaho" name="pentaho-connections" rev="${dependency.pentaho-connections.revision}" changing="true" transitive="false"/>
+    <dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
 
     <dependency org="pentaho" name="mondrian" rev="${dependency.mondrian.revision}"
                 conf="default->default" changing="true" transitive="false"/>
@@ -75,21 +91,24 @@
                 rev="${dependency.pentaho-reporting.revision}"
                 conf="default->default" changing="true" transitive="false"/>
 
+    <dependency org="pentaho" name="pentaho-bi-platform-api" rev="${dependency.data-access-plugin.revision}"
+                changing="true" transitive="false"
+                conf="default->default"/>
+
     <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="${dependency.data-access-plugin.revision}"
-                changing="true"
-                conf="default->default" transitive="false">
-    </dependency>
+                changing="true" transitive="false"
+                conf="default->default"/>
     <dependency org="pentaho" name="pentaho-bi-platform-engine-core" rev="${dependency.bi-platform.revision}"
-                changing="true"
+                changing="true" transitive="false"
                 conf="default->default"/>
     <dependency org="pentaho" name="pentaho-bi-platform-engine-services" rev="${dependency.bi-platform.revision}"
-                changing="true"
+                changing="true" transitive="false"
                 conf="default->default"/>
     <dependency org="pentaho" name="pentaho-bi-platform-repository" rev="${dependency.bi-platform.revision}"
-                changing="true"
+                changing="true" transitive="false"
                 conf="default->default"/>
     <dependency org="pentaho" name="pentaho-bi-platform-util" rev="${dependency.bi-platform.revision}" changing="true"
-                conf="default->default"/>
+                conf="default->default" transitive="false"/>
 
     <!-- Pentaho -->
     <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="${dependency.bi-platform.pentaho-bi-platform-web-servlet.revision}"
@@ -115,13 +134,13 @@
     <dependency org="junit" name="junit" rev="4.4" conf="test->default"/>
 
     <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default"
-                changing="true">
+                changing="true" transitive="false">
       <artifact name="pentaho-xul-core"/>
       <artifact name="pentaho-xul-core" type="source" ext="jar" m:classifier="sources"/>
     </dependency>
 
     <dependency org="pentaho" name="pentaho-metadata" rev="${dependency.pentaho-metadata.revision}" changing="true"
-                conf="default->default">
+                conf="default->default" transitive="false">
       <artifact name="pentaho-metadata"/>
       <artifact name="pentaho-metadata" type="source" ext="jar" m:classifier="sources"/>
     </dependency>
@@ -132,8 +151,8 @@
     </dependency>
 
 
-    <dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="true"/>
-
+    <!-- dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
+-->
     <dependency org="annogen" name="annogen" rev="0.1.0" conf="default->default"/>
     <dependency org="backport-util-concurrent" name="backport-util-concurrent" rev="3.1" conf="default->default"/>
     <dependency org="org.apache.ws.commons.neethi" name="neethi" rev="2.0.1" transitive="false" conf="default->default"/>

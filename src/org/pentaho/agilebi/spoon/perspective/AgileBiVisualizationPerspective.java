@@ -206,11 +206,13 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
 	  AnalyzerVisualizationController controller = (AnalyzerVisualizationController) ((AnalyzerVisualizationMeta)selectedMeta).getController();
 	  String contentId = PERSPECTIVE_ID+"\t"+controller.getVisFileLocation(); //$NON-NLS-1$
 	  
+// TODO - JD - enable this in Spoon
+/*
 	  String caller = Spoon.getInstance().getCaller(contentId);
 	  if( caller == null ) {
 		  contentId = PERSPECTIVE_ID+"\t"+controller.toString(); //$NON-NLS-1$
 	  }
-	  
+*/	  
     if(((SaveAwareMeta) this.getActiveMeta()).isDirty()){
       XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox"); //$NON-NLS-1$
       confirm.setTitle(BaseMessages.getString(this.getClass(), "Modeler.Perspective.unsavedChanges")); //$NON-NLS-1$
