@@ -19,7 +19,6 @@ package org.pentaho.agilebi.spoon;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import org.apache.commons.io.IOUtils;
@@ -36,17 +35,16 @@ import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
 import org.pentaho.agilebi.spoon.wizard.EmbeddedWizard;
 import org.pentaho.di.core.Const;
+import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.core.ProvidesDatabaseConnectionInformation;
 import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.SpoonFactory;
-import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.di.job.JobMeta;
+import org.pentaho.di.job.entry.JobEntryCopy;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMeta;
-import org.pentaho.di.trans.step.StepMetaInterface;
-import org.pentaho.di.core.ProvidesDatabaseConnectionInformation;
-import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
 import org.pentaho.di.ui.core.database.dialog.DatabaseExplorerDialog;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.spoon.ISpoonMenuController;
@@ -54,13 +52,10 @@ import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.metadata.model.Domain;
-import org.pentaho.metadata.registry.Entity;
 import org.pentaho.metadata.registry.IMetadataRegistry;
-import org.pentaho.metadata.registry.Link;
 import org.pentaho.metadata.registry.RegistryFactory;
 import org.pentaho.metadata.registry.SimpleFileRegistry;
 import org.pentaho.metadata.registry.Type;
-import org.pentaho.metadata.registry.Verb;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.libraries.base.util.ObjectUtilities;
 import org.pentaho.ui.xul.XulException;
@@ -124,143 +119,232 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
   }
 
   /**
-   * this method is used to see if a valid TableOutput step has been
-   * selected in a trans graph before attempting to model or quick vis
+   * this method is used to see if a valid transformation step or job entry is selected in a graph before attempting to
+   * model or quick vis
    *
    * @return true if valid
    */
-  public static boolean isValidStepSelected() {
-    Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-    TransMeta transMeta = spoon.getActiveTransformation();
-    if( transMeta == null || spoon.getActiveTransGraph() == null ) {
+  public static boolean isValidEntrySelected() {
+    return getDatabaseConnectionInformationForCurrentActiveEntry() != null;
+  }
+
+  /**
+   * Determines if we have valid connection information. "Valid" means we have enough information to build a model with.
+   * This is, at a minimum, a non-null database meta and a non-empty table name.
+   *
+   * @param meta Database meta to check for validity
+   * @param tableName Table name to check for validity
+   * @return {@code true} if {@code meta} is not null and {@code tableName} is not empty.
+   */
+  public static boolean isValidConnectionInformation(DatabaseMeta meta, String tableName) {
+    return meta != null && !Const.isEmpty(tableName);
+  }
+
+  /**
+   * This uses {@link #isValidEntrySelected()} and shows an error dialog if not.
+   * @return {@code true} if a valid entry is selected to model or quick vis
+   */
+  private static boolean isValidEntrySelectedWithLogging() {
+    if (!isValidEntrySelected()) {
+      showFriendlyModelerException(new ModelerException(BaseMessages.getString(ModelerHelper.class, "InvalidEntrySelected")));
       return false;
     }
-    StepMeta stepMeta = spoon.getActiveTransGraph().getCurrentStep();
-    if(stepMeta != null && !(stepMeta.getStepMetaInterface() instanceof TableOutputMeta) ) {
-      return true;
-    }
-    // see if we can get the objects we need
-    StepMetaInterface smi = stepMeta.getStepMetaInterface();
-    
-    if( smi instanceof ProvidesDatabaseConnectionInformation ) {
-    	return true;
-    }
-    
-    DatabaseConnectionMethods connectionMethods = getDatabaseConnectionMethods(smi);
-    
-	boolean gotDatabaseMeta = connectionMethods.getDatabaseMetaMethod() != null;
-	boolean gotTableName = connectionMethods.getTableNameMethod() != null;
-    return gotDatabaseMeta && gotTableName;
+    return true;
   }
 
-  public static DatabaseConnectionMethods getDatabaseConnectionMethods(StepMetaInterface smi) {
-	  DatabaseConnectionMethods connectionMethods = new DatabaseConnectionMethods();
-	  
-	  if( smi instanceof ProvidesDatabaseConnectionInformation ) {
-		  ProvidesDatabaseConnectionInformation step = (ProvidesDatabaseConnectionInformation) smi;
-		  connectionMethods.setDatabaseMeta(step.getDatabaseMeta());
-		  connectionMethods.setTableName(step.getTableName());
-		  connectionMethods.setSchemaName(step.getSchemaName());
-		  return connectionMethods;
+  /**
+   * Attempt to resolve the database connection information from the currently selected transformation or job.
+   *
+   * @return A {@link ProvidesDatabaseConnectionInformation} instance populated database connection information.
+   */
+  private static ProvidesDatabaseConnectionInformation getDatabaseConnectionInformationForCurrentActiveEntry() {
+    Spoon spoon= (Spoon) SpoonFactory.getInstance();
+
+    EngineMetaInterface metaInterface = spoon.getActiveMeta();
+    ProvidesDatabaseConnectionInformation connectionInfo = null;
+    if (metaInterface != null) {
+      if (metaInterface instanceof TransMeta) {
+        connectionInfo = getDatabaseConnectionInformationForCurrentTransStep(spoon);
+      } else if (metaInterface instanceof JobMeta) {
+        connectionInfo = getDatabaseConnectionInformationForJobEntry(spoon);
+      }
+    }
+    return connectionInfo;
+  }
+
+  /**
+   * Get the current step from the transformation graph if it is currently "active".
+   *
+   * @param spoon Spoon instance to get look up current step from
+   * @return Current step if the transformation graph is active
+   */
+  protected static StepMeta getCurrentStepMeta(Spoon spoon) {
+    if (spoon.getActiveTransGraph() == null) {
+      return null;
+    }
+    return spoon.getActiveTransGraph().getCurrentStep();
+  }
+
+  /**
+   * Get the current job entry from the job graph if it is currently "active".
+   *
+   * @param spoon Spoon instance to look up current job entry from
+   * @return Current job entry if the job graph is active
+   */
+  protected static JobEntryCopy getCurrentJobEntry(Spoon spoon) {
+    if (spoon.getActiveJobGraph() == null) {
+      return null;
+    }
+    return spoon.getActiveJobGraph().getJobEntry();
+  }
+
+  /**
+   * Get the database connection information for the active transformation.
+   *
+   * @param spoon Current instance of Spoon.
+   * @return A valid {@link ProvidesDatabaseConnectionInformation} with database connection information from the currently selected
+   *         transformation step
+   */
+  protected static ProvidesDatabaseConnectionInformation getDatabaseConnectionInformationForCurrentTransStep(Spoon spoon) {
+    StepMeta stepMeta = getCurrentStepMeta(spoon);
+    // see if we can get the objects we need
+    return stepMeta == null ? null : getDatabaseConnectionInformation(stepMeta.getStepMetaInterface());
+  }
+
+  /**
+   * Get the database connection information for the active job.
+   *
+   * @param spoon Current instance of Spoon.
+   * @return A valid {@link ProvidesDatabaseConnectionInformation} with database connection information for the currently selected
+   *         job entry
+   */
+  protected static ProvidesDatabaseConnectionInformation getDatabaseConnectionInformationForJobEntry(Spoon spoon) {
+    JobEntryCopy entry = getCurrentJobEntry(spoon);
+    // see if we can get the objects we need
+    return entry == null ? null : getDatabaseConnectionInformation(entry.getEntry());
+  }
+
+  /**
+   * Creates a modeler source that can build a model for the currently selected transformation step or job entry.
+   *
+   * @param connectionInfo Database Connection information
+   * @param spoon Spoon instance to look up active step or entry from
+   * @return A valid modeler source for the currently selected transformation step or job entry, or {@code null} if no valid active item could be found.
+   */
+  protected static KettleModelerSource createSourceForActiveSelection(ProvidesDatabaseConnectionInformation connectionInfo, Spoon spoon) {
+    EngineMetaInterface metaInterface = spoon.getActiveMeta();
+    KettleModelerSource source = null;
+    if (metaInterface != null) {
+      if (metaInterface instanceof TransMeta) {
+        source = getModelerSourceForCurrentTransStep(connectionInfo, spoon);
+      } else if (metaInterface instanceof JobMeta) {
+        source = getModelerSourceForCurrentJobEntry(connectionInfo, spoon);
+      }
+    }
+    return source;
+  }
+
+  /**
+   * Create a modeler source for the current transformation step.
+   *
+   * @param connectionInfo Connection information
+   * @param spoon Spoon instance to look for the currently active transformation step
+   * @return A modeler source for the current transformation step so we can build a model for it
+   */
+  protected static KettleModelerSource getModelerSourceForCurrentTransStep(ProvidesDatabaseConnectionInformation connectionInfo, Spoon spoon) {
+    StepMeta stepMeta = getCurrentStepMeta(spoon);
+    if (stepMeta == null) {
+      return null;
+    }
+    return getModelerSourceForStepMeta(connectionInfo, spoon.getActiveTransformation(), stepMeta);
+  }
+
+  /**
+   * Create a modeler source for the current transformation step.
+   *
+   * @param connectionInfo Connection information
+   * @param transMeta Tranformation the step belongs to
+   * @param stepMeta Step to create modeler source for
+   * @return A modeler source for the current transformation step so we can build a model for it
+   */
+  protected static KettleModelerSource getModelerSourceForStepMeta(ProvidesDatabaseConnectionInformation connectionInfo, TransMeta transMeta, StepMeta stepMeta) {
+    Repository repository = transMeta.getRepository();
+    String repositoryName = repository == null ? null : repository.getName();
+    return new OutputStepModelerSource(connectionInfo.getDatabaseMeta(), connectionInfo.getTableName(), connectionInfo.getSchemaName(), transMeta.getName(), transMeta.getFilename(), repositoryName, stepMeta.getStepID());
+  }
+
+  /**
+   * Create a modeler source for the current job entry.
+   *
+   * @param connectionInfo Connection information
+   * @param spoon Spoon instance to look for the currently active job entry
+   * @return A modeler source for the current job entry so we can build a model for it
+   */
+  protected static KettleModelerSource getModelerSourceForCurrentJobEntry(ProvidesDatabaseConnectionInformation connectionInfo, Spoon spoon) {
+    JobEntryCopy entry = getCurrentJobEntry(spoon);
+    if (entry == null) {
+      return null;
+    }
+    return getModelerSourceForJobEntry(connectionInfo, spoon.getActiveJob(), entry);
+  }
+
+  /**
+   * Create a modeler source for the job entry.
+   *
+   * @param connectionInfo Connection information
+   * @param jobMeta Job the job entry belongs to
+   * @param entry Job Entry to create modeler source for
+   * @return A modeler source for the current job entry so we can build a model for it
+   */
+  protected static KettleModelerSource getModelerSourceForJobEntry(ProvidesDatabaseConnectionInformation connectionInfo, JobMeta jobMeta, JobEntryCopy entry) {
+    Repository repository = jobMeta.getRepository();
+    String repositoryName = repository == null ? null : repository.getName();
+    return new KettleModelerSource(connectionInfo.getDatabaseMeta(), connectionInfo.getTableName(), connectionInfo.getSchemaName(), Type.TYPE_JOB, jobMeta.getName(), jobMeta.getFilename(), repositoryName, entry.getEntry().getPluginId());
+  }
+
+  /**
+   * Get the database connection information from an object that implements {@link ProvidesDatabaseConnectionInformation}.
+   *
+   * @param o Object that implements {@link ProvidesDatabaseConnectionInformation} and has database connection information.
+   * @return Database connection information from {@code o}.
+   */
+  protected static ProvidesDatabaseConnectionInformation getDatabaseConnectionInformation(Object o) {
+	  if( o != null && ProvidesDatabaseConnectionInformation.class.isAssignableFrom(o.getClass()) ) {
+      return ProvidesDatabaseConnectionInformation.class.cast(o);
 	  }
-	  
-		Method methods[] = smi.getClass().getMethods();
-		for( Method m: methods) {
-			if( m.getName().equalsIgnoreCase("getDatabaseMeta")) {
-				connectionMethods.setDatabaseMetaMethod(m);
-				try {
-					DatabaseMeta databaseMeta = (DatabaseMeta) m.invoke(smi);
-					connectionMethods.setDatabaseMeta(databaseMeta);
-				} catch (Exception e) {
-					// we are just introspecting
-				}
-			}
-			if( m.getName().equalsIgnoreCase("getTableName")) {
-				connectionMethods.setTableNameMethod(m);
-				try {
-					String tableName = (String) m.invoke(smi);
-					connectionMethods.setTableName(tableName);
-				} catch (Exception e) {
-					// we are just introspecting
-				}
-			}
-			if( m.getName().equalsIgnoreCase("getSchemaName")) {
-				connectionMethods.setSchemaNameMethod(m);
-				try {
-					String schemaName = (String) m.invoke(smi);
-					connectionMethods.setSchemaName(schemaName);
-				} catch (Exception e) {
-					// we are just introspecting
-				}
-			}
-		}
-		
-		return connectionMethods;
+    return null;
   }
   
-  public static ModelerWorkspace populateModelFromOutputStep(ModelerWorkspace model) throws ModelerException {
+  public static ModelerWorkspace populateModel(ModelerWorkspace model) throws ModelerException {
 
-    Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-    TransMeta transMeta = spoon.getActiveTransformation();
-    if( transMeta == null || spoon.getActiveTransGraph() == null ) {
-      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen" ), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException(BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.TransNotOpen")); //$NON-NLS-1$
+    if (!isValidEntrySelected()) {
+      throw new ModelerException(BaseMessages.getString(ModelerHelper.class, "InvalidEntrySelected"));
     }
-    StepMeta stepMeta = spoon.getActiveTransGraph().getCurrentStep();
 
-    // do it by introspection
-    StepMetaInterface smi = stepMeta.getStepMetaInterface();
-        
-    DatabaseConnectionMethods connectionMethods = getDatabaseConnectionMethods(smi);
-    DatabaseMeta databaseMeta = connectionMethods.getDatabaseMeta();
-    String tableName = connectionMethods.getTableName();
-    String schemaName = connectionMethods.getSchemaName();
-    
+    ProvidesDatabaseConnectionInformation connectionInfo = getDatabaseConnectionInformationForCurrentActiveEntry();
 		// we must have a database meta and a table name to continue, schema is optional
-    if( databaseMeta == null || tableName == null ) {
-      SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.StepNeeded"), MODELER_NAME, false, Const.ERROR); //$NON-NLS-1$
-      throw new IllegalStateException(BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.OutputStepNeeded")); //$NON-NLS-1$
+    if( !isValidConnectionInformation(connectionInfo.getDatabaseMeta(), connectionInfo.getTableName()) ) {
+      String errorMsg = Const.NVL(connectionInfo.getMissingDatabaseConnectionInformationMessage(), BaseMessages.getString(ModelerHelper.class, "DatabaseConnectionInformationRequired"));
+      throw new ModelerException(errorMsg);
     }
 
-    RowMetaInterface rowMeta = null;
-    try {
-      rowMeta = transMeta.getStepFields(stepMeta);
-    } catch (KettleException e) {
-    	logger.info("Error getting step fields", e);
-    	Throwable rootCause = e;
-    	while (rootCause.getCause() != null && rootCause != rootCause.getCause()) {
-    	  rootCause = rootCause.getCause();
-    	}
-      throw new ModelerException(BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta"), rootCause); //$NON-NLS-1$
-    }
-    if(rowMeta == null){
-   	 throw new ModelerException(BaseMessages.getString(ModelerWorkspace.class,  "ModelerWorkspaceUtil.FromOutputStep.NoStepMeta")); //$NON-NLS-1$
+    KettleModelerSource source = createSourceForActiveSelection(connectionInfo, (Spoon) SpoonFactory.getInstance());
+
+    if (source == null) {
+      throw new ModelerException(BaseMessages.getString(ModelerHelper.class, "Error.NoModelerSource", connectionInfo.getDatabaseMeta().getName(), connectionInfo.getTableName()));
     }
 
-
-    OutputStepModelerSource source = new OutputStepModelerSource(tableName, schemaName, databaseMeta);
-    source.setFileName(transMeta.getFilename());
-    source.setStepId(stepMeta.getStepID());
-    Repository repository = transMeta.getRepository();
-    if(repository != null) {
-    	source.setRepositoryName(repository.getName());
-    }
     Domain d = source.generateDomain();
 
-
     model.setModelSource(source);
-    model.setModelName(tableName);
+    model.setModelName(connectionInfo.getTableName());
     model.setDomain(d);
 
     RegistryFactory factory = RegistryFactory.getInstance();
     IMetadataRegistry registry = factory.getMetadataRegistry();
-    Entity tableEntity = new Entity(databaseMeta.getName()+"~"+schemaName+"~"+tableName, tableName, Type.TYPE_PHYSICAL_TABLE.getId());
-    String transFileName = Spoon.getInstance().getActiveTransformation().getFilename();
-    Entity transEntity = new Entity(transFileName, Spoon.getInstance().getActiveTransformation().getName(), Type.TYPE_TRANSFORMATION.getId());
-    registry.addEntity(transEntity);
-    registry.addEntity(tableEntity);
-    Link link = new Link( transEntity, Verb.VERB_POPULATES, tableEntity );
-    registry.addLink(link);
+
+    source.registerLineageMetadata(registry);
+
     try {
 		registry.commit();
 	} catch (Exception e) {
@@ -269,14 +353,12 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
     
     return model;
   }
-  
-  
-  public void createModelerTabFromOutputStep() throws ModelerException {
-    Spoon spoon = ((Spoon)SpoonFactory.getInstance());
 
+
+  public void createModelerTab() throws ModelerException {
     ModelerWorkspace model = createModelerWorkspace();
     
-    populateModelFromOutputStep(model);
+    populateModel(model);
     
     AgileBiModelerPerspective.getInstance().createTabForModel(model, MODELER_NAME);
     
@@ -328,20 +410,21 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
   }
   
   public void openModeler() {
-    if (!isValidStepSelected()) {
+    if (!isValidEntrySelectedWithLogging()) {
       return;
     }
 
     try{
-      ModelerHelper.getInstance().createModelerTabFromOutputStep();
+      ModelerHelper.getInstance().createModelerTab();
       SpoonPerspectiveManager.getInstance().activatePerspective(AgileBiModelerPerspective.class);
-      
+    } catch (ModelerException e) {
+      showFriendlyModelerException(e);
     } catch(Exception e){
       logger.error("Error opening modeler", e);
       new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating modeler", e); 
     }
   }
-  
+
   public void quickVisualizeTable() {
     Spoon spoon = ((Spoon)SpoonFactory.getInstance());
     if( spoon.getSelectionObject() instanceof DatabaseMeta ) {
@@ -368,26 +451,38 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
   }
 
   public void quickVisualizeTableOutputStep() {
-    if (!isValidStepSelected()) {
+    if (!isValidEntrySelectedWithLogging()) {
       return;
     }
 
     try{
       ModelerWorkspace model = createModelerWorkspace();
-      populateModelFromOutputStep(model);
+      populateModel(model);
       quickVisualize( model );
+    } catch (ModelerException e) {
+      showFriendlyModelerException(e);
     } catch(Exception e){
       logger.error("Error visualizing", e);
       new ErrorDialog(((Spoon) SpoonFactory.getInstance()).getShell(), "Error", "Error creating visualization", e);
     }
 
   }
-  
+
+  /**
+   * Displays a friendly error message box with the {@link ModelerException}'s message as the text.
+   *
+   * @param e Exception with message to display
+   */
+  private static void showFriendlyModelerException(ModelerException e) {
+    logger.error(e.getMessage());
+    SpoonFactory.getInstance().messageBox( e.getMessage() , MODELER_NAME, false, Const.ERROR);
+  }
+
   public void reportWizard() {
-    if (!isValidStepSelected()) {
+    if (!isValidEntrySelectedWithLogging()) {
       return;
     }
-    
+
     XulWaitBox box;
     try {
       box = (XulWaitBox) document.createElement("waitbox");
@@ -406,7 +501,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
           
           try {
             ModelerWorkspace model = createModelerWorkspace();
-            populateModelFromOutputStep(model);
+            populateModel(model);
 
             ObjectUtilities.setClassLoader(getClass().getClassLoader());
             ObjectUtilities.setClassLoaderSource(ObjectUtilities.CLASS_CONTEXT);
@@ -419,6 +514,9 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
             EmbeddedWizard wizard = new EmbeddedWizard(model, true);
             waitBox.stop();
             wizard.run(null);
+          } catch (ModelerException e) {
+            logger.error("Error booting reporting engine", e);
+            showFriendlyModelerException(e);
           } catch (final Exception e) {
             logger.error("Error booting reporting engine", e);
             Display.getDefault().asyncExec(new Runnable(){
@@ -572,7 +670,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
 
   public void updateMenu(Document doc) {
 	
-//	  boolean isDisabled = !isValidStepSelected();
+//	  boolean isDisabled = !isValidEntrySelected();
 //	  XulComponent menuItem = getXulDomContainer().getDocumentRoot().getElementById("trans-graph-entry-model");
 //	  if (menuItem != null) {
 //		  menuItem.setDisabled(isDisabled);

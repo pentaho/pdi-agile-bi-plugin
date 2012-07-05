@@ -22,6 +22,7 @@ import org.apache.commons.lang.ObjectUtils.Null;
 import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.impl.DefaultFileSystemManager;
 import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
+import org.pentaho.agilebi.spoon.KettleModelerSource;
 import org.pentaho.agilebi.spoon.OutputStepModelerSource;
 import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
@@ -81,6 +82,7 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
     }
 
     ModelerSourceFactory.registerSourceType(OutputStepModelerSource.OUTPUTSTEP_SOURCE_TYPE, OutputStepModelerSource.class);
+    ModelerSourceFactory.registerSourceType(KettleModelerSource.SOURCE_TYPE, KettleModelerSource.class);
     ((Spoon) SpoonFactory.getInstance()).addFileListener(AgileBiModelerPerspective.getInstance());
 
     for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {

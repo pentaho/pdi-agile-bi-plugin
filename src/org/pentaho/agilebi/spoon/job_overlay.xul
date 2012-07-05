@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<overlay id="agilebi-job-graph-entry-menu-overlay" title="JobGraph Entry Menu Overlay"  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+         height="600" width="800" onload="modeler.init()"
+  >
+
+  <menupopup id="job-graph-entry">
+    <menuseparator />
+    <menuitem id="job-graph-entry-model" label="${model}" command="agileBi.openModeler()" />
+    <menu id="job-graph-entry-visualize" label="${visualize}">
+      <menupopup id="job-graph-entry-align-popup">
+        <menuitem id="job-graph-entry-visualize" label="${analyzer}" command="agileBi.quickVisualizeTableOutputStep()" />
+        <menuitem id="job-graph-entry-wizard" label="${rdw}" command="agileBi.reportWizard()" />
+      </menupopup>
+    </menu>
+  </menupopup>
+
+</overlay>
