@@ -42,16 +42,6 @@ public class AgileBISpoonPlugin implements SpoonPluginInterface{
   };
 
   public AgileBISpoonPlugin(){
-//		need to find a more general place to do this
-//AgileBiInstaPerspective.getInstance().onStart();
-try {
-	  String className = "org.pentaho.agilebi.insta.perspective.InstaStarter"; //$NON-NLS-1$
-	  Class<?> clazz = Class.forName(className);
-	  Object obj = clazz.newInstance();
-} catch (Exception e) {
-	  e.printStackTrace();
-}
-  
   }
   
   public void applyToContainer(String category, XulDomContainer container) throws XulException {

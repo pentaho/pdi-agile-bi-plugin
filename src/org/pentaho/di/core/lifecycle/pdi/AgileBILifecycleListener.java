@@ -22,12 +22,13 @@ import org.apache.commons.lang.ObjectUtils.Null;
 import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.impl.DefaultFileSystemManager;
 import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
+import org.pentaho.agilebi.platform.JettyServer;
 import org.pentaho.agilebi.spoon.KettleModelerSource;
 import org.pentaho.agilebi.spoon.OutputStepModelerSource;
+import org.pentaho.agilebi.spoon.perspective.AgileBiInstaPerspective;
 import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
-import org.pentaho.agilebi.platform.JettyServer;
 import org.pentaho.agilebi.vfs.MetadataToMondrianVfs;
 import org.pentaho.di.core.annotations.LifecyclePlugin;
 import org.pentaho.di.core.gui.GUIOption;
@@ -75,18 +76,19 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
       JettyServer server = new JettyServer("localhost", port); //$NON-NLS-1$
       server.startServer();
   
-// 		need to find a more general place to do this
-//      AgileBiInstaPerspective.getInstance().onStart();
+      AgileBiInstaPerspective.getInstance().onStart();
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     ModelerSourceFactory.registerSourceType(OutputStepModelerSource.OUTPUTSTEP_SOURCE_TYPE, OutputStepModelerSource.class);
     ModelerSourceFactory.registerSourceType(KettleModelerSource.SOURCE_TYPE, KettleModelerSource.class);
-    ((Spoon) SpoonFactory.getInstance()).addFileListener(AgileBiModelerPerspective.getInstance());
-
-    for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {
-      ((Spoon) SpoonFactory.getInstance()).addFileListener(viz);
+    if( SpoonFactory.getInstance() != null ) { // condition if for unit testing
+	    ((Spoon) SpoonFactory.getInstance()).addFileListener(AgileBiModelerPerspective.getInstance());
+	
+	    for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {
+	      ((Spoon) SpoonFactory.getInstance()).addFileListener(viz);
+	    }
     }
   }
 
