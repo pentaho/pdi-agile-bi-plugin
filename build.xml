@@ -107,7 +107,7 @@
 	  </target>
 
 	  <target name="assemble-insta">
-	  	<!-- Step 1: Unzip a PRD zip into staging dir -->
+	  	<!-- Step 1: Unzip an insta zip into staging dir -->
 	  			<mkdir dir="${insta.unzip.dir}"/>
 	  			<unzip dest="${insta.unzip.dir}">
 	  				<fileset dir="${insta-plugin-assembly.dir}">
@@ -121,7 +121,10 @@
 	    </copy>
 	  </target>
 
+  <!--   
   <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server,assemble-report-wizard, assemble-insta">
+  -->	
+  <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server,assemble-report-wizard">
     <copy todir="${approot.stage.dir}" overwrite="true">
       <fileset dir="${package.resdir}" />
     </copy>
