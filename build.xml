@@ -26,6 +26,14 @@
 		            value="../report-designer-assembly"
 		            description="Location of report designer assembly zip" />
 
+	<property name="monetdb-plugin-assembly.dir"
+		            value="../monetdb-bulk-loader/dist"
+		            description="Location of MonetDB assembly zip" />
+
+	<property name="insta-plugin-assembly.dir"
+		            value="../pentaho-insta-tmp-trunk/dist"
+		            description="Location of insta wizard assembly zip" />
+
 	<property name="platform.unzip.dir"
 	            value="${bin.dir}/platform-unzip"
 	            description="Location of platform assembly zip" />
@@ -34,6 +42,10 @@
 				value="${bin.dir}/report-designer-unzip"
 				description="Location of expanded report designer assembly zip" />
 		
+	<property name="insta.unzip.dir"
+				value="${bin.dir}/insta-unzip"
+				description="Location of expanded report designer assembly zip" />
+	
 	<property name="kettle.dist.dir"
 				value="../Kettle"
     			description="Location of kettle spoon zip" />
@@ -70,26 +82,46 @@
       FOUND IN subfloor.xml.
     --> 
 	
+	  <target name="cobertura-no-install"
+	          description="Runs tests in an instrumented environment and produces Cobertura test coverage reports"
+	          depends="clean-cobertura,compile,compile-tests,cobertura.instrument-classes,cobertura.test-instrumented,cobertura.xml-report,cobertura.html-report" />
+	
+	
   <target name="assemble.init">
     <mkdir dir="${stage.dir}" />
   </target>
 	
-  <target name="assemble-report-wizard">
-  	<!-- Step 1: Unzip a PRD zip into staging dir -->
-  			<mkdir dir="${report-designer.unzip.dir}"/>
-  			<unzip dest="${report-designer.unzip.dir}">
-  				<fileset dir="${report-designer-assembly.dir}">
-  				        <include name="prd-ce-${dependency.pentaho-reporting.revision}.zip"/>
-  			    </fileset>
-  			</unzip>
-  	
-  	<!-- Step 2: Copy wizard templates into agile-bi plugin -->
-    <copy todir="${approot.stage.dir}/templates" overwrite="true">
-      <fileset dir="${report-designer.unzip.dir}/report-designer/templates"/>
-    </copy>
-  </target>
-	
-  <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server,assemble-report-wizard">
+	  <target name="assemble-report-wizard">
+	  	<!-- Step 1: Unzip a PRD zip into staging dir -->
+	  			<mkdir dir="${report-designer.unzip.dir}"/>
+	  			<unzip dest="${report-designer.unzip.dir}">
+	  				<fileset dir="${report-designer-assembly.dir}">
+	  				        <include name="prd-ce-*.zip"/>
+	  			    </fileset>
+	  			</unzip>
+	  	
+	  	<!-- Step 2: Copy wizard templates into agile-bi plugin -->
+	    <copy todir="${approot.stage.dir}/templates" overwrite="true">
+	      <fileset dir="${report-designer.unzip.dir}/report-designer/templates"/>
+	    </copy>
+	  </target>
+
+	  <target name="assemble-insta">
+	  	<!-- Step 1: Unzip a PRD zip into staging dir -->
+	  			<mkdir dir="${insta.unzip.dir}"/>
+	  			<unzip dest="${insta.unzip.dir}">
+	  				<fileset dir="${insta-plugin-assembly.dir}">
+	  				        <include name="instanal-*.zip"/>
+	  			    </fileset>
+	  			</unzip>
+	  	
+	  	<!-- Step 2: Copy wizard templates into agile-bi plugin -->
+	    <copy todir="${approot.stage.dir}/platform/pentaho-solutions/system" overwrite="true">
+	      <fileset dir="${insta.unzip.dir}"/>
+	    </copy>
+	  </target>
+
+  <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server,assemble-report-wizard, assemble-insta">
     <copy todir="${approot.stage.dir}" overwrite="true">
       <fileset dir="${package.resdir}" />
     </copy>
@@ -315,7 +347,6 @@
 
 	</target>
 	
-	
 	  <target name="assemble.copy-libs">
 	    <copy todir="${approot.stage.dir}/lib">
 	      <fileset dir="${lib.dir}" />
@@ -327,19 +358,51 @@
 
 	<!-- this target builds a kettle release that includes the agile bi plugin -->
 	<target name="kettle-w-plugin-dist">
-		<unzip dest="${bin.dir}/kettle-dist">
+		<delete dir="${bin.dir}/kettle-dist"/>
+		<delete file="${dist.dir}/${pdiwithagilebi}.zip"/>
+		<delete file="${dist.dir}/${pdiwithagilebi}.tgz"/>
+		<untar compression="gzip" dest="${bin.dir}/kettle-dist">
 			<fileset dir="${kettle.dist.dir}">
-				<include name="pdi-ce-*.zip"/>
+				<include name="pdi-ce-*.tar.gz"/>
 			</fileset>
-		</unzip>
+		</untar>
+
+		<!-- copy in the start-up items -->
+	    <copy todir="${bin.dir}/kettle-dist">
+	      <fileset file="pdi-res/**"/>
+	    </copy>
+		
+		<!-- patchup permissions -->		
+	      <chmod dir="${bin.dir}/kettle-dist" perm="755" excludes="docs/api/** docs/api-core/** **/Thumbs.db" verbose="true">
+	        <include name="**/*.sh" />
+	      	<include name="**/JavaApplicationStub" />
+	      </chmod>
+		
 		<unzip dest="${bin.dir}/kettle-dist/plugins/spoon">
 			<fileset dir="${dist.dir}">
 				<include name="${package.basename}.zip"/>
 			</fileset>
 		</unzip>
+		<!-- copy in the monetdb Agile Mart plugin -->
+		<unzip dest="${bin.dir}/kettle-dist/plugins/steps">
+			<fileset dir="${monetdb-plugin-assembly.dir}">
+				<include name="MonetDBAgileMartPlugin-*.zip"/>
+			</fileset>
+		</unzip>
 		<zip destfile="${dist.dir}/${pdiwithagilebi}.zip">
 			<zipfileset dir="${bin.dir}/kettle-dist" />
 		</zip>
+	    <tar destfile="${dist.dir}/${pdiwithagilebi}.tgz" longfile="gnu" compression="gzip">
+	      <tarfileset dir="${bin.dir}/kettle-dist" mode="755" excludes="docs/api/** docs/api-core/** **/Thumbs.db">
+	        <include name="**/*.sh" />
+	      	<include name="**/JavaApplicationStub" />
+	      </tarfileset>
+	      <tarfileset dir="${bin.dir}/kettle-dist" excludes="docs/api/** docs/api-core/** **/Thumbs.db">
+	        <exclude name="**/*.sh" />
+	      	<exclude name="**/JavaApplicationStub" />
+	      </tarfileset>
+	    </tar>
+		
 	</target>
 	
 	<target name="install-plugin">
