@@ -1,0 +1,82 @@
+<tr>
+    <td class="label" style="text-align: right; vertical-align: top;">Country: </td>
+    <td>
+        <select id="paramvalue0">
+            <option>United States</option>
+            <option>Algeria</option>
+            <option>Argentina</option>
+            <option>Australia</option>
+            <option>Austria</option>
+            <option>Bangladesh</option>
+            <option>Belarus</option>
+            <option>Belgium</option>
+            <option>Bosnia and Herzegovina</option>
+            <option>Brazil</option>
+            <option>Bulgaria</option>
+            <option>Canada</option>
+            <option>Chile</option>
+            <option>China</option>
+            <option>Colombia</option>
+            <option>Croatia</option>
+            <option>Cyprus</option>
+            <option>Czech Republic</option>
+            <option>Ecuador</option>
+            <option>Egypt</option>
+            <option>Estonia</option>
+            <option>Finland</option>
+            <option>France</option>
+            <option>Germany</option>
+            <option>Hong Kong</option>
+            <option>India</option>
+            <option>Indonesia</option>
+            <option>Iran, Islamic Republic of</option>
+            <option>Ireland</option>
+            <option>Israel</option>
+            <option>Italy</option>
+            <option>Japan</option>
+            <option>Jordan</option>
+            <option>Kenya</option>
+            <option>Korea, Republic of</option>
+            <option>Lithuania</option>
+            <option>Madagascar</option>
+            <option>Malaysia</option>
+            <option>Mali</option>
+            <option>Mexico</option>
+            <option>Morocco</option>
+            <option>N/A</option>
+            <option>Netherlands</option>
+            <option>New Zealand</option>
+            <option>Norway</option>
+            <option>Oman</option>
+            <option>Pakistan</option>
+            <option>Philippines</option>
+            <option>Poland</option>
+            <option>Portugal</option>
+            <option>Romania</option>
+            <option>Russian Federation</option>
+            <option>Rwanda</option>
+            <option>Saudi Arabia</option>
+            <option>Senegal</option>
+            <option>Serbia</option>
+            <option>Singapore</option>
+            <option>Slovakia</option>
+            <option>Slovenia</option>
+            <option>South Africa</option>
+            <option>Spain</option>
+            <option>Sri Lanka</option>
+            <option>Sweden</option>
+            <option>Switzerland</option>
+            <option>Syrian Arab Republic</option>
+            <option>Taiwan</option>
+            <option>Thailand</option>
+            <option>Tunisia</option>
+            <option>Turkey</option>
+            <option>United Arab Emirates</option>
+            <option>United Kingdom</option>
+            <option>United States</option>
+            <option>Uruguay</option>
+            <option>Venezuela</option>
+            <option>Vietnam</option>
+        </select>
+    </td>
+</tr>
