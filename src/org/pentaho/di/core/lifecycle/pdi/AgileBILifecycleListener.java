@@ -115,5 +115,11 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
 
   }
 
+  @Override
+  public void onEnvironmentInit() throws LifecycleException {
+  }
 
+  @Override
+  public void onEnvironmentShutdown() {
+  }
 }
