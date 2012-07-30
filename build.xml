@@ -31,7 +31,7 @@
 		            description="Location of MonetDB assembly zip" />
 
 	<property name="insta-plugin-assembly.dir"
-		            value="../pentaho-insta-tmp-trunk/dist"
+		            value="../pentaho-insta-tmp/dist"
 		            description="Location of insta wizard assembly zip" />
 
 	<property name="platform.unzip.dir"
