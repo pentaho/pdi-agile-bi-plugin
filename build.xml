@@ -371,23 +371,23 @@
 		</untar>
 
 		<!-- copy in the start-up items -->
-	    <copy todir="${bin.dir}/kettle-dist">
+	    <copy todir="${bin.dir}/kettle-dist/data-integration">
 	      <fileset file="pdi-res/**"/>
 	    </copy>
 		
 		<!-- patchup permissions -->		
-	      <chmod dir="${bin.dir}/kettle-dist" perm="755" excludes="docs/api/** docs/api-core/** **/Thumbs.db" verbose="true">
+	      <chmod dir="${bin.dir}/kettle-dist/data-integration" perm="755" excludes="docs/api/** docs/api-core/** **/Thumbs.db" verbose="true">
 	        <include name="**/*.sh" />
 	      	<include name="**/JavaApplicationStub" />
 	      </chmod>
 		
-		<unzip dest="${bin.dir}/kettle-dist/plugins/spoon">
+		<unzip dest="${bin.dir}/kettle-dist/data-integration/plugins/spoon">
 			<fileset dir="${dist.dir}">
 				<include name="${package.basename}.zip"/>
 			</fileset>
 		</unzip>
 		<!-- copy in the monetdb Agile Mart plugin -->
-		<unzip dest="${bin.dir}/kettle-dist/plugins/steps">
+		<unzip dest="${bin.dir}/kettle-dist/data-integration/plugins/steps">
 			<fileset dir="${monetdb-plugin-assembly.dir}">
 				<include name="MonetDBAgileMartPlugin-*.zip"/>
 			</fileset>
