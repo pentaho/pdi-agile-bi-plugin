@@ -422,5 +422,8 @@
 	    </antcall>
 	</target>
 	
+	  <target name="publish" depends="dist-source, publish-nojar">
+	  </target>
+	
 	
 </project>
