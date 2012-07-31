@@ -31,7 +31,7 @@
 		            description="Location of MonetDB assembly zip" />
 
 	<property name="insta-plugin-assembly.dir"
-		            value="../../../pentaho-insta-tmp/dist"
+		            value="../pentaho-insta-tmp/dist"
 		            description="Location of insta wizard assembly zip" />
 
 	<property name="platform.unzip.dir"
@@ -47,7 +47,7 @@
 				description="Location of expanded report designer assembly zip" />
 	
 	<property name="kettle.dist.dir"
-				value="../Kettle"
+				value="../PDI-4.4.0"
     			description="Location of kettle spoon zip" />
 	
 	<property name="analyzer.dist.dir"
@@ -366,7 +366,7 @@
 		<delete file="${dist.dir}/${pdiwithagilebi}.tgz"/>
 		<untar compression="gzip" dest="${bin.dir}/kettle-dist">
 			<fileset dir="${kettle.dist.dir}">
-				<include name="pdi-ce-*.tar.gz"/>
+				<include name="pdi-ce-${dependency.kettle.revision}.tar.gz"/>
 			</fileset>
 		</untar>
 
