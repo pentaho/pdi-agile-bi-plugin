@@ -176,8 +176,8 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
 public void onActivation() {
 
 	Spoon.getInstance().getShell().setText("");
+	Spoon.getInstance().setMainToolbarVisible(false);
 	// TODO - JD - enable this in Spoon
-//	Spoon.getInstance().setMainToolbarVisible(false);
 //	Spoon.getInstance().setMenuBarVisible(false);
 	
 }
@@ -185,8 +185,8 @@ public void onActivation() {
 @Override
 public void onDeactication() {
 
+	Spoon.getInstance().setMainToolbarVisible(true);
 	// TODO - JD - enable this in Spoon
-//	Spoon.getInstance().setMainToolbarVisible(true);
 //	Spoon.getInstance().setMenuBarVisible(true);
 	
 }
