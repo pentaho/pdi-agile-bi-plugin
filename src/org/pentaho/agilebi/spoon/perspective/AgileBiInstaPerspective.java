@@ -48,7 +48,7 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
   
   public void onStart() {
 
-	String location = "http://localhost:${port}/pentaho/content/instanal/resources/web/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
+	String location = "http://localhost:${port}/pentaho/content/instanal/resources/web/insta/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
 
 	int port = AgileBILifecycleListener.consolePort;
 	if( port == 0 ) {
