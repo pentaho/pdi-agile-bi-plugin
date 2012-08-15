@@ -78,31 +78,16 @@
     <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="${dependency.data-access.revision}"
                 changing="true"
                 conf="default->default"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-engine-core" rev="${dependency.bi-platform.revision}"
+                
+    <dependency org="pentaho" name="pentaho-platform-core" rev="${dependency.bi-platform.revision}"
                 changing="true"
                 conf="default->default"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-engine-services" rev="${dependency.bi-platform.revision}"
+    <dependency org="pentaho" name="pentaho-platform-repository" rev="${dependency.bi-platform.revision}"
                 changing="true"
                 conf="default->default"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-repository" rev="${dependency.bi-platform.revision}"
-                changing="true"
-                conf="default->default"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-util" rev="${dependency.bi-platform.revision}" changing="true"
-                conf="default->default"/>
-
+   
     <!-- Pentaho -->
-    <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="${dependency.bi-platform.pentaho-bi-platform-web-servlet.revision}"
-                changing="true"
-                conf="default->default" transitive="false"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-plugin-actions" rev="${dependency.bi-platform.pentaho-bi-platform-plugin-actions.revision}"
-                changing="true"
-                conf="default->default" transitive="false"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-security-userroledao" rev="${dependency.bi-platform.revision}"
-                changing="true"
-                conf="default->default" transitive="false"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-legacy" rev="${dependency.bi-platform.revision}" changing="true"
-                conf="default->default" transitive="false"/>
-    <dependency org="pentaho" name="mantle" rev="${dependency.bi-platform.revision}" changing="true"
+      <dependency org="pentaho" name="pentaho-user-console" rev="${dependency.bi-platform.revision}" changing="true"
                 conf="default->default"
                 transitive="false"/>
 
@@ -138,6 +123,18 @@
     <dependency org="org.apache.ws.commons.neethi" name="neethi" rev="2.0.1" transitive="false" conf="default->default"/>
     <dependency org="org.apache.ws.commons.schema" name="XmlSchema" rev="1.4.2" transitive="false" conf="default->default"/>
     <dependency org="org.apache.axis2" name="axis2-java2wsdl" rev="1.4.1" transitive="false"/>
+
+   <!-- jersey -->
+    <dependency org="com.sun.jersey.contribs" name="jersey-multipart" rev="1.5"/>
+    <dependency org="com.sun.jersey.contribs" name="jersey-apache-client" rev="1.5" transitive="false"/>
+
+    <!-- jersey -->
+    <dependency org="com.sun.jersey" name="jersey-core" rev="1.5" transitive="false"/>
+    <dependency org="com.sun.jersey" name="jersey-json" rev="1.5" transitive="false"/>
+    <dependency org="com.sun.jersey.contribs" name="jersey-spring" rev="1.5" transitive="false"/>
+    <dependency org="com.sun.jersey" name="jersey-client" rev="1.5" transitive="false"/>
+    <dependency org="com.sun.jersey" name="jersey-server" rev="1.5" transitive="false"/>
+    <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false"/>
 
 
     <exclude org="xerces" module="xerces" conf="default->default"/>
