@@ -76,11 +76,11 @@
                 conf="default->default" changing="true" transitive="false"/>
     <dependency org="pentaho-library" name="libbase" rev="${dependency.libbase.revision}"
                 conf="default->default" changing="true" transitive="false"/>
-    <dependency org="pentaho-library" name="libfonts" rev="${dependency.libbase.revision}"
+    <dependency org="pentaho-library" name="libfonts" rev="${dependency.libfonts.revision}"
                 conf="default->default" changing="true" transitive="false"/>
-    <dependency org="pentaho-library" name="libloader" rev="${dependency.libbase.revision}"
+    <dependency org="pentaho-library" name="libloader" rev="${dependency.libloader.revision}"
                 conf="default->default" changing="true" transitive="false"/>
-    <dependency org="pentaho-library" name="librepository" rev="${dependency.libbase.revision}"
+    <dependency org="pentaho-library" name="librepository" rev="${dependency.librepository.revision}"
                 conf="default->default" changing="true" transitive="false"/>
 
     <dependency org="pentaho" name="pentaho-connections" rev="${dependency.pentaho-connections.revision}" changing="true" transitive="false"/>
