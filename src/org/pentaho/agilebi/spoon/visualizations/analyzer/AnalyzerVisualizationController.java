@@ -31,6 +31,7 @@ import org.pentaho.agilebi.spoon.publish.PublisherHelper;
 import org.pentaho.agilebi.spoon.visualizations.AbstractVisualization;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.visualizations.PropertyPanelController;
+import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
@@ -99,7 +100,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 		this.browser = (XulBrowser) this.document.getElementById("web_visualization_browser");
 		this.propPanel = (XulEditpanel) document.getElementById("propPanel");
 		
-		this.browser.setSrc(this.location);
+		this.browser.setSrc(Const.NVL(this.location, "http://"));
 
 		this.bf.setDocument(super.document);
 		this.bf.setBindingType(Type.ONE_WAY);
