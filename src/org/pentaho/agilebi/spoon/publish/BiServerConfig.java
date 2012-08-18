@@ -187,8 +187,8 @@ public class BiServerConfig {
         if( server.getPassword() != null ) {
           props.put(serverId+"/password", Encr.encryptPassword( server.getPassword() ) ); //$NON-NLS-1$
        }
-        if( server.getPublishPassword() != null ) {
-          props.put(serverId+"/publishpassword", Encr.encryptPassword( server.getPublishPassword() ) ); //$NON-NLS-1$
+       if( server.getPublishPassword() != null ) {
+         props.put(serverId+"/publishpassword", Encr.encryptPassword( server.getPublishPassword() ) ); //$NON-NLS-1$
         }
         if( server.getDefaultFolder() != null ) {
           props.put(serverId+"/defaultfolder", server.getDefaultFolder()); //$NON-NLS-1$

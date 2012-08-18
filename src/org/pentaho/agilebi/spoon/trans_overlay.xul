@@ -7,7 +7,7 @@
   <menupopup id="trans-graph-entry">
     <menuseparator />
     <menuitem id="trans-graph-entry-model" label="${model}" command="agileBi.openModeler()" />
-    <menu id="trans-graph-entry-visualize" label="${TransGraph.PopupMenu.Visualize}">
+    <menu id="trans-graph-entry-visualize" label="${visualize}">
       <menupopup id="trans-graph-entry-align-popup">
         <menuitem id="trans-graph-entry-visualize" label="${analyzer}" command="agileBi.quickVisualizeTableOutputStep()" />
         <menuitem id="trans-graph-entry-wizard" label="${rdw}" command="agileBi.reportWizard()" />

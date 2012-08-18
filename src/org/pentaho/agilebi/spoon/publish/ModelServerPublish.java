@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -28,9 +29,14 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -38,6 +44,7 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.dom4j.DocumentHelper;
+import org.pentaho.agilebi.modeler.BaseModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerPerspective;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
@@ -55,12 +62,21 @@ import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.platform.dataaccess.client.ConnectionServiceClient;
+import org.pentaho.platform.dataaccess.datasource.IConnection;
 import org.pentaho.platform.dataaccess.datasource.beans.Connection;
 import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServiceException;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClientNavigationService;
 import org.pentaho.platform.util.client.PublisherUtil;
 import org.pentaho.platform.util.client.ServiceException;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataMultiPart;
 
 /**
  * A utility class for publishing models to a BI server. Also helps synchronize database connections.
@@ -86,7 +102,7 @@ public class ModelServerPublish {
   
   private BiServerConnection biServerConnection;
 
-  private Connection remoteConnection;
+  private IConnection remoteConnection;
   
   private ModelerWorkspace model;
   
@@ -105,14 +121,14 @@ public class ModelServerPublish {
    * @return
    * @throws ConnectionServiceException
    */
-  public List<Connection> listRemoteConnections() throws ConnectionServiceException {
+  public List<IConnection> listRemoteConnections() throws ConnectionServiceException {
       // get information about the remote connection
       ConnectionServiceClient serviceClient = new ConnectionServiceClient();
       serviceClient.setHost(biServerConnection.getUrl());
       serviceClient.setUserId(biServerConnection.getUserId());
       serviceClient.setPassword(biServerConnection.getPassword());
       
-      List<Connection> connections = serviceClient.getConnections();
+      List<IConnection> connections = serviceClient.getConnections();
 //      serviceClientStatus = serviceClient.getStatus();
       return connections;
   }
@@ -123,7 +139,7 @@ public class ModelServerPublish {
    * a cached connection is returned.
    * @return
    */
-  public Connection getRemoteConnection( String connectionName, boolean force ) {
+  public IConnection getRemoteConnection( String connectionName, boolean force ) {
     if( remoteConnection == null || force ) {
       // get information about the remote connection
       ConnectionServiceClient serviceClient = new ConnectionServiceClient();
@@ -159,7 +175,7 @@ public class ModelServerPublish {
     
     // compare the local database meta with the remote connection
     String connectionName = PublisherHelper.getBiServerCompatibleDatabaseName(databaseMeta.getName());
-    Connection connection = getRemoteConnection( connectionName, false );
+    IConnection connection = getRemoteConnection( connectionName, false );
     if( connection == null ) {
       // the connection does not exist (with the same name) on the remote BI server 
       result += REMOTE_CONNECTION_MISSING;
@@ -292,12 +308,17 @@ public class ModelServerPublish {
     }
     sb.append( "MondrianCatalogPublisher?publishPath=" ) //$NON-NLS-1$
     .append( URLEncoder.encode(publishPath, "UTF-8") ) //$NON-NLS-1$
-    .append( "&publishKey=" ).append( getPasswordKey(new String(biServerConnection.getPublishPassword()))) //$NON-NLS-1$
+    .append( "&publishKey=" )
+    .append( getPasswordKey(new String(biServerConnection.getPublishPassword()))) //$NON-NLS-1$
     .append( "&overwrite=true&mkdirs=true" ) //$NON-NLS-1$
-    .append( "&jndiName=" ).append( jndiName ) //$NON-NLS-1$
-    .append( "&enableXmla=" ).append( enableXmla ) //$NON-NLS-1$
-    .append( "&userid=" ).append( biServerConnection.getUserId() ) //$NON-NLS-1$
-    .append( "&password=" ).append( biServerConnection.getPassword() ); //$NON-NLS-1$ 
+    .append( "&jndiName=" )
+    .append( jndiName ) //$NON-NLS-1$
+    .append( "&enableXmla=" )
+    .append( enableXmla ) //$NON-NLS-1$
+    .append( "&userid=" )
+    .append( biServerConnection.getUserId() ) //$NON-NLS-1$
+    .append( "&password=" )
+    .append( biServerConnection.getPassword() ); //$NON-NLS-1$ 
     String fullUrl = sb.toString();
   PostMethod filePost = new PostMethod(fullUrl);
   ArrayList<Part> parts = new ArrayList<Part>();
@@ -335,7 +356,41 @@ public class ModelServerPublish {
       }
 //  }
 }
-  
+  /**
+   * Jersey call to use the put service to load a mondrain file into the Jcr repsoitory
+   * @param mondrianFile
+   * @param catalogName
+   * @param datasourceInfo
+   * @param overwriteInRepos
+   * @throws Exception
+   */
+ public void publishMondrainSchema(InputStream mondrianFile, String catalogName, String datasourceInfo,boolean overwriteInRepos) throws Exception {
+    
+    ClientConfig clientConfig = new DefaultClientConfig(); 
+      Client client = Client.create(clientConfig); 
+      client.addFilter(new HTTPBasicAuthFilter(biServerConnection.getUserId(), biServerConnection.getPassword())); 
+
+      String storeDomainUrl =  biServerConnection.getUrl() + "/plugin/data-access/api/mondrian/putSchema";
+      WebResource resource = client.resource(storeDomainUrl); 
+      String parms = "Datasource="+datasourceInfo;
+    
+      FormDataMultiPart part = new FormDataMultiPart().field("parameters", parms, MediaType.MULTIPART_FORM_DATA_TYPE)
+          .field("uploadAnalysis", mondrianFile, MediaType.MULTIPART_FORM_DATA_TYPE)
+          .field("catalogName", catalogName , MediaType.MULTIPART_FORM_DATA_TYPE)
+          .field("overwrite", overwriteInRepos  ? "true" : "false", MediaType.MULTIPART_FORM_DATA_TYPE)
+          .field("xmlaEnabledFlag", "true", MediaType.MULTIPART_FORM_DATA_TYPE);
+
+      // If the import service needs the file name do the following.
+      part.getField("uploadAnalysis").setContentDisposition(
+          FormDataContentDisposition.name("uploadAnalysis").fileName(catalogName).build());
+          
+      Response response = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).put(Response.class, part);
+      
+      int status = response.getStatus();
+      if (status != HttpStatus.SC_OK) {
+        throw new Exception("Error Importing Mondrian Schema");
+      }
+  }
   private HttpClient getClient( String serverUserId, String serverPassword) {
     HttpClient client = new HttpClient();
     // If server userid/password was supplied, use basic authentication to

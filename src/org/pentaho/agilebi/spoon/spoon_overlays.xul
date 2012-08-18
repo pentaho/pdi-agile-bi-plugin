@@ -6,9 +6,9 @@
     xmlns:pen="http://www.pentaho.org/2008/xul" >
     
     <menupopup id="view-perspectives-popup">
-	    <menuitem label="${Spoon.Perspectives.AgileBi.MenuItem.Label}"
+	    <menuitem label="${model}"
 	      command="spoon.loadPerspective('010-agilebi')" />
-	    <menuitem label="${Spoon.Perspectives.AgileBiViz.MenuItem.Label}"
+	    <menuitem label="${visualize}"
 	      command="spoon.loadPerspective('020-agilebiVisualization')" />
 	</menupopup>
 

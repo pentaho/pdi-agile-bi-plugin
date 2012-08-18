@@ -16,16 +16,21 @@
  */
 package org.pentaho.agilebi.spoon.publish;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.util.Iterator;
+
 import org.apache.commons.io.IOUtils;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.pentaho.agilebi.spoon.publish.ModelServerPublish;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.spoon.XulUI;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
@@ -36,12 +41,6 @@ import org.pentaho.reporting.engine.classic.core.modules.parser.bundle.writer.Bu
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdDataFactory;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulException;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.util.Iterator;
 
 public class PublisherHelper {
 
@@ -229,11 +228,12 @@ public class PublisherHelper {
             tempF.createNewFile();
           }
           tempF.deleteOnExit();
-          IOUtils.copy(new FileInputStream(new File(publishingFile)), new FileOutputStream(tempF));
-          
-          publisher
-              .publishToServer(
-                  filename + ".mondrian.xml", databaseName, filename, repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
+          InputStream mondrianFile =  new FileInputStream(new File(publishingFile));
+          IOUtils.copy(mondrianFile, new FileOutputStream(tempF));
+          publisher.publishMondrainSchema(mondrianFile, filename + ".mondrian.xml", databaseName, true);
+         // publisher
+         //     .publishToServer(
+         //         filename + ".mondrian.xml", databaseName, filename, repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
         }
       } catch (XulException e) {
         e.printStackTrace();
@@ -344,5 +344,5 @@ public class PublisherHelper {
     // replace spaces with underscores
     return name.replaceAll("\\s", "_");
   }
-  
+ 
 }

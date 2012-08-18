@@ -16,14 +16,8 @@
  */
 package org.pentaho.agilebi.spoon;
 
-import org.pentaho.agilebi.modeler.ModelerException;
-import org.pentaho.agilebi.modeler.util.ModelerSourceUtil;
-import org.pentaho.agilebi.modeler.util.TableModelerSource;
 import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
-import org.pentaho.metadata.model.Domain;
-import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.registry.Type;
 
 /**
  * Provides information to the ModelerModel to support the User Interface. This
@@ -32,119 +26,37 @@ import org.pentaho.metadata.model.LogicalModel;
  * @author nbaker
  * 
  */
-public class OutputStepModelerSource extends TableModelerSource {
+public class OutputStepModelerSource extends KettleModelerSource {
 
-	private String fileName;
-	private String repositoryName;
-	private String stepId;
 	public static final String OUTPUTSTEP_SOURCE_TYPE = OutputStepModelerSource.class.getSimpleName();
-	
+
+  /**
+   * Default no-arg constructor so {@link org.pentaho.agilebi.modeler.util.ModelerSourceFactory} can instantiate us.
+   */
   public OutputStepModelerSource() {
-    
   }
 
-	public OutputStepModelerSource(String tableName, String schemaName, DatabaseMeta databaseMeta) {
-		  super( databaseMeta, tableName, schemaName );
-		}
-  
-	public OutputStepModelerSource(TableOutputMeta tableOutputMeta, DatabaseMeta databaseMeta, RowMetaInterface rowMeta) {
-	  super( databaseMeta, tableOutputMeta.getTablename(), tableOutputMeta.getSchemaName() );
-	}
-
-	public Domain generateDomain() throws ModelerException {
-		Domain d = ModelerSourceUtil.generateDomain(getDatabaseMeta(), getSchemaName(), getTableName());
-    for(LogicalModel lModel : d.getLogicalModels()) {
-      lModel.setProperty("SUPPORTS_OLAP", "true");
-    }
-    return d;
-	}
-
-	public void initialize(Domain domain) throws ModelerException {
-	  super.initialize(domain);
-	  LogicalModel lm = domain.getLogicalModels().get(0);
-	  if(lm.getProperty("trans_file") != null) { //$NON-NLS-1$
-	    setFileName(lm.getProperty("trans_file").toString()); //$NON-NLS-1$
-	  }
-	  if (lm.getProperty("trans_repo") != null) { //$NON-NLS-1$
-	    setRepositoryName(lm.getProperty("trans_repo").toString()); //$NON-NLS-1$
-	  }
-	  if (lm.getProperty("trans_step") != null) { //$NON-NLS-1$
-      setStepId(lm.getProperty("trans_step").toString()); //$NON-NLS-1$
-	  }
-    
-//		try {
-//		 Spoon spoon = ((Spoon)SpoonFactory.getInstance());
-//		 spoon.openFile(fileName, true);
-//		 TransMeta transMeta = spoon.getActiveTransformation();
-//		
-//		 if(transMeta != null) {
-//			
-//		    StepMeta steps[] = transMeta.getSelectedSteps();
-//		    StepMeta stepMeta = null;
-//		    if(steps != null && steps.length > 0){
-//		      stepMeta = steps[0];
-//		      setStepId(stepMeta.getStepID());
-//		    } else if(this.stepId != null){
-//		      for(StepMeta meta : transMeta.getSteps()){
-//		        if(meta.getStepID().equals(this.stepId)){
-//		          stepMeta = meta;
-//		          break;
-//		        }
-//		      }
-//		    }
-//		    if(stepMeta == null){
-//		      throw new ModelerException("Could not find step to generate source with");
-//		    }
-//		    
-//		    TableOutputMeta tableOutputMeta = (TableOutputMeta) stepMeta.getStepMetaInterface();
-//		    DatabaseMeta databaseMeta = tableOutputMeta.getDatabaseMeta();
-//
-//		    RowMetaInterface rowMeta = null;
-//	      rowMeta = transMeta.getStepFields(stepMeta);
-//		    
-//		    this.tableOutputMeta = tableOutputMeta;
-//		    this.databaseMeta = databaseMeta;
-//		    this.rowMeta = rowMeta;
-//		 }
-//		} catch(KettleStepException e) {
-//			logger.info(e.getLocalizedMessage());
-//			new ModelerException(e);
-//		}
-	}
-	
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
-	public String getRepositoryName() {
-		return repositoryName;
-	}
-
-	public void setRepositoryName(String repositoryName) {
-	  if(repositoryName != null && repositoryName.equals("")){ //$NON-NLS-1$
-	    this.repositoryName = null;
-	  }
-	  this.repositoryName = repositoryName;
-	}
-
-  public String getStepId() {
-    return stepId;
+  public OutputStepModelerSource(DatabaseMeta databaseMeta, String tableName, String schemaName, String transName, String filename, String repositoryName, String metaId) {
+    super(databaseMeta, tableName, schemaName, Type.TYPE_TRANSFORMATION, transName, filename, repositoryName, metaId);
   }
 
-  public void setStepId(String stepId) {
-    this.stepId = stepId;
+  @Override
+  protected String getFilenamePropertyName() {
+    return "trans_file";
   }
 
-  public void serializeIntoDomain(Domain d) {
-    LogicalModel lm = d.getLogicalModels().get(0);
-    lm.setProperty("source_type", OutputStepModelerSource.OUTPUTSTEP_SOURCE_TYPE); //$NON-NLS-1$
-    lm.setProperty("trans_file", this.fileName != null ? this.fileName : ""); //$NON-NLS-1$ //$NON-NLS-2$
-    lm.setProperty("trans_repo", this.repositoryName != null ? this.repositoryName : ""); //$NON-NLS-1$ //$NON-NLS-2$
-    lm.setProperty("trans_step", this.stepId != null ? this.stepId : ""); //$NON-NLS-1$ //$NON-NLS-2$
+  @Override
+  protected String getRepositoryNamePropertyName() {
+    return "trans_repo";
   }
 
+  @Override
+  protected String getMetaIdPropertyName() {
+    return "trans_step";
+  }
+
+  @Override
+  public String getSourceType() {
+    return OUTPUTSTEP_SOURCE_TYPE;
+  }
 }

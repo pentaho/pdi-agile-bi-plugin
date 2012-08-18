@@ -30,6 +30,11 @@ public class ReportWizardVisualization implements IVisualization {
 	private String description;
 	private int order;
 	
+	 // @Override
+	  public String getId() {
+		  return "REPORT-WIZARD";
+	  }  
+	
 	public String getTitle() {
 		return BaseMessages.getString(ModelerWorkspace.class, "ReportWizard.Option");
 	}
@@ -94,6 +99,10 @@ public class ReportWizardVisualization implements IVisualization {
 
   public String[] getSupportedExtensions() {
     return null;
+  }
+  
+ // @Override
+  public void setCaller( String callerId ) {
   }
   
 }

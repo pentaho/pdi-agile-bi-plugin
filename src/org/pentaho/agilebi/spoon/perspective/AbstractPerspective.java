@@ -22,10 +22,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.pentaho.agilebi.spoon.PDIMessages;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveListener;
+import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.ui.xul.*;
 import org.pentaho.ui.xul.binding.BindingConvertor;
 import org.pentaho.ui.xul.binding.BindingFactory;
@@ -76,33 +78,59 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
       container.addEventHandler(this);
       tabs = (XulTabs) document.getElementById("tabs");
       panels = (XulTabpanels) document.getElementById("tabpanels");
-      tabbox = (XulTabbox) tabs.getParent();
+      if( tabs != null ) {
+    	  tabbox = (XulTabbox) tabs.getParent();
+      }
       BindingFactory bf = new DefaultBindingFactory();
       bf.setDocument(document);
 //      bf.setBindingType(Binding.Type.ONE_WAY);
       
+      if( tabs != null ) {
       
-      bf.createBinding(tabbox, "selectedIndex", this, "selectedMeta", new BindingConvertor<Integer, EngineMetaInterface>(){
-        public EngineMetaInterface sourceToTarget(Integer value) {
-          return metas.get(tabs.getTabByIndex(value));
-        }
-        public Integer targetToSource(EngineMetaInterface value) {
-          for(XulTab tab : metas.keySet()){
-            if(metas.get(tab) == value){
-              return tab.getParent().getChildNodes().indexOf(tab);
-            }
-          }
-          return -1;
-        }
-      });
-      
+	      bf.createBinding(tabbox, "selectedIndex", this, "selectedMeta", new BindingConvertor<Integer, EngineMetaInterface>(){
+	        public EngineMetaInterface sourceToTarget(Integer value) {
+	          return metas.get(tabs.getTabByIndex(value));
+	        }
+	        public Integer targetToSource(EngineMetaInterface value) {
+	          for(XulTab tab : metas.keySet()){
+	            if(metas.get(tab) == value){
+	              return tab.getParent().getChildNodes().indexOf(tab);
+	            }
+	          }
+	          return -1;
+	        }
+	      });
+      }      
     } catch(Exception e){
       // TODO: throw exception
       logger.error("Error initializing perspective", e);
     }
   }
   
-
+  public void switchToCaller( String content ) {
+// TODO - JD - enable in Spoon
+	  /*
+	  String caller = Spoon.getInstance().getCaller(content);
+  	Class<? extends SpoonPerspective> callerClass = null;
+      if( caller != null ) {
+      	List<SpoonPerspective> perspectives = SpoonPerspectiveManager.getInstance().getPerspectives();
+      	for( SpoonPerspective perspective : perspectives ) {
+      		if( perspective.getId().equals( caller ) ) {
+      			callerClass = perspective.getClass();
+      		}
+      	}
+      }
+    	if( callerClass != null ) {
+    		try {
+    			Spoon.getInstance().removeCaller(content);
+    			SpoonPerspectiveManager.getInstance().activatePerspective( callerClass );
+    		} catch (KettleException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+    	}
+*/
+  }
 
   public abstract String getDisplayName(Locale l);
 
@@ -294,6 +322,9 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
   }
 
   public EngineMetaInterface getActiveMeta() {
+	  if( tabbox == null ) {
+		  return null;
+	  }
     int idx = tabbox.getSelectedIndex();
     if( idx == -1 || idx >= tabbox.getTabs().getChildNodes().size()) {
       return null;
