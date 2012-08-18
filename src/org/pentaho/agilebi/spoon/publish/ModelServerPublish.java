@@ -121,14 +121,14 @@ public class ModelServerPublish {
    * @return
    * @throws ConnectionServiceException
    */
-  public List<IConnection> listRemoteConnections() throws ConnectionServiceException {
+  public List<Connection> listRemoteConnections() throws ConnectionServiceException {
       // get information about the remote connection
       ConnectionServiceClient serviceClient = new ConnectionServiceClient();
       serviceClient.setHost(biServerConnection.getUrl());
       serviceClient.setUserId(biServerConnection.getUserId());
       serviceClient.setPassword(biServerConnection.getPassword());
       
-      List<IConnection> connections = serviceClient.getConnections();
+      List<Connection> connections = serviceClient.getConnections();
 //      serviceClientStatus = serviceClient.getStatus();
       return connections;
   }
@@ -148,7 +148,7 @@ public class ModelServerPublish {
       serviceClient.setPassword(biServerConnection.getPassword());
 
       try {
-    	  remoteConnection = serviceClient.getConnectionByName(connectionName);
+    	  remoteConnection = (IConnection) serviceClient.getConnectionByName(connectionName);
       } catch (ConnectionServiceException e) {
     	  remoteConnection = null;
       }
