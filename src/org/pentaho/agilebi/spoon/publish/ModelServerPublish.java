@@ -18,6 +18,7 @@ package org.pentaho.agilebi.spoon.publish;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -237,7 +238,7 @@ public class ModelServerPublish {
     
     
     String DEFAULT_PUBLISH_URL = biServerConnection.getUrl()+"RepositoryFilePublisher"; //$NON-NLS-1$
-    int result = PublisherUtil.publish(DEFAULT_PUBLISH_URL, repositoryPath, files, biServerConnection.getPublishPassword(), biServerConnection.getUserId(), biServerConnection.getPassword(), true, true); 
+    int result = PublisherUtil.publish(DEFAULT_PUBLISH_URL, repositoryPath, files,"publishPasswordNotUsed", biServerConnection.getUserId(), biServerConnection.getPassword(), true, true); 
 
     if( showFeedback ) {
       showFeedback( result );
@@ -291,6 +292,7 @@ public class ModelServerPublish {
    * @return
    * @throws Exception
    * @throws UnsupportedEncodingException
+   * @deprecated
    */
   public int publish(
       String publishPath,
@@ -309,7 +311,7 @@ public class ModelServerPublish {
     sb.append( "MondrianCatalogPublisher?publishPath=" ) //$NON-NLS-1$
     .append( URLEncoder.encode(publishPath, "UTF-8") ) //$NON-NLS-1$
     .append( "&publishKey=" )
-    .append( getPasswordKey(new String(biServerConnection.getPublishPassword()))) //$NON-NLS-1$
+    .append( getPasswordKey(new String("publishPasswordNotUsed"))) //$NON-NLS-1$
     .append( "&overwrite=true&mkdirs=true" ) //$NON-NLS-1$
     .append( "&jndiName=" )
     .append( jndiName ) //$NON-NLS-1$
@@ -364,17 +366,18 @@ public class ModelServerPublish {
    * @param overwriteInRepos
    * @throws Exception
    */
- public void publishMondrainSchema(InputStream mondrianFile, String catalogName, String datasourceInfo,boolean overwriteInRepos) throws Exception {
+ public int publishMondrainSchema(InputStream mondrianFile, String catalogName, String datasourceInfo,boolean overwriteInRepos) throws Exception {
     
     ClientConfig clientConfig = new DefaultClientConfig(); 
       Client client = Client.create(clientConfig); 
       client.addFilter(new HTTPBasicAuthFilter(biServerConnection.getUserId(), biServerConnection.getPassword())); 
 
-      String storeDomainUrl =  biServerConnection.getUrl() + "/plugin/data-access/api/mondrian/putSchema";
+      String storeDomainUrl =  biServerConnection.getUrl() + "plugin/data-access/api/mondrian/postAnalysis";
       WebResource resource = client.resource(storeDomainUrl); 
       String parms = "Datasource="+datasourceInfo;
     
-      FormDataMultiPart part = new FormDataMultiPart().field("parameters", parms, MediaType.MULTIPART_FORM_DATA_TYPE)
+      FormDataMultiPart part = new FormDataMultiPart();
+           part.field("parameters", parms, MediaType.MULTIPART_FORM_DATA_TYPE)
           .field("uploadAnalysis", mondrianFile, MediaType.MULTIPART_FORM_DATA_TYPE)
           .field("catalogName", catalogName , MediaType.MULTIPART_FORM_DATA_TYPE)
           .field("overwrite", overwriteInRepos  ? "true" : "false", MediaType.MULTIPART_FORM_DATA_TYPE)
@@ -384,13 +387,21 @@ public class ModelServerPublish {
       part.getField("uploadAnalysis").setContentDisposition(
           FormDataContentDisposition.name("uploadAnalysis").fileName(catalogName).build());
           
-      Response response = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).put(Response.class, part);
+      Response response = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).post(Response.class, part);
       
       int status = response.getStatus();
       if (status != HttpStatus.SC_OK) {
         throw new Exception("Error Importing Mondrian Schema");
       }
+      
+      return new Integer((String)response.getEntity()).intValue();
   }
+ /**
+  * Validate username and password on server
+  * @param serverUserId
+  * @param serverPassword
+  * @return
+  */
   private HttpClient getClient( String serverUserId, String serverPassword) {
     HttpClient client = new HttpClient();
     // If server userid/password was supplied, use basic authentication to
@@ -628,13 +639,15 @@ public class ModelServerPublish {
     if(!publishFile.exists()) {
       throw new ModelerException("Schema file does not exist"); //$NON-NLS-1$
     }
-    
+    //local file
     OutputStream out = new FileOutputStream(publishFile);
     out.write(schemaBytes);
     out.flush();
     out.close();
-       
-    int result = publish(repositoryPath, publishFile, jndiName, modelName, false);
+    //file to send to Jcr Repository
+    InputStream schema = new FileInputStream(publishFile);
+    int result = publishMondrainSchema(schema, modelName, jndiName, false);
+    //int result = publish(repositoryPath, publishFile, jndiName, modelName, false);
     if( showFeedback ) {
       showFeedback( result );
     }

@@ -47,25 +47,19 @@ import java.util.List;
 /**
  * A dialog for publishing to a BI server
  * @author jamesdixon
+ * @modified tyler band - removed folder browse dialog
  *
  */
 public class XulDialogPublish extends AbstractSwtXulDialogController implements BindingExceptionHandler, PublishOverwriteDelegate{
 
   private static Logger logger = LoggerFactory.getLogger(XulDialogPublish.class);
-  
-  private int folderTreeDepth = 99;
-  
+   
   private BindingFactory bf = new SwtBindingFactory();
   
   private XulListbox serverMenuList;
-  
-  private XulTextbox folderTextbox;
-  
-  private XulTree filesBox;
-  
+   
   private XulButton okButton;
-  
-  
+    
   private XulCheckbox publishDatasourceCheck, publishModelCheck;
   
   private BiServerConfig biServerConfig;
@@ -82,23 +76,16 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   private boolean accepted = false;
   
   private boolean datasourceExists = false;
-  
-  private CmisObject currentFolder;
-  
+   
   private String pathTemplate = "{path}{file}"; //$NON-NLS-1$ 
   
   private XulDialog biserverDialog;
   
   private XulDialogPublishModel publishModel;
-  
-  private XulDialog folderSelectionDialog;
-  private XulTree folderTree;
-  private XulButton folderSelectionDialogAccept;
-  private boolean fileMode;
-  
+      
   // Connection form members
   private BiServerConnectionForm biserverForm = new BiServerConnectionForm();
-  private XulTextbox publishpassword, password, userid, url, name;
+  private XulTextbox password, userid, url, name;
   private boolean doNotPublishDatasource; // override for the user checkbox
   
   /**
@@ -140,9 +127,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     bf.setDocument(document);
     bf.setExceptionHandler(this);
 
-    folderTextbox= (XulTextbox) document.getElementById("folderTextbox"); //$NON-NLS-1$
     serverMenuList = (XulListbox)document.getElementById("serverlist"); //$NON-NLS-1$
-    filesBox = (XulTree)document.getElementById("filesBox"); //$NON-NLS-1$
     okButton = (XulButton) document.getElementById("publish_accept"); //$NON-NLS-1$
     publishDatasourceCheck = (XulCheckbox) document.getElementById("publishDatasource"); //$NON-NLS-1$
     publishModelCheck = (XulCheckbox) document.getElementById("publishModel"); //$NON-NLS-1$
@@ -150,33 +135,22 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     
 
     bf.setBindingType(Type.BI_DIRECTIONAL);
-    
-    
-//    bf.createBinding(this, "selectedFolder", folderMenuList, "selectedItem");    //$NON-NLS-1$ //$NON-NLS-2$
     bf.createBinding(publishModel, "filename", "filename", "value");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
     
     bf.setBindingType(Type.ONE_WAY);
-
-    bf.createBinding(publishModel, "path", folderTextbox, "value"); 
-    
     Binding serverListBinding = bf.createBinding(publishModel.getServerCollection(), "children", serverMenuList, "elements"); //$NON-NLS-1$ //$NON-NLS-2$
 
     bf.setBindingType(Binding.Type.BI_DIRECTIONAL);
     Binding serverListBindingIdx = bf.createBinding(publishModel, "selectedConnection", serverMenuList, "selectedItem");    //$NON-NLS-1$ //$NON-NLS-2$
-    
-    //foldersBinding = bf.createBinding(this, "folderNames", folderMenuList, "elements"); //$NON-NLS-1$ //$NON-NLS-2$
    
     
-    
     // Edit Connection dialog members
-    publishpassword = (XulTextbox) document.getElementById("publishpassword");
     password = (XulTextbox) document.getElementById("password");
     userid = (XulTextbox) document.getElementById("userid");
     url = (XulTextbox) document.getElementById("url");
     name = (XulTextbox) document.getElementById("name");
     bf.createBinding(biserverForm, "userId", userid, "value");
     bf.createBinding(biserverForm, "password", password, "value");
-    bf.createBinding(biserverForm, "publishPassword", publishpassword, "value");
     bf.createBinding(biserverForm, "url", url, "value");
     bf.createBinding(biserverForm, "name", name, "value");
     
@@ -184,7 +158,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     bf.createBinding(serverMenuList, "selectedItem", this, "selectedServer");    //$NON-NLS-1$ //$NON-NLS-2$
     
     
-    bf.createBinding(biserverForm, "valid", document.getElementById("biserverEditDialog_accept"), "!disabled");
+    bf.createBinding(biserverForm, "valid", document.getElementById("biserverEditDialog_accept"), "disabled");
     
     BindingConvertor btnConvertor = new BindingConvertor<BiServerConnection, Boolean>(){
 
@@ -203,25 +177,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     bf.createBinding(publishModel, "selectedConnection", "editServerBtn", "disabled", btnConvertor);    //$NON-NLS-1$ //$NON-NLS-2$
     bf.createBinding(publishModel, "selectedConnection", "deleteServerBtn", "disabled", btnConvertor);    //$NON-NLS-1$ //$NON-NLS-2$
     bf.createBinding(publishModel, "selectedConnection", "browseBtn", "disabled", btnConvertor);
-
-    //folder selection dialog
-    folderSelectionDialog = (XulDialog) document.getElementById("folderSelectionDialog");
-    folderTree = (XulTree) document.getElementById("folderTree");
-    folderSelectionDialogAccept = (XulButton) document.getElementById("folderSelectionDialog_accept");
-    
-    bf.createBinding(publishModel, "solutions", folderTree, "elements");
-    
-    bf.createBinding(folderTree, "selectedItem", folderSelectionDialogAccept, "disabled", new BindingConvertor<Object, Boolean>(){
-      @Override
-      public Boolean sourceToTarget(Object arg0) {
-        return arg0 == null;
-      }
-      @Override
-      public Object targetToSource(Boolean arg0) {
-        return null;
-      }
-    });
-    
+   
     Binding modelNameBinding = bf.createBinding(publishModel, "modelName", publishModelCheck, "label", new BindingConvertor<String, String>(){
       @Override
       public String sourceToTarget(String value) {
@@ -238,6 +194,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     Binding validBinding = bf.createBinding(publishModel, "valid", "publish_accept", "!disabled");
     
     try {
+      publishModel.setSelectedConnection(null);
       serverListBinding.fireSourceChanged();
       serverListBindingIdx.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
@@ -259,114 +216,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     return this.publishModel.getSelectedConnection();
   }
   
-  public void browseServer(){
-	final boolean isPublishDataSourceCheck = publishDatasourceCheck.isChecked();
-    if(publishModel.isConnected() == false){
-
-      try{
-        XulWaitBox wait = (XulWaitBox) document.createElement("waitbox");
-        wait.setTitle(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Title"));
-        wait.setMessage(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Message"));
-        wait.setIndeterminate(true);
-        wait.setDialogParent(this.getDialog().getRootObject());
-        wait.setRunnable(new WaitBoxRunnable(wait){
-
-          @Override
-          public void cancel() {          
-          }
-
-          @Override
-          public void run() {
-            boolean connected = connect();
-            publishDataSource = !doNotPublishDatasource  && isPublishDataSourceCheck;            
-            this.waitBox.stop();
-            if(connected == false){
-              return; 
-            }
-            publishModel.setConnected(true);
-            document.invokeLater(new Runnable(){
-              public void run() {
-                folderSelectionDialog.show(); 
-              }
-            });
-          }
-        });
-        wait.start();
-      } catch(XulException e){ //could not create the wait dialog
-        logger.debug("Error browsing server", e);
-        connect();
-        folderSelectionDialog.show();
-      }
-    } else {
-      folderSelectionDialog.show(); 
-    }
-  }
-  
-  public void folderAccept(){
-    this.publishModel.setSelectedFolder((SolutionObject) folderTree.getSelectedItem());
-    folderSelectionDialog.hide();
-  }
-  
-  public void folderCancel(){
-    folderSelectionDialog.hide();
-  }
-  
-  protected void changePath() {
-    StringBuilder sb = new StringBuilder();
-    List<String> folders = new ArrayList<String>();
-    // get all the parents of this folder
-    if( currentFolder != null ) {
-      CmisObject folder = currentFolder;
-      while( folder != null ) {
-        folders.add(0, folder.findStringProperty(CmisObject.LOCALIZEDNAME, null) );
-        List<CmisObject> objects;
-        try {
-          objects = publisher.getNavigationService()
-            .getFolderParent(BiPlatformRepositoryClient.PLATFORMORIG, folder.findIdProperty( PropertiesBase.OBJECTID, null ), null, false, false, false);
-          if( objects != null && objects.size() > 0 ) {
-            folder = objects.get(0);
-          } else {
-            folder = null;
-            break;
-          }
-        } catch (Exception e) {
-          folder = null;
-          logger.error("Error navigating path", e);
-        }
-      }
-    }
-    
-    for( String folderName : folders ) {
-      if( !"".equals( folderName ) ) { //$NON-NLS-1$
-        sb.append( ISolutionRepository.SEPARATOR )
-        .append( folderName );
-      }
-    }
-    
-    sb.append( ISolutionRepository.SEPARATOR );
-    /*
-    // create the folder path
-    for( NamedObject folder : folderNames ) {
-      if( folder instanceof NamedCmisObject ) {
-        sb.append( ISolutionRepository.SEPARATOR )
-        .append( folder.getName() );
-      }
-    }
-    if( currentFolder != null ) {
-      String currentFolderName = currentFolder.findStringProperty(CmisObject.LOCALIZEDNAME);
-      if( !currentFolderName.equals( folderNames.get( folderNames.size()-1 ).getName()) ) {
-        sb.append( ISolutionRepository.SEPARATOR )
-        .append( currentFolderName );
-      }
-    }
-    */
-    String tmp = sb.toString();
-    String path = pathTemplate.replace("{path}", tmp); //$NON-NLS-1$
-    //path = path.replace("{file}", filename); //$NON-NLS-1$
-    folderTextbox.setValue( path );
-  }
-  
-    
   public void okClick() {
 	final boolean isPublishDataSourceCheck = publishDatasourceCheck.isChecked();
     accepted = true;
@@ -426,9 +275,9 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       publisher = new ModelServerPublish();
       publisher.setBiServerConnection(publishModel.getSelectedConnection());
       checkDatasources();
-      publishModel.createSolutionTree();
+      //publishModel.createSolutionTree();
       // create the publisher object
-      publishModel.setSelectedFolder(null);
+      //publishModel.setSelectedFolder(null);
     } catch (Exception e) {
       logger.error("Error connecting", e);
       e.printStackTrace();
@@ -479,7 +328,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   }
   
   public void setSelectedServer(BiServerConnection selectedServer){
-    currentFolder = null;
+    //currentFolder = null;
     publishModel.setSelectedConnection(selectedServer);
   }
 
@@ -635,10 +484,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     return publishModel.isPublishXmi();
   }
   
-  public void setFileMode(boolean b){
-    this.fileMode = b;
-    publishModelCheck.setVisible(b);
-  }
   
   public void setPath(String path){
     publishModel.setPath(path);

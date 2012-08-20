@@ -233,16 +233,12 @@ public class SpoonModelerController extends ModelerController {
     DatabaseMeta databaseMeta = ((ISpoonModelerSource) workspace.getModelSource()).getDatabaseMeta();
     boolean checkDatasources = true;
     boolean showServerSelection = true;
-    boolean showFolders = true;
-    boolean showCurrentFolder = false;
-    String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
-      "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
     String databaseName = PublisherHelper.getBiServerCompatibleDatabaseName(workspace.getDatabaseName());
     String extension = ".xmi"; //$NON-NLS-1$
     String filename = workspace.getModelName();
     workspace.getWorkspaceHelper().populateDomain(workspace);
-    String fileName = PublisherHelper.publish(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources,
-        false, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
+    String fileName = PublisherHelper.publish(workspace, publishingFile, databaseMeta, filename, checkDatasources,
+        false, extension, databaseName);
     workspace.getModel().setName(fileName);
     workspace.setDirty(true);
   }

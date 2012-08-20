@@ -78,18 +78,15 @@ public class BiServerConfig {
         String url = props.getProperty(serverId+"/url"); //$NON-NLS-1$
         String userId = props.getProperty(serverId+"/user"); //$NON-NLS-1$
         String password = Encr.decryptPassword( props.getProperty(serverId+"/password") );    //$NON-NLS-1$
-        String publishPassword = Encr.decryptPassword( props.getProperty(serverId+"/publishpassword") ); //$NON-NLS-1$
         String defaultFolder = props.getProperty(serverId+"/defaultfolder"); //$NON-NLS-1$
         boolean defaultDatasourcePublish = "true".equalsIgnoreCase(props.getProperty(serverId+"/defaultdatasourcepublish"));  //$NON-NLS-1$//$NON-NLS-2$
         if( serverName != null ) {
           BiServerConnection server = new BiServerConnection();
           server.setName( serverName );
           server.setPassword(password);
-          server.setPublishPassword(publishPassword);
           server.setUrl(url);
           server.setUserId(userId);
-          server.setDefaultDatasourcePublish(defaultDatasourcePublish);
-          server.setDefaultFolder(defaultFolder);
+          server.setDefaultDatasourcePublish(defaultDatasourcePublish);        
           servers.add( server );
           idx++;
         } else {
@@ -187,12 +184,6 @@ public class BiServerConfig {
         if( server.getPassword() != null ) {
           props.put(serverId+"/password", Encr.encryptPassword( server.getPassword() ) ); //$NON-NLS-1$
        }
-       if( server.getPublishPassword() != null ) {
-         props.put(serverId+"/publishpassword", Encr.encryptPassword( server.getPublishPassword() ) ); //$NON-NLS-1$
-        }
-        if( server.getDefaultFolder() != null ) {
-          props.put(serverId+"/defaultfolder", server.getDefaultFolder()); //$NON-NLS-1$
-        }
         props.put(serverId+"/defaultdatasourcepublish", server.getDefaultDatasourcePublish() ? "true" : "false" );  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         idx++;

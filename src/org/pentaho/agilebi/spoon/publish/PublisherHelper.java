@@ -63,13 +63,11 @@ public class PublisherHelper {
       Spoon spoon = ((Spoon) SpoonFactory.getInstance());
       try {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
-        publishDialog.setFolderTreeDepth(treeDepth);
+       // publishDialog.setFolderTreeDepth(treeDepth);
         publishDialog.setDatabaseMeta(databaseMeta);
         
         publishDialog.setFilename(publishingFile);
         publishDialog.setCheckDatasources(checkDatasources);
-
-        publishDialog.setFileMode(setShowModel);
         publishDialog.setPathTemplate(serverPathTemplate);
         publishDialog.setPath(cachedPath);
         publishDialog.setSelectedServer(cachedServer);
@@ -115,14 +113,17 @@ public class PublisherHelper {
             }
 
             tempF.deleteOnExit();
-            IOUtils.copy(new FileInputStream(new File(fullPathtoFile)), new FileOutputStream(tempF));
+            InputStream schema = new FileInputStream(new File(fullPathtoFile));
+            IOUtils.copy(schema, new FileOutputStream(tempF));
 
             replaceAttributeValue("report", "catalog", workspace.getModelName(), tempF.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
                         
-            publisher
-                .publishToServer(
-                    workspace.getModelName() + ".mondrian.xml", databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
-          
+            // need to publish data source - todo tband
+            //publisher
+              //  .publishToServer(
+                //    workspace.getModelName() + ".mondrian.xml", databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
+            
+            publisher.publishMondrainSchema( schema,  publishDialog.getFilename(),  "", publishDialog.isExistentDatasource());
           } finally{
             
           }
@@ -165,8 +166,8 @@ public class PublisherHelper {
   
   
   public static String publish(ModelerWorkspace workspace, String publishingFile,
-      int treeDepth, DatabaseMeta databaseMeta, String filename, boolean checkDatasources, 
-      boolean setShowModel, boolean showFolders, boolean showCurrentFolder, String serverPathTemplate, String extension, String databaseName ) throws ModelerException {
+       DatabaseMeta databaseMeta, String filename, boolean checkDatasources, 
+      boolean setShowModel, String extension, String databaseName ) throws ModelerException {
     try {
 
       if (StringUtils.isEmpty(publishingFile)) {
@@ -180,14 +181,9 @@ public class PublisherHelper {
       Spoon spoon = ((Spoon) SpoonFactory.getInstance());
       try {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
-        publishDialog.setFolderTreeDepth(treeDepth);
         publishDialog.setDatabaseMeta(databaseMeta);
         publishDialog.setFilename(filename);
-        publishDialog.setCheckDatasources(checkDatasources);
-
-        publishDialog.setFileMode(setShowModel);
-        publishDialog.setPathTemplate(serverPathTemplate);
-        publishDialog.setPath(cachedPath);
+        publishDialog.setCheckDatasources(checkDatasources);       
         publishDialog.setSelectedServer(cachedServer);
         try{
           publishDialog.showDialog();
@@ -196,44 +192,17 @@ public class PublisherHelper {
         }
         if (publishDialog.isAccepted()) {
           // now try to publish
-          String selectedPath = publishDialog.getPath();
-          cachedPath = selectedPath;
+          //String selectedPath = publishDialog.getPath();
+          //cachedPath = selectedPath;
           // we always publish to {solution}/resources/metadata
           BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
           cachedServer = biServerConnection;
           publisher.setBiServerConnection(biServerConnection);
           boolean publishDatasource = publishDialog.isPublishDataSource();
-          String repositoryPath = null;
-          if(serverPathTemplate != null) {
-            String selectedSolution = null;
-            if(selectedPath.indexOf("/") != -1) { //$NON-NLS-1$
-              selectedSolution = selectedPath.substring(0, selectedPath.indexOf("/")); //$NON-NLS-1$   
-            } else {
-              selectedSolution = selectedPath;
-            }
-            repositoryPath = serverPathTemplate.replace("{path}", selectedSolution); //$NON-NLS-1$
-          }
-          if(publishingFile.endsWith(".xmi")) { //$NON-NLS-1$
-            selectedPath = repositoryPath;
-          }
-
-          filename = publishDialog.getFilename();
-
-          File tempDir = new File("tmp");
-          if(tempDir.exists() == false){
-            tempDir.mkdir();
-          }
-          File tempF = new File(tempDir, publishDialog.getFilename()+extension);
-          if(tempF.exists() == false){
-            tempF.createNewFile();
-          }
-          tempF.deleteOnExit();
+          //to do - publish data source here
+          filename = publishDialog.getFilename();   
           InputStream mondrianFile =  new FileInputStream(new File(publishingFile));
-          IOUtils.copy(mondrianFile, new FileOutputStream(tempF));
-          publisher.publishMondrainSchema(mondrianFile, filename + ".mondrian.xml", databaseName, true);
-         // publisher
-         //     .publishToServer(
-         //         filename + ".mondrian.xml", databaseName, filename, repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
+          publisher.publishMondrainSchema(mondrianFile, filename + ".mondrian.xml", databaseName, true);        
         }
       } catch (XulException e) {
         e.printStackTrace();
@@ -263,7 +232,6 @@ public class PublisherHelper {
       try {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
         publishDialog.setFolderTreeDepth(treeDepth);
-        publishDialog.setFileMode(true);
         publishDialog.setDatabaseMeta(databaseMeta);
         String name = prpt.substring(prpt.lastIndexOf(File.separator)+1);
         publishDialog.setFilename(name);
