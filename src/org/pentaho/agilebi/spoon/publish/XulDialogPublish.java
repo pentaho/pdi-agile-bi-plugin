@@ -176,7 +176,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
 
     bf.createBinding(publishModel, "selectedConnection", "editServerBtn", "disabled", btnConvertor);    //$NON-NLS-1$ //$NON-NLS-2$
     bf.createBinding(publishModel, "selectedConnection", "deleteServerBtn", "disabled", btnConvertor);    //$NON-NLS-1$ //$NON-NLS-2$
-    bf.createBinding(publishModel, "selectedConnection", "browseBtn", "disabled", btnConvertor);
+    //bf.createBinding(publishModel, "selectedConnection", "browseBtn", "disabled", btnConvertor);
    
     Binding modelNameBinding = bf.createBinding(publishModel, "modelName", publishModelCheck, "label", new BindingConvertor<String, String>(){
       @Override
@@ -261,10 +261,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   public void cancelClick() {
     // perform an undo by reloading from the properties file
     onDialogCancel();
-  }
-
-  public void setFolderTreeDepth(int folderTreeDepth) {
-    this.publishModel.setFolderTreeDepth(folderTreeDepth);
   }
 
   protected boolean connect(){

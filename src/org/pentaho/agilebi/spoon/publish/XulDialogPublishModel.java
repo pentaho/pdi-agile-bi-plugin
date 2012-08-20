@@ -34,14 +34,11 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
 
   private SolutionObject solutions;
 
-  private SolutionObject selectedFolder;
-
-  private int folderTreeDepth = -1;
-
   private BiPlatformRepositoryClientNavigationService navigationService;
 
   private boolean publishXmi = true;
-
+  private BiPlatformRepositoryClient client;
+  private boolean isValid;
   private boolean connected;
 
   private String path;
@@ -111,13 +108,11 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
     }
     try {
       navigationService = client.getNavigationService();
-      //RepositoryFileTreeDto 
-      List<CmisObject> solutions = navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, "",
-          new TypesOfFileableObjects(TypesOfFileableObjects.FOLDERS), 1, null, false, false);
+      //List<CmisObject> solutions = navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, "", new TypesOfFileableObjects( TypesOfFileableObjects.FOLDERS ), 1, null, false, false);
       SolutionObject root = new SolutionObject();
-      for (CmisObject obj : solutions) {
-        root.add(new SolutionObject(obj, navigationService, folderTreeDepth));
-      }
+     // for (CmisObject obj : solutions) {
+      //  root.add(new SolutionObject(obj, navigationService, folderTreeDepth));
+     // }
 
       setSolutions(root);
     } catch (Exception e) {
@@ -129,28 +124,7 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
     return navigationService;
   }
 
-  public SolutionObject getSelectedFolder() {
-    return selectedFolder;
-  }
-
-  public void setSelectedFolder(SolutionObject selectedFolder) {
-    SolutionObject prevVal = this.selectedFolder;
-    this.selectedFolder = selectedFolder;
-    if (getNavigationService() != null && getSelectedFolder() != null) {
-      setPath(getNavigationService().getRepositoryPath(getSelectedFolder().getCmisObject()));
-    }
-    firePropertyChange("selectedFolder", prevVal, this.selectedFolder);
-    calculateValidity();
-  }
-
-  public int getFolderTreeDepth() {
-    return folderTreeDepth;
-  }
-
-  public void setFolderTreeDepth(int folderTreeDepth) {
-    this.folderTreeDepth = folderTreeDepth;
-  }
-
+  
   public boolean isPublishXmi() {
     return publishXmi;
   }
@@ -162,9 +136,11 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
   private void calculateValidity() {
     firePropertyChange("valid", null, isValid());
   }
-
-  public boolean isValid() {
-    return StringUtils.isNotEmpty(this.getFilename()) && this.path != null && this.selectedConnection != null;
+  
+  public boolean isValid(){
+    return StringUtils.isNotEmpty(this.getFilename())
+      && this.path != null
+      && this.selectedConnection != null;
   }
 
   public boolean isConnected() {

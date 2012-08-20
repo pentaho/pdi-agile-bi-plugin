@@ -231,8 +231,7 @@ public class PublisherHelper {
       Spoon spoon = ((Spoon) SpoonFactory.getInstance());
       try {
         XulDialogPublish publishDialog = new XulDialogPublish(spoon.getShell());
-        publishDialog.setFolderTreeDepth(treeDepth);
-        publishDialog.setDatabaseMeta(databaseMeta);
+         publishDialog.setDatabaseMeta(databaseMeta);
         String name = prpt.substring(prpt.lastIndexOf(File.separator)+1);
         publishDialog.setFilename(name);
         publishDialog.setCheckDatasources(checkDatasources);
