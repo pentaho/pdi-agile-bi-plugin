@@ -158,7 +158,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     bf.createBinding(serverMenuList, "selectedItem", this, "selectedServer");    //$NON-NLS-1$ //$NON-NLS-2$
     
     
-    bf.createBinding(biserverForm, "valid", document.getElementById("biserverEditDialog_accept"), "disabled");
+    bf.createBinding(biserverForm, "valid", document.getElementById("biserverEditDialog_accept"), "!disabled");
     
     BindingConvertor btnConvertor = new BindingConvertor<BiServerConnection, Boolean>(){
 

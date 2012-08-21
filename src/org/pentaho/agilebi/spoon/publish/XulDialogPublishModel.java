@@ -138,8 +138,7 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
   }
   
   public boolean isValid(){
-    return StringUtils.isNotEmpty(this.getFilename())
-      && this.path != null
+    return StringUtils.isNotEmpty(this.getFilename())     
       && this.selectedConnection != null;
   }
 
