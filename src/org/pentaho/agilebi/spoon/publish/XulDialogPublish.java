@@ -64,7 +64,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   
   private BiServerConfig biServerConfig;
   
-  
   private ModelServerPublish publisher;
 
   private DatabaseMeta databaseMeta;
@@ -76,8 +75,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   private boolean accepted = false;
   
   private boolean datasourceExists = false;
-   
-  private String pathTemplate = "{path}{file}"; //$NON-NLS-1$ 
   
   private XulDialog biserverDialog;
   
@@ -324,7 +321,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   }
   
   public void setSelectedServer(BiServerConnection selectedServer){
-    //currentFolder = null;
     publishModel.setSelectedConnection(selectedServer);
   }
 
@@ -435,14 +431,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   public void setShowDatasourceStatus(boolean showDatasourceStatus) {
     XulComponent component = document.getElementById("datasourceGroupBox"); //$NON-NLS-1$
     component.setVisible( showDatasourceStatus );
-  }
-
-  public String getPathTemplate() {
-    return pathTemplate;
-  }
-
-  public void setPathTemplate(String pathTemplate) {
-    this.pathTemplate = pathTemplate;
   }
 
   public void setCheckDatasources(boolean checkDatasources) {

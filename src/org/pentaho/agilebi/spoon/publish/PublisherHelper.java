@@ -68,7 +68,7 @@ public class PublisherHelper {
         
         publishDialog.setFilename(publishingFile);
         publishDialog.setCheckDatasources(checkDatasources);
-        publishDialog.setPathTemplate(serverPathTemplate);
+       // publishDialog.setPathTemplate(serverPathTemplate);
         publishDialog.setPath(cachedPath);
         publishDialog.setSelectedServer(cachedServer);
         publishDialog.setModelName(workspace.getModelName());
@@ -117,13 +117,11 @@ public class PublisherHelper {
             IOUtils.copy(schema, new FileOutputStream(tempF));
 
             replaceAttributeValue("report", "catalog", workspace.getModelName(), tempF.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
-                        
-            // need to publish data source - todo tband
-            //publisher
-              //  .publishToServer(
-                //    workspace.getModelName() + ".mondrian.xml", databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
+                                   
+            publisher
+               .publishToServer(
+                   workspace.getModelName() + ".mondrian.xml", databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
             
-            publisher.publishMondrainSchema( schema,  publishDialog.getFilename(),  "", publishDialog.isExistentDatasource());
           } finally{
             
           }
@@ -192,8 +190,8 @@ public class PublisherHelper {
         }
         if (publishDialog.isAccepted()) {
           // now try to publish
-          //String selectedPath = publishDialog.getPath();
-          //cachedPath = selectedPath;
+          String selectedPath = publishDialog.getPath();
+          cachedPath = selectedPath;
           // we always publish to {solution}/resources/metadata
           BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
           cachedServer = biServerConnection;
@@ -201,8 +199,22 @@ public class PublisherHelper {
           boolean publishDatasource = publishDialog.isPublishDataSource();
           //to do - publish data source here
           filename = publishDialog.getFilename();   
-          InputStream mondrianFile =  new FileInputStream(new File(publishingFile));
-          publisher.publishMondrainSchema(mondrianFile, filename + ".mondrian.xml", databaseName, true);        
+
+          File tempDir = new File("tmp");
+          if(tempDir.exists() == false){
+            tempDir.mkdir();
+          }
+          File tempF = new File(tempDir, publishDialog.getFilename()+extension);
+          if(tempF.exists() == false){
+            tempF.createNewFile();
+          }
+          tempF.deleteOnExit();
+          IOUtils.copy(new FileInputStream(new File(publishingFile)), new FileOutputStream(tempF));
+          
+          String repositoryPath = "";
+          publisher
+              .publishToServer(
+                  filename + ".mondrian.xml", databaseName, filename, repositoryPath , selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
         }
       } catch (XulException e) {
         e.printStackTrace();
@@ -235,7 +247,7 @@ public class PublisherHelper {
         String name = prpt.substring(prpt.lastIndexOf(File.separator)+1);
         publishDialog.setFilename(name);
         publishDialog.setCheckDatasources(checkDatasources);
-        publishDialog.setPathTemplate(serverPathTemplate);
+       // publishDialog.setPathTemplate(serverPathTemplate);
         publishDialog.setPath(cachedPath);
         publishDialog.setSelectedServer(cachedServer);
         publishDialog.setModelName(workspace.getModelName());
