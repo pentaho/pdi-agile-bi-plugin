@@ -18,7 +18,6 @@ package org.pentaho.agilebi.spoon.publish;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -127,7 +126,17 @@ public class ModelServerPublish {
   //TODO: find a better way to communicate the UI delegate
   public static PublishOverwriteDelegate overwriteDelegate;
 
+  private Client client = null;
+
   public ModelServerPublish() {
+    // get information about the remote connection
+    ClientConfig clientConfig = new DefaultClientConfig();
+    this.client = Client.create(clientConfig);
+  }
+
+  public ModelServerPublish(BiServerConnection aBiServerConnection) {
+    super();
+    this.setBiServerConnection(aBiServerConnection);
   }
 
   /**
@@ -136,10 +145,6 @@ public class ModelServerPublish {
    * @throws ConnectionServiceException
    */
   public List<Connection> listRemoteConnections() throws ConnectionServiceException {
-    // get information about the remote connection
-    ClientConfig clientConfig = new DefaultClientConfig();
-    Client client = Client.create(clientConfig);
-    client.addFilter(new HTTPBasicAuthFilter(biServerConnection.getUserId(), biServerConnection.getPassword()));
 
     String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_LIST;
     WebResource resource = client.resource(storeDomainUrl);
@@ -157,15 +162,11 @@ public class ModelServerPublish {
   public Connection getRemoteConnection(String connectionName, boolean force) {
     if (remoteConnection == null || force) {
       // get information about the remote connection
-
-      ClientConfig clientConfig = new DefaultClientConfig();
-      Client client = Client.create(clientConfig);
-      client.addFilter(new HTTPBasicAuthFilter(biServerConnection.getUserId(), biServerConnection.getPassword()));
-
       String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET + connectionName;
       WebResource resource = client.resource(storeDomainUrl);
       try {
-        remoteConnection = resource.type(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_XML).get(Connection.class);
+        remoteConnection = resource.type(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_XML)
+            .get(Connection.class);
       } catch (Exception ex) {
         ex.printStackTrace();
         remoteConnection = null;
@@ -300,14 +301,10 @@ public class ModelServerPublish {
   private boolean updateConnection(Connection connection, boolean update) {
     boolean result = false;
     String storeDomainUrl;
-    ClientConfig clientConfig = new DefaultClientConfig();
-    Client client = Client.create(clientConfig);
-    client.addFilter(new HTTPBasicAuthFilter(biServerConnection.getUserId(), biServerConnection.getPassword()));
-
     try {
       FormDataMultiPart part = new FormDataMultiPart();
       part.field("connection", connection, MediaType.MULTIPART_FORM_DATA_TYPE);
-      
+
       if (update) {
         storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_UPDATE;
         //updateConnection url
@@ -316,7 +313,7 @@ public class ModelServerPublish {
         //addConnection url
       }
       WebResource resource = client.resource(storeDomainUrl);
-      result = resource.type(MediaType.APPLICATION_JSON).post(Boolean.class,part);
+      result = resource.type(MediaType.APPLICATION_JSON).post(Boolean.class, part);
 
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -401,15 +398,10 @@ public class ModelServerPublish {
    */
   public int publishMondrainSchema(InputStream mondrianFile, String catalogName, String datasourceInfo,
       boolean overwriteInRepos) throws Exception {
-
-    ClientConfig clientConfig = new DefaultClientConfig();
-    Client client = Client.create(clientConfig);
-    client.addFilter(new HTTPBasicAuthFilter(biServerConnection.getUserId(), biServerConnection.getPassword()));
-
     String storeDomainUrl = biServerConnection.getUrl() + "plugin/data-access/api/mondrian/postAnalysis";
     WebResource resource = client.resource(storeDomainUrl);
     String parms = "Datasource=" + datasourceInfo;
-
+    String response = "-1";
     FormDataMultiPart part = new FormDataMultiPart();
     part.field("parameters", parms, MediaType.MULTIPART_FORM_DATA_TYPE)
         .field("uploadAnalysis", mondrianFile, MediaType.MULTIPART_FORM_DATA_TYPE)
@@ -420,14 +412,12 @@ public class ModelServerPublish {
     // If the import service needs the file name do the following.
     part.getField("uploadAnalysis").setContentDisposition(
         FormDataContentDisposition.name("uploadAnalysis").fileName(catalogName).build());
-
-    String response = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).post(String.class, part);
-
-    // int status = response.getStatus();HttpStatus.SC_OK
-    if (!"3".equals(response)) {
-      throw new Exception("Error Importing Mondrian Schema");
+    try {
+      response = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).post(String.class, part);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      //response = "-1";
     }
-
     return new Integer(response).intValue();
   }
 
@@ -436,6 +426,7 @@ public class ModelServerPublish {
    * @param serverUserId
    * @param serverPassword
    * @return
+   * @deprecated
    */
   private HttpClient getClient(String serverUserId, String serverPassword) {
     HttpClient client = new HttpClient();
@@ -489,7 +480,7 @@ public class ModelServerPublish {
       publishDataSource(databaseMeta, isExistentDatasource);
     }
     boolean overwriteInRepository = false;
-    publishOlapSchemaToServer(schemaName, jndiName, modelName, repositoryPath, true, overwriteInRepository);
+    publishOlapSchemaToServer(schemaName, jndiName, modelName, repositoryPath, overwriteInRepository, true);
   }
 
   public void publishPrptToServer(String theXmiPublishingPath, String thePrptPublishingPath, boolean publishDatasource,
@@ -511,6 +502,7 @@ public class ModelServerPublish {
     }
   }
 
+  @Deprecated
   public boolean checkForExistingFile(String path, String name) {
     try {
       if (path == null || name == null) {
@@ -631,16 +623,17 @@ public class ModelServerPublish {
 
   }
 
-  protected void showFeedback(int result) {
+  protected boolean showFeedback(int result) {
     String serverName = biServerConnection.getName();
     switch (result) {
       case ModelServerPublish.PUBLISH_CATALOG_EXISTS: {
-        SpoonFactory
-            .getInstance()
-            .messageBox(
-                BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.CatalogExists"), //$NON-NLS-1$
-                BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
-        break;
+        boolean ans = SpoonFactory.getInstance().overwritePrompt(
+            BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.CatalogExists"), BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), "");
+        //.messageBox(
+        //    BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.CatalogExists"), //$NON-NLS-1$
+        //    BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
+        return ans;
+        // break;
       }
       case ModelServerPublish.PUBLISH_DATASOURCE_PROBLEM: {
         SpoonFactory
@@ -707,6 +700,7 @@ public class ModelServerPublish {
         break;
       }
     }
+    return false;
   }
 
   private void publishOlapSchemaToServer(String schemaFilePath, String jndiName, String modelName,
@@ -739,10 +733,13 @@ public class ModelServerPublish {
     InputStream schema = new ByteArrayInputStream(schemaBytes);
 
     int result = publishMondrainSchema(schema, modelName, jndiName, overwriteInRepository);
-    //int result = publish(repositoryPath, publishFile, jndiName, modelName, false);
     if (showFeedback) {
-      showFeedback(result);
+      if (showFeedback(result)) {
+        result = publishMondrainSchema(schema, modelName, jndiName, true);
+        showFeedback(result);
+      }
     }
+
   }
 
   /**
@@ -751,6 +748,9 @@ public class ModelServerPublish {
    */
   public void setBiServerConnection(BiServerConnection biServerConnection) {
     this.biServerConnection = biServerConnection;
+    if (this.client != null) {
+      client.addFilter(new HTTPBasicAuthFilter(biServerConnection.getUserId(), biServerConnection.getPassword()));
+    }
   }
 
   /**
@@ -768,19 +768,19 @@ public class ModelServerPublish {
   public BiPlatformRepositoryClientNavigationService getNavigationService() {
     if (navigationService == null) {
 
-      BiPlatformRepositoryClient client = new BiPlatformRepositoryClient();
+      BiPlatformRepositoryClient biReposClient = new BiPlatformRepositoryClient();
 
-      client.setServerUri(biServerConnection.getUrl());
-      client.setUserId(biServerConnection.getUserId());
-      client.setPassword(biServerConnection.getPassword());
+      biReposClient.setServerUri(biServerConnection.getUrl());
+      biReposClient.setUserId(biServerConnection.getUserId());
+      biReposClient.setPassword(biServerConnection.getPassword());
 
       try {
-        client.connect();
+        biReposClient.connect();
       } catch (ServiceException e) {
         e.printStackTrace();
         return null;
       }
-      navigationService = client.getNavigationService();
+      navigationService = biReposClient.getNavigationService();
     }
     return navigationService;
   }

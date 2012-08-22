@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
- <dialog width="400" height="440" id="publish" title="${Spoon.Perspectives.AgileBi.Publish.Title}" 
+<dialog width="400" height="480" id="publish" title="${Spoon.Perspectives.AgileBi.Publish.Title}" 
   	buttons="accept,cancel"
   	ondialogaccept="dialog.okClick()"
     ondialogcancel="dialog.cancelClick()"
@@ -13,7 +13,7 @@
 		<label value="${Spoon.Perspectives.AgileBi.Publish.Filename}:"/>
 	  <label id="filename" padding="1" spacing="1" readonly="true"/>
 	        
-		<!-- groupbox id="serverGroupBox" height="50" padding="1" spacing="1">
+		<!-- groupbox id="serverGroupBox" height="60" padding="1" spacing="1">
 			<caption label="${Spoon.Perspectives.AgileBi.Publish.Server}"/>
 		</groupbox -->
 		<groupbox id="locationGroupBox" flex="1" padding="1" spacing="1">
@@ -25,7 +25,7 @@
 			        <button id="editServerBtn" image="images/edit.png" onclick="dialog.editServer()" />
                 <button image="images/Add.png" onclick="dialog.newServer()"/>
                 <button id="deleteServerBtn" image="images/remove.png" onclick="dialog.deleteServer()" disabled="true"/>
-		    </hbox>
+		       </hbox>
 			    
           <listbox flex="1" id="serverlist" pen:binding="name" label="" padding="1" spacing="1"/>                   
 	        
@@ -39,7 +39,7 @@
 		</groupbox>
 	</vbox>
 
-  <dialog width="300" height="400" id="biserverEditDialog" title="${Spoon.Perspectives.AgileBi.EditBIServerConfigsDialog.Title}" 
+  <dialog width="300" height="470" id="biserverEditDialog" title="${Spoon.Perspectives.AgileBi.EditBIServerConfigsDialog.Title}" 
     buttons="accept,cancel"
     ondialogaccept="dialog.biserverAccept()"
     ondialogcancel="dialog.biserverCancel()"
@@ -60,33 +60,5 @@
         </hbox>
 
   </dialog>
-  
-  
-
-
-  <dialog width="300" height="400" id="folderSelectionDialog" title="${Spoon.Perspectives.AgileBi.FileDialog.Title}" 
-    buttons="accept,cancel"
-    ondialogaccept="dialog.folderAccept()"
-    ondialogcancel="dialog.folderCancel()"
-    >
-      <tree id="folderTree" flex="1" editable="false">
-          <treecols>
-            <treecol flex="1" label="" primary="true"
-              pen:binding="name" pen:childrenbinding="children"
-              pen:imagebinding="image" editable="false"/>
-          </treecols>
-          <treechildren>
-            <treeitem container="true" open="true">
-              <treerow>
-                <treecell label="" />
-              </treerow>
-              <treechildren></treechildren>
-            </treeitem>
-          </treechildren>
-        </tree>
-
-  </dialog>
-  
-  
   
 </dialog>
