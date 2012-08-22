@@ -16,6 +16,7 @@
  */
 package org.pentaho.agilebi.spoon.publish;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -79,9 +80,13 @@ import com.sun.jersey.multipart.FormDataMultiPart;
  */
 public class ModelServerPublish {
 
-  private static final String DATA_ACCESS_API_CONNECTION_GET = "data-access/api/connection/get/";
+  private static final String PLUGIN_DATA_ACCESS_API_CONNECTION_ADD = "plugin/data-access/api/connection/add";
 
-  private static final String DATA_ACCESS_API_CONNECTION_LIST = "data-access/api/connection/list/";
+  private static final String PLUGIN_DATA_ACCESS_API_CONNECTION_UPDATE = "plugin/data-access/api/connection/update";
+
+  private static final String DATA_ACCESS_API_CONNECTION_GET = "plugin/data-access/api/connection/get/";
+
+  private static final String DATA_ACCESS_API_CONNECTION_LIST = "plugin/data-access/api/connection/list/";
 
   public static final int PUBLISH_UNKNOWN_PROBLEM = -1;
 
@@ -160,7 +165,7 @@ public class ModelServerPublish {
       String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET + connectionName;
       WebResource resource = client.resource(storeDomainUrl);
       try {
-        remoteConnection = resource.type(MediaType.APPLICATION_JSON).get(Connection.class);
+        remoteConnection = resource.type(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_XML).get(Connection.class);
       } catch (Exception ex) {
         ex.printStackTrace();
         remoteConnection = null;
@@ -304,10 +309,10 @@ public class ModelServerPublish {
       part.field("connection", connection, MediaType.MULTIPART_FORM_DATA_TYPE);
       
       if (update) {
-        storeDomainUrl = biServerConnection.getUrl() + "/update";
+        storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_UPDATE;
         //updateConnection url
       } else {
-        storeDomainUrl = biServerConnection.getUrl() + "/add";
+        storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_ADD;
         //addConnection url
       }
       WebResource resource = client.resource(storeDomainUrl);
@@ -731,7 +736,7 @@ public class ModelServerPublish {
     out.flush();
     out.close();
     //file to send to Jcr Repository
-    InputStream schema = new FileInputStream(publishFile);
+    InputStream schema = new ByteArrayInputStream(schemaBytes);
 
     int result = publishMondrainSchema(schema, modelName, jndiName, overwriteInRepository);
     //int result = publish(repositoryPath, publishFile, jndiName, modelName, false);
