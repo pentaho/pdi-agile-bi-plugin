@@ -41,6 +41,8 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.dom4j.DocumentHelper;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerPerspective;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
@@ -57,6 +59,7 @@ import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.platform.api.repository.ISolutionRepository;
+
 import org.pentaho.platform.dataaccess.datasource.beans.Connection;
 import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServiceException;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
@@ -85,7 +88,7 @@ public class ModelServerPublish {
 
   private static final String DATA_ACCESS_API_CONNECTION_GET = "plugin/data-access/api/connection/get/";
 
-  private static final String DATA_ACCESS_API_CONNECTION_LIST = "plugin/data-access/api/connection/list/";
+  private static final String DATA_ACCESS_API_CONNECTION_LIST = "plugin/data-access/api/connection/list";
 
   public static final int PUBLISH_UNKNOWN_PROBLEM = -1;
 
@@ -145,11 +148,16 @@ public class ModelServerPublish {
    * @throws ConnectionServiceException
    */
   public List<Connection> listRemoteConnections() throws ConnectionServiceException {
-
+    Connection[] connectionArray = null;
     String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_LIST;
     WebResource resource = client.resource(storeDomainUrl);
-
-    Connection[] connectionArray = resource.type(MediaType.APPLICATION_JSON).get(Connection[].class);
+    String str = resource.type(MediaType.APPLICATION_JSON).get(String.class);
+    try {
+      connectionArray = resource.type(MediaType.APPLICATION_JSON).get(Connection[].class);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return Arrays.asList(connectionArray);
   }
 
@@ -162,13 +170,16 @@ public class ModelServerPublish {
   public Connection getRemoteConnection(String connectionName, boolean force) {
     if (remoteConnection == null || force) {
       // get information about the remote connection
-      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET + connectionName;
+      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET ;
       WebResource resource = client.resource(storeDomainUrl);
       try {
-        remoteConnection = resource.type(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_XML)
+        remoteConnection = resource
+            .type(MediaType.APPLICATION_JSON)
+            .type(MediaType.APPLICATION_XML)
+            .entity(connectionName)
             .get(Connection.class);
       } catch (Exception ex) {
-        ex.printStackTrace();
+        //ex.printStackTrace();
         remoteConnection = null;
       }
     }
