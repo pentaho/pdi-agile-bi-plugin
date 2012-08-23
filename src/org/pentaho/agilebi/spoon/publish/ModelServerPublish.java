@@ -301,10 +301,7 @@ public class ModelServerPublish {
   private boolean updateConnection(Connection connection, boolean update) {
     boolean result = false;
     String storeDomainUrl;
-    try {
-      FormDataMultiPart part = new FormDataMultiPart();
-      part.field("connection", connection, MediaType.MULTIPART_FORM_DATA_TYPE);
-
+    try {     
       if (update) {
         storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_UPDATE;
         //updateConnection url
@@ -313,7 +310,10 @@ public class ModelServerPublish {
         //addConnection url
       }
       WebResource resource = client.resource(storeDomainUrl);
-      result = resource.type(MediaType.APPLICATION_JSON).post(Boolean.class, part);
+      result = resource.accept(MediaType.APPLICATION_JSON)
+          .entity(connection)
+          .type( MediaType.TEXT_PLAIN )
+          .post(Boolean.class);
 
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -625,10 +625,15 @@ public class ModelServerPublish {
 
   protected boolean showFeedback(int result) {
     String serverName = biServerConnection.getName();
+    String fileName = this.model.getModelName();
     switch (result) {
+      // String message, String rememberText, String rememberPropertyName )
       case ModelServerPublish.PUBLISH_CATALOG_EXISTS: {
-        boolean ans = SpoonFactory.getInstance().overwritePrompt(
-            BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.CatalogExists"), BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), "");
+        boolean ans = SpoonFactory.getInstance()
+            .overwritePrompt(            
+            BaseMessages.getString(this.getClass(), "Publish.Overwrite.Title"), 
+            BaseMessages.getString(this.getClass(), "Publish.Overwrite.Message", fileName),
+            BaseMessages.getString(this.getClass(),"ModelServerPublish.Publish.CatalogExists"));
         //.messageBox(
         //    BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.CatalogExists"), //$NON-NLS-1$
         //    BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
