@@ -4,8 +4,22 @@
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" 
     xmlns:pen="http://www.pentaho.org/2008/xul" >
+
+    <menuitem id="view-perspectives" visible="false"/>
+    <menuitem id="view-zoom-in" visible="false"/>
+    <menuitem id="view-zoom-out" visible="false"/>
+    <menuitem id="view-zoom-100pct" visible="false"/>
+    <menuitem id="view-perspective-seperator" visible="false"/>
+    <menuitem id="view-results" visible="false"/>
+
+    <menuitem id="help-tip" visible="false" />
+    <menuitem id="help-welcome" visible="false"/>
+    <menuitem id="help-step-plugins" visible="false"/>
+    <menuitem id="help-jobentry-plugins" visible="false"/>
     
+    <menu id="file" visible="false"/>
+    <menu id="edit" visible="false"/>
     <menu id="action" visible="false"/>
-    <menu id="wizard" visible="false"/>
+    <menu id="tools" visible="false"/>    
     
 </overlay>
