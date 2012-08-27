@@ -11,6 +11,7 @@
     <conf name="codegen-win" visibility="private" extends="codegen"/>
     <conf name="codegen-linux" visibility="private" extends="codegen"/>
     <conf name="runtime"/>
+    <conf name="platform-plugin"/>
   </configurations>
 
   <publications>
@@ -152,6 +153,7 @@
         <artifact name="pentaho-mql-editor" type="source" ext="jar" m:classifier="sources" />
     </dependency>
 
+    <dependency conf="platform-plugin->default" org="pentaho" name="instaview-package" rev="${dependency.instaview.revision}" changing="true" />
 
     <!-- dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
 -->
