@@ -205,15 +205,10 @@
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
      
-	<!-- JPivot resources initializer -->
-	
+	<!-- JPivot resources initializer -->	
 
 	<listener>
 		<listener-class>org.pentaho.platform.web.http.session.PentahoHttpSessionListener</listener-class>
-	</listener>
-  
-	<listener>
-		<listener-class>org.pentaho.platform.web.http.request.PentahoHttpRequestListener</listener-class>
 	</listener>
 
 	<!-- NEXT TWO LISTENERS ARE ORDER DEPENDENT -->
@@ -325,7 +320,17 @@
       <servlet-name>PluggableUploadFileServlet</servlet-name>
       <servlet-class>org.pentaho.platform.web.servlet.PluggableUploadFileServlet</servlet-class>
     </servlet>
+    
+	<servlet>
+      <servlet-name>RequireJSServlet</servlet-name>
+      <servlet-class>org.pentaho.platform.web.servlet.RequireJSServlet</servlet-class>
+    </servlet>
+	<servlet>
+	  <servlet-name>LocalizationServlet</servlet-name>
+	  <servlet-class>org.pentaho.platform.web.servlet.LocalizationServlet</servlet-class>
+	</servlet>
 
+	<servlet>
 	<servlet>
       <servlet-name>RequireJSServlet</servlet-name>
       <servlet-class>org.pentaho.platform.web.servlet.RequireJSServlet</servlet-class>
