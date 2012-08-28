@@ -36,7 +36,7 @@ public class AgileBiInstaPerspectiveController extends AbstractXulEventHandler {
   
   @Override
   public String getName() {
-    return "agileBiVisPerspective"; //$NON-NLS-1$
+    return "instaPerspective"; //$NON-NLS-1$
   }
 
   @Override
@@ -83,7 +83,9 @@ public class AgileBiInstaPerspectiveController extends AbstractXulEventHandler {
     this.dirty = dirty;
   }
   
-  
+  public void saveFile() {
+	  System.out.println("trying to save something...");
+  }
   
   
 }

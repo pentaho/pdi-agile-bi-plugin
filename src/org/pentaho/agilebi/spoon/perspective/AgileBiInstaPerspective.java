@@ -44,11 +44,13 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
 //  private Logger logger = LoggerFactory.getLogger(AgileBiModelerPerspective.class);
   private static final AgileBiInstaPerspective INSTANCE = new AgileBiInstaPerspective();
   
+  private AgileBiInstaPerspectiveController perspectiveController = new AgileBiInstaPerspectiveController();
+  
   private XulBrowser browser;
   
   public void onStart() {
 
-	String location = "http://localhost:${port}/pentaho/content/instanal/resources/web/insta/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
+	String location = "http://localhost:${port}/pentaho/content/instaview/resources/web/insta/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
 
 	int port = AgileBILifecycleListener.consolePort;
 	if( port == 0 ) {
@@ -127,7 +129,7 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
   }
 
   public List<XulEventHandler> getEventHandlers() {
-    return new ArrayList<XulEventHandler>();
+	    return Collections.singletonList( (XulEventHandler) perspectiveController);
   }
 
   public List<XulOverlay> getOverlays() {

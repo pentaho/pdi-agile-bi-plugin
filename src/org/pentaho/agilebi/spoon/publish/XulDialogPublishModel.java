@@ -96,18 +96,18 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
   }
 
   public void createSolutionTree() throws PublishException {
-    BiPlatformRepositoryClient client = new BiPlatformRepositoryClient();
+    BiPlatformRepositoryClient biPlatformClient = new BiPlatformRepositoryClient();
 
-    client.setServerUri(selectedConnection.getUrl());
-    client.setUserId(selectedConnection.getUserId());
-    client.setPassword(selectedConnection.getPassword());
+    biPlatformClient.setServerUri(selectedConnection.getUrl());
+    biPlatformClient.setUserId(selectedConnection.getUserId());
+    biPlatformClient.setPassword(selectedConnection.getPassword());
     try {
-      client.connect();
+      biPlatformClient.connect();
     } catch (Exception e) {
       throw new PublishException("Could not connect to the server", e);
     }
     try {
-      navigationService = client.getNavigationService();
+      navigationService = biPlatformClient.getNavigationService();
       //List<CmisObject> solutions = navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, "", new TypesOfFileableObjects( TypesOfFileableObjects.FOLDERS ), 1, null, false, false);
       SolutionObject root = new SolutionObject();
      // for (CmisObject obj : solutions) {

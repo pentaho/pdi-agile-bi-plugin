@@ -310,26 +310,40 @@ public class ModelServerPublish {
    * @return
    */
   private boolean updateConnection(Connection connection, boolean update) {
-    boolean result = false;
+    String result;
     String storeDomainUrl;
-    try {     
-      if (update) {
+    try {   
+      if(update){
         storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_UPDATE;
-        //updateConnection url
       } else {
+      
         storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_ADD;
-        //addConnection url
       }
+           // +"?"
+           // +"driverClass="+connection.getDriverClass()+
+           //// "&name="+ connection.getName()+
+           // "&password="+connection.getPassword()+
+           // "&userName="+connection.getUsername()+
+           // "&url="+connection.getUrl();
+           
       WebResource resource = client.resource(storeDomainUrl);
       result = resource.accept(MediaType.APPLICATION_JSON)
-          .entity(connection)
           .type( MediaType.TEXT_PLAIN )
-          .post(Boolean.class);
+          .entity(convertToJSONObject(connection))
+          .post(String.class);
 
     } catch (Exception ex) {
       ex.printStackTrace();
+      return false;
     }
-    return result;
+    return true;
+  }
+
+  private String convertToJSONObject(Connection connection) {
+   //need to convert this to JSON
+    JSONObject obj = new JSONObject(connection);
+    
+    return obj.toString();
   }
 
   /**
@@ -751,7 +765,10 @@ public class ModelServerPublish {
     int result = publishMondrainSchema(schema, modelName, jndiName, overwriteInRepository);
     if (showFeedback) {
       if (showFeedback(result)) {
-        result = publishMondrainSchema(schema, modelName, jndiName, true);
+        //the byte stream has already be read - need to re-read
+        byte schemaBytes2[] = schemaDoc.asXML().getBytes();
+        InputStream schema2 = new ByteArrayInputStream(schemaBytes2);
+        result = publishMondrainSchema(schema2, modelName, jndiName, true);
         showFeedback(result);
       }
     }
