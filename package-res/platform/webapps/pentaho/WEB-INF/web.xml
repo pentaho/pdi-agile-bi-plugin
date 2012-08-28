@@ -329,10 +329,12 @@
 	  <servlet-name>LocalizationServlet</servlet-name>
 	  <servlet-class>org.pentaho.platform.web.servlet.LocalizationServlet</servlet-class>
 	</servlet>
+
 	<servlet>
       <servlet-name>RequireJSServlet</servlet-name>
       <servlet-class>org.pentaho.platform.web.servlet.RequireJSServlet</servlet-class>
     </servlet>
+    
 	<servlet>
 	  <servlet-name>LocalizationServlet</servlet-name>
 	  <servlet-class>org.pentaho.platform.web.servlet.LocalizationServlet</servlet-class>
