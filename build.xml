@@ -133,6 +133,7 @@
 		<fileset dir="${approot.stage.dir}/lib">
 			
 			<!-- first remove duplicate jars -->
+			<include name="pentaho-metadata-*.jar"/>
 			
 			<!-- swt jars -->
 			<include name="x86-*.jar"/>
