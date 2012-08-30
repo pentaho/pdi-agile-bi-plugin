@@ -319,16 +319,9 @@ public class ModelServerPublish {
       
         storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_ADD;
       }
-           // +"?"
-           // +"driverClass="+connection.getDriverClass()+
-           //// "&name="+ connection.getName()+
-           // "&password="+connection.getPassword()+
-           // "&userName="+connection.getUsername()+
-           // "&url="+connection.getUrl();
-           
+            
       WebResource resource = client.resource(storeDomainUrl);
-      result = resource.accept(MediaType.APPLICATION_JSON)
-          .type( MediaType.TEXT_PLAIN )
+      result = resource.type(MediaType.APPLICATION_JSON)          
           .entity(convertToJSONObject(connection))
           .post(String.class);
 
@@ -356,7 +349,7 @@ public class ModelServerPublish {
    * @return
    * @throws Exception
    * @throws UnsupportedEncodingException
-   * @deprecated
+   * 
    */
   public int publish(String publishPath, File publishFile, String jndiName, String modelId, boolean enableXmla)
       throws Exception, UnsupportedEncodingException {
@@ -451,7 +444,7 @@ public class ModelServerPublish {
    * @param serverUserId
    * @param serverPassword
    * @return
-   * @deprecated
+   * 
    */
   private HttpClient getClient(String serverUserId, String serverPassword) {
     HttpClient client = new HttpClient();
@@ -527,7 +520,7 @@ public class ModelServerPublish {
     }
   }
 
-  @Deprecated
+ 
   public boolean checkForExistingFile(String path, String name) {
     try {
       if (path == null || name == null) {
