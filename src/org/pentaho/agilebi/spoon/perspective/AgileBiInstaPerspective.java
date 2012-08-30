@@ -59,6 +59,8 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
 	}
 	location = replaceField(location, "port", ""+port, false); //$NON-NLS-1$ //$NON-NLS-2$
 	browser.setSrc(location);
+	
+	perspectiveController.setBrowser(browser);
   }
   
   public AgileBiInstaPerspective(){
