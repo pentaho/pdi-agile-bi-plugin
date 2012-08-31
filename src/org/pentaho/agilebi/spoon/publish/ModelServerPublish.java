@@ -18,6 +18,7 @@ package org.pentaho.agilebi.spoon.publish;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -440,6 +441,32 @@ public class ModelServerPublish {
   }
 
   /**
+   * Jersey call to use the put service to load a metadataFile file into the Jcr repsoitory
+   * @param metadataFile
+   * @param domainId is fileName
+   * @throws Exception
+   * return code to detrmine next step
+   */
+  public String publishMetaDataFile(InputStream metadataFile, String domainId) throws Exception {
+    String storeDomainUrl = biServerConnection.getUrl() + "plugin/data-access/api/metadata/import";
+    WebResource resource = client.resource(storeDomainUrl);
+   
+    String response = "ERROR";
+    FormDataMultiPart part = new FormDataMultiPart();
+    part.field("domainId", domainId, MediaType.MULTIPART_FORM_DATA_TYPE)
+        .field("metadataFile", metadataFile, MediaType.MULTIPART_FORM_DATA_TYPE);
+    part.getField("metadataFile").setContentDisposition(
+        FormDataContentDisposition.name("metadataFile").fileName(domainId).build());
+    try {
+      response = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).put(String.class, part);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      response += " "+ ex.getMessage();
+    }
+    return response;
+  }
+  
+  /**
    * Validate username and password on server
    * @param serverUserId
    * @param serverPassword
@@ -758,14 +785,19 @@ public class ModelServerPublish {
     int result = publishMondrainSchema(schema, modelName, jndiName, overwriteInRepository);
     if (showFeedback) {
       if (showFeedback(result)) {
-        //the byte stream has already be read - need to re-read
+        //Handle Overwrite the byte stream has already be read - need to re-read
         byte schemaBytes2[] = schemaDoc.asXML().getBytes();
         InputStream schema2 = new ByteArrayInputStream(schemaBytes2);
         result = publishMondrainSchema(schema2, modelName, jndiName, true);
         showFeedback(result);
       }
     }
-
+    //only publish metadata if schema is success
+    if(result ==  ModelServerPublish.PUBLISH_SUCCESS){
+      InputStream metadataFile = new FileInputStream(publishFile);
+      String domainId = lModel.getName().toString();
+      publishMetaDataFile(metadataFile, domainId);
+    }
   }
 
   /**
