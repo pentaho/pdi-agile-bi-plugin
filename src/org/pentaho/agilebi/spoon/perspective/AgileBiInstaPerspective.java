@@ -18,35 +18,51 @@ package org.pentaho.agilebi.spoon.perspective;
 
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.di.core.EngineMetaInterface;
+import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.lifecycle.pdi.AgileBILifecycleListener;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.di.job.JobMeta;
+import org.pentaho.di.trans.TransMeta;
+import org.pentaho.di.ui.core.dialog.ErrorDialog;
+import org.pentaho.di.ui.core.dialog.ShowMessageDialog;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveListener;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
+import org.pentaho.di.ui.spoon.TabItemInterface;
+import org.pentaho.di.ui.spoon.TabMapEntry;
+import org.pentaho.di.ui.spoon.job.JobGraph;
+import org.pentaho.di.ui.spoon.trans.TransGraph;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.components.XulBrowser;
 import org.pentaho.ui.xul.impl.XulEventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 public class AgileBiInstaPerspective extends AbstractPerspective implements SpoonPerspectiveListener, SpoonPerspective {
 
+  private static final Class<?> PKG = AgileBiInstaPerspective.class;
 	public static final String PERSPECTIVE_ID = "030-agilebiInsta"; //$NON-NLS-1$
 
-//  private Logger logger = LoggerFactory.getLogger(AgileBiModelerPerspective.class);
+  private Logger logger = LoggerFactory.getLogger(AgileBiInstaPerspective.class);
   private static final AgileBiInstaPerspective INSTANCE = new AgileBiInstaPerspective();
   
   private AgileBiInstaPerspectiveController perspectiveController = new AgileBiInstaPerspectiveController();
   
   private XulBrowser browser;
+  
+  private SpoonPerspective lastPerspective;
   
   public void onStart() {
 
@@ -69,7 +85,35 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     addPerspectiveListener(this);
     
     SpoonPerspectiveManager.getInstance().addPerspective(this);
-    
+
+    final AgileBiInstaPerspective thisPerspective = this;
+    // Set the last perspective so we're never without one
+    lastPerspective = this;
+
+    // Register perspective listeners after all loading is complete so we
+    // get them all
+    Display.getCurrent().asyncExec(new Runnable() {
+      @Override
+      public void run() {
+        // Add listeners to all perspectives so we can switch back to the last active one
+        // in the event there are unsaved changes and the user elects to not return to Instaview
+        for(final SpoonPerspective sp : SpoonPerspectiveManager.getInstance().getPerspectives()) {
+          sp.addPerspectiveListener(new SpoonPerspectiveListener() {
+            @Override
+            public void onActivation() {
+              if (sp != thisPerspective) {
+                lastPerspective = sp;
+              }
+            }
+
+            @Override
+            public void onDeactication() {
+            }
+          });
+        }
+      }
+    });
+
     try {
     	browser = (XulBrowser) container.getDocumentRoot().getElementById("web_browser"); //$NON-NLS-1$
     } catch (Exception e) {
@@ -176,23 +220,170 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     super.setSelectedMeta(meta);
   }
 
-@Override
-public void onActivation() {
+  @Override
+  public void onActivation() {
+    // On perspective activation close all tabs from the DI and Modeler perspectives.
+    // If there are unsaved changes save them.
+    Spoon spoonInstance = Spoon.getInstance();
+    Shell shell = spoonInstance.getShell();
+    boolean savePendingChanges = false;
+    if (hasUnsavedChanges()) {
+      ShowMessageDialog msgDialog = new ShowMessageDialog(shell, SWT.ICON_WARNING | SWT.YES | SWT.NO | SWT.CANCEL, BaseMessages.getString(PKG, "Insta.UnsavedChanges.Warning.Title"), BaseMessages.getString(PKG, "Insta.UnsavedChanges.Warning.Message"), false); //$NON-NLS-1$ //$NON-NLS-2$
+      int result = msgDialog.open();
+      switch(result) {
+        case SWT.YES:
+        case SWT.NO:
+          savePendingChanges = result == SWT.YES;
+          break;
+        default:
+          // Canceled perspective change, reactivate the last perspective 
+          // since perspective activation cannot be vetoed
+          reactivateLastPerspective();
+          return;
+      }
+    }
 
-	Spoon.getInstance().getShell().setText("");
-	Spoon.getInstance().setMainToolbarVisible(false);
-	// TODO - JD - enable this in Spoon
-//	Spoon.getInstance().setMenuBarVisible(false);
-	
-}
+    boolean reactivateLast = false;
+    try {
+      reactivateLast = !closeETLTabs(savePendingChanges);
+    } catch (Exception ex) {
+      new ErrorDialog(shell, BaseMessages.getString(PKG, "Insta.Saving.Error.Title"), BaseMessages.getString(PKG, "Insta.SavingETL.Error.Message"), ex);
+      reactivateLast = true;
+    }
+    if (!reactivateLast) {
+      try {
+        reactivateLast = !closeModelerTabs(savePendingChanges);
+      } catch (Exception ex) {
+        new ErrorDialog(shell, BaseMessages.getString(PKG, "Insta.Saving.Error.Title"), BaseMessages.getString(PKG, "Insta.SavingModel.Error.Message"), ex);
+        reactivateLast = true;
+      }
+    }
 
-@Override
-public void onDeactication() {
+    // If there was a problem saving or closing any DI or Modeler tab reactivate the last perspective
+    if (reactivateLast) {
+      reactivateLastPerspective();
+      return;
+    }
 
-	Spoon.getInstance().setMainToolbarVisible(true);
-	// TODO - JD - enable this in Spoon
-//	Spoon.getInstance().setMenuBarVisible(true);
-	
-}
+    shell.setText("");
+    spoonInstance.setMainToolbarVisible(false);
+    
+  	// TODO - JD - enable this in Spoon
+    //	Spoon.getInstance().setMenuBarVisible(false);
+  }
+
+  /**
+   * Reactivate the last active perspective
+   */
+  private void reactivateLastPerspective() {
+    Display.getDefault().asyncExec( new Runnable() {
+      public void run() {
+        try {
+          SpoonPerspectiveManager.getInstance().activatePerspective(lastPerspective.getClass());
+        } catch (Exception ex) {
+          // ignore, log error but stay where we're at
+          logger.error("Error reactivating last perspective: " + lastPerspective, ex);
+        }
+      };
+    });
+  }
+
+  /**
+   * Close all Modeler tabs, possibly saving them in the process.
+   * 
+   * @param save Flag indicating if the tabs' content should be saved ({@code true}) or discarded ({@code false})
+   * @return {@code true} if the operation completed successfully; {@code false} otherwise
+   */
+  private boolean closeModelerTabs(boolean save) {
+    AgileBiModelerPerspective modelerPerspective = AgileBiModelerPerspective.getInstance();
+    for (int i = 0; i < modelerPerspective.models.size(); i ++) {
+      if (save) {
+        EngineMetaInterface meta = modelerPerspective.metas.get(modelerPerspective.tabbox.getTabs().getChildNodes().get(i));
+        if (!modelerPerspective.save(meta, meta.getFilename(), false)) {
+          return false;
+        }
+      }
+      modelerPerspective.removeTab(i);
+    }
+    return true;
+  }
+
+  /**
+   * Close all ETL tabs, possibly saving them in the process.
+   * 
+   * @param save Flag indicating if the tabs' content should be saved ({@code true}) or discarded ({@code false})
+   * @return {@code true} if the operation completed successfully; {@code false} otherwise
+   * @throws KettleException Error saving a tab
+   */
+  private boolean closeETLTabs(boolean save) throws KettleException {
+    Spoon spoonInstance = Spoon.getInstance();
+    int numTabs = spoonInstance.delegates.tabs.getTabs().size();
+    for (int i = numTabs - 1; i >= 0; i--) {
+      spoonInstance.tabfolder.setSelected(i);
+      // Logic copied directly out of SpoonTabsDelegate.tabClose(). That needs to be refactored badly.
+      Object control = spoonInstance.tabfolder.getSelected().getControl();
+      // Save the changes if we're requested to and the control object is a tab item
+      if (save && control instanceof TabItemInterface) {
+        TabItemInterface tabItem = (TabItemInterface) control;
+        if (!tabItem.applyChanges()) {
+          return false;
+        }
+      }
+      if (control instanceof TransGraph) {
+        TransMeta transMeta = ((TransGraph) control).getManagedObject();
+        spoonInstance.delegates.trans.closeTransformation(transMeta);
+        spoonInstance.refreshTree();
+      } else if (control instanceof JobGraph) {
+        JobMeta jobMeta = ((JobGraph) control).getManagedObject();
+        spoonInstance.delegates.jobs.closeJob(jobMeta);
+        spoonInstance.refreshTree();
+      } else {
+        // we don't care about any other ETL tab types
+      }
+    }
+    return true;
+  }
+
+  @Override
+  public void onDeactication() {
+  
+  	Spoon.getInstance().setMainToolbarVisible(true);
+  	// TODO - JD - enable this in Spoon
+  //	Spoon.getInstance().setMenuBarVisible(true);
+  	
+  }
+  
+  /**
+   * Check for unsaved changes in the PDI or Model perspective
+   * @return {@code true} if there are unsaved changes, {@code false} otherwise.
+   */
+  protected boolean hasUnsavedChanges() {
+    Spoon spoonInstance = Spoon.getInstance();
+    boolean changed = hasUnsavedETLChanges(spoonInstance.delegates.tabs.getTabs());
+    return changed || hasUnsavedModelChanges(AgileBiModelerPerspective.getInstance().models);
+  }
+  
+  protected boolean hasUnsavedETLChanges(List<TabMapEntry> tabs) {
+    for(TabMapEntry tme : tabs) {
+      if(tme.getObjectType().equals(TabMapEntry.ObjectType.TRANSFORMATION_GRAPH)) {
+        if(tme.getObject().getMeta() instanceof TransMeta) {
+          TransMeta tm = (TransMeta)tme.getObject().getMeta();
+          if(tm.hasChanged()) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+  
+  protected boolean hasUnsavedModelChanges(List<ModelerWorkspace> models) {
+    for (ModelerWorkspace model : models) {
+      if (model.isDirty()) {
+        return true;
+      }
+    }
+    return false;
+  }
   
 }
