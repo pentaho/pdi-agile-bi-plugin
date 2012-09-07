@@ -34,13 +34,13 @@ import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.core.dialog.ShowMessageDialog;
+import org.pentaho.di.ui.spoon.BreadcrumbManager;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveListener;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.TabItemInterface;
 import org.pentaho.di.ui.spoon.TabMapEntry;
-import org.pentaho.di.ui.spoon.job.JobGraph;
 import org.pentaho.di.ui.spoon.trans.TransGraph;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
@@ -297,6 +297,9 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
   private boolean closeModelerTabs(boolean save) {
     AgileBiModelerPerspective modelerPerspective = AgileBiModelerPerspective.getInstance();
     for (int i = 0; i < modelerPerspective.models.size(); i ++) {
+      if (!openedFromInstaview(modelerPerspective.models.get(i))) {
+        continue;
+      }
       if (save) {
         EngineMetaInterface meta = modelerPerspective.metas.get(modelerPerspective.tabbox.getTabs().getChildNodes().get(i));
         if (!modelerPerspective.save(meta, meta.getFilename(), false)) {
@@ -309,11 +312,11 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
   }
 
   /**
-   * Close all ETL tabs, possibly saving them in the process.
+   * Close all transformation ETL tabs, possibly saving them in the process.
    * 
-   * @param save Flag indicating if the tabs' content should be saved ({@code true}) or discarded ({@code false})
+   * @param save Flag indicating if the transformation tabs' content should be saved ({@code true}) or discarded ({@code false})
    * @return {@code true} if the operation completed successfully; {@code false} otherwise
-   * @throws KettleException Error saving a tab
+   * @throws KettleException Error saving a transformation tab
    */
   private boolean closeETLTabs(boolean save) throws KettleException {
     Spoon spoonInstance = Spoon.getInstance();
@@ -323,25 +326,44 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
       // Logic copied directly out of SpoonTabsDelegate.tabClose(). That needs to be refactored badly.
       Object control = spoonInstance.tabfolder.getSelected().getControl();
       // Save the changes if we're requested to and the control object is a tab item
-      if (save && control instanceof TabItemInterface) {
-        TabItemInterface tabItem = (TabItemInterface) control;
-        if (!tabItem.applyChanges()) {
-          return false;
-        }
-      }
       if (control instanceof TransGraph) {
         TransMeta transMeta = ((TransGraph) control).getManagedObject();
+        if (!openedFromInstaview(transMeta)) {
+          // Don't save or close tabs we didn't open
+          continue;
+        }
+        if (save) {
+          TabItemInterface tabItem = (TabItemInterface) control;
+          if (!tabItem.applyChanges()) {
+            return false;
+          }
+        }
         spoonInstance.delegates.trans.closeTransformation(transMeta);
         spoonInstance.refreshTree();
-      } else if (control instanceof JobGraph) {
-        JobMeta jobMeta = ((JobGraph) control).getManagedObject();
-        spoonInstance.delegates.jobs.closeJob(jobMeta);
-        spoonInstance.refreshTree();
-      } else {
-        // we don't care about any other ETL tab types
       }
+      // we don't care about any other ETL tab types
     }
     return true;
+  }
+
+  /**
+   * Determine if the transformation was opened by Instaview.
+   * 
+   * @return {@code true} if the transformation was opened by Instaview
+   */
+  private boolean openedFromInstaview(TransMeta transMeta) {
+    String caller = BreadcrumbManager.getInstance().getCaller("001-spoon-jobs\t" + transMeta.getFilename());
+    return PERSPECTIVE_ID.equals(caller);
+  }
+  
+  /**
+   * Determine if the model was opened by Instaview.
+   * 
+   * @return {@code true} if the model was opened by Instaview
+   */
+  private boolean openedFromInstaview(ModelerWorkspace model) {
+    String caller = BreadcrumbManager.getInstance().getCaller(AgileBiModelerPerspective.PERSPECTIVE_ID + "\t" + model.getFileName());
+    return PERSPECTIVE_ID.equals(caller);
   }
 
   @Override
@@ -362,13 +384,18 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     boolean changed = hasUnsavedETLChanges(spoonInstance.delegates.tabs.getTabs());
     return changed || hasUnsavedModelChanges(AgileBiModelerPerspective.getInstance().models);
   }
-  
+
+  /**
+   * Determine if there are unsaved changes for transformations opened from Instaview
+   * 
+   * @return {@code true} if there are unsaved changes for any transformations opened from Instaview 
+   */
   protected boolean hasUnsavedETLChanges(List<TabMapEntry> tabs) {
     for(TabMapEntry tme : tabs) {
       if(tme.getObjectType().equals(TabMapEntry.ObjectType.TRANSFORMATION_GRAPH)) {
         if(tme.getObject().getMeta() instanceof TransMeta) {
           TransMeta tm = (TransMeta)tme.getObject().getMeta();
-          if(tm.hasChanged()) {
+          if(tm.hasChanged() && openedFromInstaview(tm)) {
             return true;
           }
         }
@@ -377,9 +404,14 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     return false;
   }
   
+  /**
+   * Determine if there are unsaved changes for models opened from Instaview
+   * 
+   * @return {@code true} if there are unsaved changes for any models opened from Instaview 
+   */
   protected boolean hasUnsavedModelChanges(List<ModelerWorkspace> models) {
     for (ModelerWorkspace model : models) {
-      if (model.isDirty()) {
+      if (model.isDirty() && openedFromInstaview(model)) {
         return true;
       }
     }
