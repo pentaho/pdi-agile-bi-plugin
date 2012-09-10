@@ -17,13 +17,8 @@
 package org.pentaho.agilebi.spoon.publish;
 
 import org.apache.commons.lang.StringUtils;
-import org.pentaho.commons.util.repository.type.CmisObject;
-import org.pentaho.commons.util.repository.type.TypesOfFileableObjects;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
-import org.pentaho.platform.util.client.BiPlatformRepositoryClientNavigationService;
 import org.pentaho.ui.xul.XulEventSourceAdapter;
-
-import java.util.List;
 
 public class XulDialogPublishModel extends XulEventSourceAdapter {
   private BiServerConnection selectedConnection;
@@ -34,16 +29,25 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
 
   private SolutionObject solutions;
 
-  private BiPlatformRepositoryClientNavigationService navigationService;
+  private SolutionObject selectedFolder;
+
+  private int folderTreeDepth = -1;
+
+  //private BiPlatformRepositoryClientNavigationService navigationService;
 
   private boolean publishXmi = true;
+
   private BiPlatformRepositoryClient client;
+
   private boolean isValid;
+
   private boolean connected;
 
   private String path;
 
   private String modelName;
+  
+  private boolean groupBoxFolderVisible = false;
 
   public XulDialogPublishModel(BiServerConfig config) {
     this.setServerCollection(config.getServerConnections());
@@ -95,36 +99,28 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
     calculateValidity();
   }
 
-  public void createSolutionTree() throws PublishException {
-    BiPlatformRepositoryClient biPlatformClient = new BiPlatformRepositoryClient();
-
-    biPlatformClient.setServerUri(selectedConnection.getUrl());
-    biPlatformClient.setUserId(selectedConnection.getUserId());
-    biPlatformClient.setPassword(selectedConnection.getPassword());
-    try {
-      biPlatformClient.connect();
-    } catch (Exception e) {
-      throw new PublishException("Could not connect to the server", e);
-    }
-    try {
-      navigationService = biPlatformClient.getNavigationService();
-      //List<CmisObject> solutions = navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, "", new TypesOfFileableObjects( TypesOfFileableObjects.FOLDERS ), 1, null, false, false);
-      SolutionObject root = new SolutionObject();
-     // for (CmisObject obj : solutions) {
-      //  root.add(new SolutionObject(obj, navigationService, folderTreeDepth));
-     // }
-
-      setSolutions(root);
-    } catch (Exception e) {
-      throw new PublishException("Error building solution document", e);
-    }
+  public SolutionObject getSelectedFolder() {
+    return selectedFolder;
   }
 
-  public BiPlatformRepositoryClientNavigationService getNavigationService() {
-    return navigationService;
+  public void setSelectedFolder(SolutionObject selectedFolder) {
+    SolutionObject prevVal = this.selectedFolder;
+    this.selectedFolder = selectedFolder;
+    if (getSelectedFolder() != null) {
+      setPath(getSelectedFolder().getName());
+    }
+    firePropertyChange("selectedFolder", prevVal, this.selectedFolder);
+    calculateValidity();
   }
 
-  
+  public int getFolderTreeDepth() {
+    return folderTreeDepth;
+  }
+
+  public void setFolderTreeDepth(int folderTreeDepth) {
+    this.folderTreeDepth = folderTreeDepth;
+  }
+
   public boolean isPublishXmi() {
     return publishXmi;
   }
@@ -136,10 +132,14 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
   private void calculateValidity() {
     firePropertyChange("valid", null, isValid());
   }
-  
-  public boolean isValid(){
-    return StringUtils.isNotEmpty(this.getFilename())     
-      && this.selectedConnection != null;
+
+  public boolean isValid() {
+    boolean valid = true;
+    if(groupBoxFolderVisible){
+      valid = StringUtils.isNotEmpty(this.getFilename()) && this.path != null;
+    }
+    valid = valid && this.selectedConnection != null;
+    return valid; 
   }
 
   public boolean isConnected() {
@@ -171,4 +171,14 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
     firePropertyChange("modelName", prevVal, this.modelName);
   }
 
+  public boolean isGroupBoxFolderVisible() {
+    return groupBoxFolderVisible;
+  }
+
+  public void setGroupBoxFolderVisible(boolean visible) {
+    this.groupBoxFolderVisible = visible;
+    firePropertyChange("groupBoxFolderVisible", null, this.groupBoxFolderVisible);
+  }
+
+  
 }

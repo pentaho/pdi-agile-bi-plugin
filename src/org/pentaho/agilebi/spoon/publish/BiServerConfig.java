@@ -86,7 +86,8 @@ public class BiServerConfig {
           server.setPassword(password);
           server.setUrl(url);
           server.setUserId(userId);
-          server.setDefaultDatasourcePublish(defaultDatasourcePublish);        
+          server.setDefaultDatasourcePublish(defaultDatasourcePublish);
+          server.setDefaultFolder(defaultFolder);
           servers.add( server );
           idx++;
         } else {
@@ -183,7 +184,10 @@ public class BiServerConfig {
         }
         if( server.getPassword() != null ) {
           props.put(serverId+"/password", Encr.encryptPassword( server.getPassword() ) ); //$NON-NLS-1$
-       }
+       }        
+        if( server.getDefaultFolder() != null ) {
+          props.put(serverId+"/defaultfolder", server.getDefaultFolder()); //$NON-NLS-1$
+        }
         props.put(serverId+"/defaultdatasourcepublish", server.getDefaultDatasourcePublish() ? "true" : "false" );  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         idx++;

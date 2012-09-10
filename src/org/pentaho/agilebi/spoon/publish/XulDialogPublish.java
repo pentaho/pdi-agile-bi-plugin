@@ -36,6 +36,7 @@ import org.pentaho.ui.xul.binding.*;
 import org.pentaho.ui.xul.binding.Binding.Type;
 import org.pentaho.ui.xul.components.*;
 import org.pentaho.ui.xul.containers.XulDialog;
+import org.pentaho.ui.xul.containers.XulGroupbox;
 import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.swt.SwtBindingFactory;
@@ -47,22 +48,29 @@ import java.util.List;
 /**
  * A dialog for publishing to a BI server
  * @author jamesdixon
- * @modified tyler band - removed folder browse dialog
+ * @modified tyler band - removed publish password from browse dialog
  *
  */
 public class XulDialogPublish extends AbstractSwtXulDialogController implements BindingExceptionHandler, PublishOverwriteDelegate{
 
   private static Logger logger = LoggerFactory.getLogger(XulDialogPublish.class);
-   
+  
+  private int folderTreeDepth = 99;
+  
   private BindingFactory bf = new SwtBindingFactory();
   
   private XulListbox serverMenuList;
-   
+  
+  private XulTextbox folderTextbox;
+  
+  private XulTree filesBox;
+  
   private XulButton okButton;
     
   private XulCheckbox publishDatasourceCheck, publishModelCheck;
   
   private BiServerConfig biServerConfig;
+  
   
   private ModelServerPublish publisher;
 
@@ -76,10 +84,21 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   
   private boolean datasourceExists = false;
   
+  private CmisObject currentFolder;
+  
+  private String pathTemplate = "{path}{file}"; //$NON-NLS-1$ 
+  
   private XulDialog biserverDialog;
   
+  private XulGroupbox folderGroupBox;
+  
   private XulDialogPublishModel publishModel;
-      
+  
+  private XulDialog folderSelectionDialog;
+  private XulTree folderTree;
+  private XulButton folderSelectionDialogAccept;
+  private boolean fileMode;
+   
   // Connection form members
   private BiServerConnectionForm biserverForm = new BiServerConnectionForm();
   private XulTextbox password, userid, url, name;
@@ -124,21 +143,33 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     bf.setDocument(document);
     bf.setExceptionHandler(this);
 
+    folderTextbox= (XulTextbox) document.getElementById("folderTextbox"); //$NON-NLS-1$
     serverMenuList = (XulListbox)document.getElementById("serverlist"); //$NON-NLS-1$
+    filesBox = (XulTree)document.getElementById("filesBox"); //$NON-NLS-1$
     okButton = (XulButton) document.getElementById("publish_accept"); //$NON-NLS-1$
     publishDatasourceCheck = (XulCheckbox) document.getElementById("publishDatasource"); //$NON-NLS-1$
     publishModelCheck = (XulCheckbox) document.getElementById("publishModel"); //$NON-NLS-1$
     biserverDialog = (XulDialog) document.getElementById("biserverEditDialog");
-    
+    folderGroupBox = (XulGroupbox) document.getElementById("folderGroupBox");
 
     bf.setBindingType(Type.BI_DIRECTIONAL);
+    
+   
+//    bf.createBinding(this, "selectedFolder", folderMenuList, "selectedItem");    //$NON-NLS-1$ //$NON-NLS-2$
     bf.createBinding(publishModel, "filename", "filename", "value");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
     
     bf.setBindingType(Type.ONE_WAY);
+
+    bf.createBinding(publishModel, "path", folderTextbox, "value"); 
+    
+    bf.createBinding(publishModel, "groupBoxFolderVisible", folderGroupBox, "visible"); 
+    
     Binding serverListBinding = bf.createBinding(publishModel.getServerCollection(), "children", serverMenuList, "elements"); //$NON-NLS-1$ //$NON-NLS-2$
 
     bf.setBindingType(Binding.Type.BI_DIRECTIONAL);
     Binding serverListBindingIdx = bf.createBinding(publishModel, "selectedConnection", serverMenuList, "selectedItem");    //$NON-NLS-1$ //$NON-NLS-2$
+    
+    //foldersBinding = bf.createBinding(this, "folderNames", folderMenuList, "elements"); //$NON-NLS-1$ //$NON-NLS-2$
    
     
     // Edit Connection dialog members
@@ -173,8 +204,25 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
 
     bf.createBinding(publishModel, "selectedConnection", "editServerBtn", "disabled", btnConvertor);    //$NON-NLS-1$ //$NON-NLS-2$
     bf.createBinding(publishModel, "selectedConnection", "deleteServerBtn", "disabled", btnConvertor);    //$NON-NLS-1$ //$NON-NLS-2$
-    //bf.createBinding(publishModel, "selectedConnection", "browseBtn", "disabled", btnConvertor);
-   
+    bf.createBinding(publishModel, "selectedConnection", "browseBtn", "disabled", btnConvertor);
+    //folder selection dialog
+    folderSelectionDialog = (XulDialog) document.getElementById("folderSelectionDialog");
+    folderTree = (XulTree) document.getElementById("folderTree");
+    folderSelectionDialogAccept = (XulButton) document.getElementById("folderSelectionDialog_accept");
+    folderTextbox.setValue( "tmp" );
+    bf.createBinding(publishModel, "solutions", folderTree, "elements");
+    
+    bf.createBinding(folderTree, "selectedItem", folderSelectionDialogAccept, "disabled", new BindingConvertor<Object, Boolean>(){
+      @Override
+      public Boolean sourceToTarget(Object arg0) {
+        return arg0 == null;
+      }
+      @Override
+      public Object targetToSource(Boolean arg0) {
+        return null;
+      }
+    });
+    
     Binding modelNameBinding = bf.createBinding(publishModel, "modelName", publishModelCheck, "label", new BindingConvertor<String, String>(){
       @Override
       public String sourceToTarget(String value) {
@@ -191,7 +239,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     Binding validBinding = bf.createBinding(publishModel, "valid", "publish_accept", "!disabled");
     
     try {
-      publishModel.setSelectedConnection(null);
       serverListBinding.fireSourceChanged();
       serverListBindingIdx.fireSourceChanged();
       modelNameBinding.fireSourceChanged();
@@ -213,6 +260,120 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     return this.publishModel.getSelectedConnection();
   }
   
+  public void browseServer(){
+	final boolean isPublishDataSourceCheck = publishDatasourceCheck.isChecked();
+    if(publishModel.isConnected() == false){
+
+      try{
+        XulWaitBox wait = (XulWaitBox) document.createElement("waitbox");
+        wait.setTitle(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Title"));
+        wait.setMessage(BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.Connect.Message"));
+        wait.setIndeterminate(true);
+        wait.setDialogParent(this.getDialog().getRootObject());
+        wait.setRunnable(new WaitBoxRunnable(wait){
+
+          @Override
+          public void cancel() {          
+          }
+
+          @Override
+          public void run() {
+            boolean connected = connect();
+            publishDataSource = !doNotPublishDatasource  && isPublishDataSourceCheck;            
+            this.waitBox.stop();
+            if(connected == false){
+              return; 
+            }
+            publishModel.setConnected(true);
+            if(publishModel.isGroupBoxFolderVisible()){
+              document.invokeLater(new Runnable(){
+                public void run() {                  
+                    folderSelectionDialog.show();                   
+                }
+              });
+            }
+          }
+        });
+        wait.start();
+      } catch(XulException e){ //could not create the wait dialog
+        logger.debug("Error browsing server", e);
+        connect();
+        if(publishModel.isGroupBoxFolderVisible()){
+          folderSelectionDialog.show();
+        }
+      }
+    } else {
+      if(publishModel.isGroupBoxFolderVisible()){
+        folderSelectionDialog.show(); 
+      }
+    }
+  }
+  
+  public void folderAccept(){
+    this.publishModel.setSelectedFolder((SolutionObject) folderTree.getSelectedItem());
+    folderSelectionDialog.hide();
+  }
+  
+  public void folderCancel(){
+    folderSelectionDialog.hide();
+  }
+  
+  protected void changePath() {
+    StringBuilder sb = new StringBuilder();
+    List<String> folders = new ArrayList<String>();
+    // get all the parents of this folder
+    if( currentFolder != null ) {
+      CmisObject folder = currentFolder;
+      while( folder != null ) {
+        folders.add(0, folder.findStringProperty(CmisObject.LOCALIZEDNAME, null) );
+        List<CmisObject> objects;
+        try {
+          objects = publisher.getNavigationService()
+            .getFolderParent(BiPlatformRepositoryClient.PLATFORMORIG, folder.findIdProperty( PropertiesBase.OBJECTID, null ), null, false, false, false);
+          if( objects != null && objects.size() > 0 ) {
+            folder = objects.get(0);
+          } else {
+            folder = null;
+            break;
+          }
+        } catch (Exception e) {
+          folder = null;
+          logger.error("Error navigating path", e);
+        }
+      }
+    }
+    
+    for( String folderName : folders ) {
+      if( !"".equals( folderName ) ) { //$NON-NLS-1$
+        sb.append( ISolutionRepository.SEPARATOR )
+        .append( folderName );
+      }
+    }
+    
+    sb.append( ISolutionRepository.SEPARATOR );
+    /*
+    // create the folder path
+    for( NamedObject folder : folderNames ) {
+      if( folder instanceof NamedCmisObject ) {
+        sb.append( ISolutionRepository.SEPARATOR )
+        .append( folder.getName() );
+      }
+    }
+    if( currentFolder != null ) {
+      String currentFolderName = currentFolder.findStringProperty(CmisObject.LOCALIZEDNAME);
+      if( !currentFolderName.equals( folderNames.get( folderNames.size()-1 ).getName()) ) {
+        sb.append( ISolutionRepository.SEPARATOR )
+        .append( currentFolderName );
+      }
+    }
+    */
+    String tmp = sb.toString();
+    String path = pathTemplate.replace("{path}", tmp); //$NON-NLS-1$
+    //path = path.replace("{file}", filename); //$NON-NLS-1$
+    folderTextbox.setValue( path );
+  }
+  
+    
   public void okClick() {
 	final boolean isPublishDataSourceCheck = publishDatasourceCheck.isChecked();
     accepted = true;
@@ -260,17 +421,21 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     onDialogCancel();
   }
 
+  public void setFolderTreeDepth(int folderTreeDepth) {
+    this.publishModel.setFolderTreeDepth(folderTreeDepth);
+  }
+
   protected boolean connect(){
     
-
-    // compare data sources
     try {
       publisher = new ModelServerPublish();
       publisher.setBiServerConnection(publishModel.getSelectedConnection());
       checkDatasources();
-      //publishModel.createSolutionTree();
-      // create the publisher object
-      //publishModel.setSelectedFolder(null);
+      publishModel.setSelectedFolder(null);
+      if(publishModel.isGroupBoxFolderVisible()){
+        publisher.createSolutionTree(this.publishModel, folderTreeDepth);
+      }
+      
     } catch (Exception e) {
       logger.error("Error connecting", e);
       e.printStackTrace();
@@ -321,6 +486,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   }
   
   public void setSelectedServer(BiServerConnection selectedServer){
+    currentFolder = null;
     publishModel.setSelectedConnection(selectedServer);
   }
 
@@ -433,6 +599,14 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     component.setVisible( showDatasourceStatus );
   }
 
+  public String getPathTemplate() {
+    return pathTemplate;
+  }
+
+  public void setPathTemplate(String pathTemplate) {
+    this.pathTemplate = pathTemplate;
+  }
+
   public void setCheckDatasources(boolean checkDatasources) {
     this.checkDatasources = checkDatasources;
   }
@@ -468,6 +642,10 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     return publishModel.isPublishXmi();
   }
   
+  public void setFileMode(boolean b){
+    this.fileMode = b;
+    publishModelCheck.setVisible(b);
+  }
   
   public void setPath(String path){
     publishModel.setPath(path);
@@ -495,6 +673,15 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     }
     return false;
   }
+
+  public void hideFileGroupBoxFolder() {      
+     publishModel.setGroupBoxFolderVisible(false);
+     //folderGroupBox.setVisible(false);//replaced with binding    
+  }
+  public void showFileGroupBoxFolder() {
+    publishModel.setGroupBoxFolderVisible(true);
+    //folderGroupBox.setVisible(true);
+ }
   
 }
 

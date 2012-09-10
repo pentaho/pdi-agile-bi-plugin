@@ -42,7 +42,6 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.dom4j.DocumentHelper;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerPerspective;
@@ -60,7 +59,8 @@ import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.platform.api.repository.ISolutionRepository;
-
+import org.pentaho.platform.repository2.unified.webservices.RepositoryFileDto;
+import org.pentaho.platform.repository2.unified.webservices.RepositoryFileTreeDto;
 import org.pentaho.platform.dataaccess.datasource.beans.Connection;
 import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServiceException;
 import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
@@ -73,6 +73,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataMultiPart;
 
@@ -135,6 +136,7 @@ public class ModelServerPublish {
   public ModelServerPublish() {
     // get information about the remote connection
     ClientConfig clientConfig = new DefaultClientConfig();
+    clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
     this.client = Client.create(clientConfig);
   }
 
@@ -152,7 +154,7 @@ public class ModelServerPublish {
     Connection[] connectionArray = null;
     String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_LIST;
     WebResource resource = client.resource(storeDomainUrl);
-    String str = resource.type(MediaType.APPLICATION_JSON).get(String.class);
+
     try {
       connectionArray = resource.type(MediaType.APPLICATION_JSON).get(Connection[].class);
     } catch (Exception e) {
@@ -171,14 +173,11 @@ public class ModelServerPublish {
   public Connection getRemoteConnection(String connectionName, boolean force) {
     if (remoteConnection == null || force) {
       // get information about the remote connection
-      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET ;
+      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET;
       WebResource resource = client.resource(storeDomainUrl);
       try {
-        remoteConnection = resource
-            .type(MediaType.APPLICATION_JSON)
-            .type(MediaType.APPLICATION_XML)
-            .entity(connectionName)
-            .get(Connection.class);
+        remoteConnection = resource.type(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_XML)
+            .entity(connectionName).get(Connection.class);
       } catch (Exception ex) {
         //ex.printStackTrace();
         remoteConnection = null;
@@ -239,7 +238,7 @@ public class ModelServerPublish {
    * @return
    * @throws Exception
    */
-  @Deprecated
+
   public List<CmisObject> getRepositoryFiles(CmisObject folder, int depth, boolean foldersOnly) throws Exception {
     getNavigationService();
 
@@ -271,8 +270,9 @@ public class ModelServerPublish {
     }
 
     String DEFAULT_PUBLISH_URL = biServerConnection.getUrl() + "RepositoryFilePublisher"; //$NON-NLS-1$
-    int result = PublisherUtil.publish(DEFAULT_PUBLISH_URL, repositoryPath, files, "publishPasswordNotUsed",
-        biServerConnection.getUserId(), biServerConnection.getPassword(), true, true);
+    int result = -1;//TO DO tmb as Jersey 
+    //PublisherUtil.publish(DEFAULT_PUBLISH_URL, repositoryPath, files, "publishPasswordNotUsed",
+    //biServerConnection.getUserId(), biServerConnection.getPassword(), true, true);
 
     if (showFeedback) {
       showFeedback(result);
@@ -313,18 +313,16 @@ public class ModelServerPublish {
   private boolean updateConnection(Connection connection, boolean update) {
     String result;
     String storeDomainUrl;
-    try {   
-      if(update){
+    try {
+      if (update) {
         storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_UPDATE;
       } else {
-      
+
         storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_ADD;
       }
-            
+
       WebResource resource = client.resource(storeDomainUrl);
-      result = resource.type(MediaType.APPLICATION_JSON)          
-          .entity(convertToJSONObject(connection))
-          .post(String.class);
+      result = resource.type(MediaType.APPLICATION_JSON).entity(convertToJSONObject(connection)).post(String.class);
 
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -334,9 +332,9 @@ public class ModelServerPublish {
   }
 
   private String convertToJSONObject(Connection connection) {
-   //need to convert this to JSON
+    //need to convert this to JSON
     JSONObject obj = new JSONObject(connection);
-    
+
     return obj.toString();
   }
 
@@ -350,7 +348,7 @@ public class ModelServerPublish {
    * @return
    * @throws Exception
    * @throws UnsupportedEncodingException
-   * 
+   * @deprecated
    */
   public int publish(String publishPath, File publishFile, String jndiName, String modelId, boolean enableXmla)
       throws Exception, UnsupportedEncodingException {
@@ -450,22 +448,22 @@ public class ModelServerPublish {
   public String publishMetaDataFile(InputStream metadataFile, String domainId) throws Exception {
     String storeDomainUrl = biServerConnection.getUrl() + "plugin/data-access/api/metadata/import";
     WebResource resource = client.resource(storeDomainUrl);
-   
+
     String response = "ERROR";
     FormDataMultiPart part = new FormDataMultiPart();
-    part.field("domainId", domainId, MediaType.MULTIPART_FORM_DATA_TYPE)
-        .field("metadataFile", metadataFile, MediaType.MULTIPART_FORM_DATA_TYPE);
+    part.field("domainId", domainId, MediaType.MULTIPART_FORM_DATA_TYPE).field("metadataFile", metadataFile,
+        MediaType.MULTIPART_FORM_DATA_TYPE);
     part.getField("metadataFile").setContentDisposition(
         FormDataContentDisposition.name("metadataFile").fileName(domainId).build());
     try {
       response = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).put(String.class, part);
     } catch (Exception ex) {
       ex.printStackTrace();
-      response += " "+ ex.getMessage();
+      response += " " + ex.getMessage();
     }
     return response;
   }
-  
+
   /**
    * Validate username and password on server
    * @param serverUserId
@@ -517,15 +515,16 @@ public class ModelServerPublish {
       String selectedPath, boolean publishDatasource, boolean showFeedback, boolean isExistentDatasource,
       String fileName) throws Exception {
 
-    // File files[] = { new File(fileName) };
+    //File files[] = { new File(fileName) };
     //publishFile(selectedPath, files, false);
-
     if (publishDatasource) {
       DatabaseMeta databaseMeta = ((ISpoonModelerSource) model.getModelSource()).getDatabaseMeta();
-      publishDataSource(databaseMeta, isExistentDatasource);
+      this.publishDataSource(databaseMeta, isExistentDatasource);
     }
     boolean overwriteInRepository = false;
-    publishOlapSchemaToServer(schemaName, jndiName, modelName, repositoryPath, overwriteInRepository, true);
+    publishOlapSchemaToServer(schemaName,jndiName, modelName, selectedPath, overwriteInRepository, true,
+        isExistentDatasource);
+
   }
 
   public void publishPrptToServer(String theXmiPublishingPath, String thePrptPublishingPath, boolean publishDatasource,
@@ -547,7 +546,6 @@ public class ModelServerPublish {
     }
   }
 
- 
   public boolean checkForExistingFile(String path, String name) {
     try {
       if (path == null || name == null) {
@@ -672,13 +670,12 @@ public class ModelServerPublish {
     String serverName = biServerConnection.getName();
     String fileName = this.model.getModelName();
     switch (result) {
-      // String message, String rememberText, String rememberPropertyName )
+    // String message, String rememberText, String rememberPropertyName )
       case ModelServerPublish.PUBLISH_CATALOG_EXISTS: {
-        boolean ans = SpoonFactory.getInstance()
-            .overwritePrompt(            
-            BaseMessages.getString(this.getClass(), "Publish.Overwrite.Title"), 
+        boolean ans = SpoonFactory.getInstance().overwritePrompt(
+            BaseMessages.getString(this.getClass(), "Publish.Overwrite.Title"),
             BaseMessages.getString(this.getClass(), "Publish.Overwrite.Message", fileName),
-            BaseMessages.getString(this.getClass(),"ModelServerPublish.Publish.CatalogExists"));
+            BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.CatalogExists"));
         //.messageBox(
         //    BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.CatalogExists"), //$NON-NLS-1$
         //    BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
@@ -753,14 +750,15 @@ public class ModelServerPublish {
     return false;
   }
 
-  private void publishOlapSchemaToServer(String schemaFilePath, String jndiName, String modelName,
-      String repositoryPath, boolean overwriteInRepository, boolean showFeedback) throws Exception {
+  public int publishOlapSchemaToServer(String schemaName, String jndiName, String modelName, String schemaFilePath,
+      boolean overwriteInRepository, boolean showFeedback, boolean isExistentDatasource) throws Exception {
 
     File modelsDir = new File("models"); //$NON-NLS-1$
     if (!modelsDir.exists()) {
       modelsDir.mkdir();
     }
-    File publishFile = new File(modelsDir, schemaFilePath);
+    File publishFile;
+    publishFile = new File(modelsDir, schemaName);
     publishFile.createNewFile();
 
     LogicalModel lModel = this.model.getLogicalModel(ModelerPerspective.ANALYSIS);
@@ -774,6 +772,7 @@ public class ModelServerPublish {
     if (!publishFile.exists()) {
       throw new ModelerException("Schema file does not exist"); //$NON-NLS-1$
     }
+
     //local file
     OutputStream out = new FileOutputStream(publishFile);
     out.write(schemaBytes);
@@ -783,6 +782,18 @@ public class ModelServerPublish {
     InputStream schema = new ByteArrayInputStream(schemaBytes);
 
     int result = publishMondrainSchema(schema, modelName, jndiName, overwriteInRepository);
+    handleModelOverwrite(jndiName, modelName, showFeedback, schemaDoc, result);
+    //only publish metadata if schema is success
+    if (result == ModelServerPublish.PUBLISH_SUCCESS) {
+      InputStream metadataFile = new FileInputStream(publishFile);
+      String domainId = lModel.getName().toString();
+      publishMetaDataFile(metadataFile, domainId);
+    }
+    return result;
+  }
+
+  private int handleModelOverwrite(String jndiName, String modelName, boolean showFeedback,
+      org.dom4j.Document schemaDoc, int result) throws Exception {
     if (showFeedback) {
       if (showFeedback(result)) {
         //Handle Overwrite the byte stream has already be read - need to re-read
@@ -792,12 +803,7 @@ public class ModelServerPublish {
         showFeedback(result);
       }
     }
-    //only publish metadata if schema is success
-    if(result ==  ModelServerPublish.PUBLISH_SUCCESS){
-      InputStream metadataFile = new FileInputStream(publishFile);
-      String domainId = lModel.getName().toString();
-      publishMetaDataFile(metadataFile, domainId);
-    }
+    return result;
   }
 
   /**
@@ -841,6 +847,67 @@ public class ModelServerPublish {
       navigationService = biReposClient.getNavigationService();
     }
     return navigationService;
+  }
+
+  /**
+   * 
+   * @param model
+   * @param folderTreeDepth
+   * @throws PublishException
+   */
+  public void createSolutionTree(final XulDialogPublishModel model, final int folderTreeDepth) throws PublishException {
+    try {
+
+      RepositoryFileTreeDto tree = fetchRepositoryFileTree(folderTreeDepth, null, null);
+      if (tree != null && tree.getFile() != null) {
+        SolutionObject root = new SolutionObject();
+        root.add(new SolutionObject(tree, folderTreeDepth));
+        model.setSolutions(root);
+      }
+
+    } catch (Exception e) {
+      throw new PublishException("Error building solution document", e);
+    }
+
+  }
+
+  /**
+   * Use the Jersey call to get a list of repository file and folder objects
+   * @param callback
+   * @param depth
+   * @param filter
+   * @param showHidden
+   */
+  private RepositoryFileTreeDto fetchRepositoryFileTree(Integer depth, String filter, Boolean showHidden) {
+    RepositoryFileTreeDto fileTree = new RepositoryFileTreeDto();
+    String url = this.biServerConnection.getUrl() + "api/repo/files/children?"; //$NON-NLS-1$
+    if (depth == null) {
+      depth = -1;
+    }
+    if (filter == null) {
+      filter = "*"; //$NON-NLS-1$
+    }
+    if (showHidden == null) {
+      showHidden = Boolean.FALSE;
+    }
+    url = url + "depth=" + depth + "&filter=" + filter + "&showHidden=" + showHidden; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$  
+    WebResource resource = client.resource(url);
+    try {
+      fileTree = resource.accept(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE)
+          .type(MediaType.TEXT_PLAIN_TYPE).get(RepositoryFileTreeDto.class);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      RepositoryFileDto file = new RepositoryFileDto();
+      file.setPath("/");
+      file.setName("public");
+      file.setFolder(true);
+      fileTree.setChildren(null);
+      fileTree.setFile(file);
+
+    }
+
+    return fileTree;
   }
 
 }
