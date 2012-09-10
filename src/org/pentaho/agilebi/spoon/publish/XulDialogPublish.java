@@ -71,7 +71,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   
   private BiServerConfig biServerConfig;
   
-  
   private ModelServerPublish publisher;
 
   private DatabaseMeta databaseMeta;
@@ -209,7 +208,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     folderSelectionDialog = (XulDialog) document.getElementById("folderSelectionDialog");
     folderTree = (XulTree) document.getElementById("folderTree");
     folderSelectionDialogAccept = (XulButton) document.getElementById("folderSelectionDialog_accept");
-    folderTextbox.setValue( "tmp" );
+    
     bf.createBinding(publishModel, "solutions", folderTree, "elements");
     
     bf.createBinding(folderTree, "selectedItem", folderSelectionDialogAccept, "disabled", new BindingConvertor<Object, Boolean>(){
@@ -431,11 +430,12 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       publisher = new ModelServerPublish();
       publisher.setBiServerConnection(publishModel.getSelectedConnection());
       checkDatasources();
-      publishModel.setSelectedFolder(null);
+      SolutionObject selectedFolder = null;
       if(publishModel.isGroupBoxFolderVisible()){
         publisher.createSolutionTree(this.publishModel, folderTreeDepth);
+        selectedFolder = this.publishModel.getSolutions();
       }
-      
+      publishModel.setSelectedFolder(selectedFolder);
     } catch (Exception e) {
       logger.error("Error connecting", e);
       e.printStackTrace();

@@ -41,6 +41,8 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.dom4j.DocumentHelper;
 import org.json.JSONObject;
 import org.pentaho.agilebi.modeler.ModelerException;
@@ -898,9 +900,14 @@ public class ModelServerPublish {
     url = url + "depth=" + depth + "&filter=" + filter + "&showHidden=" + showHidden; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$  
     WebResource resource = client.resource(url);
     try {
-      fileTree = resource.accept(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE)
-          .type(MediaType.TEXT_PLAIN_TYPE).get(RepositoryFileTreeDto.class);
-
+      String json = resource
+          .accept(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE)
+          .type(MediaType.TEXT_PLAIN_TYPE)
+          .get(String.class);
+      ObjectMapper mapper = new ObjectMapper();
+      fileTree = (RepositoryFileTreeDto) mapper.readValue(json,
+          new TypeReference<RepositoryFileTreeDto>() {
+          });
     } catch (Exception e) {
       e.printStackTrace();
       RepositoryFileDto file = new RepositoryFileDto();
