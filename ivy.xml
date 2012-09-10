@@ -72,15 +72,15 @@
                 conf="default->default" changing="true" transitive="false"/>
 
 
-    <dependency org="pentaho-library" name="libswing" rev="${reporting-library.revision}"
+    <dependency org="pentaho-library" name="libswing" rev="${dependency.reporting-library.revision}"
                 conf="default->default" changing="true" transitive="false"/>
-    <dependency org="pentaho-library" name="libbase" rev="${reporting-library.revision}"
+    <dependency org="pentaho-library" name="libbase" rev="${dependency.reporting-library.revision}"
                 conf="default->default" changing="true" transitive="false"/>
-    <dependency org="pentaho-library" name="libfonts" rev="${reporting-library.revision}"
+    <dependency org="pentaho-library" name="libfonts" rev="${dependency.reporting-library.revision}"
                 conf="default->default" changing="true" transitive="false"/>
-    <dependency org="pentaho-library" name="libloader" rev="${reporting-library.revision}"
+    <dependency org="pentaho-library" name="libloader" rev="${dependency.reporting-library.revision}"
                 conf="default->default" changing="true" transitive="false"/>
-    <dependency org="pentaho-library" name="librepository" rev="${reporting-library.revision}"
+    <dependency org="pentaho-library" name="librepository" rev="${dependency.reporting-library.revision}"
                 conf="default->default" changing="true" transitive="false"/>
 
     <dependency org="pentaho" name="pentaho-connections" rev="${dependency.pentaho-connections.revision}" changing="true" transitive="false"/>
