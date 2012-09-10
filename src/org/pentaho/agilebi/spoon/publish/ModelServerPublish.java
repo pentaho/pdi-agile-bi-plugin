@@ -513,7 +513,7 @@ public class ModelServerPublish {
    */
   public void publishToServer(String schemaName, String jndiName, String modelName, String repositoryPath,
       String selectedPath, boolean publishDatasource, boolean showFeedback, boolean isExistentDatasource,
-      String fileName) throws Exception {
+      String publishModelFileName) throws Exception {
 
     //File files[] = { new File(fileName) };
     //publishFile(selectedPath, files, false);
@@ -522,8 +522,8 @@ public class ModelServerPublish {
       this.publishDataSource(databaseMeta, isExistentDatasource);
     }
     boolean overwriteInRepository = false;
-    publishOlapSchemaToServer(schemaName,jndiName, modelName, selectedPath, overwriteInRepository, true,
-        isExistentDatasource);
+    publishOlapSchemaToServer(schemaName,jndiName, modelName, selectedPath, overwriteInRepository, showFeedback,
+        isExistentDatasource, publishModelFileName);
 
   }
 
@@ -751,7 +751,7 @@ public class ModelServerPublish {
   }
 
   public int publishOlapSchemaToServer(String schemaName, String jndiName, String modelName, String schemaFilePath,
-      boolean overwriteInRepository, boolean showFeedback, boolean isExistentDatasource) throws Exception {
+      boolean overwriteInRepository, boolean showFeedback, boolean isExistentDatasource,String publishModelFileName) throws Exception {
 
     File modelsDir = new File("models"); //$NON-NLS-1$
     if (!modelsDir.exists()) {
@@ -785,11 +785,16 @@ public class ModelServerPublish {
     handleModelOverwrite(jndiName, modelName, showFeedback, schemaDoc, result);
     //only publish metadata if schema is success
     if (result == ModelServerPublish.PUBLISH_SUCCESS) {
-      InputStream metadataFile = new FileInputStream(publishFile);
-      String domainId = lModel.getName().toString();
-      publishMetaDataFile(metadataFile, domainId);
+      publishMetaDatafile(publishModelFileName, lModel);
     }
     return result;
+  }
+
+  private void publishMetaDatafile(String publishModelFileName, LogicalModel lModel) throws FileNotFoundException, Exception {
+    //".xmi file"
+    InputStream metadataFile = new FileInputStream(publishModelFileName);
+    String domainId = lModel.getName().getLocalizedString(LocalizedString.DEFAULT_LOCALE);
+    publishMetaDataFile(metadataFile, domainId);
   }
 
   private int handleModelOverwrite(String jndiName, String modelName, boolean showFeedback,

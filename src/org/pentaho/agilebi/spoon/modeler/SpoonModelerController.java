@@ -243,7 +243,8 @@ public class SpoonModelerController extends ModelerController {
     String filename = workspace.getModelName();
     workspace.getWorkspaceHelper().populateDomain(workspace);
     boolean isExistentDatasource = false;//this is wrong - TO DO 
-    String fileName = PublisherHelper.publish(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources, false, showFolders, showCurrentFolder, isExistentDatasource ,serverPathTemplate, extension, databaseName);
+    String fileName = PublisherHelper.publish(workspace, publishingFile, treeDepth, databaseMeta, filename, 
+        checkDatasources, false, showFolders, showCurrentFolder, isExistentDatasource ,serverPathTemplate, extension, databaseName);
        // publish(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources,
        // false, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
     workspace.getModel().setName(fileName);
