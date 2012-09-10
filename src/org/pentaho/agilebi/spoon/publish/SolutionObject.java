@@ -42,11 +42,13 @@ public class SolutionObject extends AbstractModelNode<SolutionObject> {
 
     try {
       List<RepositoryFileTreeDto> children = reposFileTree.getChildren();
-      //navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, reposFileTree.findIdProperty( PropertiesBase.OBJECTID, null ), new TypesOfFileableObjects( TypesOfFileableObjects.FOLDERS ), 1, null, false, false);
-      if (maxDepth == -1 || calculateDepth() < maxDepth) {
-        for (RepositoryFileTreeDto obj : children) {
-          if(obj.getFile().isFolder())
-            add(new SolutionObject(obj, maxDepth));
+      if (children != null) {
+        //navigationService.getDescendants(BiPlatformRepositoryClient.PLATFORMORIG, reposFileTree.findIdProperty( PropertiesBase.OBJECTID, null ), new TypesOfFileableObjects( TypesOfFileableObjects.FOLDERS ), 1, null, false, false);
+        if (maxDepth == -1 || calculateDepth() < maxDepth) {
+          for (RepositoryFileTreeDto obj : children) {
+            if (obj.getFile().isFolder())
+              add(new SolutionObject(obj, maxDepth));
+          }
         }
       }
     } catch (Exception e) {
