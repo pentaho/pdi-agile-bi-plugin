@@ -107,7 +107,7 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
     SolutionObject prevVal = this.selectedFolder;
     this.selectedFolder = selectedFolder;
     if (getSelectedFolder() != null) {
-      setPath(getSelectedFolder().getName());
+      setPath(getSelectedFolder().getReposFileTree().getFile().getPath());
     }
     firePropertyChange("selectedFolder", prevVal, this.selectedFolder);
     calculateValidity();
