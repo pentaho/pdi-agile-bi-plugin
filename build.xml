@@ -388,12 +388,6 @@
 				<include name="${package.basename}.zip"/>
 			</fileset>
 		</unzip>
-		<!-- copy in the monetdb Agile Mart plugin -->
-		<unzip dest="${bin.dir}/kettle-dist/data-integration/plugins/steps">
-			<fileset dir="${monetdb-plugin-assembly.dir}">
-				<include name="MonetDBAgileMartPlugin-*.zip"/>
-			</fileset>
-		</unzip>
 		<zip destfile="${dist.dir}/${pdiwithagilebi}.zip">
 			<zipfileset dir="${bin.dir}/kettle-dist" />
 		</zip>
