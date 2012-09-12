@@ -100,4 +100,15 @@ public class SolutionObject extends AbstractModelNode<SolutionObject> {
       return null;
     }
   }
+
+  /**
+   * helper method to hide internal structure of object
+   * @return
+   */
+  public String getPath() {
+    String ans = null;
+    if(reposFileTree != null && reposFileTree.getFile() != null)
+      ans = reposFileTree.getFile().getPath();
+    return ans;
+  }
 }

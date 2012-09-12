@@ -317,61 +317,6 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     folderSelectionDialog.hide();
   }
   
-  protected void changePath() {
-    StringBuilder sb = new StringBuilder();
-    List<String> folders = new ArrayList<String>();
-    // get all the parents of this folder
-    if( currentFolder != null ) {
-      CmisObject folder = currentFolder;
-      while( folder != null ) {
-        folders.add(0, folder.findStringProperty(CmisObject.LOCALIZEDNAME, null) );
-        List<CmisObject> objects;
-        try {
-          objects = publisher.getNavigationService()
-            .getFolderParent(BiPlatformRepositoryClient.PLATFORMORIG, folder.findIdProperty( PropertiesBase.OBJECTID, null ), null, false, false, false);
-          if( objects != null && objects.size() > 0 ) {
-            folder = objects.get(0);
-          } else {
-            folder = null;
-            break;
-          }
-        } catch (Exception e) {
-          folder = null;
-          logger.error("Error navigating path", e);
-        }
-      }
-    }
-    
-    for( String folderName : folders ) {
-      if( !"".equals( folderName ) ) { //$NON-NLS-1$
-        sb.append( ISolutionRepository.SEPARATOR )
-        .append( folderName );
-      }
-    }
-    
-    sb.append( ISolutionRepository.SEPARATOR );
-    /*
-    // create the folder path
-    for( NamedObject folder : folderNames ) {
-      if( folder instanceof NamedCmisObject ) {
-        sb.append( ISolutionRepository.SEPARATOR )
-        .append( folder.getName() );
-      }
-    }
-    if( currentFolder != null ) {
-      String currentFolderName = currentFolder.findStringProperty(CmisObject.LOCALIZEDNAME);
-      if( !currentFolderName.equals( folderNames.get( folderNames.size()-1 ).getName()) ) {
-        sb.append( ISolutionRepository.SEPARATOR )
-        .append( currentFolderName );
-      }
-    }
-    */
-    String tmp = sb.toString();
-    String path = pathTemplate.replace("{path}", tmp); //$NON-NLS-1$
-    //path = path.replace("{file}", filename); //$NON-NLS-1$
-    folderTextbox.setValue( path );
-  }
-  
     
   public void okClick() {
 	final boolean isPublishDataSourceCheck = publishDatasourceCheck.isChecked();

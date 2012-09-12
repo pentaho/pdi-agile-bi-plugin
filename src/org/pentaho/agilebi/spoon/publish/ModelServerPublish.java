@@ -21,26 +21,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.security.MessageDigest;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.dom4j.DocumentHelper;
@@ -49,9 +42,6 @@ import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerPerspective;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
-import org.pentaho.commons.util.repository.type.CmisObject;
-import org.pentaho.commons.util.repository.type.PropertiesBase;
-import org.pentaho.commons.util.repository.type.TypesOfFileableObjects;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleDatabaseException;
@@ -60,15 +50,10 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.MondrianModelExporter;
-import org.pentaho.platform.api.repository.ISolutionRepository;
-import org.pentaho.platform.repository2.unified.webservices.RepositoryFileDto;
-import org.pentaho.platform.repository2.unified.webservices.RepositoryFileTreeDto;
 import org.pentaho.platform.dataaccess.datasource.beans.Connection;
 import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServiceException;
-import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
-import org.pentaho.platform.util.client.BiPlatformRepositoryClientNavigationService;
+import org.pentaho.platform.repository2.unified.webservices.RepositoryFileTreeDto;
 import org.pentaho.platform.util.client.PublisherUtil;
-import org.pentaho.platform.util.client.ServiceException;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -78,6 +63,7 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataMultiPart;
+
 
 /**
  * A utility class for publishing models to a BI server. Also helps synchronize database connections.
@@ -127,8 +113,6 @@ public class ModelServerPublish {
   private ModelerWorkspace model;
 
   private int serviceClientStatus = 0;
-
-  private BiPlatformRepositoryClientNavigationService navigationService;
 
   //TODO: find a better way to communicate the UI delegate
   public static PublishOverwriteDelegate overwriteDelegate;
@@ -234,37 +218,12 @@ public class ModelServerPublish {
     return result;
   }
 
-  /**
-   * Returns a list of repository folders
-   * @param depth
-   * @return
-   * @throws Exception
-   */
-
-  public List<CmisObject> getRepositoryFiles(CmisObject folder, int depth, boolean foldersOnly) throws Exception {
-    getNavigationService();
-
-    TypesOfFileableObjects folderTypes;
-    if (foldersOnly) {
-      folderTypes = new TypesOfFileableObjects(TypesOfFileableObjects.FOLDERS);
-    } else {
-      folderTypes = new TypesOfFileableObjects(TypesOfFileableObjects.ANY);
-
-    }
-    String startLocation = ""; //$NON-NLS-1$
-    if (folder != null) {
-      startLocation = folder.findIdProperty(PropertiesBase.OBJECTID, null);
-    }
-    List<CmisObject> objects = getNavigationService().getDescendants(BiPlatformRepositoryClient.PLATFORMORIG,
-        startLocation, folderTypes, depth, null, false, false);
-    return objects;
-  }
 
   public int publishFile(String repositoryPath, File[] files, boolean showFeedback) {
 
-    for (int i = 0; i < files.length; i++) {
-      if (checkForExistingFile(repositoryPath, files[i].getName())) {
-        boolean overwrite = overwriteDelegate.handleOverwriteNotification(files[i].getName());
+    for(File f : files){
+      if (checkForExistingFile(repositoryPath, f.getName())) {
+        boolean overwrite = overwriteDelegate.handleOverwriteNotification(f.getName());
         if (overwrite == false) {
           return PublisherUtil.FILE_EXISTS;
         }
@@ -273,9 +232,31 @@ public class ModelServerPublish {
 
     String DEFAULT_PUBLISH_URL = biServerConnection.getUrl() + "RepositoryFilePublisher"; //$NON-NLS-1$
     int result = -1;//TO DO tmb as Jersey 
-    //PublisherUtil.publish(DEFAULT_PUBLISH_URL, repositoryPath, files, "publishPasswordNotUsed",
-    //biServerConnection.getUserId(), biServerConnection.getPassword(), true, true);
+    result = 3;
+    String url = "repo/files/import"; //$NON-NLS-3$  
+    WebResource resource = client.resource(url);
+    try {
+      for(File fileIS : files){
+        FileInputStream in = new FileInputStream(fileIS);
+  
+        FormDataMultiPart part = new FormDataMultiPart();
+        part.field("importDir", repositoryPath, MediaType.MULTIPART_FORM_DATA_TYPE).
+            field("fileUpload", in, MediaType.MULTIPART_FORM_DATA_TYPE);
 
+        // If the import service needs the file name do the following.
+        part.getField("fileUpload").setContentDisposition(
+            FormDataContentDisposition.name("fileUpload")
+            .fileName(fileIS.getName()).build());
+   
+      Response response = resource
+          .type(MediaType.MULTIPART_FORM_DATA)          
+          .post(Response.class, part);
+      result = response.getStatus();
+      }
+    } catch(Exception ex){
+      ex.printStackTrace();
+      result = -1;
+    }
     if (showFeedback) {
       showFeedback(result);
     }
@@ -338,73 +319,6 @@ public class ModelServerPublish {
     JSONObject obj = new JSONObject(connection);
 
     return obj.toString();
-  }
-
-  /**
-   * Publishes a file to the current BI server
-   * @param publishPath
-   * @param publishFile
-   * @param jndiName
-   * @param modelId
-   * @param enableXmla
-   * @return
-   * @throws Exception
-   * @throws UnsupportedEncodingException
-   * @deprecated
-   */
-  public int publish(String publishPath, File publishFile, String jndiName, String modelId, boolean enableXmla)
-      throws Exception, UnsupportedEncodingException {
-
-    String url = biServerConnection.getUrl();
-    StringBuilder sb = new StringBuilder();
-    sb.append(url);
-    if (url.charAt(url.length() - 1) != ISolutionRepository.SEPARATOR) {
-      sb.append(ISolutionRepository.SEPARATOR);
-    }
-    sb.append("MondrianCatalogPublisher?publishPath=") //$NON-NLS-1$
-        .append(URLEncoder.encode(publishPath, "UTF-8")) //$NON-NLS-1$
-        .append("&publishKey=").append(getPasswordKey(new String("publishPasswordNotUsed"))) //$NON-NLS-1$
-        .append("&overwrite=true&mkdirs=true") //$NON-NLS-1$
-        .append("&jndiName=").append(jndiName) //$NON-NLS-1$
-        .append("&enableXmla=").append(enableXmla) //$NON-NLS-1$
-        .append("&userid=").append(biServerConnection.getUserId()) //$NON-NLS-1$
-        .append("&password=").append(biServerConnection.getPassword()); //$NON-NLS-1$ 
-    String fullUrl = sb.toString();
-    PostMethod filePost = new PostMethod(fullUrl);
-    ArrayList<Part> parts = new ArrayList<Part>();
-    try {
-      parts.add(new FilePart(publishFile.getName(), publishFile));
-    } catch (FileNotFoundException e) {
-      // file is not existing or not readable, this should not happen
-      e.printStackTrace();
-    }
-    filePost.setRequestEntity(new MultipartRequestEntity(parts.toArray(new Part[parts.size()]), filePost.getParams()));
-    HttpClient client = getClient(biServerConnection.getUserId(), biServerConnection.getPassword());
-    try {
-      serviceClientStatus = client.executeMethod(filePost);
-    } catch (IOException e) {
-      throw new Exception(e.getMessage(), e);
-    }
-    //  if (serviceClientStatus != HttpStatus.SC_OK) {
-    //      if (serviceClientStatus == HttpStatus.SC_MOVED_TEMPORARILY) {
-    //          throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Errors.InvalidUser")); //$NON-NLS-1$
-    //      } else {
-    //          throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Errors.UnknownError", Integer.toString(serviceClientStatus)) ); //$NON-NLS-1$
-    //      }
-    //  } else {
-    try {
-      String postResult = filePost.getResponseBodyAsString();
-      int publishResult = Integer.parseInt(postResult.trim());
-      return publishResult;
-
-    } catch (IOException e) {
-      e.printStackTrace();
-      return ModelServerPublish.PUBLISH_UNKNOWN_PROBLEM;
-    } catch (NumberFormatException e) {
-      e.printStackTrace();
-      return ModelServerPublish.PUBLISH_UNKNOWN_PROBLEM;
-    }
-    //  }
   }
 
   /**
@@ -548,47 +462,36 @@ public class ModelServerPublish {
     }
   }
 
+  /**
+   * find a matching file/path combination
+   * @param path
+   * @param name
+   * @return
+   */
   public boolean checkForExistingFile(String path, String name) {
     try {
       if (path == null || name == null) {
         return false;
       }
-      List<String> folders = new ArrayList(Arrays.asList(path.split("" + ISolutionRepository.SEPARATOR)));
-      int idx = 0;
-      CmisObject folder = null;
-      while (folders.size() > 0) {
-        folder = findFolder(folders.get(idx), folder);
-        if (folder == null) {
-          return false;
-        }
-        folders.remove(idx);
+      // add filter {path} to limit search results in future TODO
+      RepositoryFileTreeDto tree = fetchRepositoryFileTree(-1, null, null);
+      if (tree != null && tree.getFile() != null) {
+          if(!tree.getFile().isFolder()){
+            if(tree.getFile().getName().equals(name)
+                && tree.getFile().getPath().equals(path)) {
+              return true;
+            }
+          }
+      
       }
-      List<CmisObject> files = getNavigationService().getDescendants(BiPlatformRepositoryClient.PLATFORMORIG,
-          folder.findIdProperty(PropertiesBase.OBJECTID, null), new TypesOfFileableObjects(TypesOfFileableObjects.ANY),
-          1, null, false, false);
-      for (CmisObject f : files) {
-        if (f.findStringProperty(CmisObject.NAME, null).equals(name)) {
-          return true;
-        }
-      }
-
+    
     } catch (Exception e) {
       e.printStackTrace();
     }
     return false;
   }
 
-  private CmisObject findFolder(String folder, CmisObject parent) throws Exception {
-    List<CmisObject> solutions = getNavigationService().getDescendants(BiPlatformRepositoryClient.PLATFORMORIG,
-        (parent != null) ? parent.findIdProperty(PropertiesBase.OBJECTID, null) : "",
-        new TypesOfFileableObjects(TypesOfFileableObjects.FOLDERS), 1, null, false, false);
-    for (CmisObject obj : solutions) {
-      if (obj.findStringProperty(CmisObject.NAME, null).equals(folder)) {
-        return obj;
-      }
-    }
-    return null;
-  }
+
 
   public boolean checkDataSource(boolean autoMode) throws KettleDatabaseException, ConnectionServiceException {
     // check the data source
@@ -784,18 +687,18 @@ public class ModelServerPublish {
     InputStream schema = new ByteArrayInputStream(schemaBytes);
 
     int result = publishMondrainSchema(schema, modelName, jndiName, overwriteInRepository);
-    handleModelOverwrite(jndiName, modelName, showFeedback, schemaDoc, result);
+    result = handleModelOverwrite(jndiName, modelName, showFeedback, schemaDoc, result);
     //only publish metadata if schema is success
     if (result == ModelServerPublish.PUBLISH_SUCCESS) {
-      publishMetaDatafile(publishModelFileName, lModel);
+      publishMetaDatafile(publishModelFileName, modelName, lModel);
     }
     return result;
   }
 
-  private void publishMetaDatafile(String publishModelFileName, LogicalModel lModel) throws FileNotFoundException, Exception {
+  private void publishMetaDatafile(String publishModelFileName, String domainId, LogicalModel lModel) throws FileNotFoundException, Exception {
     //".xmi file"
     InputStream metadataFile = new FileInputStream(publishModelFileName);
-    String domainId = lModel.getName().getLocalizedString(LocalizedString.DEFAULT_LOCALE);
+    String lmodel = lModel.getName().getLocalizedString(LocalizedString.DEFAULT_LOCALE);
     publishMetaDataFile(metadataFile, domainId);
   }
 
@@ -836,25 +739,6 @@ public class ModelServerPublish {
     return serviceClientStatus;
   }
 
-  public BiPlatformRepositoryClientNavigationService getNavigationService() {
-    if (navigationService == null) {
-
-      BiPlatformRepositoryClient biReposClient = new BiPlatformRepositoryClient();
-
-      biReposClient.setServerUri(biServerConnection.getUrl());
-      biReposClient.setUserId(biServerConnection.getUserId());
-      biReposClient.setPassword(biServerConnection.getPassword());
-
-      try {
-        biReposClient.connect();
-      } catch (ServiceException e) {
-        e.printStackTrace();
-        return null;
-      }
-      navigationService = biReposClient.getNavigationService();
-    }
-    return navigationService;
-  }
 
   /**
    * 
@@ -909,13 +793,7 @@ public class ModelServerPublish {
           new TypeReference<RepositoryFileTreeDto>() {
           });
     } catch (Exception e) {
-      e.printStackTrace();
-      RepositoryFileDto file = new RepositoryFileDto();
-      file.setPath("/");
-      file.setName("public");
-      file.setFolder(true);
-      fileTree.setChildren(null);
-      fileTree.setFile(file);
+      e.printStackTrace();      
 
     }
 
