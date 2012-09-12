@@ -80,6 +80,8 @@ public class ModelServerPublish {
 
   private static final String DATA_ACCESS_API_CONNECTION_LIST = "plugin/data-access/api/connection/list";
 
+  private static final String REPO_FILES_IMPORT = "api/repo/files/import";
+
   public static final int PUBLISH_UNKNOWN_PROBLEM = -1;
 
   public static final int PUBLISH_FILE_EXISTS = 1;
@@ -231,10 +233,9 @@ public class ModelServerPublish {
     }
 
     String DEFAULT_PUBLISH_URL = biServerConnection.getUrl() + "RepositoryFilePublisher"; //$NON-NLS-1$
-    int result = -1;//TO DO tmb as Jersey 
-    result = 3;
-    String url = "repo/files/import"; //$NON-NLS-3$  
-    WebResource resource = client.resource(url);
+  
+    int result = -1;
+    WebResource resource = client.resource(REPO_FILES_IMPORT);
     try {
       for(File fileIS : files){
         FileInputStream in = new FileInputStream(fileIS);
