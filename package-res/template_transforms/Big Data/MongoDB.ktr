@@ -9,11 +9,6 @@
     <trans_status>0</trans_status>
     <directory>&#47;</directory>
     <parameters>
-        <parameter>
-            <name>page</name>
-            <default_value>--firstpage--</default_value>
-            <description/>
-        </parameter>
     </parameters>
     <log>
 <trans-log-table><connection/>
@@ -74,11 +69,11 @@
   <notepads>
   </notepads>
   <connection>
-    <name>AgileBI</name>
+    <name>agilebi</name>
     <server>localhost</server>
     <type>MONETDB</type>
     <access>Native</access>
-    <database>test</database>
+    <database>agilebi</database>
     <port>-1</port>
     <username>monetdb</username>
     <password>Encrypted 2be98afc86aa7f2e4cb14a17edb86abd8</password>
@@ -157,10 +152,11 @@
            <method>none</method>
            <schema_name/>
            </partitioning>
-    <hostname>localhost</hostname>
+    <hostname>10.100.3.197</hostname>
     <port>27017</port>
-    <db_name>Demo</db_name>
-    <collection/>
+    <db_name>whiteboard</db_name>
+    <fields_name/>
+    <collection>quotes</collection>
     <json_field_name>json</json_field_name>
     <json_query/>
     <auth_user/>
@@ -201,8 +197,8 @@
     </file>
     <fields>
       <field>
-        <name>URL</name>
-        <path>url</path>
+        <name>text</name>
+        <path>text</path>
         <type>String</type>
         <format/>
         <currency/>
@@ -214,8 +210,8 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>NextURL</name>
-        <path>nextUrl</path>
+        <name>name</name>
+        <path>name</path>
         <type>String</type>
         <format/>
         <currency/>
@@ -227,10 +223,10 @@
         <repeat>N</repeat>
       </field>
       <field>
-        <name>Count</name>
-        <path>Count</path>
-        <type>Number</type>
-        <format>#</format>
+        <name>ts</name>
+        <path>ts</path>
+        <type>String</type>
+        <format/>
         <currency/>
         <decimal/>
         <group/>
@@ -280,6 +276,26 @@
     <truncate>Y</truncate>
     <auto_schema>Y</auto_schema>
     <auto_string_widths>Y</auto_string_widths>
+      <mapping>
+        <stream_name>ts</stream_name>
+        <field_name>ts</field_name>
+        <field_format_ok>Y</field_format_ok>
+      </mapping>
+      <mapping>
+        <stream_name/>
+        <field_name/>
+        <field_format_ok>N</field_format_ok>
+      </mapping>
+      <mapping>
+        <stream_name/>
+        <field_name/>
+        <field_format_ok>N</field_format_ok>
+      </mapping>
+      <mapping>
+        <stream_name/>
+        <field_name/>
+        <field_format_ok>N</field_format_ok>
+      </mapping>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>333</xloc>

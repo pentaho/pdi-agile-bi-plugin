@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>SalesForce</name>
+    <name>Excel</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -61,18 +61,18 @@
     <clusterschemas>
     </clusterschemas>
   <created_user>-</created_user>
-  <created_date>2012&#47;04&#47;23 11:30:23.975</created_date>
+  <created_date>2012&#47;04&#47;23 11:29:44.502</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2012&#47;04&#47;23 11:30:23.975</modified_date>
+  <modified_date>2012&#47;04&#47;23 11:29:44.502</modified_date>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>AgileBI</name>
+    <name>agilebi</name>
     <server>localhost</server>
     <type>MONETDB</type>
     <access>Native</access>
-    <database>test</database>
+    <database>agilebi</database>
     <port>-1</port>
     <username>monetdb</username>
     <password>Encrypted 2be98afc86aa7f2e4cb14a17edb86abd8</password>
@@ -143,7 +143,7 @@
   <hop> <from>Input</from><to>Output</to><enabled>Y</enabled> </hop>  </order>
   <step>
     <name>Input</name>
-    <type>SalesforceInput</type>
+    <type>ExcelInput</type>
     <description/>
     <distribute>Y</distribute>
     <copies>1</copies>
@@ -151,37 +151,54 @@
            <method>none</method>
            <schema_name/>
            </partitioning>
-    <targeturl>https:&#47;&#47;www.salesforce.com&#47;services&#47;Soap&#47;u&#47;21.0</targeturl>
-    <username/>
-    <password>Encrypted </password>    <module>Account</module>
-    <condition/>
-    <specifyQuery>N</specifyQuery>
-    <query/>
-    <include_targeturl>N</include_targeturl>
-    <targeturl_field/>
-    <include_module>N</include_module>
-    <module_field/>
-    <include_rownum>N</include_rownum>
-    <include_deletion_date>N</include_deletion_date>
-    <deletion_date_field/>
-    <rownum_field/>
-    <include_sql>N</include_sql>
-    <sql_field/>
-    <include_Timestamp>N</include_Timestamp>
-    <timestamp_field/>
-    <read_from/>
-    <read_to/>
-    <records_filter>all</records_filter>
-    <useCompression>N</useCompression>
-    <queryAll>N</queryAll>
-    <fields>
-      </fields>
+    <header>Y</header>
+    <noempty>Y</noempty>
+    <stoponempty>N</stoponempty>
+    <filefield/>
+    <sheetfield/>
+    <sheetrownumfield/>
+    <rownumfield/>
+    <sheetfield/>
+    <filefield/>
     <limit>0</limit>
-    <timeout>60000</timeout>
+    <encoding>MacRoman</encoding>
+    <add_to_result_filenames>Y</add_to_result_filenames>
+    <accept_filenames>N</accept_filenames>
+    <accept_field/>
+    <accept_stepname/>
+    <file>
+      <name/>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+    </fields>
+    <sheets>
+    </sheets>
+    <strict_types>N</strict_types>
+    <error_ignored>N</error_ignored>
+    <error_line_skipped>N</error_line_skipped>
+    <bad_line_files_destination_directory/>
+    <bad_line_files_extension>warning</bad_line_files_extension>
+    <error_line_files_destination_directory/>
+    <error_line_files_extension>error</error_line_files_extension>
+    <line_number_files_destination_directory/>
+    <line_number_files_extension>line</line_number_files_extension>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+    <spreadsheet_type>JXL</spreadsheet_type>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>98</xloc>
-      <yloc>91</yloc>
+      <xloc>129</xloc>
+      <yloc>81</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
@@ -208,8 +225,8 @@
     <auto_string_widths>Y</auto_string_widths>
      <cluster_schema/>
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>262</xloc>
-      <yloc>90</yloc>
+      <xloc>310</xloc>
+      <yloc>82</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
