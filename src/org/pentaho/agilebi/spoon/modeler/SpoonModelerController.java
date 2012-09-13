@@ -234,7 +234,7 @@ public class SpoonModelerController extends ModelerController {
     DatabaseMeta databaseMeta = ((ISpoonModelerSource) workspace.getModelSource()).getDatabaseMeta();
     boolean checkDatasources = true;
     boolean showServerSelection = true;
-    boolean showFolders = false;
+    boolean showFolders = false; 
     boolean showCurrentFolder = false;
     String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
       "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
