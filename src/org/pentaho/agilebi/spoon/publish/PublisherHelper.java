@@ -215,7 +215,7 @@ public class PublisherHelper {
           cachedServer = biServerConnection;
           publisher.setBiServerConnection(biServerConnection);
           boolean publishDatasource = publishDialog.isPublishDataSource();
-          String repositoryPath = null;
+          String repositoryPath = "/";
           if(serverPathTemplate != null) {
             String selectedSolution = null;
             if(selectedPath != null && selectedPath.indexOf("/") != -1) { //$NON-NLS-1$

@@ -17,12 +17,14 @@
 package org.pentaho.agilebi.spoon.publish;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +36,9 @@ import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.dom4j.DocumentHelper;
@@ -63,7 +68,6 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataMultiPart;
-
 
 /**
  * A utility class for publishing models to a BI server. Also helps synchronize database connections.
@@ -220,10 +224,9 @@ public class ModelServerPublish {
     return result;
   }
 
-
   public int publishFile(String repositoryPath, File[] files, boolean showFeedback) {
 
-    for(File f : files){
+    for (File f : files) {
       if (checkForExistingFile(repositoryPath, f.getName())) {
         boolean overwrite = overwriteDelegate.handleOverwriteNotification(f.getName());
         if (overwrite == false) {
@@ -232,29 +235,26 @@ public class ModelServerPublish {
       }
     }
 
-    String DEFAULT_PUBLISH_URL = biServerConnection.getUrl() + "RepositoryFilePublisher"; //$NON-NLS-1$
-  
+    String DEFAULT_PUBLISH_URL = biServerConnection.getUrl() + REPO_FILES_IMPORT; //$NON-NLS-1$
+
     int result = -1;
-    WebResource resource = client.resource(REPO_FILES_IMPORT);
+    WebResource resource = client.resource(DEFAULT_PUBLISH_URL);
     try {
-      for(File fileIS : files){
-        FileInputStream in = new FileInputStream(fileIS);
-  
+      for (File fileIS : files) {
+        InputStream in = new FileInputStream(fileIS);
+       
         FormDataMultiPart part = new FormDataMultiPart();
-        part.field("importDir", repositoryPath, MediaType.MULTIPART_FORM_DATA_TYPE).
-            field("fileUpload", in, MediaType.MULTIPART_FORM_DATA_TYPE);
+        part.field("importDir", repositoryPath, MediaType.MULTIPART_FORM_DATA_TYPE).field("fileUpload", in,
+            MediaType.MULTIPART_FORM_DATA_TYPE);
 
         // If the import service needs the file name do the following.
         part.getField("fileUpload").setContentDisposition(
-            FormDataContentDisposition.name("fileUpload")
-            .fileName(fileIS.getName()).build());
-   
-      Response response = resource
-          .type(MediaType.MULTIPART_FORM_DATA)          
-          .post(Response.class, part);
-      result = response.getStatus();
+            FormDataContentDisposition.name("fileUpload").fileName(fileIS.getName()).build());
+
+        Response response = resource.type(MediaType.MULTIPART_FORM_DATA).post(Response.class, part);
+        result = response.getStatus();
       }
-    } catch(Exception ex){
+    } catch (Exception ex) {
       ex.printStackTrace();
       result = -1;
     }
@@ -368,12 +368,15 @@ public class ModelServerPublish {
 
     String response = "ERROR";
     FormDataMultiPart part = new FormDataMultiPart();
-    part.field("domainId", domainId, MediaType.MULTIPART_FORM_DATA_TYPE).field("metadataFile", metadataFile,
-        MediaType.MULTIPART_FORM_DATA_TYPE);
+    part.field("domainId", domainId, MediaType.MULTIPART_FORM_DATA_TYPE)
+      .field("metadataFile", metadataFile, MediaType.MULTIPART_FORM_DATA_TYPE);
     part.getField("metadataFile").setContentDisposition(
-        FormDataContentDisposition.name("metadataFile").fileName(domainId).build());
+        FormDataContentDisposition.name("metadataFile")
+        .fileName(domainId).build());
     try {
-      response = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).put(String.class, part);
+      response = resource
+          .type(MediaType.MULTIPART_FORM_DATA_TYPE)
+          .put(String.class, part);
     } catch (Exception ex) {
       ex.printStackTrace();
       response += " " + ex.getMessage();
@@ -432,15 +435,19 @@ public class ModelServerPublish {
       String selectedPath, boolean publishDatasource, boolean showFeedback, boolean isExistentDatasource,
       String publishModelFileName) throws Exception {
 
-    //File files[] = { new File(fileName) };
-    //publishFile(selectedPath, files, false);
+   // File files[] = { new File(publishModelFileName) };
+   // publishFile(selectedPath, files, false);
     if (publishDatasource) {
       DatabaseMeta databaseMeta = ((ISpoonModelerSource) model.getModelSource()).getDatabaseMeta();
       this.publishDataSource(databaseMeta, isExistentDatasource);
     }
     boolean overwriteInRepository = false;
-    publishOlapSchemaToServer(schemaName,jndiName, modelName, selectedPath, overwriteInRepository, showFeedback,
-        isExistentDatasource, publishModelFileName);
+    int result = publishOlapSchemaToServer(schemaName, jndiName, modelName, selectedPath, overwriteInRepository,
+        showFeedback, isExistentDatasource, publishModelFileName);
+    //only publish if schema is success
+    if (result == ModelServerPublish.PUBLISH_SUCCESS) {
+      publishMetaDatafile(publishModelFileName, modelName);
+    }
 
   }
 
@@ -477,22 +484,19 @@ public class ModelServerPublish {
       // add filter {path} to limit search results in future TODO
       RepositoryFileTreeDto tree = fetchRepositoryFileTree(-1, null, null);
       if (tree != null && tree.getFile() != null) {
-          if(!tree.getFile().isFolder()){
-            if(tree.getFile().getName().equals(name)
-                && tree.getFile().getPath().equals(path)) {
-              return true;
-            }
+        if (!tree.getFile().isFolder()) {
+          if (tree.getFile().getName().equals(name) && tree.getFile().getPath().equals(path)) {
+            return true;
           }
-      
+        }
+
       }
-    
+
     } catch (Exception e) {
       e.printStackTrace();
     }
     return false;
   }
-
-
 
   public boolean checkDataSource(boolean autoMode) throws KettleDatabaseException, ConnectionServiceException {
     // check the data source
@@ -657,7 +661,8 @@ public class ModelServerPublish {
   }
 
   public int publishOlapSchemaToServer(String schemaName, String jndiName, String modelName, String schemaFilePath,
-      boolean overwriteInRepository, boolean showFeedback, boolean isExistentDatasource,String publishModelFileName) throws Exception {
+      boolean overwriteInRepository, boolean showFeedback, boolean isExistentDatasource, String publishModelFileName)
+      throws Exception {
 
     File modelsDir = new File("models"); //$NON-NLS-1$
     if (!modelsDir.exists()) {
@@ -689,17 +694,20 @@ public class ModelServerPublish {
 
     int result = publishMondrainSchema(schema, modelName, jndiName, overwriteInRepository);
     result = handleModelOverwrite(jndiName, modelName, showFeedback, schemaDoc, result);
-    //only publish metadata if schema is success
-    if (result == ModelServerPublish.PUBLISH_SUCCESS) {
-      publishMetaDatafile(publishModelFileName, modelName, lModel);
-    }
+
     return result;
   }
 
-  private void publishMetaDatafile(String publishModelFileName, String domainId, LogicalModel lModel) throws FileNotFoundException, Exception {
-    //".xmi file"
+  /**
+   * convert the putlish name to an inputstream to pass to Jersey
+   * @param publishModelFileName
+   * @param domainId
+   * @throws FileNotFoundException
+   * @throws Exception
+   */
+  private void publishMetaDatafile(String publishModelFileName, String domainId) throws FileNotFoundException,
+      Exception {
     InputStream metadataFile = new FileInputStream(publishModelFileName);
-    String lmodel = lModel.getName().getLocalizedString(LocalizedString.DEFAULT_LOCALE);
     publishMetaDataFile(metadataFile, domainId);
   }
 
@@ -739,7 +747,6 @@ public class ModelServerPublish {
   public int getServerConnectionStatus() {
     return serviceClientStatus;
   }
-
 
   /**
    * 
@@ -785,16 +792,13 @@ public class ModelServerPublish {
     url = url + "depth=" + depth + "&filter=" + filter + "&showHidden=" + showHidden; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$  
     WebResource resource = client.resource(url);
     try {
-      String json = resource
-          .accept(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE)
-          .type(MediaType.TEXT_PLAIN_TYPE)
-          .get(String.class);
+      String json = resource.accept(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE)
+          .type(MediaType.TEXT_PLAIN_TYPE).get(String.class);
       ObjectMapper mapper = new ObjectMapper();
-      fileTree = (RepositoryFileTreeDto) mapper.readValue(json,
-          new TypeReference<RepositoryFileTreeDto>() {
-          });
+      fileTree = (RepositoryFileTreeDto) mapper.readValue(json, new TypeReference<RepositoryFileTreeDto>() {
+      });
     } catch (Exception e) {
-      e.printStackTrace();      
+      e.printStackTrace();
 
     }
 
