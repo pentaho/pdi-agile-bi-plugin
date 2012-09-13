@@ -43,6 +43,8 @@ import org.pentaho.di.ui.spoon.Spoon;
 @PluginClassTypeMapping(classTypes = { GUIOption.class }, implementationClass = {Null.class})
 public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
 	public static int consolePort;
+  private JettyServer server = null;
+
   public void onStart(LifeEventHandler arg0) throws LifecycleException {
     try {
 
@@ -73,7 +75,7 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
       }
 
       AgileBILifecycleListener.consolePort = port;
-      JettyServer server = new JettyServer("localhost", port); //$NON-NLS-1$
+      server = new JettyServer("localhost", port); //$NON-NLS-1$
       server.startServer();
   
       AgileBiInstaPerspective.getInstance().onStart();
@@ -93,6 +95,7 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
   }
 
   public void onExit(LifeEventHandler arg0) throws LifecycleException {
+    server.stopServer();
   }
 
   public String getLabelText() {
