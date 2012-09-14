@@ -76,6 +76,8 @@ import com.sun.jersey.multipart.FormDataMultiPart;
  */
 public class ModelServerPublish {
 
+  private static final String EXTENSION_XMI = ".xmi";
+
   private static final String PLUGIN_DATA_ACCESS_API_CONNECTION_ADD = "plugin/data-access/api/connection/add";
 
   private static final String PLUGIN_DATA_ACCESS_API_CONNECTION_UPDATE = "plugin/data-access/api/connection/update";
@@ -446,7 +448,7 @@ public class ModelServerPublish {
         showFeedback, isExistentDatasource, publishModelFileName);
     //only publish if schema is success
     if (result == ModelServerPublish.PUBLISH_SUCCESS) {
-      publishMetaDatafile(publishModelFileName, modelName);
+      publishMetaDatafile(publishModelFileName, modelName +EXTENSION_XMI);
     }
 
   }

@@ -127,13 +127,11 @@ public class PublisherHelper {
 
             replaceAttributeValue("report", "catalog", workspace.getModelName(), tempF.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
 
-            // need to publish data source - todo tband
+            
             publisher
               .publishToServer(
                 workspace.getModelName() + ".mondrian.xml", databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
 
-           // publisher.publishMondrainSchema(schema, publishDialog.getFilename(), "",
-             //   publishDialog.isExistentDatasource());
           } finally {
 
           }
@@ -243,7 +241,8 @@ public class PublisherHelper {
           }
           tempF.deleteOnExit();
           IOUtils.copy(new FileInputStream(new File(publishingFile)), new FileOutputStream(tempF));
-          
+         
+          replaceAttributeValue("report", "catalog", workspace.getModelName(), tempF.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
          
           publisher
             .publishToServer(
