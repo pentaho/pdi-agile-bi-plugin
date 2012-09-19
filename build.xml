@@ -18,10 +18,6 @@
 	<!-- Import the common_build.xml file which contains all the default tasks -->	
 	<import file="build-res/subfloor-pkg.xml"/>
 
-  <property name="platform.plugins.resolve.dir"
-            value="${bin.dir}/platform-plugins"
-            description="Resolve destination for platform plugins"/>
-
   <property name="platform.dist.dir"
 	            value="."
 	            description="Location of platform assembly zip" />
@@ -33,10 +29,6 @@
 	<property name="monetdb-plugin-assembly.dir"
 		            value="../monetdb-bulk-loader/dist"
 		            description="Location of MonetDB assembly zip" />
-
-	<property name="insta-plugin-assembly.dir"
-		            value="../pentaho-insta-tmp/dist"
-		            description="Location of insta wizard assembly zip" />
 
 	<property name="platform.unzip.dir"
 	            value="${bin.dir}/platform-unzip"
@@ -63,7 +55,7 @@
 				description="Name of the pdi distribution with agile bi"/>
 	
 	<target name="resolve"
-	          depends="resolve-default, resolve-test, ivy.check-releasable, resolve-platform-plugins"
+	          depends="resolve-default, resolve-test, ivy.check-releasable"
 	          description="Retrieves all the dependent libraries" />
 
 	<target name="dist-noresolve" depends="jar,package" description="Builds and packages the application" />
@@ -105,27 +97,11 @@
 	      <fileset dir="${report-designer.unzip.dir}/report-designer/templates"/>
 	    </copy>
 	  </target>
-
-
-    <!-- Resolve all platform plugins into a staging directory -->
-	  <target name="resolve-platform-plugins" depends="resolve-init">
-      <ivy:resolve file="${ivyfile}" conf="platform-plugin" />
-      <ivy:retrieve conf="platform-plugin" pattern="${platform.plugins.resolve.dir}/[module]-[revision](-[classifier]).[ext]" symlink="${ivy.use.symlinks.internal}" />
-    </target>
-
-    <!-- Unzip all staged platform plugins into the Agile BI platform system directory -->
-    <target name="assemble-platform-plugins">
-      <unzip dest="${approot.stage.dir}/platform/pentaho-solutions/system" overwrite="true">
-        <fileset dir="${platform.plugins.resolve.dir}">
-          <include name="*.zip"/>
-        </fileset>
-      </unzip>
-    </target>
   
   <!--   
   <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server,assemble-report-wizard">
   -->	
-	  <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server,assemble-report-wizard, assemble-platform-plugins">
+	  <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server,assemble-report-wizard">
     <copy todir="${approot.stage.dir}" overwrite="true">
       <fileset dir="${package.resdir}" />
     </copy>
@@ -376,11 +352,6 @@
 				<include name="pdi-ce-${dependency.kettle.revision}.tar.gz"/>
 			</fileset>
 		</untar>
-
-		<!-- copy in the start-up items -->
-	    <copy todir="${bin.dir}/kettle-dist/data-integration">
-	      <fileset file="pdi-res/**"/>
-	    </copy>
 		
 		<!-- patchup permissions -->		
 	      <chmod dir="${bin.dir}/kettle-dist/data-integration" perm="755" excludes="docs/api/** docs/api-core/** **/Thumbs.db" verbose="true">
