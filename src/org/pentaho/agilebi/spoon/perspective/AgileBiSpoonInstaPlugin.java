@@ -16,6 +16,8 @@
  */
 package org.pentaho.agilebi.spoon.perspective;
 
+import java.io.File;
+
 import org.pentaho.di.ui.spoon.SpoonLifecycleListener;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPlugin;
@@ -37,8 +39,24 @@ public class AgileBiSpoonInstaPlugin implements SpoonPluginInterface{
     return null;
   }
 
+  /**
+   * Verify the Instaview platform plugin is installed in the embedded platform.
+   * @return {@code true} if the Instaview platform plugin is installed
+   */
+  public boolean isInstaviewInstalled() {
+    // This is a crude hack to check if the instaview folder exists
+    // This should be replaced with a proper IPluginManager interrogation when we
+    // can dynamically register perspectives after the SpoonPlugins have loaded.
+    // This should be cleaned up as part of PDI-8576.
+    return new File("plugins/spoon/agile-bi/platform/pentaho-solutions/system/instaview").exists();
+  }
+  
   public SpoonPerspective getPerspective() {
-    return AgileBiInstaPerspective.getInstance();
+    if (isInstaviewInstalled()) {
+      // Only register the Instaview perspective if the plugin is installed
+      return AgileBiInstaPerspective.getInstance();
+    }
+    return null;
   }
   
 }
