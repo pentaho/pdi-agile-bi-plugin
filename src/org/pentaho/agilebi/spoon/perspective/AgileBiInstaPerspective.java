@@ -30,8 +30,8 @@ import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.lifecycle.pdi.AgileBILifecycleListener;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.trans.TransMeta;
+import org.pentaho.di.ui.core.PropsUI;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.core.dialog.ShowMessageDialog;
 import org.pentaho.di.ui.spoon.BreadcrumbManager;
@@ -62,11 +62,24 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
   
   private XulBrowser browser;
   
+  private boolean showTips;
+  private boolean showRepositoryDailog;
+  
   private SpoonPerspective lastPerspective;
   
   public void onStart() {
 
 	String location = "http://localhost:${port}/pentaho/content/instaview/resources/web/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
+
+	// turn off tooltips and the repositories dialog
+	Spoon spoon = Spoon.getInstance();
+	if( spoon.getStartupPerspective() != null && spoon.getStartupPerspective().equals(PERSPECTIVE_ID)) {
+		PropsUI props = spoon.getProperties();
+		showTips = props.showTips();
+		showRepositoryDailog = props.showRepositoriesDialogAtStartup();
+		props.setShowTips(false);
+		props.setRepositoriesDialogAtStartupShown(false);
+	}
 
 	int port = AgileBILifecycleListener.consolePort;
 	if( port == 0 ) {
@@ -416,6 +429,15 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
       }
     }
     return false;
+  }
+  
+  public void shutdown() {
+		// reset tooltips and the repositories dialog
+		Spoon spoon = Spoon.getInstance();
+		PropsUI props = spoon.getProperties();
+		props.setShowTips(showTips);
+		props.setRepositoriesDialogAtStartupShown(showRepositoryDailog);
+		spoon.saveSettings();
   }
   
 }

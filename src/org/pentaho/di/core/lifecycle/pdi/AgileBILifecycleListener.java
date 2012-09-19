@@ -95,7 +95,8 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
   }
 
   public void onExit(LifeEventHandler arg0) throws LifecycleException {
-    server.stopServer();
+	    server.stopServer();
+		AgileBiInstaPerspective.getInstance().shutdown();
   }
 
   public String getLabelText() {

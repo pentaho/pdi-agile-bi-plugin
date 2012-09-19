@@ -16,6 +16,7 @@
  */
 package org.pentaho.agilebi.spoon;
 
+import org.pentaho.agilebi.spoon.perspective.AgileBiInstaPerspective;
 import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.*;
@@ -27,7 +28,7 @@ import java.util.ResourceBundle;
 
 @SpoonPlugin(id = "AgileBi", image = "")
 @SpoonPluginCategories({"spoon", "trans-graph", "job-graph", "database_dialog"})
-public class AgileBISpoonPlugin implements SpoonPluginInterface{
+public class AgileBISpoonPlugin implements SpoonPluginInterface, SpoonLifecycleListener{
 
   ResourceBundle bundle = new ResourceBundle() {
     @Override
@@ -62,12 +63,22 @@ public class AgileBISpoonPlugin implements SpoonPluginInterface{
   }
 
   public SpoonLifecycleListener getLifecycleListener() {
-    return null;
+    return this;
   }
 
   public SpoonPerspective getPerspective() {
     return AgileBiModelerPerspective.getInstance();
   }
+
+@Override
+public void onEvent(SpoonLifeCycleEvent event) {
+	
+	if( event == SpoonLifeCycleEvent.SHUTDOWN) {
+		// Tell Instaview
+		AgileBiInstaPerspective.getInstance().shutdown();
+	}
+	
+}
   
   
 }
