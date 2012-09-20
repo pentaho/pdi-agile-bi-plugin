@@ -136,6 +136,7 @@
     <dependency org="org.owasp" name="ESAPI" rev="2.0_rc6" transitive="false" />
     <!-- test dependencies -->
     <dependency org="junit" name="junit" rev="4.4" conf="test->default"/>
+    <dependency org="pentaho" name="pentaho-bi-platform-test-foundation" rev="${dependency.bi-platform.revision}" conf="test->default" changing="true"/>
 
     <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default"
                 changing="true" transitive="false">
