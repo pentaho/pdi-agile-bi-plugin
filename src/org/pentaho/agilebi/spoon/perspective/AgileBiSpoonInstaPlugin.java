@@ -23,12 +23,14 @@ import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPlugin;
 import org.pentaho.di.ui.spoon.SpoonPluginCategories;
 import org.pentaho.di.ui.spoon.SpoonPluginInterface;
+import org.pentaho.platform.api.engine.IPluginManager;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
 
 @SpoonPlugin(id = "AgileBiInsta", image = "")
 @SpoonPluginCategories({})
 public class AgileBiSpoonInstaPlugin implements SpoonPluginInterface{
+  private static final String INSTAVIEW_PLATFORM_PLUGIN_ID = "instaview";
 
   public void applyToContainer(String category, XulDomContainer container) throws XulException {
      
@@ -50,7 +52,26 @@ public class AgileBiSpoonInstaPlugin implements SpoonPluginInterface{
     // This should be cleaned up as part of PDI-8576.
     return new File("plugins/spoon/agile-bi/platform/pentaho-solutions/system/instaview").exists();
   }
-  
+
+  /**
+   * Determine if the Instaview platform plugin is registered with the given
+   * plugin manager
+   * 
+   * @param mgr Plugin manager that may contain a registered Instaview plugin
+   * @return {@code true} if the Instaview platform plugin has been registered
+   *         with the provided plugin manager
+   */
+  public static boolean isInstaviewRegistered(IPluginManager mgr) {
+    if (mgr != null) {
+      for (String plugin : mgr.getRegisteredPlugins()) {
+        if (INSTAVIEW_PLATFORM_PLUGIN_ID.equals(plugin)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   public SpoonPerspective getPerspective() {
     if (isInstaviewInstalled()) {
       // Only register the Instaview perspective if the plugin is installed
