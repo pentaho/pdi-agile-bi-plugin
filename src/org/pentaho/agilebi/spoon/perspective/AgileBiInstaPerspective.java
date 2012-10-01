@@ -434,10 +434,12 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
   public void shutdown() {
 		// reset tooltips and the repositories dialog
 		Spoon spoon = Spoon.getInstance();
-		PropsUI props = spoon.getProperties();
-		props.setShowTips(showTips);
-		props.setRepositoriesDialogAtStartupShown(showRepositoryDailog);
-		spoon.saveSettings();
+		if( spoon.getStartupPerspective() != null && spoon.getStartupPerspective().equals(PERSPECTIVE_ID)) {
+			PropsUI props = spoon.getProperties();
+			props.setShowTips(showTips);
+			props.setRepositoriesDialogAtStartupShown(showRepositoryDailog);
+			spoon.saveSettings();
+		}
   }
   
 }
