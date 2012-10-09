@@ -56,7 +56,7 @@ PentahoSystem which is initialized after Spring
     org.pentaho.platform.engine.services.connection.datasource.dbcp.NonPooledDatasourceService
     org.pentaho.platform.engine.services.connection.datasource.dbcp.PooledOrJndiDatasourceService  (Default option)
   -->
-  <bean id="IDatasourceService" class="org.pentaho.agilebi.platform.AgileBIDatasourceService" scope="singleton" />
+  <bean id="IDatasourceService" class="org.pentaho.agilebi.platform.InstaviewDatasourceService" scope="singleton" />
   <bean id="IPasswordService" class="org.pentaho.platform.util.Base64PasswordService" scope="singleton" />
 <!-- 
   <bean id="IDatasource" class="org.pentaho.platform.repository.datasource.Datasource" scope="prototype" />
