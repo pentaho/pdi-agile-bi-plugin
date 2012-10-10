@@ -216,7 +216,7 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
     if(((SaveAwareMeta) this.getActiveMeta()).isDirty()){
       XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox"); //$NON-NLS-1$
       confirm.setTitle(BaseMessages.getString(this.getClass(), "Modeler.Perspective.unsavedChanges")); //$NON-NLS-1$
-      confirm.setMessage(BaseMessages.getString(this.getClass(), "Modeler.Perspective.unsavedChangesMessage")); //$NON-NLS-1$
+      confirm.setMessage(BaseMessages.getString(this.getClass(), "Visualization.Perspective.unsavedChangesMessage")); //$NON-NLS-1$
       
       CloseConfirmXulDialogCallback callback = new CloseConfirmXulDialogCallback();
       confirm.addDialogCallback(callback);

@@ -4,8 +4,54 @@
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" 
     xmlns:pen="http://www.pentaho.org/2008/xul" >
+
+    <menupopup id="view-perspectives-popup" visible="false"/>
+
+        <menu id="file-new" visible="false"/>
+        <menuitem id="file-open" visible="false"/>
+        <menuitem id="file-open-from-vfs" visible="false"/>
+        <menu id="file-open-recent" visible="false"/>
+        <menuitem id="file-close" visible="false"/>
+        <menuitem id="file-close-all" visible="false"/>
+        <menuseparator id="file-separator-1" visible="false"/>
+        <menuitem id="file-save" visible="false"/>
+        <menuitem id="file-save-as" visible="false"/>
+        <menuitem id="file-save-as-vfs" visible="false"/>
+        <menuseparator id="file-separator-2" visible="false"/>
+        <menuitem id="file-print" visible="false"/>
+        <menuseparator id="file-separator-3" visible="false"/>
+        <menuitem id="file-import-from-xml" visible="false"/>
+        <menu id="file-export" visible="false"/>
+        
+      <menupopup id="file-popup">
+        <menuitem id="insta-file-save-as" label="${Spoon.Menu.File.SaveAs}" command="instaPerspective.saveFileAs()" insertafter="file-export"/>
+        <menuitem id="insta-file-save" acceltext="CTRL-S" accesskey="ctrl-s" label="${Spoon.Menu.File.Save}" command="instaPerspective.saveFile()" insertafter="file-export"/>
+      </menupopup>
+
+      <menupopup id="view-popup">
+            <menuitem id="insta-perspective-switch-etl" label="${Spoon.Perspectives.Main.MenuItem.Label}"
+              command="spoon.loadPerspective('001-spoon-jobs')"/>
+            <menuitem id="insta-perspective-switch-model" label="${Modeler.Perspective.perspectiveName}"
+              command="spoon.loadPerspective('010-agilebi')"/>
+            <menuitem id="insta-perspective-switch-viz" label="${Visualization.Perspective.perspectiveName}"
+              command="spoon.loadPerspective('020-agilebiVisualization')"/>
+      </menupopup>
+
+	    <menu id="view-perspectives" visible="false"/>
+	    <menuitem id="view-zoom-in" visible="false"/>
+	    <menuitem id="view-zoom-out" visible="false"/>
+	    <menuitem id="view-zoom-100pct" visible="false"/>
+	    <menuitem id="view-perspective-seperator" visible="false"/>
+	    <menuitem id="view-results" visible="false"/>
+
+    <menuitem id="help-tip" visible="false" />
+    <menuitem id="help-welcome" visible="false"/>
+    <menuitem id="help-step-plugins" visible="false"/>
+    <menuitem id="help-jobentry-plugins" visible="false"/>
+	<menuseparator id="help-separator-1" visible="false"/>
     
+    <menu id="edit" visible="false"/>
     <menu id="action" visible="false"/>
-    <menu id="wizard" visible="false"/>
+    <menu id="tools" visible="false"/>    
     
 </overlay>

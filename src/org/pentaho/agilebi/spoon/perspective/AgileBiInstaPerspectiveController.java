@@ -16,63 +16,35 @@
  */
 package org.pentaho.agilebi.spoon.perspective;
 
-import org.pentaho.agilebi.spoon.HasXulController;
-import org.pentaho.agilebi.spoon.visualizations.PropertyPanelController;
-import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.ui.xul.XulDomContainer;
-import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
-import org.pentaho.ui.xul.components.XulMenuitem;
+import org.pentaho.ui.xul.components.XulBrowser;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
 
 public class AgileBiInstaPerspectiveController extends AbstractXulEventHandler {
 
-  private XulMenuitem modelPropItem;
   private BindingFactory bf = new DefaultBindingFactory();
-  private Binding itemBinding;
-  private HasXulController meta;
   private boolean dirty = true;
+  private XulBrowser browser;
   
   @Override
   public String getName() {
-    return "agileBiVisPerspective"; //$NON-NLS-1$
+    return "instaPerspective"; //$NON-NLS-1$
   }
 
   @Override
   public void setXulDomContainer(XulDomContainer xulDomContainer) {
     super.setXulDomContainer(xulDomContainer);
-    modelPropItem = (XulMenuitem) document.getElementById("view-vis-props"); //$NON-NLS-1$
     bf.setDocument(document);
     
   }
   
+  public void setBrowser( XulBrowser browser ) {
+	  this.browser = browser;
+  }
+  
   public void setPropVisible(boolean vis){
-    modelPropItem.setSelected(vis);
-  }
-
-  public void setSelectedModelerMeta(EngineMetaInterface meta){
-    this.meta = (HasXulController) meta;
-    if(itemBinding != null){
-      itemBinding.destroyBindings();
-    }
-    if(meta != null){
-      bf.setBindingType(Binding.Type.ONE_WAY);
-      itemBinding = bf.createBinding(this.meta.getController(), "propVisible", this, "propVisible"); //$NON-NLS-1$ //$NON-NLS-2$
-      try {
-        itemBinding.fireSourceChanged();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    
-  }
-
-  public void toggleProperties(){
-    if(meta == null){
-      return;
-    }
-    ((PropertyPanelController) meta.getController()).togglePropertiesPanel();
   }
 
   public boolean isDirty() {
@@ -83,7 +55,13 @@ public class AgileBiInstaPerspectiveController extends AbstractXulEventHandler {
     this.dirty = dirty;
   }
   
+  public void saveFile() {
+		browser.execute("externalSaveFile()"); //$NON-NLS-1$
+  }
   
+  public void saveFileAs() {
+		browser.execute("externalSaveFileAs()"); //$NON-NLS-1$
+  }
   
   
 }
