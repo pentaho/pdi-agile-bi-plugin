@@ -53,8 +53,8 @@ import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.di.ui.spoon.TabMapEntry;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.registry.IMetadataRegistry;
+import org.pentaho.metadata.registry.OrderedFileRegistry;
 import org.pentaho.metadata.registry.RegistryFactory;
-import org.pentaho.metadata.registry.SimpleFileRegistry;
 import org.pentaho.metadata.registry.Type;
 import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
 import org.pentaho.reporting.libraries.base.util.ObjectUtilities;
@@ -85,8 +85,8 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
       IMetadataRegistry registry = factory.getMetadataRegistry();
       if( registry == null ) {
           try {
-        	  registry = new SimpleFileRegistry();
-        	  ((SimpleFileRegistry) registry).setFilePath("registry.xml"); //$NON-NLS-1$
+        	  registry = new OrderedFileRegistry();
+        	  ((OrderedFileRegistry) registry).setFilePath(org.pentaho.di.core.Const.getKettleDirectory() + File.separator + "registry.xml"); //$NON-NLS-1$
 			factory.setMetadataRegistry(registry);
 			registry.init();
 		} catch (Exception e) {

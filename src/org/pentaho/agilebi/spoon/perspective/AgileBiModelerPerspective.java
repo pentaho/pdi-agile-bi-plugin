@@ -51,6 +51,7 @@ import org.pentaho.ui.xul.components.XulConfirmBox;
 import org.pentaho.ui.xul.components.XulMenuitem;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTab;
+import org.pentaho.ui.xul.components.XulTabpanel;
 import org.pentaho.ui.xul.impl.XulEventHandler;
 import org.w3c.dom.Node;
 
@@ -261,21 +262,42 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
       CloseConfirmXulDialogCallback callback = new CloseConfirmXulDialogCallback();
       confirm.addDialogCallback(callback);
       confirm.open();
-      if(callback.closeIt){
-        models.remove(pos);
-        metas.remove(tabbox.getTabs().getChildNodes().get(pos));
-        switchToCaller(contentId);
-        return true;
-      } else {
+      if(!callback.closeIt) {
         return false;
       }
-      
-    } else {
-        switchToCaller(contentId);
-      models.remove(pos);
-      metas.remove(pos);
     }
+
+    tabClosed(pos);
+    switchToCaller(contentId);
+
     return true;
+  }
+  
+  /**
+   * Close the tab at the specified position. Tab removal from its container is assumed to be handled elsewhere.
+   * This handles updating our internal state.
+   * 
+   * @param pos Position of tab being closed
+   */
+  private void tabClosed(final int pos) {
+    models.remove(pos);
+    metas.remove(tabbox.getTabs().getChildNodes().get(pos));
+  }
+
+  /**
+   * Close and remove the tab at the specified position
+   * @param pos Position of tab to close
+   */
+  public void removeTab(final int pos) {
+    if (pos < 0 || pos >= tabbox.getTabs().getChildNodes().size()) {
+      throw new IllegalArgumentException("invalid position: " + pos);
+    }
+    tabClosed(pos);
+    // TODO XulTabbox.removeTab() does not work here. We must remove the tab and panel directly. :(
+    XulTab tab = (XulTab) tabs.getChildNodes().get(pos);
+    XulTabpanel panel = (XulTabpanel) panels.getChildNodes().get(pos);
+    tabs.removeChild(tab);
+    panels.removeChild(panel);
   }
   
   public void exportSchema() {

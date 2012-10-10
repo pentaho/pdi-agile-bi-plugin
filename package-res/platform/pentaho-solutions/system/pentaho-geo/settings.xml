@@ -11,7 +11,7 @@
     <max-age>0</max-age>
     
     <!-- This is a comma separated list of features that should be loaded into the cache at startup -->
-    <cache-prime>country</cache-prime> <!-- only load country as part of the startup to save time -->
+    <cache-prime>custom,country</cache-prime> <!-- only load custom and country types as part of the startup to save time -->
     
     <cache>false</cache>
 
