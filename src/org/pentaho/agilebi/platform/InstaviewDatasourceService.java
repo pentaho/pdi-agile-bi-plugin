@@ -90,6 +90,7 @@ public class InstaviewDatasourceService implements IDatasourceService {
 			throw new DatasourceServiceException(e);
 		}
 	  }
+
 	  // nothing in the pool so create a new pool
 	  Domain domain = null;
     try {
@@ -112,10 +113,14 @@ public class InstaviewDatasourceService implements IDatasourceService {
 	
     ConnectionFactory cf = new DatabaseMetaConnectionFactory(databaseMeta);
 	
+    GenericObjectPool.Config config = new GenericObjectPool.Config();
+    config.testOnBorrow = true;
+    gPool.setConfig(config);
+
 	PoolableConnectionFactory pcf =  new PoolableConnectionFactory(cf,
             gPool,
             kopf,
-            null,
+            "select 1",
             false,
             true);
 	
