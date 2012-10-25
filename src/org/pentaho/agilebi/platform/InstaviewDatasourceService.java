@@ -49,9 +49,9 @@ import org.pentaho.platform.api.data.IDatasourceService;
 public class InstaviewDatasourceService implements IDatasourceService {
 
 	private GenericObjectPool gPool = new GenericObjectPool();
-	
+
 	private KeyedObjectPoolFactory kopf =new GenericKeyedObjectPoolFactory(null, 8);
-    
+
 	private Set<String> knownPools = new HashSet<String>();
 	
 	private int connectionCount = 0;
@@ -90,8 +90,9 @@ public class InstaviewDatasourceService implements IDatasourceService {
 			throw new DatasourceServiceException(e);
 		}
 	  }
-	  // nothing in the pool so create a new pool
-	  Domain domain = null;
+
+    // nothing in the pool so create a new pool
+    Domain domain = null;
     try {
       XmiParser parser = new XmiParser();
       FileInputStream fis = new FileInputStream(new File(dsName));
@@ -111,11 +112,15 @@ public class InstaviewDatasourceService implements IDatasourceService {
     databaseMeta = ThinModelConverter.convertToLegacy(model.getId(), model.getDatasource());
 	
     ConnectionFactory cf = new DatabaseMetaConnectionFactory(databaseMeta);
-	
-	PoolableConnectionFactory pcf =  new PoolableConnectionFactory(cf,
+
+    GenericObjectPool.Config config = new GenericObjectPool.Config();
+    config.testOnBorrow = true;
+    gPool.setConfig(config);
+
+	  PoolableConnectionFactory pcf =  new PoolableConnectionFactory(cf,
             gPool,
             kopf,
-            null,
+            "select 1",
             false,
             true);
 	
@@ -170,6 +175,7 @@ public class InstaviewDatasourceService implements IDatasourceService {
     				instaviewHelper.connectionMade();
     			}
   		      Connection connection = database.getConnection();
+
 		      return connection;
 		        
 		      } catch (KettleException e) {
