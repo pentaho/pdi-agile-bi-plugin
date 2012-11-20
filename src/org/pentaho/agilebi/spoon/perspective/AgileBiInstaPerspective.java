@@ -63,7 +63,7 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
   private XulBrowser browser;
   
   private boolean showTips;
-  private boolean showRepositoryDailog;
+  private boolean showRepositoryDialog;
   
   private SpoonPerspective lastPerspective;
   
@@ -76,7 +76,7 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
 	if( spoon.getStartupPerspective() != null && spoon.getStartupPerspective().equals(PERSPECTIVE_ID)) {
 		PropsUI props = spoon.getProperties();
 		showTips = props.showTips();
-		showRepositoryDailog = props.showRepositoriesDialogAtStartup();
+		showRepositoryDialog = props.showRepositoriesDialogAtStartup();
 		props.setShowTips(false);
 		props.setRepositoriesDialogAtStartupShown(false);
 	}
@@ -97,8 +97,6 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     
     addPerspectiveListener(this);
     
-    SpoonPerspectiveManager.getInstance().addPerspective(this);
-
     final AgileBiInstaPerspective thisPerspective = this;
     // Set the last perspective so we're never without one
     lastPerspective = this;
@@ -437,7 +435,7 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
 		if( spoon.getStartupPerspective() != null && spoon.getStartupPerspective().equals(PERSPECTIVE_ID)) {
 			PropsUI props = spoon.getProperties();
 			props.setShowTips(showTips);
-			props.setRepositoriesDialogAtStartupShown(showRepositoryDailog);
+			props.setRepositoriesDialogAtStartupShown(showRepositoryDialog);
 			spoon.saveSettings();
 		}
   }
