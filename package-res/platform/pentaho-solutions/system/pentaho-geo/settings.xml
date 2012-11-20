@@ -21,6 +21,6 @@
 	<IGeoImporter>com.pentaho.geo.service.CsvReader</IGeoImporter>
 
   <!-- milliseconds to wait for the map to complete rendering (map layers & bubble layers before capturing it as an image to export -->
-  <map-export-javascript-delay>1200</map-export-javascript-delay>
+  <map-export-javascript-delay>2500</map-export-javascript-delay>
 
 </settings>

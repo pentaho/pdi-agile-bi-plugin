@@ -61,7 +61,7 @@ public class PrptViewerTag extends SwtElement{
   private Composite toolbarPanel;
   private Combo combo;
   private XulDomContainer domContainer;
-  
+
   private static Logger log = LoggerFactory.getLogger(PrptViewerTag.class);
 
   private TreeMap<Double, String> zoomMap = new TreeMap<Double, String>();
@@ -73,44 +73,44 @@ public class PrptViewerTag extends SwtElement{
     zoomMap.put(1.5, "150%");
     zoomMap.put(2.0, "200%");
   }
-  
+
   public PrptViewerTag(Element self, XulComponent parent, XulDomContainer container, String tagName) {
     super("prpt");
- 
-    
+
+
     domContainer = container;
     Composite parentComposite = (Composite) parent.getManagedObject();
-    
+
     mainPanel = new Composite(parentComposite, SWT.BORDER);
     GridLayout layout = new GridLayout();
     layout.marginHeight = 0;
     layout.marginWidth = 0;
-    
+
     mainPanel.setLayout(layout);
-    
+
 
     parentComposite.layout(true);
-    
+
     setManagedObject(mainPanel);
   }
-  
+
   public void start(){
     viewer.setPageNumber(1);
   }
-  
+
   public void previous(){
     viewer.setPageNumber(Math.max(1, viewer.getPageNumber() - 1));
   }
-  
+
   public void next(){
     viewer.setPageNumber(Math.min
         (viewer.getNumberOfPages(), viewer.getPageNumber() + 1));
   }
-  
+
   public void last(){
     viewer.setPageNumber(viewer.getNumberOfPages());
   }
-  
+
   public void zoomOut(){
 
     final double nextZoomOut = PreviewPaneUtilities.getNextZoomOut(viewer.getZoom(), viewer.getZoomFactors());
@@ -118,9 +118,9 @@ public class PrptViewerTag extends SwtElement{
       return;
     }
     viewer.setZoom(nextZoomOut);
-    
+
   }
-  
+
   public void zoomIn(){
 
     final double nextZoomIn = PreviewPaneUtilities.getNextZoomIn(viewer.getZoom(), viewer.getZoomFactors());
@@ -128,9 +128,9 @@ public class PrptViewerTag extends SwtElement{
       return;
     }
     viewer.setZoom(nextZoomIn);
-   
+
   }
-  
+
   @Override
   public void layout() {
     if(!initialized){
@@ -141,7 +141,7 @@ public class PrptViewerTag extends SwtElement{
       data.horizontalIndent = 0;
       data.grabExcessHorizontalSpace = true;
       toolbarPanel.setLayoutData(data);
-  
+
       toolbarPanel.setLayout(new FillLayout());
 
       Display d = mainPanel.getDisplay();
@@ -149,7 +149,7 @@ public class PrptViewerTag extends SwtElement{
         d = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
       }
       Image img;
-      
+
       toolbar = new ToolBar(toolbarPanel, SWT.HORIZONTAL);
       ToolItem item = new ToolItem(toolbar, SWT.PUSH);
       img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/begining.png", domContainer, d);
@@ -159,7 +159,7 @@ public class PrptViewerTag extends SwtElement{
           start();
         }
       });
-      
+
       item = new ToolItem(toolbar, SWT.PUSH);
       img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/back.png", domContainer, d);
       item.setImage(img);
@@ -168,7 +168,7 @@ public class PrptViewerTag extends SwtElement{
           previous();
         }
       });
-      
+
       item = new ToolItem(toolbar, SWT.PUSH);
       img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/forward.png", domContainer, d);
       item.setImage(img);
@@ -177,7 +177,7 @@ public class PrptViewerTag extends SwtElement{
           next();
         }
       });
-      
+
       item = new ToolItem(toolbar, SWT.PUSH);
       img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/end.png", domContainer, d);
       item.setImage(img);
@@ -188,7 +188,7 @@ public class PrptViewerTag extends SwtElement{
       });
 
       new ToolItem(toolbar, SWT.SEPARATOR);
-      
+
       item = new ToolItem(toolbar, SWT.PUSH);
       img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/minus.png", domContainer, d);
       item.setImage(img);
@@ -197,7 +197,7 @@ public class PrptViewerTag extends SwtElement{
           zoomOut();
         }
       });
-      
+
 
       item = new ToolItem(toolbar, SWT.PUSH);
       img = SwtXulUtil.getCachedImage("org/pentaho/agilebi/spoon/visualizations/prpt/images/plus.png", domContainer, d);
@@ -208,7 +208,7 @@ public class PrptViewerTag extends SwtElement{
         }
       });
 
-      
+
       item = new ToolItem(toolbar, SWT.SEPARATOR);
       combo = new Combo(toolbar, SWT.DROP_DOWN);
       combo.setItems(new String[]{"50%","75%", "100%", "125%", "150%", "200%"});
@@ -227,16 +227,16 @@ public class PrptViewerTag extends SwtElement{
       combo.pack();
       item.setControl(combo);
       item.setWidth(80);
-      
+
 
       new ToolItem(toolbar, SWT.SEPARATOR);
-      
+
       createViewer();
-      
+
 
       GridData gData = new GridData(GridData.FILL_BOTH);
       viewerComposite .setLayoutData(gData);
-      
+
       setShowtoolbar(getShowtoolbar());
       mainPanel.layout(true);
 
@@ -246,7 +246,7 @@ public class PrptViewerTag extends SwtElement{
     }
     initialized = true;
   }
-  
+
   private void createViewer(){
 
     Composite swingComposite = new Composite(mainPanel, SWT.EMBEDDED);
@@ -254,15 +254,15 @@ public class PrptViewerTag extends SwtElement{
 
     JPanel browserPanel = new JPanel();
     browserPanel.setLayout(new BorderLayout());
-    
+
     swingFrame.add(browserPanel);
-    
+
     this.viewer = new PreviewPane();
     browserPanel.add(viewer, BorderLayout.CENTER);
     viewerComposite = swingComposite;
-    
+
   }
-  
+
   protected Browser createBrowser(Composite parent){
     return new Browser(parent, SWT.None);
   }
@@ -279,8 +279,8 @@ public class PrptViewerTag extends SwtElement{
       mainPanel.layout(true);
     }
   }
-  
-  
+
+
   public String getSrc() {
     return src;
   }
@@ -291,56 +291,63 @@ public class PrptViewerTag extends SwtElement{
       loadPRPT();
     }
   }
-  
+
   public void setMasterReport(MasterReport aMasterRerport) {
     this.masterReport = aMasterRerport;
     if(this.initialized){
       loadPRPT();
     }
   }
-  
+
   public Double getZoom(){
     return viewer.getZoom();
   }
-  
+
   public void setZoom(Double val){
     viewer.setZoom(val);
   }
-  
+
   private Double curZoom = 1.0;
-  
+
   private void loadPRPT(){
-    try {
-    	if (this.masterReport == null) {
-	      ResourceManager theResourceManager = new ResourceManager();
-	      theResourceManager.registerDefaults();
-	      File theReportFile = new File(src);
-	      Resource theResource = theResourceManager.createDirectly(theReportFile, MasterReport.class);
-	      this.masterReport = (MasterReport) theResource.getResource();
-    	}
-    	
-    	ModifiableConfiguration cfg = (ModifiableConfiguration) masterReport.getConfiguration();
-    	
-    	cfg.setConfigProperty("org.pentaho.reporting.engine.classic.core.modules.gui.base.ToolbarAvailable", "false");
-      viewer.setReportJob(this.masterReport);
-      viewer.getZoomModel().addListDataListener(new ListDataListener(){
 
-        public void contentsChanged(ListDataEvent arg0) {
-          combo.select(new ArrayList(zoomMap.keySet()).indexOf(viewer.getZoom()));
-          Double prevZoom = curZoom;
-          PrptViewerTag.this.changeSupport.firePropertyChange("zoom", prevZoom, getZoom());
-          curZoom = getZoom();
+    SwingUtilities.invokeLater(new Runnable(){
+      public void run() {
+        try {
+          if (PrptViewerTag.this.masterReport == null) {
+            ResourceManager theResourceManager = new ResourceManager();
+            theResourceManager.registerDefaults();
+            File theReportFile = new File(src);
+            Resource theResource = theResourceManager.createDirectly(theReportFile, MasterReport.class);
+            PrptViewerTag.this.masterReport = (MasterReport) theResource.getResource();
+          }
+
+          ModifiableConfiguration cfg = (ModifiableConfiguration) masterReport.getConfiguration();
+
+          cfg.setConfigProperty("org.pentaho.reporting.engine.classic.core.modules.gui.base.ToolbarAvailable", "false");
+          viewer.setReportJob(PrptViewerTag.this.masterReport);
+          viewer.getZoomModel().addListDataListener(new ListDataListener(){
+
+            public void contentsChanged(ListDataEvent arg0) {
+              combo.select(new ArrayList(zoomMap.keySet()).indexOf(viewer.getZoom()));
+              Double prevZoom = curZoom;
+              PrptViewerTag.this.changeSupport.firePropertyChange("zoom", prevZoom, getZoom());
+              curZoom = getZoom();
+            }
+
+            public void intervalAdded(ListDataEvent arg0) {}
+            public void intervalRemoved(ListDataEvent arg0) {}
+
+          });
+        } catch(Exception e){
+          log.error("error loading PRPT", e);
         }
+      }
+    });
 
-        public void intervalAdded(ListDataEvent arg0) {}
-        public void intervalRemoved(ListDataEvent arg0) {}
-        
-      });
-    } catch(Exception e){
-      log.error("error loading PRPT", e);
-    }
+
   }
-  
-  
-  
+
+
+
 }
