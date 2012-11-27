@@ -53,7 +53,7 @@ public class BiServerConfigUtil {
       
       String DEFAULT_PUBLISH_URL = biServerConnection.getUrl()+"/RepositoryFilePublisher"; //$NON-NLS-1$
       File files[] = { file }; 
-      int result = PublisherUtil.publish(DEFAULT_PUBLISH_URL, "system/tmp", files, biServerConnection.getPublishPassword(), biServerConnection.getUserId(), biServerConnection.getPassword(), true, false); //$NON-NLS-1$
+      int result = PublisherUtil.publish(DEFAULT_PUBLISH_URL, "system/tmp", files, "publishPasswordNotUsed", biServerConnection.getUserId(), biServerConnection.getPassword(), true, false); //$NON-NLS-1$
 
       if( result == PublisherUtil.FILE_ADD_SUCCESSFUL ) {
         SpoonFactory.getInstance().messageBox( BaseMessages.getString(ModelerWorkspace.class, "XulDialogBiServerConfig.Test.Passed" ),  //$NON-NLS-1$
