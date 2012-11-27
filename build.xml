@@ -379,11 +379,11 @@
 			</fileset>
 		</untar>
 
-		<!-- copy in the start-up items -->
+		<!-- copy in the start-up items 	
 	    <copy todir="${bin.dir}/kettle-dist/data-integration">
 	      <fileset file="pdi-res/**"/>
-	    </copy>
-		
+	    </copy>-->
+	
 		<!-- patchup permissions -->		
 	      <chmod dir="${bin.dir}/kettle-dist/data-integration" perm="755" excludes="docs/api/** docs/api-core/** **/Thumbs.db" verbose="true">
 	        <include name="**/*.sh" />
