@@ -22,7 +22,7 @@ import org.pentaho.ui.xul.XulEventSourceAdapter;
 public class BiServerConnectionForm extends XulEventSourceAdapter{
 
   BiServerConnection conn;
-  String name, url, userId, password;
+  String name, url, userId, password, publishPassword;
   
   public void setConnection(BiServerConnection conn){
     this.conn = conn;
@@ -35,6 +35,7 @@ public class BiServerConnectionForm extends XulEventSourceAdapter{
     }
     this.setName(conn.getName());
     this.setPassword(conn.getPassword());
+    this.setPublishPassword(conn.getPublishPassword());
     this.setUrl(conn.getUrl());
     this.setUserId(conn.getUserId());
   }
@@ -46,7 +47,8 @@ public class BiServerConnectionForm extends XulEventSourceAdapter{
   public BiServerConnection saveConn() {
     conn.setName(this.name);
     conn.setPassword(this.password);
-     conn.setUserId(this.userId);
+    conn.setPublishPassword(this.publishPassword);
+    conn.setUserId(this.userId);
     conn.setUrl(this.url);
     return conn;
   }
@@ -55,6 +57,7 @@ public class BiServerConnectionForm extends XulEventSourceAdapter{
     BiServerConnection conn = new BiServerConnection();
     conn.setName(this.name);
     conn.setPassword(this.password);
+    conn.setPublishPassword(this.publishPassword);
     conn.setUserId(this.userId);
     conn.setUrl(this.url);
     return conn;
@@ -108,10 +111,22 @@ public class BiServerConnectionForm extends XulEventSourceAdapter{
     firePropertyChange("password", prevVal, this.password);
     calculateValidity();
   }
+
+  public String getPublishPassword() {
+    return publishPassword;
+  }
+
+  public void setPublishPassword(String publishPassword) {
+    String prevVal = this.publishPassword;
+    this.publishPassword = publishPassword;
+    firePropertyChange("publishPassword", prevVal, this.publishPassword);
+    calculateValidity();
+  }
   
   private boolean valid;
   private boolean calculateValidity(){
-    this.valid = StringUtils.isNotEmpty(this.url)     
+    this.valid = StringUtils.isNotEmpty(this.url)
+      && StringUtils.isNotEmpty(this.publishPassword)
       && StringUtils.isNotEmpty(this.name);
     
     firePropertyChange("valid", null, valid);
@@ -121,5 +136,8 @@ public class BiServerConnectionForm extends XulEventSourceAdapter{
   public boolean isValid(){
     return this.valid;
   }
+  
+  
+  
   
 }

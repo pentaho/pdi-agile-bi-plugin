@@ -21,7 +21,6 @@ import org.pentaho.platform.api.repository.ISolutionRepository;
 /**
  * A bean defining a BI server connectpion
  * @author jamesdixon
- * @modified tyler band - removed publishPassword
  *
  */
 public class BiServerConnection {
@@ -31,6 +30,8 @@ public class BiServerConnection {
   private String userId;
   
   private String password;
+  
+  private String publishPassword;
   
   private String name;
 
@@ -109,6 +110,22 @@ public class BiServerConnection {
    */
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  /**
+   * Gets the publish password for the BI server connection
+   * @return
+   */
+  public String getPublishPassword() {
+    return publishPassword;
+  }
+
+  /**
+   * Sets the publish password for the BI server
+   * @param publishPassword
+   */
+  public void setPublishPassword(String publishPassword) {
+    this.publishPassword = publishPassword;
   }
 
   /**

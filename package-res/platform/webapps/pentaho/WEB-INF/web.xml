@@ -212,9 +212,9 @@
 		<listener-class>org.pentaho.platform.web.http.session.PentahoHttpSessionListener</listener-class>
 	</listener>
   
-	<!--listener>
+	<listener>
 		<listener-class>org.pentaho.platform.web.http.request.PentahoHttpRequestListener</listener-class>
-	</listener-->
+	</listener>
 
 	<!-- NEXT TWO LISTENERS ARE ORDER DEPENDENT -->
 	<listener>
@@ -327,24 +327,10 @@
     </servlet>
 
 	<servlet>
-      <servlet-name>RequireJSServlet</servlet-name>
-      <servlet-class>org.pentaho.platform.web.servlet.RequireJSServlet</servlet-class>
-    </servlet>
-    
-	<servlet>
 	  <servlet-name>LocalizationServlet</servlet-name>
 	  <servlet-class>org.pentaho.platform.web.servlet.LocalizationServlet</servlet-class>
 	</servlet>
 
-	<servlet>
-      <servlet-name>RequireJSServlet</servlet-name>
-      <servlet-class>org.pentaho.platform.web.servlet.RequireJSServlet</servlet-class>
-    </servlet>
-    
-	<servlet>
-	  <servlet-name>LocalizationServlet</servlet-name>
-	  <servlet-class>org.pentaho.platform.web.servlet.LocalizationServlet</servlet-class>
-	</servlet>
 
 	<servlet>
 		<servlet-name>Pivot</servlet-name>
@@ -611,11 +597,6 @@
 		<url-pattern>/upload/*</url-pattern>
 	</servlet-mapping>
 
-
-	<servlet-mapping>
-		<servlet-name>RequireJSServlet</servlet-name>
-		<url-pattern>/js/require-cfg.js</url-pattern>
-	</servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>LocalizationServlet</servlet-name>
