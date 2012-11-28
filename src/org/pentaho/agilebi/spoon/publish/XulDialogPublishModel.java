@@ -35,7 +35,7 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
 
   //private BiPlatformRepositoryClientNavigationService navigationService;
 
-  private boolean publishXmi = true;
+  private boolean publishXmi = false; // TO DO  - what should this default to if no dialog checkbox exists
 
   private BiPlatformRepositoryClient client;
 

@@ -75,7 +75,7 @@ public void onEvent(SpoonLifeCycleEvent event) {
 	
 	if( event == SpoonLifeCycleEvent.SHUTDOWN) {
 		// Tell Instaview
-		AgileBiInstaPerspective.getInstance().shutdown();
+		//AgileBiInstaPerspective.getInstance().shutdown();
 	}
 	
 }
