@@ -236,7 +236,7 @@ public class KettleModelerSourceTest {
       protected void load() throws Exception {
       }
 
-      //@Override
+      @Override
       public void commit() throws Exception {
       }
     };

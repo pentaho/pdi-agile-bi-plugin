@@ -85,8 +85,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
   private String setStateJavascript;
   private String reportName;
 	
-
- // @Override
+  @Override
   public String getId() {
 	  return "ANALYZER";
   }
@@ -203,7 +202,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
       }
 
       // flush the cache before creating an analyzer visualization
-      //flushAnalyzerCache();
+      flushAnalyzerCache();
       
       AnalyzerVisualizationController theController = new AnalyzerVisualizationController(spoon.tabfolder.getSwtTabset(), this, theFileName, model.getModelName(), null, null);
       theController.setModel(model);
@@ -474,9 +473,9 @@ public class AnalyzerVisualization extends AbstractVisualization {
     return new String[]{"xanalyzer"};
   }
   
-  //@Override
+  @Override
   public void setCaller( String callerId ) {
 	  this.callerId = callerId;
   }
- 
+  
 }

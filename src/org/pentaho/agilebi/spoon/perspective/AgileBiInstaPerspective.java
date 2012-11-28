@@ -30,8 +30,8 @@ import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.lifecycle.pdi.AgileBILifecycleListener;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.trans.TransMeta;
+import org.pentaho.di.ui.core.PropsUI;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.core.dialog.ShowMessageDialog;
 import org.pentaho.di.ui.spoon.BreadcrumbManager;
@@ -62,11 +62,24 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
   
   private XulBrowser browser;
   
+  private boolean showTips;
+  private boolean showRepositoryDialog;
+  
   private SpoonPerspective lastPerspective;
   
   public void onStart() {
 
 	String location = "http://localhost:${port}/pentaho/content/instaview/resources/web/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
+
+	// turn off tooltips and the repositories dialog
+	Spoon spoon = Spoon.getInstance();
+	if( spoon.getStartupPerspective() != null && spoon.getStartupPerspective().equals(PERSPECTIVE_ID)) {
+		PropsUI props = spoon.getProperties();
+		showTips = props.showTips();
+		showRepositoryDialog = props.showRepositoriesDialogAtStartup();
+		props.setShowTips(false);
+		props.setRepositoriesDialogAtStartupShown(false);
+	}
 
 	int port = AgileBILifecycleListener.consolePort;
 	if( port == 0 ) {
@@ -84,8 +97,6 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     
     addPerspectiveListener(this);
     
-    SpoonPerspectiveManager.getInstance().addPerspective(this);
-
     final AgileBiInstaPerspective thisPerspective = this;
     // Set the last perspective so we're never without one
     lastPerspective = this;
@@ -93,17 +104,20 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     // Register perspective listeners after all loading is complete so we
     // get them all
     Display.getCurrent().asyncExec(new Runnable() {
+      @Override
       public void run() {
         // Add listeners to all perspectives so we can switch back to the last active one
         // in the event there are unsaved changes and the user elects to not return to Instaview
         for(final SpoonPerspective sp : SpoonPerspectiveManager.getInstance().getPerspectives()) {
           sp.addPerspectiveListener(new SpoonPerspectiveListener() {
+            @Override
             public void onActivation() {
               if (sp != thisPerspective) {
                 lastPerspective = sp;
               }
             }
 
+            @Override
             public void onDeactication() {
             }
           });
@@ -217,6 +231,7 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     super.setSelectedMeta(meta);
   }
 
+  @Override
   public void onActivation() {
     // On perspective activation close all tabs from the DI and Modeler perspectives.
     // If there are unsaved changes save them.
@@ -362,6 +377,7 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     return PERSPECTIVE_ID.equals(caller);
   }
 
+  @Override
   public void onDeactication() {
   
   	Spoon.getInstance().setMainToolbarVisible(true);
@@ -411,6 +427,17 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
       }
     }
     return false;
+  }
+  
+  public void shutdown() {
+		// reset tooltips and the repositories dialog
+		Spoon spoon = Spoon.getInstance();
+		if( spoon.getStartupPerspective() != null && spoon.getStartupPerspective().equals(PERSPECTIVE_ID)) {
+			PropsUI props = spoon.getProperties();
+			props.setShowTips(showTips);
+			props.setRepositoriesDialogAtStartupShown(showRepositoryDialog);
+			spoon.saveSettings();
+		}
   }
   
 }

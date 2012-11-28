@@ -310,35 +310,42 @@ public class PrptViewerTag extends SwtElement{
   private Double curZoom = 1.0;
   
   private void loadPRPT(){
-    try {
-    	if (this.masterReport == null) {
-	      ResourceManager theResourceManager = new ResourceManager();
-	      theResourceManager.registerDefaults();
-	      File theReportFile = new File(src);
-	      Resource theResource = theResourceManager.createDirectly(theReportFile, MasterReport.class);
-	      this.masterReport = (MasterReport) theResource.getResource();
-    	}
-    	
-    	ModifiableConfiguration cfg = (ModifiableConfiguration) masterReport.getConfiguration();
-    	
-    	cfg.setConfigProperty("org.pentaho.reporting.engine.classic.core.modules.gui.base.ToolbarAvailable", "false");
-      viewer.setReportJob(this.masterReport);
-      viewer.getZoomModel().addListDataListener(new ListDataListener(){
 
-        public void contentsChanged(ListDataEvent arg0) {
-          combo.select(new ArrayList(zoomMap.keySet()).indexOf(viewer.getZoom()));
-          Double prevZoom = curZoom;
-          PrptViewerTag.this.changeSupport.firePropertyChange("zoom", prevZoom, getZoom());
-          curZoom = getZoom();
+    SwingUtilities.invokeLater(new Runnable(){
+      public void run() {
+        try {
+          if (PrptViewerTag.this.masterReport == null) {
+            ResourceManager theResourceManager = new ResourceManager();
+            theResourceManager.registerDefaults();
+            File theReportFile = new File(src);
+            Resource theResource = theResourceManager.createDirectly(theReportFile, MasterReport.class);
+            PrptViewerTag.this.masterReport = (MasterReport) theResource.getResource();
+          }
+
+          ModifiableConfiguration cfg = (ModifiableConfiguration) masterReport.getConfiguration();
+
+          cfg.setConfigProperty("org.pentaho.reporting.engine.classic.core.modules.gui.base.ToolbarAvailable", "false");
+          viewer.setReportJob(PrptViewerTag.this.masterReport);
+          viewer.getZoomModel().addListDataListener(new ListDataListener(){
+
+            public void contentsChanged(ListDataEvent arg0) {
+              combo.select(new ArrayList(zoomMap.keySet()).indexOf(viewer.getZoom()));
+              Double prevZoom = curZoom;
+              PrptViewerTag.this.changeSupport.firePropertyChange("zoom", prevZoom, getZoom());
+              curZoom = getZoom();
+            }
+
+            public void intervalAdded(ListDataEvent arg0) {}
+            public void intervalRemoved(ListDataEvent arg0) {}
+
+          });
+        } catch(Exception e){
+          log.error("error loading PRPT", e);
         }
+      }
+    });
 
-        public void intervalAdded(ListDataEvent arg0) {}
-        public void intervalRemoved(ListDataEvent arg0) {}
-        
-      });
-    } catch(Exception e){
-      log.error("error loading PRPT", e);
-    }
+
   }
   
   

@@ -86,7 +86,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
       if( registry == null ) {
           try {
         	  registry = new OrderedFileRegistry();
-        	  ((OrderedFileRegistry) registry).setFilePath("registry.xml"); //$NON-NLS-1$
+        	  ((OrderedFileRegistry) registry).setFilePath(org.pentaho.di.core.Const.getKettleDirectory() + File.separator + "registry.xml"); //$NON-NLS-1$
 			factory.setMetadataRegistry(registry);
 			registry.init();
 		} catch (Exception e) {

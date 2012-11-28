@@ -43,7 +43,8 @@ public class BiServerConfigUtil {
    * @param serverConnection
    */
   public static void testServerConnection( BiServerConnection biServerConnection ) {
-    ModelServerPublish publish = new ModelServerPublish(biServerConnection);
+    ModelServerPublish publish = new ModelServerPublish();
+    publish.setBiServerConnection(biServerConnection);
     try {
       // try to get a list of database connections
 //      publish.listRemoteConnections();

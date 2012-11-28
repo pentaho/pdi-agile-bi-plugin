@@ -135,8 +135,11 @@
       <dependency org="org.slf4j" name="jcl-over-slf4j" rev="1.6.1" conf="default->default" />
 
     <dependency org="org.json" name="json" rev="${dependency.json.revision}" changing="true" conf="default->default"/>
+    <!-- Miscellaneous BISERVER CE dependencies -->
+    <dependency org="org.owasp" name="ESAPI" rev="2.0_rc6" transitive="false" />
     <!-- test dependencies -->
     <dependency org="junit" name="junit" rev="4.4" conf="test->default"/>
+    <dependency org="pentaho" name="pentaho-bi-platform-test-foundation" rev="${dependency.bi-platform.revision}" conf="test->default" changing="true"/>
 
     <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default"
                 changing="true" transitive="false">
@@ -154,7 +157,6 @@
         <artifact name="pentaho-mql-editor" />
         <artifact name="pentaho-mql-editor" type="source" ext="jar" m:classifier="sources" />
     </dependency>
-
 
     <!-- dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
 -->
@@ -174,11 +176,10 @@
     <dependency org="com.sun.jersey" name="jersey-client" rev="1.13" transitive="true"/>
     <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false"/>
 
-
     <exclude org="xerces" module="xerces" conf="default->default"/>
     <exclude org="xml-apis" module="xml-apis" conf="default->default"/>
     <exclude org="org.olap4j" module="olap4j" conf="default->default"/>
 
-    
+
   </dependencies>
 </ivy-module>

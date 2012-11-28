@@ -30,7 +30,7 @@ public class ReportWizardVisualization implements IVisualization {
 	private String description;
 	private int order;
 	
-	 // @Override
+	  @Override
 	  public String getId() {
 		  return "REPORT-WIZARD";
 	  }  
@@ -101,7 +101,7 @@ public class ReportWizardVisualization implements IVisualization {
     return null;
   }
   
- // @Override
+  @Override
   public void setCaller( String callerId ) {
   }
   

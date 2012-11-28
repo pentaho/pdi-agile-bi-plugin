@@ -227,7 +227,6 @@ public class SpoonModelerController extends ModelerController {
   }
 
 
-
   public void publish() throws ModelerException{
     String publishingFile = workspace.getFileName();
     int treeDepth = 0;
@@ -245,8 +244,7 @@ public class SpoonModelerController extends ModelerController {
     boolean isExistentDatasource = false;//this is wrong - TO DO 
     String fileName = PublisherHelper.publish(workspace, publishingFile, treeDepth, databaseMeta, filename, 
         checkDatasources, false, showFolders, showCurrentFolder, isExistentDatasource ,serverPathTemplate, extension, databaseName);
-       // publish(workspace, publishingFile, treeDepth, databaseMeta, filename, checkDatasources,
-       // false, showFolders, showCurrentFolder, serverPathTemplate, extension, databaseName);
+      
     workspace.getModel().setName(fileName);
     workspace.setDirty(true);
   }

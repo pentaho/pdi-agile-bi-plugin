@@ -28,7 +28,7 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.query.model.util.QueryXmlHelper;
 import org.pentaho.metadata.repository.IMetadataDomainRepository;
 import org.pentaho.reporting.engine.classic.core.*;
-//import org.pentaho.reporting.engine.classic.core.states.datarow.StaticDataRow;
+import org.pentaho.reporting.engine.classic.core.states.datarow.StaticDataRow;
 import org.pentaho.reporting.engine.classic.core.wizard.DataAttributes;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchema;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaModel;

@@ -27,6 +27,7 @@ import org.pentaho.agilebi.spoon.KettleModelerSource;
 import org.pentaho.agilebi.spoon.OutputStepModelerSource;
 import org.pentaho.agilebi.spoon.perspective.AgileBiInstaPerspective;
 import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
+import org.pentaho.agilebi.spoon.perspective.AgileBiSpoonInstaPlugin;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
 import org.pentaho.agilebi.vfs.MetadataToMondrianVfs;
@@ -38,11 +39,15 @@ import org.pentaho.di.core.lifecycle.LifecycleException;
 import org.pentaho.di.core.lifecycle.LifecycleListener;
 import org.pentaho.di.core.plugins.PluginClassTypeMapping;
 import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.platform.api.engine.IPluginManager;
+import org.pentaho.platform.engine.core.system.PentahoSystem;
 
 @LifecyclePlugin(id="AgileBiPlugin")
 @PluginClassTypeMapping(classTypes = { GUIOption.class }, implementationClass = {Null.class})
 public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
 	public static int consolePort;
+  private JettyServer server = null;
+
   public void onStart(LifeEventHandler arg0) throws LifecycleException {
     try {
 
@@ -73,10 +78,13 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
       }
 
       AgileBILifecycleListener.consolePort = port;
-      JettyServer server = new JettyServer("localhost", port); //$NON-NLS-1$
+      server = new JettyServer("localhost", port); //$NON-NLS-1$
       server.startServer();
   
-      AgileBiInstaPerspective.getInstance().onStart();
+      // Only initialize the Instaview perspective if the Instaview plugin is registered
+      if (AgileBiSpoonInstaPlugin.isInstaviewRegistered(PentahoSystem.get(IPluginManager.class))) {
+        AgileBiInstaPerspective.getInstance().onStart();
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -93,6 +101,8 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
   }
 
   public void onExit(LifeEventHandler arg0) throws LifecycleException {
+	    server.stopServer();
+		AgileBiInstaPerspective.getInstance().shutdown();
   }
 
   public String getLabelText() {

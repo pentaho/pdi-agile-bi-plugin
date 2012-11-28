@@ -67,22 +67,22 @@ public class ModelerHelperTest {
       this.missingDatabaseConnectionInformationMessage = missingDatabaseConnectionInformationMessage;
     }
 
-   // @Override
+    @Override
     public DatabaseMeta getDatabaseMeta() {
       return databaseMeta;
     }
 
-   // @Override
+    @Override
     public String getTableName() {
       return tableName;
     }
 
-    //@Override
+    @Override
     public String getSchemaName() {
       return schemaName;
     }
 
-    //@Override
+    @Override
     public String getMissingDatabaseConnectionInformationMessage() {
       return missingDatabaseConnectionInformationMessage;
     }
@@ -119,12 +119,12 @@ public class ModelerHelperTest {
    * A simple job entry that does nothing.
    */
   public static class MockJobEntry extends JobEntryBase implements JobEntryInterface {
-  //  @Override
+    @Override
     public Result execute(Result result, int i) throws KettleException {
       throw new UnsupportedOperationException();
     }
 
-   // @Override
+    @Override
     public void loadXML(Node node, List<DatabaseMeta> databaseMetas, List<SlaveServer> slaveServers, Repository repository) throws KettleXMLException {
       throw new UnsupportedOperationException();
     }
