@@ -167,11 +167,14 @@ public class ModelServerPublish {
   public Connection getRemoteConnection(String connectionName, boolean force) {
     if (remoteConnection == null || force) {
       // get information about the remote connection
-      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET;
+      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET +connectionName;
       WebResource resource = client.resource(storeDomainUrl);
       try {
-        remoteConnection = resource.type(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_XML)
-            .entity(connectionName).get(Connection.class);
+        remoteConnection = resource
+        		.type(MediaType.APPLICATION_JSON)
+        		.type(MediaType.APPLICATION_XML)
+        		//.entity(connectionName)
+        		.get(Connection.class);
       } catch (Exception ex) {
         //ex.printStackTrace();
         remoteConnection = null;

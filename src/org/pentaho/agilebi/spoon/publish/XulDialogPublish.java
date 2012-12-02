@@ -77,7 +77,10 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   
   private boolean publishDataSource = false;
   
-  private boolean checkDatasources = false;
+  
+
+
+private boolean checkDatasources = false;
   
   private boolean accepted = false;
   
@@ -401,7 +404,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     switch (result) {
       case ModelServerPublish.REMOTE_CONNECTION_SAME : {
         //datasourceLabel.setValue( BaseMessages.getString(this.getClass(),"Spoon.Perspectives.AgileBi.Publish.DatasourceSame") ); //$NON-NLS-1$
-        this.doNotPublishDatasource = true;
+        doNotPublishDatasource = true;
         datasourceExists = true;
         break;
       }
