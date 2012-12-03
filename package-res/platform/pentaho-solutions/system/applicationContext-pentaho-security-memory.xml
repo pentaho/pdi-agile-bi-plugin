@@ -8,51 +8,35 @@
 
 <beans>
 
-	<bean id="userRoleListEnhancedUserMapFactoryBean"
-		class="org.pentaho.platform.plugin.services.security.userrole.memory.UserRoleListEnhancedUserMapFactoryBean">
-		<property name="userMap" ref="userMap" />
-	</bean>
+  <bean id="userRoleListEnhancedUserMapFactoryBean"
+        class="org.pentaho.platform.plugin.services.security.userrole.memory.UserRoleListEnhancedUserMapFactoryBean">
+    <property name="userMap" ref="userMap" />
+  </bean>
 
-	<bean id="userRoleListService"
-		class="org.pentaho.platform.plugin.services.security.userrole.memory.InMemoryUserRoleListService">
-		<property name="userRoleListEnhancedUserMap">
-			<ref local="userRoleListEnhancedUserMapFactoryBean" />
-		</property>
-		<property name="userDetailsService" ref="userDetailsService" />
-		<property name="allAuthorities">
-			<list>
-				<bean class="org.springframework.security.GrantedAuthorityImpl">
-					<constructor-arg value="Authenticated" />
-				</bean>
-				<bean class="org.springframework.security.GrantedAuthorityImpl">
-					<constructor-arg value="Admin" />
-				</bean>
-				<bean class="org.springframework.security.GrantedAuthorityImpl">
-					<constructor-arg value="ceo" />
-				</bean>
-				<bean class="org.springframework.security.GrantedAuthorityImpl">
-					<constructor-arg value="cto" />
-				</bean>
-				<bean class="org.springframework.security.GrantedAuthorityImpl">
-					<constructor-arg value="is" />
-				</bean>
-				<bean class="org.springframework.security.GrantedAuthorityImpl">
-					<constructor-arg value="dev" />
-				</bean>
-				<bean class="org.springframework.security.GrantedAuthorityImpl">
-					<constructor-arg value="devmgr" />
-				</bean>
-				<bean class="org.springframework.security.GrantedAuthorityImpl">
-					<constructor-arg value="Anonymous" />
-				</bean>
-			</list>
-		</property>
+  <bean id="userRoleListService"
+        class="org.pentaho.platform.plugin.services.security.userrole.memory.InMemoryUserRoleListService">
+    <property name="userRoleListEnhancedUserMap">
+      <ref local="userRoleListEnhancedUserMapFactoryBean" />
+    </property>
+    <property name="userDetailsService" ref="userDetailsService" />
+    <property name="allRoles">
+      <list>
+        <value>Authenticated</value>
+        <value>Admin</value>
+        <value>ceo</value>
+        <value>cto</value>
+        <value>is</value>
+        <value>dev</value>
+        <value>devmgr</value>
+        <value>Anonymous</value>
+      </list>
+    </property>
     <property name="usernameComparator">
       <bean class="org.pentaho.platform.engine.security.DefaultUsernameComparator" />
     </property>
     <property name="roleComparator">
       <bean class="org.pentaho.platform.engine.security.DefaultRoleComparator" />
     </property>
-	</bean>
+  </bean>
 
 </beans>

@@ -47,7 +47,7 @@
 				description="Location of expanded report designer assembly zip" />
 	
 	<property name="kettle.dist.dir"
-				value="../PDI-4.4.0"
+				value="../kettle"
     			description="Location of kettle spoon zip" />
 	
 	<property name="analyzer.dist.dir"

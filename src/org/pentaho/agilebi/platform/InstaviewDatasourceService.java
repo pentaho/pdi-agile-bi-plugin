@@ -43,10 +43,10 @@ import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.SqlPhysicalModel;
 import org.pentaho.metadata.util.ThinModelConverter;
 import org.pentaho.metadata.util.XmiParser;
-import org.pentaho.platform.api.data.DatasourceServiceException;
-import org.pentaho.platform.api.data.IDatasourceService;
+import org.pentaho.platform.api.data.DBDatasourceServiceException;
+import org.pentaho.platform.api.data.IDBDatasourceService;
 
-public class InstaviewDatasourceService implements IDatasourceService {
+public class InstaviewDatasourceService implements IDBDatasourceService {
 
 	private GenericObjectPool gPool = new GenericObjectPool();
 
@@ -70,7 +70,7 @@ public class InstaviewDatasourceService implements IDatasourceService {
     // TODO impl cache
   }
 
-  public String getDSBoundName(String dsName) throws DatasourceServiceException {
+  public String getDSBoundName(String dsName) throws DBDatasourceServiceException {
     return dsName;
   }
 
@@ -78,7 +78,7 @@ public class InstaviewDatasourceService implements IDatasourceService {
     return dsName;
   }
 
-  public DataSource getDataSource(String dsName) throws DatasourceServiceException {
+  public DataSource getDataSource(String dsName) throws DBDatasourceServiceException {
 
 	  DatabaseMeta databaseMeta = databaseMetaMap.get(dsName);
 	  
@@ -87,7 +87,7 @@ public class InstaviewDatasourceService implements IDatasourceService {
 				DatabaseMetaDataSource dataSource = new DatabaseMetaDataSource(dsName);
 				return dataSource;
 		} catch (Exception e) {
-			throw new DatasourceServiceException(e);
+			throw new DBDatasourceServiceException(e);
 		}
 	  }
 
@@ -98,12 +98,12 @@ public class InstaviewDatasourceService implements IDatasourceService {
       FileInputStream fis = new FileInputStream(new File(dsName));
       domain = parser.parseXmi(fis);
     } catch (Exception e) {
-      throw new DatasourceServiceException(e);
+      throw new DBDatasourceServiceException(e);
     }
 
     if (domain.getPhysicalModels().size() == 0 || 
         !(domain.getPhysicalModels().get(0) instanceof SqlPhysicalModel)) {
-      throw new DatasourceServiceException("No SQL Physical Model Available");
+      throw new DBDatasourceServiceException("No SQL Physical Model Available");
       
     }
     
@@ -138,14 +138,14 @@ public class InstaviewDatasourceService implements IDatasourceService {
 		    }
 		
 	} catch (Exception e) {
-		throw new DatasourceServiceException(e);
+		throw new DBDatasourceServiceException(e);
 	}
     
     Database database = new Database(databaseMeta);
     try {
       database.connect();
     } catch (Exception e) {
-      throw new DatasourceServiceException(e);
+      throw new DBDatasourceServiceException(e);
     }
     Connection connection = database.getConnection();
 	

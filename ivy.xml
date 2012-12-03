@@ -107,28 +107,11 @@
     <dependency org="pentaho" name="pentaho-platform-core" rev="${dependency.bi-platform.revision}"
                 changing="true"
                 conf="default->default"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-engine-services" rev="${dependency.bi-platform.revision}"
-                changing="true"
-                conf="default->default"/>
+
     <dependency org="pentaho" name="pentaho-platform-repository" rev="${dependency.bi-platform.revision}"
                 changing="true"
                 conf="default->default"/>
 
-    <!-- Pentaho -->
-    <dependency org="pentaho" name="pentaho-bi-platform-web-servlet" rev="${dependency.bi-platform.pentaho-bi-platform-web-servlet.revision}"
-                changing="true"
-                conf="default->default" transitive="false"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-plugin-actions" rev="${dependency.bi-platform.pentaho-bi-platform-plugin-actions.revision}"
-                changing="true"
-                conf="default->default" transitive="false"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-security-userroledao" rev="${dependency.bi-platform.revision}"
-                changing="true"
-                conf="default->default" transitive="false"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-legacy" rev="${dependency.bi-platform.revision}" changing="true"
-                conf="default->default" transitive="false"/>
-    <dependency org="pentaho" name="mantle" rev="${dependency.bi-platform.revision}" changing="true"
-                conf="default->default"
-                transitive="false"/>
 
       <dependency org="org.slf4j" name="slf4j-api" rev="1.6.1" conf="default->default" />
       <dependency org="org.slf4j" name="slf4j-jcl" rev="1.6.1" conf="default->default" />
@@ -139,7 +122,7 @@
     <dependency org="org.owasp" name="ESAPI" rev="2.0_rc6" transitive="false" />
     <!-- test dependencies -->
     <dependency org="junit" name="junit" rev="4.4" conf="test->default"/>
-    <dependency org="pentaho" name="pentaho-bi-platform-test-foundation" rev="${dependency.bi-platform.revision}" conf="test->default" changing="true"/>
+    <!--<dependency org="pentaho" name="pentaho-bi-platform-test-foundation" rev="${dependency.bi-platform.revision}" conf="test->default" changing="true"/>-->
 
     <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default"
                 changing="true" transitive="false">
@@ -175,6 +158,8 @@
     <dependency org="com.sun.jersey" name="jersey-json" rev="1.13" transitive="true"/>
     <dependency org="com.sun.jersey" name="jersey-client" rev="1.13" transitive="true"/>
     <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false"/>
+
+    <dependency org="pentaho" name="pentaho-platform-core-test" rev="${dependency.bi-platform.revision}" changing="true" conf="test->default" transitive="false" />
 
     <exclude org="xerces" module="xerces" conf="default->default"/>
     <exclude org="xml-apis" module="xml-apis" conf="default->default"/>

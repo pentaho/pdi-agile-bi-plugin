@@ -8,45 +8,45 @@
 
 <beans>
 
-	<bean id="authenticationProvider"
-		class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
-		<property name="userDetailsService">
-			<ref bean="userDetailsService" />
-		</property>
-		<property name="passwordEncoder">
-			<ref bean="passwordEncoder" />
-		</property>
-	</bean>
+  <bean id="authenticationProvider"
+        class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
+    <property name="userDetailsService">
+      <ref bean="userDetailsService" />
+    </property>
+    <property name="passwordEncoder">
+      <ref bean="passwordEncoder" />
+    </property>
+  </bean>
 
-	<bean id="userDetailsService"
-		class="org.springframework.security.userdetails.memory.InMemoryDaoImpl">
-		<property name="userMap">
-			<ref local="userMapFactoryBean" />
-		</property>
-	</bean>
+  <bean id="userDetailsService"
+        class="org.springframework.security.userdetails.memory.InMemoryDaoImpl">
+    <property name="userMap">
+      <ref local="userMapFactoryBean" />
+    </property>
+  </bean>
 
-	<bean id="userMap" class="java.lang.String">
-		<constructor-arg type="java.lang.String">
-			<!-- case matters -->
-			<value>
-				<![CDATA[
+  <bean id="userMap" class="java.lang.String">
+    <constructor-arg type="java.lang.String">
+      <!-- case matters -->
+      <value>
+        <![CDATA[
           joe=password,ceo,Admin,Authenticated
           suzy=password,cto,is,Authenticated
           pat=password,dev,Authenticated
           tiffany=password,dev,devmgr,Authenticated
         ]]>
-			</value>
-		</constructor-arg>
-	</bean>
+      </value>
+    </constructor-arg>
+  </bean>
 
-	<bean id="userMapFactoryBean"
-		class="org.pentaho.platform.plugin.services.security.userrole.memory.UserMapFactoryBean">
-		<property name="userMap">
-			<ref local="userMap" />
-		</property>
-	</bean>
+  <bean id="userMapFactoryBean"
+        class="org.pentaho.platform.plugin.services.security.userrole.memory.UserMapFactoryBean">
+    <property name="userMap">
+      <ref local="userMap" />
+    </property>
+  </bean>
 
-	<bean id="passwordEncoder"
-		class="org.springframework.security.providers.encoding.PlaintextPasswordEncoder" />
+  <bean id="passwordEncoder"
+        class="org.springframework.security.providers.encoding.PlaintextPasswordEncoder" />
 
 </beans>

@@ -73,4 +73,12 @@ public class DefaultWizardDesignTimeContext implements DesignTimeContext
   public LocaleSettings getLocaleSettings() {
     return new DefaultLocaleSettings();
   }
+
+  public boolean isShowDeprecatedItems() {
+    return true;
+  }
+
+  public boolean isShowExpertItems() {
+    return false;
+  }
 }
