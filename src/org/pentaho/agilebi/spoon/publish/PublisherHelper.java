@@ -337,7 +337,7 @@ public class PublisherHelper {
             tempF.deleteOnExit();
             BundleWriter.writeReportToZipFile(report, tempF);
             publisher.publishPrptToServer(theXmiPublishingPath, thePrptPublishingPath, publishDatasource,
-                publishDialog.isExistentDatasource(), publishDialog.isPublishXmi(), xmiFile, tempF.getAbsolutePath());
+                publishDialog.isExistentDatasource(), publishDialog.isPublishXmi(), xmiFile, tempF);
 
           } catch (Exception e) {
             throw new ModelerException(e);

@@ -167,11 +167,14 @@ public class ModelServerPublish {
   public Connection getRemoteConnection(String connectionName, boolean force) {
     if (remoteConnection == null || force) {
       // get information about the remote connection
-      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET;
+      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET +connectionName;
       WebResource resource = client.resource(storeDomainUrl);
       try {
-        remoteConnection = resource.type(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_XML)
-            .entity(connectionName).get(Connection.class);
+        remoteConnection = resource
+        		.type(MediaType.APPLICATION_JSON)
+        		.type(MediaType.APPLICATION_XML)
+        		//.entity(connectionName)
+        		.get(Connection.class);
       } catch (Exception ex) {
         //ex.printStackTrace();
         remoteConnection = null;
@@ -226,36 +229,37 @@ public class ModelServerPublish {
     return result;
   }
 
-  public int publishFile(String repositoryPath, File[] files, boolean showFeedback) {
+  public int publishFile(String repositoryPath, File file, boolean showFeedback) {
 
-    for (File f : files) {
-      if (checkForExistingFile(repositoryPath, f.getName())) {
-        boolean overwrite = overwriteDelegate.handleOverwriteNotification(f.getName());
+    //for (File f : files) {
+      if (checkForExistingFile(repositoryPath, file.getName())) {
+        boolean overwrite = overwriteDelegate.handleOverwriteNotification(file.getName());
         if (overwrite == false) {
           return PublisherUtil.FILE_EXISTS;
         }
       }
-    }
+   // }
 
     String DEFAULT_PUBLISH_URL = biServerConnection.getUrl() + REPO_FILES_IMPORT; //$NON-NLS-1$
 
-    int result = -1;
+    int result = 3;//success
     WebResource resource = client.resource(DEFAULT_PUBLISH_URL);
     try {
-      for (File fileIS : files) {
-        InputStream in = new FileInputStream(fileIS);
+      //for (File fileIS : files) {
+        InputStream in = new FileInputStream(file);
        
         FormDataMultiPart part = new FormDataMultiPart();
-        part.field("importDir", repositoryPath, MediaType.MULTIPART_FORM_DATA_TYPE).field("fileUpload", in,
-            MediaType.MULTIPART_FORM_DATA_TYPE);
+        part.field("importDir", repositoryPath, MediaType.MULTIPART_FORM_DATA_TYPE)
+        	.field("fileUpload", in, MediaType.MULTIPART_FORM_DATA_TYPE);
 
         // If the import service needs the file name do the following.
         part.getField("fileUpload").setContentDisposition(
-            FormDataContentDisposition.name("fileUpload").fileName(fileIS.getName()).build());
+            FormDataContentDisposition.name("fileUpload").fileName(file.getName()).build());
 
-        Response response = resource.type(MediaType.MULTIPART_FORM_DATA).post(Response.class, part);
-        result = response.getStatus();
-      }
+        String response = resource.type(MediaType.MULTIPART_FORM_DATA).post(String.class, part);
+        //result = response.getStatus();
+        System.out.println(response);
+     // }
     } catch (Exception ex) {
       ex.printStackTrace();
       result = -1;
@@ -454,16 +458,16 @@ public class ModelServerPublish {
   }
 
   public void publishPrptToServer(String theXmiPublishingPath, String thePrptPublishingPath, boolean publishDatasource,
-      boolean isExistentDatasource, boolean publishXmi, String xmi, String prpt) throws Exception {
-
-    File thePrpt[] = { new File(prpt) };
-    int result = publishFile(thePrptPublishingPath, thePrpt, !publishXmi /*show feedback here if not publishing xmi*/);
+      boolean isExistentDatasource, boolean publishXmi, String xmi, File reportZipFile) throws Exception {
+	String reportPath = reportZipFile.getAbsolutePath();
+    File thePrpt[] = { new File(reportPath) };
+    int result = publishFile(thePrptPublishingPath, reportZipFile, !publishXmi /*show feedback here if not publishing xmi*/);
     if (result != PublisherUtil.FILE_ADD_SUCCESSFUL) {
       return;
     }
 
     if (publishXmi) {
-      File theXmi[] = { new File(xmi) };
+      File theXmi =  new File(xmi) ;
       publishFile(theXmiPublishingPath, theXmi, true);
     }
     if (publishDatasource) {
