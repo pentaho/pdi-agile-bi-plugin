@@ -31,10 +31,10 @@ import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.SqlPhysicalModel;
 import org.pentaho.metadata.util.ThinModelConverter;
 import org.pentaho.metadata.util.XmiParser;
-import org.pentaho.platform.api.data.DatasourceServiceException;
-import org.pentaho.platform.api.data.IDatasourceService;
+import org.pentaho.platform.api.data.DBDatasourceServiceException;
+import org.pentaho.platform.api.data.IDBDatasourceService;
 
-public class AgileBIDatasourceService implements IDatasourceService {
+public class AgileBIDatasourceService implements IDBDatasourceService {
 
   public void clearCache() {
     // TODO impl cache
@@ -44,7 +44,7 @@ public class AgileBIDatasourceService implements IDatasourceService {
     // TODO impl cache
   }
 
-  public String getDSBoundName(String dsName) throws DatasourceServiceException {
+  public String getDSBoundName(String dsName) throws DBDatasourceServiceException {
     return dsName;
   }
 
@@ -52,19 +52,19 @@ public class AgileBIDatasourceService implements IDatasourceService {
     return dsName;
   }
 
-  public DataSource getDataSource(String dsName) throws DatasourceServiceException {
+  public DataSource getDataSource(String dsName) throws DBDatasourceServiceException {
     Domain domain = null;
     try {
       XmiParser parser = new XmiParser();
       FileInputStream fis = new FileInputStream(new File(dsName));
       domain = parser.parseXmi(fis);
     } catch (Exception e) {
-      throw new DatasourceServiceException(e);
+      throw new DBDatasourceServiceException(e);
     }
 
     if (domain.getPhysicalModels().size() == 0 || 
         !(domain.getPhysicalModels().get(0) instanceof SqlPhysicalModel)) {
-      throw new DatasourceServiceException("No SQL Physical Model Available");
+      throw new DBDatasourceServiceException("No SQL Physical Model Available");
       
     }
     

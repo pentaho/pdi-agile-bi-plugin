@@ -100,6 +100,11 @@
 	</filter>
 
 	<filter>
+		<filter-name>WEBAPP_ROOT URL rewrite filter</filter-name>
+		<filter-class>org.pentaho.platform.web.http.filters.WebappRootForwardingFilter</filter-class>
+	</filter>
+
+	<filter>
 		<filter-name>Spring Security Filter Chain Proxy</filter-name>
 		<filter-class>org.springframework.security.util.FilterToBeanProxy</filter-class>
 		<init-param>
@@ -137,6 +142,11 @@
 	</filter>
 
 	<!-- insert additional filters -->
+
+	<filter-mapping>
+      <filter-name>WEBAPP_ROOT URL rewrite filter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 	<filter-mapping>
 		<filter-name>Set Character Encoding Filter</filter-name>
@@ -212,9 +222,9 @@
 		<listener-class>org.pentaho.platform.web.http.session.PentahoHttpSessionListener</listener-class>
 	</listener>
   
-	<listener>
+	<!--listener>
 		<listener-class>org.pentaho.platform.web.http.request.PentahoHttpRequestListener</listener-class>
-	</listener>
+	</listener-->
 
 	<!-- NEXT TWO LISTENERS ARE ORDER DEPENDENT -->
 	<listener>
@@ -314,6 +324,10 @@
 	<servlet>
     	<servlet-name>GenericServlet</servlet-name>
 		<servlet-class>org.pentaho.platform.web.servlet.GenericServlet</servlet-class>
+		<init-param>
+        	<param-name>showDeprecationMessage</param-name>
+            <param-value>true</param-value>
+        </init-param>
 	</servlet>
 
 	<servlet>
@@ -322,13 +336,18 @@
 	</servlet>
   
     <servlet>
-      <servlet-name>PluggableUploadFileServlet</servlet-name>
-      <servlet-class>org.pentaho.platform.web.servlet.PluggableUploadFileServlet</servlet-class>
+		<servlet-name>GwtRpcProxyServlet</servlet-name>
+		<servlet-class>org.pentaho.platform.web.servlet.GwtRpcProxyServlet</servlet-class>
     </servlet>
 
 	<servlet>
-	  <servlet-name>LocalizationServlet</servlet-name>
-	  <servlet-class>org.pentaho.platform.web.servlet.LocalizationServlet</servlet-class>
+      <servlet-name>PluggableUploadFileServlet</servlet-name>
+      <servlet-class>org.pentaho.platform.web.servlet.PluggableUploadFileServlet</servlet-class>
+    </servlet>
+    
+	<servlet>
+        <servlet-name>PluginDispatchServlet</servlet-name>
+        <servlet-class>org.pentaho.platform.web.servlet.PluginDispatchServlet</servlet-class>
 	</servlet>
 
 
@@ -446,11 +465,6 @@
 	</servlet>
 
 	<servlet>
-		<servlet-name>SolutionRepositoryService</servlet-name>
-		<servlet-class>org.pentaho.platform.web.servlet.SolutionRepositoryService</servlet-class>
-	</servlet>
-
-	<servlet>
 		<servlet-name>RepositoryTree</servlet-name>
 		<jsp-file>/jsp/RepositoryTree.jsp</jsp-file>
 	</servlet>
@@ -470,14 +484,9 @@
 		<jsp-file>/jsp/PUCLogin.jsp</jsp-file>
 		<init-param>
 			<param-name>send401List</param-name>
-			<param-value>AdhocWebService,AnalysisViewService,MondrianCatalogPublisher, SchedulerAdminService, SubscriptionAdminService, PublishService, ResetRepositoryService, ServiceActionService,SolutionRepositoryService,gwtrpc,mantle/images/spacer.gif</param-value>
+			<param-value>AdhocWebService,AnalysisViewService,MondrianCatalogPublisher,SchedulerAdminService, SubscriptionAdminService, PublishService,ResetRepositoryService,ServiceActionService,gwtrpc,ws/gwt,mantle/images/spacer.gif</param-value>
 			<description>List of things to throw a 401 to when seen in the login</description>
 		</init-param>
-	</servlet>
-
-	<servlet>
-		<servlet-name>DialPct</servlet-name>
-		<jsp-file>/chart/DialPct.jsp</jsp-file>
 	</servlet>
 
 	<servlet>
@@ -490,21 +499,19 @@
 		<jsp-file>/jsp/ResetRepository.jsp</jsp-file>
 	</servlet>
 
-	<servlet>
-		<servlet-name>MantleService</servlet-name>
-		<servlet-class>org.pentaho.mantle.server.MantleServlet</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>MantleLoginService</servlet-name>
-		<servlet-class>org.pentaho.mantle.login.server.MantleLoginServlet</servlet-class>
-	</servlet>
-
   	<servlet>
-		<servlet-name>UploadService</servlet-name>
-		<servlet-class>org.pentaho.platform.web.servlet.UploadFileServlet</servlet-class>
+        <servlet-name>jaxwsEndpoint-spring</servlet-name>
+        <display-name>jaxwsEndpoint-spring</display-name>
+        <description>JAX-WS endpoint</description>
+        <servlet-class>org.pentaho.platform.web.servlet.PentahoWSSpringServlet</servlet-class>
 	</servlet>
 	
+    <servlet>
+        <servlet-name>jaxrsEndpoint-spring</servlet-name>
+        <description>JAX-RS endpoint</description>
+        <servlet-class>org.pentaho.platform.web.servlet.JAXRSServlet</servlet-class>
+    </servlet>
+
 	<!-- [BEGIN SAMPLE SERVLETS] -->
 	<servlet>
 		<servlet-name>UpdateSampleEmails</servlet-name>
@@ -542,31 +549,21 @@
 	</servlet>	
 	
 	<servlet>
-		<servlet-name>SampleFlashDashboard</servlet-name>
-		<jsp-file>/jsp/SampleFlashDashboard.jsp</jsp-file>
+		<servlet-name>ThemeServlet</servlet-name>
+		<servlet-class>org.pentaho.platform.web.servlet.ThemeServlet</servlet-class>
 	</servlet>	
 	<!-- [END SAMPLE SERVLETS] -->
 
   <!-- insert additional servlets -->
 
   	<servlet-mapping>
-    	<servlet-name>UploadService</servlet-name>
-    	<url-pattern>/UploadService</url-pattern>
+        <servlet-name>jaxwsEndpoint-spring</servlet-name>
+        <url-pattern>/webservices/*</url-pattern>
   	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>MantleService</servlet-name>
-		<url-pattern>/mantle/MantleService</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>MantleLoginService</servlet-name>
-		<url-pattern>/mantleLogin/MantleLoginService</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>MantleLoginService</servlet-name>
-		<url-pattern>/mantle/MantleLoginService</url-pattern>
+    	<servlet-name>jaxrsEndpoint-spring</servlet-name>
+    	<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
@@ -593,14 +590,19 @@
 	</servlet-mapping>
   
 	<servlet-mapping>
+		<servlet-name>GwtRpcProxyServlet</servlet-name>
+		<url-pattern>/ws/gwt/*</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet-mapping>
 		<servlet-name>PluggableUploadFileServlet</servlet-name>
 		<url-pattern>/upload/*</url-pattern>
 	</servlet-mapping>
 
-
   <servlet-mapping>
-    <servlet-name>LocalizationServlet</servlet-name>
-    <url-pattern>/i18n</url-pattern>
+        <servlet-name>PluginDispatchServlet</servlet-name>
+        <url-pattern>/plugin/*</url-pattern>
 	</servlet-mapping>
 
 	<!-- Pentaho JSPs -->
@@ -655,6 +657,7 @@
 		<servlet-name>ViewAction</servlet-name>
 		<url-pattern>/ViewAction</url-pattern>
 	</servlet-mapping>
+
 
 	<servlet-mapping>
 		<servlet-name>SolutionEngineInteractivityService</servlet-name>
@@ -765,11 +768,6 @@
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>DialPct</servlet-name>
-		<url-pattern>/DialPct</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
 		<servlet-name>SubscriptionAdmin</servlet-name>
 		<url-pattern>/SubscriptionAdmin</url-pattern>
 	</servlet-mapping>
@@ -787,6 +785,11 @@
 	<servlet-mapping>
 		<servlet-name>GetResource</servlet-name>
 		<url-pattern>/GetResource</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>GetResource</servlet-name>
+		<url-pattern>/content/GetResource</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
@@ -817,11 +820,6 @@
 	<servlet-mapping>
 		<servlet-name>MondrianCatalogPublisher</servlet-name>
 		<url-pattern>/MondrianCatalogPublisher</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>SolutionRepositoryService</servlet-name>
-		<url-pattern>/SolutionRepositoryService</url-pattern>
 	</servlet-mapping>
 
     <!-- [BEGIN SAMPLE SERVLET MAPPINGS] -->
@@ -861,11 +859,6 @@
 	</servlet-mapping>	
 
 	<servlet-mapping>
-		<servlet-name>SampleFlashDashboard</servlet-name>
-		<url-pattern>/SampleFlashDashboard</url-pattern>
-	</servlet-mapping>
-  
-   	<servlet-mapping>
 		<servlet-name>ThemeServlet</servlet-name>
 		<url-pattern>/js/themes.js</url-pattern>
 	</servlet-mapping>
@@ -875,6 +868,16 @@
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config>
+
+  <mime-mapping>
+    <extension>properties</extension>
+    <mime-type>text/plain</mime-type>
+  </mime-mapping>
+
+  <mime-mapping>
+    <extension>js</extension>
+    <mime-type>text/javascript</mime-type>
+  </mime-mapping>
 
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
