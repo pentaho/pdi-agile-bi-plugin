@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <beans
-  xmlns="http://www.springframework.org/schema/beans" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
-           <!--  Analyzer Web Visualization -->
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+  <!--  Analyzer Web Visualization -->
   <bean id="visualizationBean" class="org.pentaho.agilebi.spoon.visualizations.analyzer.AnalyzerVisualization">
     <property name="title" value="Quickvis.Analyzer"/>
     <property name="extension" value="xanalyzer"/>
-    <property name="newUrl" value="http://localhost:${port}/pentaho/content/analyzer/editor?catalog=${modelLocation}&amp;cube=${modelId}&amp;showFieldList=true&amp;fieldListView=cmdViewType"/>
-    <property name="openUrl" value="http://localhost:${port}/pentaho/content/analyzer/editor?command=open&amp;showFieldList=true&amp;fieldListView=cmdViewType&amp;solution=&amp;path=${path}&amp;action=${filename}"/>
+    <property name="newUrl" value="http://localhost:${port}/pentaho/api/repos/xanalyzer/editor?catalog=${modelLocation}&amp;cube=${modelId}&amp;showFieldList=true&amp;fieldListView=cmdViewType"/>
+    <property name="openUrl" value="http://localhost:${port}/pentaho/api/repos/xanalyzer/editor?command=open&amp;showFieldList=true&amp;fieldListView=cmdViewType&amp;solution=&amp;path=${path}&amp;action=${filename}"/>
     <property name="saveJavascript" value="gCtrlr.repositoryBrowserController.remoteSave('${filename}', '', '${path}', null, true);"/>
     <property name="order" value="0"/>
     <property name="tabIconLocation" value="plugins/spoon/agile-bi/ui/images/visualizer.png"/>
