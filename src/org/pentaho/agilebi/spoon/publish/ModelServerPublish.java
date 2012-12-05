@@ -167,11 +167,14 @@ public class ModelServerPublish {
   public Connection getRemoteConnection(String connectionName, boolean force) {
     if (remoteConnection == null || force) {
       // get information about the remote connection
-      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET;
+      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET + connectionName;
       WebResource resource = client.resource(storeDomainUrl);
       try {
-        remoteConnection = resource.type(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_XML)
-            .entity(connectionName).get(Connection.class);
+        remoteConnection = resource
+        		.type(MediaType.APPLICATION_JSON)
+        		.type(MediaType.APPLICATION_XML)
+        		//.entity(connectionName)
+        		.get(Connection.class);
       } catch (Exception ex) {
         //ex.printStackTrace();
         remoteConnection = null;
@@ -246,14 +249,17 @@ public class ModelServerPublish {
         InputStream in = new FileInputStream(fileIS);
        
         FormDataMultiPart part = new FormDataMultiPart();
-        part.field("importDir", repositoryPath, MediaType.MULTIPART_FORM_DATA_TYPE).field("fileUpload", in,
-            MediaType.MULTIPART_FORM_DATA_TYPE);
+        part.field("importDir", repositoryPath, MediaType.MULTIPART_FORM_DATA_TYPE)
+        		.field("fileUpload", in, MediaType.MULTIPART_FORM_DATA_TYPE);
 
         // If the import service needs the file name do the following.
         part.getField("fileUpload").setContentDisposition(
-            FormDataContentDisposition.name("fileUpload").fileName(fileIS.getName()).build());
+            FormDataContentDisposition.name("fileUpload")
+            .fileName(fileIS.getName()).build());
 
-        Response response = resource.type(MediaType.MULTIPART_FORM_DATA).post(Response.class, part);
+        Response response = resource
+        		.type(MediaType.MULTIPART_FORM_DATA)
+        		.post(Response.class, part);
         result = response.getStatus();
       }
     } catch (Exception ex) {
@@ -306,9 +312,11 @@ public class ModelServerPublish {
 
         storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_ADD;
       }
-
+      //probably do not need to convert this to JSON?
       WebResource resource = client.resource(storeDomainUrl);
-      result = resource.type(MediaType.APPLICATION_JSON).entity(convertToJSONObject(connection)).post(String.class);
+      result = resource.type(MediaType.APPLICATION_JSON)
+    		  .entity(convertToJSONObject(connection))
+    		  .post(String.class);
 
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -349,7 +357,9 @@ public class ModelServerPublish {
     part.getField("uploadAnalysis").setContentDisposition(
         FormDataContentDisposition.name("uploadAnalysis").fileName(catalogName).build());
     try {
-      response = resource.type(MediaType.MULTIPART_FORM_DATA_TYPE).post(String.class, part);
+      response = resource
+    		  .type(MediaType.MULTIPART_FORM_DATA_TYPE)
+    		  .post(String.class, part);
     } catch (Exception ex) {
       ex.printStackTrace();
       //response = "-1";
