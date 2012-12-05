@@ -312,10 +312,10 @@ public class ModelServerPublish {
 
         storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_ADD;
       }
-      //probably do not need to convert this to JSON?
+      //probably do not need to convert this to JSON? convertToJSONObject(connection)
       WebResource resource = client.resource(storeDomainUrl);
       result = resource.type(MediaType.APPLICATION_JSON)
-    		  .entity(convertToJSONObject(connection))
+    		  .entity(connection)
     		  .post(String.class);
 
     } catch (Exception ex) {
