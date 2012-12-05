@@ -46,7 +46,9 @@ PentahoSystem which is initialized after Spring
         scope="session"/>
   <bean id="vfs-ftp" class="org.pentaho.platform.plugin.outputs.ApacheVFSOutputHandler" scope="session" />
   <bean id="IAclPublisher" class="org.pentaho.platform.engine.security.acls.AclPublisher" scope="singleton" />
-  <bean id="IAclVoter" class="org.pentaho.platform.engine.security.acls.voter.PentahoBasicAclVoter" scope="singleton" />
+
+  <bean id="IAclVoter" class="org.pentaho.platform.engine.security.acls.voter.PentahoAllowAnonymousAclVoter" scope="singleton" />
+
 
   <bean id="ICacheManager" class="org.pentaho.platform.plugin.services.cache.CacheManager" scope="singleton"/>
   <bean id="IScheduler2" class="org.pentaho.platform.scheduler2.quartz.QuartzScheduler" scope="singleton"/>
@@ -124,11 +126,12 @@ not directly from the PentahoObjectFactory. -->
 
   <bean id="IDatabaseDialectService" class="org.pentaho.database.service.DatabaseDialectService" scope="singleton"/>
 
-  <bean id="IDatasourceMgmtService" class="org.pentaho.platform.repository.JcrBackedDatasourceMgmtService"
-        scope="singleton">
-    <constructor-arg ref="unifiedRepository"/>
-    <constructor-arg ref="IDatabaseDialectService"/>
-  </bean>
+  <!--  Will not work as the repository.spring.xml is not loaded, custom non-JCR impls needed for Agile-BI
+ <bean id="IDatasourceMgmtService" class="org.pentaho.platform.repository.JcrBackedDatasourceMgmtService"
+       scope="singleton">
+   <constructor-arg ref="unifiedRepository"/>
+   <constructor-arg ref="IDatabaseDialectService"/>
+ </bean> -->
 
   <!-- <bean id="ReportCache" class="org.pentaho.reporting.platform.plugin.cache.NullReportCache" scope="singleton"/>
   <bean id="PentahoNameGenerator" class="org.pentaho.reporting.platform.plugin.repository.TempDirectoryNameGenerator" 
@@ -136,6 +139,12 @@ not directly from the PentahoObjectFactory. -->
   <bean id="MondrianConnectionProvider"
         class="org.pentaho.reporting.platform.plugin.connection.PentahoMondrianConnectionProvider" scope="singleton"/>
   -->
+
+  <bean id="IDatasourceMgmtService" class="org.pentaho.platform.repository.JcrBackedDatasourceMgmtService"
+        scope="singleton">
+    <constructor-arg ref="IUnifiedRepository"/>
+    <constructor-arg ref="IDatabaseDialectService"/>
+  </bean>
 
   <bean id="metadataqueryexec-SQL"
         class="org.pentaho.platform.plugin.services.connections.metadata.sql.SqlMetadataQueryExec" scope="prototype"/>
