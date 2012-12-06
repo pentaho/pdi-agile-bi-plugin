@@ -331,6 +331,12 @@
     <jsp-file>/jsp/Pivot.jsp</jsp-file>
   </servlet>
 
+
+  <servlet>
+    <servlet-name>LocalizationServlet</servlet-name>
+    <servlet-class>org.pentaho.platform.web.servlet.LocalizationServlet</servlet-class>
+  </servlet>
+
   <!-- Pentaho JSP Mappings -->
   <servlet>
     <servlet-name>Chart</servlet-name>
@@ -412,6 +418,7 @@
     <servlet-name>BrowserLocale</servlet-name>
     <jsp-file>/jsp/browserLocale.jsp</jsp-file>
   </servlet>
+
   <servlet>
     <servlet-name>ThemeServlet</servlet-name>
     <servlet-class>org.pentaho.platform.web.servlet.ThemeServlet</servlet-class>
@@ -706,7 +713,12 @@
   </servlet-mapping>
   <!--   End BISERVER-3640 -->
 
-  <!-- =============================== merged servlet-mappings ============================= -->
+  <servlet-mapping>
+    <servlet-name>LocalizationServlet</servlet-name>
+    <url-pattern>/i18n</url-pattern>
+  </servlet-mapping>
+
+    <!-- =============================== merged servlet-mappings ============================= -->
   <servlet-mapping>
     <servlet-name>RepositoryTree</servlet-name>
     <url-pattern>/RepositoryTree</url-pattern>
