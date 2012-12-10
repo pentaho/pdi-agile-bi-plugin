@@ -151,6 +151,12 @@
 			<!-- reporting libcore and libformula -->
 			<!-- spring core -->
   			<include name="spring-core*.jar"/>
+  			<!-- spring ldap -->
+  			<include name="spring-ldap-*.jar"/>
+  			<!-- spring web -->
+  			<include name="spring-web-*.jar"/>
+  			<!-- spring mock -->
+  			<include name="spring-mock-*.jar"/>
 			<!-- mondrian -->
 			<include name="mondrian-*.jar"/>
 			<include name="eigenbase-*.jar"/>
@@ -168,6 +174,11 @@
 
 			<!-- batik -->
 			<include name="batik-*.jar"/>
+			<!-- Geronimo -->
+			<include name="geronimo-stax-api_*.jar"/>
+			<!-- Jaxb -->
+			<include name="jaxb-api*.jar"/>
+			<include name="jaxb-impl*.jar"/>
 			<!-- jackrabbit -->
   			<include name="jackrabbit-*"/>
 			<!-- jasperreports -->
@@ -188,15 +199,17 @@
 			<!-- hsqldb driver -->
   			<include name="hsqldb-*.jar"/>
 			<!-- pentaho cwm -->
-  			<include name="pentaho-cwm-*.jar"/>
-			<!-- spring ldap -->
-  			<include name="spring-ldap-*.jar"/>
+  			<include name="pentaho-cwm-*.jar"/>			
 			<!-- quartz -->
   			<include name="quartz-*.jar"/>
 		    <!-- jpivot -->
 		    <include name="jpivot-*.jar"/>
-		    	<!-- Jersey -->
+		    <!-- Move Jersey to libext-->
 			<include name="jersey*.jar"/>
+			<!-- Webservices -->
+			<include name="webservices-api*.jar"/>
+			<include name="webservices-rt*.jar"/>
+			
 			<include name="jsr311-api*.jar"/>
 		    <!-- third - remove reporting jars that will already be in kettle -->
 			<!--          but not the reporting wizard, that should remain    -->         
