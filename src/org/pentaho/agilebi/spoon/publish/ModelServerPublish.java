@@ -62,6 +62,7 @@ import org.pentaho.platform.util.client.PublisherUtil;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
@@ -242,7 +243,7 @@ public class ModelServerPublish {
 
     String DEFAULT_PUBLISH_URL = biServerConnection.getUrl() + REPO_FILES_IMPORT; //$NON-NLS-1$
 
-    int result = -1;
+    int result = 3;
     WebResource resource = client.resource(DEFAULT_PUBLISH_URL);
     try {
       for (File fileIS : files) {
@@ -257,10 +258,16 @@ public class ModelServerPublish {
             FormDataContentDisposition.name("fileUpload")
             .fileName(fileIS.getName()).build());
 
-        Response response = resource
+        //Response response 
+        Builder builder = resource
         		.type(MediaType.MULTIPART_FORM_DATA)
-        		.post(Response.class, part);
-        result = response.getStatus();
+        		.accept(MediaType.TEXT_HTML_TYPE);
+        String response = builder.post(String.class, part);
+        System.out.println(response);
+        if(response != null && response.indexOf("Successful") < 0){
+        	result = -1;//SUCCESS (defaults to success)
+        }
+        //result = response.getStatus();
       }
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -312,13 +319,17 @@ public class ModelServerPublish {
 
         storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_ADD;
       }
+      System.out.println(storeDomainUrl);
       //probably do not need to convert this to JSON? convertToJSONObject(connection)
       WebResource resource = client.resource(storeDomainUrl);
-      result = resource.type(MediaType.APPLICATION_JSON)
-    		  .entity(connection)
-    		  .post(String.class);
+      Builder builder = resource
+    		  .type(MediaType.APPLICATION_JSON)
+    		  .entity(connection);
+    		 result = builder.post(String.class);
+    		 System.out.println("RESULT "+result);
 
     } catch (Exception ex) {
+    	
       ex.printStackTrace();
       return false;
     }
@@ -469,12 +480,15 @@ public class ModelServerPublish {
     File thePrpt[] = { new File(prpt) };
     int result = publishFile(thePrptPublishingPath, thePrpt, !publishXmi /*show feedback here if not publishing xmi*/);
     if (result != PublisherUtil.FILE_ADD_SUCCESSFUL) {
+    	showFeedback(result);
       return;
     }
 
     if (publishXmi) {
       File theXmi[] = { new File(xmi) };
-      publishFile(theXmiPublishingPath, theXmi, true);
+      //publishFile(theXmiPublishingPath, theXmi, true);
+      InputStream metadataFile = new FileInputStream(model.getFileName());     
+      publishMetaDataFile(metadataFile, model.getDomain().getId() );
     }
     if (publishDatasource) {
       DatabaseMeta databaseMeta = ((ISpoonModelerSource) model.getModelSource()).getDatabaseMeta();
