@@ -174,8 +174,6 @@
 
 			<!-- batik -->
 			<include name="batik-*.jar"/>
-			<!-- Geronimo -->
-			<include name="geronimo-stax-api_*.jar"/>
 			<!-- Jaxb -->
 			<include name="jaxb-api*.jar"/>
 			<include name="jaxb-impl*.jar"/>
@@ -206,6 +204,7 @@
 		    <include name="jpivot-*.jar"/>
 		    <!-- Move Jersey to libext-->
 			<include name="jersey*.jar"/>
+			<include name="jackson*.jar"/>
 			<!-- Webservices -->
 			<include name="webservices-api*.jar"/>
 			<include name="webservices-rt*.jar"/>
@@ -263,10 +262,10 @@
 			
 			<exclude name="pentaho-database-model-*.jar"/>
 
-      <include name="openide-util-*.jar"/>
+      		<include name="openide-util-*.jar"/>
 			<include name="xmlParserAPIs-*.jar"/>
-      <include name="geronimo-stax-api-*.jar"/>
-      <include name="stax-api*.jar"/>
+      		<include name="geronimo-stax-api*.jar"/>
+      		<include name="stax-*.jar"/>
 			<include name="jtidy*.jar"/>
 		</fileset>
   	</delete>
