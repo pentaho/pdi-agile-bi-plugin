@@ -37,8 +37,11 @@ import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdConnec
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdDataFactory;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.WizardEditorModel;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.AbstractWizardStep;
+import org.pentaho.reporting.libraries.base.config.Configuration;
 import org.pentaho.reporting.libraries.base.util.DebugLog;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
+import org.pentaho.reporting.libraries.resourceloader.ResourceKey;
+import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 import org.pentaho.reporting.ui.datasources.pmd.PmdPreviewWorker;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
@@ -119,13 +122,31 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
             String mqlString = new QueryXmlHelper().toXML(mqlQuery);
 
 
-            MasterReport masterReport = (MasterReport) getEditorModel().getReportDefinition();
-            PmdDataFactory df = (PmdDataFactory) masterReport.getDataFactory();
+            final MasterReport masterReport = (MasterReport) getEditorModel().getReportDefinition();
+            final PmdDataFactory df = (PmdDataFactory) masterReport.getDataFactory();
 
-            df.initialize(masterReport.getConfiguration(),
-            masterReport.getResourceManager(),
-            masterReport.getContentBase(),
-            masterReport.getResourceBundleFactory());
+            df.initialize(new DataFactoryContext(){
+              public Configuration getConfiguration() {
+                return masterReport.getConfiguration();
+              }
+
+              public ResourceManager getResourceManager() {
+                return masterReport.getResourceManager();
+              }
+
+              public ResourceKey getContextKey() {
+                return masterReport.getContentBase();
+              }
+
+              public ResourceBundleFactory getResourceBundleFactory() {
+                return masterReport.getResourceBundleFactory();
+              }
+
+              public DataFactory getContextDataFactory() {
+                return df;
+              }
+            });
+
             df.setQuery("default", mqlString);
             PmdPreviewWorker worker = new PmdPreviewWorker(df, "default", 0,  limit);
             worker.run();
