@@ -253,6 +253,8 @@
 			<include name="spring-beans-*.jar"/>
 			<include name="spring-context-*.jar"/>
 			<include name="spring-context-support-*.jar"/>
+			<!-- Moved Spring JARS to libext/spring -->
+			<include name="spring-2.5.6.jar"/>
 			<include name="wsdl4j-*.jar"/>
 			<include name="wstx-asl-*.jar"/>
 			<include name="xercesImpl-*.jar"/>
