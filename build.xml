@@ -148,6 +148,8 @@
 			<include name="kettle-*.jar"/>
 			<!-- jetty jars -->
 			<include name="jetty-*.jar"/>
+			<!-- jettison jars -->
+			<include name="jettison-*.jar"/>
 			<!-- reporting libcore and libformula -->
 			<!-- spring core -->
   			<include name="spring-core*.jar"/>
