@@ -171,7 +171,8 @@
 			<include name="gwt-dev-*.jar"/>
 			<include name="gwt-user-*.jar"/>
 			<include name="slf4j-*.jar"/>
-
+			<!-- ehcache-core- -->
+			<include name="ehcache-core*.jar"/>
 			<!-- second, remove unnecessary jars -->
 
 			<!-- batik -->
