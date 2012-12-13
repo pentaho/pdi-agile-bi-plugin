@@ -69,7 +69,7 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
   
   public void onStart() {
 
-	String location = "http://localhost:${port}/pentaho/content/instaview/resources/web/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
+	String location = "http://localhost:${port}/pentaho/api/repos/instaview/resources/web/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
 
 	// turn off tooltips and the repositories dialog
 	Spoon spoon = Spoon.getInstance();
