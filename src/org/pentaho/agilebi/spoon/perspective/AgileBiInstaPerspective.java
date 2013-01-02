@@ -71,7 +71,7 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
 
 	String location = "http://localhost:${port}/pentaho/api/repos/instaview/resources/web/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
 
-	// turn off tooltips and the repositories dialog
+    // turn off tooltips and the repositories dialog
 	Spoon spoon = Spoon.getInstance();
 	if( spoon.getStartupPerspective() != null && spoon.getStartupPerspective().equals(PERSPECTIVE_ID)) {
 		PropsUI props = spoon.getProperties();
@@ -199,6 +199,10 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
       public String getOverlayUri() {
         return "org/pentaho/agilebi/spoon/perspective/insta_perspective_overlay.xul"; //$NON-NLS-1$
         
+      }
+
+      public int getPriority() {
+        return 0;
       }
 
       public String getOverlayXml() {

@@ -181,6 +181,11 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
         
       }
 
+      @Override
+      public int getPriority() {
+        return 0;
+      }
+
       public String getOverlayXml() {
         return null;
       }
