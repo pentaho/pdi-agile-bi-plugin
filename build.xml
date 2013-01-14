@@ -140,6 +140,9 @@
 			<include name="common-*.jar"/>
 			<include name="jface-*.jar"/>
 			<include name="commands-*.jar"/>
+
+            <include name="swt*.jar"/>
+
 			<!-- servlet api -->
 			<include name="servlet-api-*.jar"/>
 			<!-- xul jars -->
@@ -450,6 +453,6 @@
 	
 	  <target name="publish" depends="dist-source, publish-nojar">
 	  </target>
-	
-	
+
+
 </project>
