@@ -189,11 +189,8 @@
   			<include name="jasperreports-*.jar"/>
 			<!-- chartbeans -->
   			<include name="pentaho-chartbeans-*.jar"/>	
-
             <!-- hibernate -->
-  			<!-- need to keep hibernate, kettle no longer provides it -->
-            <!--<include name="hibernate-*.jar"/>-->
-
+            <include name="hibernate-*.jar"/>
 			<!-- castor -->
   			<include name="castor-*.jar"/>
 			<!-- derby -->
