@@ -176,6 +176,7 @@
 			<include name="slf4j-*.jar"/>
 			<!-- ehcache-core- -->
 			<include name="ehcache-core*.jar"/>
+            <include name="ehcache-*.jar"/>
 			<!-- second, remove unnecessary jars -->
 
 			<!-- batik -->
