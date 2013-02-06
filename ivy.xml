@@ -119,7 +119,7 @@
 
     <dependency org="org.json" name="json" rev="${dependency.json.revision}" changing="true" conf="default->default"/>
     <!-- Miscellaneous BISERVER CE dependencies -->
-    <dependency org="org.owasp" name="ESAPI" rev="2.0_rc6" transitive="false" />
+    <dependency org="org.owasp" name="esapi" rev="2.0GA" transitive="false" />
     <!-- test dependencies -->
     <dependency org="junit" name="junit" rev="4.4" conf="test->default"/>
     <!--<dependency org="pentaho" name="pentaho-bi-platform-test-foundation" rev="${dependency.bi-platform.revision}" conf="test->default" changing="true"/>-->
