@@ -211,7 +211,7 @@
 		    <include name="jpivot-*.jar"/>
 
             <!-- Move Jersey to pdi-ee\lib-->
-            <include name="jersey-multipart*.jar">
+            <include name="jersey-multipart*.jar"/>
             <include name="jersey-apache-client*.jar"/>
             <include name="jersey-client*.jar"/>
             <include name="jersey-servlet*.jar"/>
@@ -219,7 +219,7 @@
             <include name="jersey-server*.jar"/>
             <include name="jersey-core*.jar"/>
             <include name="jersey-json*.jar"/>
-            <include name="jersey-bundle*.jar">
+            <include name="jersey-bundle*.jar"/>
             
 
             <include name="jackson*.jar"/>
