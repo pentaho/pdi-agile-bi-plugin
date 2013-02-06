@@ -17,37 +17,35 @@
 package org.pentaho.agilebi.spoon.publish;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.dom4j.DocumentHelper;
+import org.jfree.util.Log;
 import org.json.JSONObject;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerPerspective;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
+import org.pentaho.database.model.DatabaseAccessType;
+import org.pentaho.database.model.DatabaseConnection;
 import org.pentaho.di.core.Const;
+import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleDatabaseException;
 import org.pentaho.di.core.gui.SpoonFactory;
@@ -55,12 +53,12 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.MondrianModelExporter;
-import org.pentaho.platform.dataaccess.datasource.beans.Connection;
 import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServiceException;
 import org.pentaho.platform.repository2.unified.webservices.RepositoryFileTreeDto;
 import org.pentaho.platform.util.client.PublisherUtil;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.client.config.ClientConfig;
@@ -77,13 +75,15 @@ import com.sun.jersey.multipart.FormDataMultiPart;
  */
 public class ModelServerPublish {
 
-  private static final String EXTENSION_XMI = ".xmi";
+  private static final String MONDRIAN_POST_ANALYSIS_URL = "plugin/data-access/api/mondrian/postAnalysis";
+
+private static final String EXTENSION_XMI = ".xmi";
 
   private static final String PLUGIN_DATA_ACCESS_API_CONNECTION_ADD = "plugin/data-access/api/connection/add";
 
   private static final String PLUGIN_DATA_ACCESS_API_CONNECTION_UPDATE = "plugin/data-access/api/connection/update";
 
-  private static final String DATA_ACCESS_API_CONNECTION_GET = "plugin/data-access/api/connection/get/";
+  private static final String DATA_ACCESS_API_CONNECTION_GET = "plugin/data-access/api/connection/getresponse/";
 
   private static final String DATA_ACCESS_API_CONNECTION_LIST = "plugin/data-access/api/connection/list";
 
@@ -117,7 +117,7 @@ public class ModelServerPublish {
 
   private BiServerConnection biServerConnection;
 
-  private Connection remoteConnection;
+  private DatabaseConnection remoteConnection;
 
   private ModelerWorkspace model;
 
@@ -145,15 +145,14 @@ public class ModelServerPublish {
    * @return
    * @throws ConnectionServiceException
    */
-  public List<Connection> listRemoteConnections() throws ConnectionServiceException {
-    Connection[] connectionArray = null;
+  public List<DatabaseConnection> listRemoteConnections() throws ConnectionServiceException {
+    DatabaseConnection[] connectionArray = null;
     String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_LIST;
     WebResource resource = client.resource(storeDomainUrl);
 
     try {
-      connectionArray = resource.type(MediaType.APPLICATION_JSON).get(Connection[].class);
+      connectionArray = resource.type(MediaType.APPLICATION_JSON).get(DatabaseConnection[].class);
     } catch (Exception e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return Arrays.asList(connectionArray);
@@ -165,19 +164,23 @@ public class ModelServerPublish {
    * a cached connection is returned.
    * @return
    */
-  public Connection getRemoteConnection(String connectionName, boolean force) {
+  public DatabaseConnection getRemoteConnection(String connectionName, boolean force) {
     if (remoteConnection == null || force) {
       // get information about the remote connection
       String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET + connectionName;
       WebResource resource = client.resource(storeDomainUrl);
+      ClientResponse response;
       try {
-        remoteConnection = resource
+       response  = resource
         		.type(MediaType.APPLICATION_JSON)
-        		.type(MediaType.APPLICATION_XML)
-        		//.entity(connectionName)
-        		.get(Connection.class);
+        		.type(MediaType.APPLICATION_XML)        	
+        		.get(ClientResponse.class);
+       if(response.getStatus() == 200){
+         remoteConnection = response.getEntity(DatabaseConnection.class); 
+       } else {
+         Log.error(response.getEntity(String.class));
+       }
       } catch (Exception ex) {
-        //ex.printStackTrace();
         remoteConnection = null;
       }
     }
@@ -205,21 +208,23 @@ public class ModelServerPublish {
 
     // compare the local database meta with the remote connection
     String connectionName = PublisherHelper.getBiServerCompatibleDatabaseName(databaseMeta.getName());
-    Connection connection = getRemoteConnection(connectionName, false);
+    DatabaseConnection connection = getRemoteConnection(connectionName, false);
     if (connection == null) {
       // the connection does not exist (with the same name) on the remote BI server 
       result += REMOTE_CONNECTION_MISSING;
       return result;
     }
     // see if the driver, url, and user are the same for both connections...
-    String url = databaseMeta.getURL();
+    int accessType = databaseMeta.getAccessType();
     String userName = databaseMeta.getUsername();
     String driverClass = databaseMeta.getDriverClass();
-    boolean urlMatch = url.equals(connection.getUrl());
+    boolean urlMatch = true;//accessType == connection.getAccessType();
+    
     boolean userMatch = (userName == null && connection.getUsername() == null)
         || userName.equals(connection.getUsername());
-    boolean driverMatch = (driverClass == null && connection.getDriverClass() == null)
-        || driverClass.equals(connection.getDriverClass());
+    boolean driverMatch = true;
+        //(driverClass == null && connection.getDriverClass() == null)
+    //|| driverClass.equals(connection.getDriverClass());
     // return 'same' or 'different'
     if (urlMatch && userMatch && driverMatch) {
       result += REMOTE_CONNECTION_SAME;
@@ -266,8 +271,7 @@ public class ModelServerPublish {
         System.out.println(response);
         if(response != null && response.indexOf("Successful") < 0){
         	result = -1;//SUCCESS (defaults to success)
-        }
-        //result = response.getStatus();
+        }      
       }
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -290,13 +294,20 @@ public class ModelServerPublish {
       ConnectionServiceException {
 
     // create a new connection object and populate it from the databaseMeta
-    Connection connection = new Connection();
-    connection.setDriverClass(databaseMeta.getDriverClass());
+    DatabaseConnection connection = new DatabaseConnection();
+  
+    DatabaseInterface intf = databaseMeta.getDatabaseInterface();
     connection.setName(PublisherHelper.getBiServerCompatibleDatabaseName(databaseMeta.getName()));
-    connection.setPassword(databaseMeta.getPassword());
-    connection.setUrl(databaseMeta.getURL());
+    connection.setPassword(databaseMeta.getPassword());    
     connection.setUsername(databaseMeta.getUsername());
-
+    connection.setAccessType(DatabaseAccessType.JNDI);
+    connection.setDatabaseName(intf.getDatabaseName());   
+    connection.setDatabasePort(String.valueOf(intf.getAttributes().getProperty("PORT_NUMBER")));
+    connection.setHostname(databaseMeta.getHostname());
+    connection.setForcingIdentifiersToLowerCase("N".equals(intf.getAttributes().getProperty("FORCE_IDENTIFIERS_TO_LOWERCASE"))?false:true); 
+    connection.setQuoteAllFields("N".equals(intf.getAttributes().getProperty("QUOTE_ALL_FIELDS"))?false:true);
+  //  DatabaseTypeHelper dbHelper = new DatabaseTypeHelper(DatabaseAccessType.values());
+ //   connection.setDatabaseType(dbHelper.getDatabaseTypeByName(databaseMeta.getAttributes()));//(databaseMeta.getDriverClass());
     boolean result = updateConnection(connection, update);
 
     return result;
@@ -309,7 +320,7 @@ public class ModelServerPublish {
    * @param update
    * @return
    */
-  private boolean updateConnection(Connection connection, boolean update) {
+  private boolean updateConnection(DatabaseConnection connection, boolean update) {
     String result;
     String storeDomainUrl;
     try {
@@ -319,27 +330,21 @@ public class ModelServerPublish {
 
         storeDomainUrl = biServerConnection.getUrl() + PLUGIN_DATA_ACCESS_API_CONNECTION_ADD;
       }
-      System.out.println(storeDomainUrl);
-      //probably do not need to convert this to JSON? convertToJSONObject(connection)
       WebResource resource = client.resource(storeDomainUrl);
       Builder builder = resource
     		  .type(MediaType.APPLICATION_JSON)
     		  .entity(connection);
-    		 result = builder.post(String.class);
-    		 System.out.println("RESULT "+result);
-
-    } catch (Exception ex) {
-    	
+    		 result = builder.post(String.class);    		
+    } catch (Exception ex) {    	
       ex.printStackTrace();
       return false;
     }
     return true;
   }
 
-  private String convertToJSONObject(Connection connection) {
+  private String convertToJSONObject(DatabaseConnection connection) {
     //need to convert this to JSON
     JSONObject obj = new JSONObject(connection);
-
     return obj.toString();
   }
 
@@ -353,7 +358,7 @@ public class ModelServerPublish {
    */
   public int publishMondrainSchema(InputStream mondrianFile, String catalogName, String datasourceInfo,
       boolean overwriteInRepos) throws Exception {
-    String storeDomainUrl = biServerConnection.getUrl() + "plugin/data-access/api/mondrian/postAnalysis";
+    String storeDomainUrl = biServerConnection.getUrl() + MONDRIAN_POST_ANALYSIS_URL;
     WebResource resource = client.resource(storeDomainUrl);
     String parms = "Datasource=" + datasourceInfo;
     String response = "-1";
@@ -372,8 +377,6 @@ public class ModelServerPublish {
     		  .type(MediaType.MULTIPART_FORM_DATA_TYPE)
     		  .post(String.class, part);
     } catch (Exception ex) {
-      ex.printStackTrace();
-      //response = "-1";
     }
     return new Integer(response).intValue();
   }
@@ -424,7 +427,6 @@ public class ModelServerPublish {
       client.getParams().setAuthenticationPreemptive(true);
     }
     return client;
-
   }
 
   private String getPasswordKey(String passWord) {
@@ -825,9 +827,7 @@ public class ModelServerPublish {
       });
     } catch (Exception e) {
       e.printStackTrace();
-
     }
-
     return fileTree;
   }
 

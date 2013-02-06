@@ -45,7 +45,9 @@ import org.pentaho.ui.xul.XulException;
 
 public class PublisherHelper {
 
-  private static String cachedPath;
+  private static final String MONDRIAN_XML = ".mondrian.xml";
+
+private static String cachedPath;
 
   private static BiServerConnection cachedServer;
   
@@ -130,7 +132,7 @@ public class PublisherHelper {
             
             publisher
               .publishToServer(
-                workspace.getModelName() + ".mondrian.xml", databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
+                workspace.getModelName() + MONDRIAN_XML, databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
 
           } finally {
 
@@ -246,7 +248,7 @@ public class PublisherHelper {
          
           publisher
             .publishToServer(
-              workspace.getModelName() + ".mondrian.xml", databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
+              workspace.getModelName() + MONDRIAN_XML, databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
 
         }
       } catch (XulException e) {
