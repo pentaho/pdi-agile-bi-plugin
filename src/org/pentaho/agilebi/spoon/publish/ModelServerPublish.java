@@ -42,8 +42,12 @@ import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerPerspective;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
+import org.pentaho.database.IDatabaseDialect;
 import org.pentaho.database.model.DatabaseAccessType;
 import org.pentaho.database.model.DatabaseConnection;
+import org.pentaho.database.model.IDatabaseType;
+import org.pentaho.database.service.DatabaseDialectService;
+import org.pentaho.database.util.DatabaseTypeHelper;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseInterface;
 import org.pentaho.di.core.database.DatabaseMeta;
@@ -77,7 +81,7 @@ public class ModelServerPublish {
 
   private static final String MONDRIAN_POST_ANALYSIS_URL = "plugin/data-access/api/mondrian/postAnalysis";
 
-private static final String EXTENSION_XMI = ".xmi";
+  private static final String EXTENSION_XMI = ".xmi";
 
   private static final String PLUGIN_DATA_ACCESS_API_CONNECTION_ADD = "plugin/data-access/api/connection/add";
 
@@ -215,18 +219,20 @@ private static final String EXTENSION_XMI = ".xmi";
       return result;
     }
     // see if the driver, url, and user are the same for both connections...
-    int accessType = databaseMeta.getAccessType();
+    String dbName = databaseMeta.getDatabaseInterface().getDatabaseName();
     String userName = databaseMeta.getUsername();
     String driverClass = databaseMeta.getDriverClass();
-    boolean urlMatch = true;//accessType == connection.getAccessType();
+    boolean dbMatch = dbName.equalsIgnoreCase(connection.getDatabaseName());
     
     boolean userMatch = (userName == null && connection.getUsername() == null)
         || userName.equals(connection.getUsername());
-    boolean driverMatch = true;
-        //(driverClass == null && connection.getDriverClass() == null)
-    //|| driverClass.equals(connection.getDriverClass());
+    DatabaseDialectService dds = new DatabaseDialectService();
+    IDatabaseDialect dialect = dds.getDialect(connection);
+    String remoteDriverClass = dialect.getDriverClass(connection);
+    boolean driverMatch = (driverClass == null && remoteDriverClass == null)
+     || driverClass.equals(remoteDriverClass);
     // return 'same' or 'different'
-    if (urlMatch && userMatch && driverMatch) {
+    if (dbMatch && userMatch && driverMatch) {
       result += REMOTE_CONNECTION_SAME;
     } else {
       result += REMOTE_CONNECTION_DIFFERENT;
@@ -235,11 +241,18 @@ private static final String EXTENSION_XMI = ".xmi";
     return result;
   }
 
+  /**
+   * Uses /repos/files/import service (can include acls and response html log info)
+   * @param repositoryPath
+   * @param files
+   * @param showFeedback
+   * @return
+   */
   public int publishFile(String repositoryPath, File[] files, boolean showFeedback) {
-
+    boolean overwrite = false;
     for (File f : files) {
       if (checkForExistingFile(repositoryPath, f.getName())) {
-        boolean overwrite = overwriteDelegate.handleOverwriteNotification(f.getName());
+        overwrite = overwriteDelegate.handleOverwriteNotification(f.getName());
         if (overwrite == false) {
           return PublisherUtil.FILE_EXISTS;
         }
@@ -248,7 +261,7 @@ private static final String EXTENSION_XMI = ".xmi";
 
     String DEFAULT_PUBLISH_URL = biServerConnection.getUrl() + REPO_FILES_IMPORT; //$NON-NLS-1$
 
-    int result = 3;
+    int result = ModelServerPublish.PUBLISH_SUCCESS;
     WebResource resource = client.resource(DEFAULT_PUBLISH_URL);
     try {
       for (File fileIS : files) {
@@ -256,7 +269,8 @@ private static final String EXTENSION_XMI = ".xmi";
        
         FormDataMultiPart part = new FormDataMultiPart();
         part.field("importDir", repositoryPath, MediaType.MULTIPART_FORM_DATA_TYPE)
-        		.field("fileUpload", in, MediaType.MULTIPART_FORM_DATA_TYPE);
+        		.field("fileUpload", in, MediaType.MULTIPART_FORM_DATA_TYPE)
+        		.field("overwriteFile",String.valueOf(overwrite),MediaType.MULTIPART_FORM_DATA_TYPE);
 
         // If the import service needs the file name do the following.
         part.getField("fileUpload").setContentDisposition(
@@ -267,15 +281,17 @@ private static final String EXTENSION_XMI = ".xmi";
         Builder builder = resource
         		.type(MediaType.MULTIPART_FORM_DATA)
         		.accept(MediaType.TEXT_HTML_TYPE);
-        String response = builder.post(String.class, part);
+        ClientResponse response = builder.post(ClientResponse.class, part);
         System.out.println(response);
-        if(response != null && response.indexOf("Successful") < 0){
-        	result = -1;//SUCCESS (defaults to success)
-        }      
+        if(response != null && response.getStatus() == 200){
+          Log.info(response.getEntity(String.class));        	
+        } else {
+          result = ModelServerPublish.PUBLISH_FAILED;
+        }
       }
     } catch (Exception ex) {
-      ex.printStackTrace();
-      result = -1;
+      Log.error(ex.getMessage(),ex);
+      result = ModelServerPublish.PUBLISH_FAILED;
     }
     if (showFeedback) {
       showFeedback(result);
@@ -295,23 +311,21 @@ private static final String EXTENSION_XMI = ".xmi";
 
     // create a new connection object and populate it from the databaseMeta
     DatabaseConnection connection = new DatabaseConnection();
-  
+    DatabaseDialectService dds = new DatabaseDialectService();
+    DatabaseTypeHelper dth = new DatabaseTypeHelper(dds.getDatabaseTypes());
     DatabaseInterface intf = databaseMeta.getDatabaseInterface();
     connection.setName(PublisherHelper.getBiServerCompatibleDatabaseName(databaseMeta.getName()));
     connection.setPassword(databaseMeta.getPassword());    
-    connection.setUsername(databaseMeta.getUsername());
-    connection.setAccessType(DatabaseAccessType.JNDI);
+    connection.setUsername(databaseMeta.getUsername());   
     connection.setDatabaseName(intf.getDatabaseName());   
     connection.setDatabasePort(String.valueOf(intf.getAttributes().getProperty("PORT_NUMBER")));
     connection.setHostname(databaseMeta.getHostname());
     connection.setForcingIdentifiersToLowerCase("N".equals(intf.getAttributes().getProperty("FORCE_IDENTIFIERS_TO_LOWERCASE"))?false:true); 
-    connection.setQuoteAllFields("N".equals(intf.getAttributes().getProperty("QUOTE_ALL_FIELDS"))?false:true);
-  //  DatabaseTypeHelper dbHelper = new DatabaseTypeHelper(DatabaseAccessType.values());
- //   connection.setDatabaseType(dbHelper.getDatabaseTypeByName(databaseMeta.getAttributes()));//(databaseMeta.getDriverClass());
-    boolean result = updateConnection(connection, update);
-
-    return result;
-
+    connection.setQuoteAllFields("N".equals(intf.getAttributes().getProperty("QUOTE_ALL_FIELDS"))?false:true);    
+    connection.setAccessType(DatabaseAccessType.NATIVE);
+    IDatabaseType driver = dth.getDatabaseTypeByShortName(intf.getPluginId());
+    connection.setDatabaseType(driver);        
+    return updateConnection(connection, update);
   }
 
   /**
@@ -320,8 +334,7 @@ private static final String EXTENSION_XMI = ".xmi";
    * @param update
    * @return
    */
-  private boolean updateConnection(DatabaseConnection connection, boolean update) {
-    String result;
+  private boolean updateConnection(DatabaseConnection connection, boolean update) {   
     String storeDomainUrl;
     try {
       if (update) {
@@ -334,9 +347,12 @@ private static final String EXTENSION_XMI = ".xmi";
       Builder builder = resource
     		  .type(MediaType.APPLICATION_JSON)
     		  .entity(connection);
-    		 result = builder.post(String.class);    		
+    		  ClientResponse resp = builder.post(ClientResponse.class);
+    		  if(resp != null && resp.getStatus() != 200){
+    		    return false;
+    		  }
     } catch (Exception ex) {    	
-      ex.printStackTrace();
+      Log.error(ex.getMessage());
       return false;
     }
     return true;
@@ -361,7 +377,7 @@ private static final String EXTENSION_XMI = ".xmi";
     String storeDomainUrl = biServerConnection.getUrl() + MONDRIAN_POST_ANALYSIS_URL;
     WebResource resource = client.resource(storeDomainUrl);
     String parms = "Datasource=" + datasourceInfo;
-    String response = "-1";
+    int response = ModelServerPublish.PUBLISH_FAILED;
     FormDataMultiPart part = new FormDataMultiPart();
     part.field("parameters", parms, MediaType.MULTIPART_FORM_DATA_TYPE)
         .field("uploadAnalysis", mondrianFile, MediaType.MULTIPART_FORM_DATA_TYPE)
@@ -373,12 +389,18 @@ private static final String EXTENSION_XMI = ".xmi";
     part.getField("uploadAnalysis").setContentDisposition(
         FormDataContentDisposition.name("uploadAnalysis").fileName(catalogName).build());
     try {
-      response = resource
+      ClientResponse resp = resource
     		  .type(MediaType.MULTIPART_FORM_DATA_TYPE)
-    		  .post(String.class, part);
+    		  .post(ClientResponse.class, part);
+     if(resp != null && resp.getStatus() == 200){
+       response = ModelServerPublish.PUBLISH_SUCCESS;
+     } else {
+       Log.info(resp);
+     }
     } catch (Exception ex) {
+      Log.error(ex.getMessage());
     }
-    return new Integer(response).intValue();
+    return response;
   }
 
   /**
@@ -388,11 +410,11 @@ private static final String EXTENSION_XMI = ".xmi";
    * @throws Exception
    * return code to detrmine next step
    */
-  public String publishMetaDataFile(InputStream metadataFile, String domainId) throws Exception {
+  public int publishMetaDataFile(InputStream metadataFile, String domainId) throws Exception {
     String storeDomainUrl = biServerConnection.getUrl() + "plugin/data-access/api/metadata/import";
     WebResource resource = client.resource(storeDomainUrl);
 
-    String response = "ERROR";
+    int response = ModelServerPublish.PUBLISH_FAILED;
     FormDataMultiPart part = new FormDataMultiPart();
     part.field("domainId", domainId, MediaType.MULTIPART_FORM_DATA_TYPE)
       .field("metadataFile", metadataFile, MediaType.MULTIPART_FORM_DATA_TYPE);
@@ -400,68 +422,46 @@ private static final String EXTENSION_XMI = ".xmi";
         FormDataContentDisposition.name("metadataFile")
         .fileName(domainId).build());
     try {
-      response = resource
+      ClientResponse resp = resource
           .type(MediaType.MULTIPART_FORM_DATA_TYPE)
-          .put(String.class, part);
+          .put(ClientResponse.class, part);
+      if(resp != null && resp.getStatus() == 200){
+        response = ModelServerPublish.PUBLISH_SUCCESS;
+      }
     } catch (Exception ex) {
-      ex.printStackTrace();
-      response += " " + ex.getMessage();
+      Log.error(ex.getMessage());      
     }
     return response;
   }
 
-  /**
-   * Validate username and password on server
-   * @param serverUserId
-   * @param serverPassword
-   * @return
-   * 
-   */
-  private HttpClient getClient(String serverUserId, String serverPassword) {
-    HttpClient client = new HttpClient();
-    // If server userid/password was supplied, use basic authentication to
-    // authenticate with the server.
-    if (serverUserId.length() > 0 && serverPassword.length() > 0) {
-      Credentials creds = new UsernamePasswordCredentials(serverUserId, serverPassword);
-      client.getState().setCredentials(AuthScope.ANY, creds);
-      client.getParams().setAuthenticationPreemptive(true);
-    }
-    return client;
-  }
-
-  private String getPasswordKey(String passWord) {
-    try {
-      MessageDigest md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
-      md.reset();
-      md.update(passWord.getBytes("UTF-8")); //$NON-NLS-1$
-      byte[] digest = md.digest("P3ntah0Publ1shPa55w0rd".getBytes("UTF-8")); //$NON-NLS-1$//$NON-NLS-2$
-      StringBuilder buf = new StringBuilder(digest.length + 1);
-      String s;
-      for (byte aDigest : digest) {
-        s = Integer.toHexString(0xFF & aDigest);
-        buf.append((s.length() == 1) ? "0" : "").append(s); //$NON-NLS-1$ //$NON-NLS-2$
-      }
-      return buf.toString();
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-    return null;
-  }
 
   /**
-   * Publishes the specified model, schema, and connection to the current BI server
+   * Publishes the specified file, model, schema, and connection to the current BI server
+   * using new REST Services
    * @param schemaName
    * @param jndiName
    * @param modelName
+   * @param repositoryPath
+   * @param selectedPath
+   * @param publishDatasource
    * @param showFeedback
+   * @param isExistentDatasource
+   * @param publishFile (e.g. XANALYZER)
+   * @param publishModelFileName
    * @throws Exception
    */
-  public void publishToServer(String schemaName, String jndiName, String modelName, String repositoryPath,
-      String selectedPath, boolean publishDatasource, boolean showFeedback, boolean isExistentDatasource,
+  public void publishToServer(String schemaName, 
+      String jndiName, String modelName, String repositoryPath,
+      String selectedPath, boolean publishDatasource, 
+      boolean showFeedback, boolean isExistentDatasource,
+      boolean publishFile,
       String publishModelFileName) throws Exception {
 
-   // File files[] = { new File(publishModelFileName) };
-   // publishFile(selectedPath, files, false);
+    if(publishFile){
+      File files[] = { new File(publishModelFileName) };
+      publishFile(selectedPath, files, false);
+    }
+    
     if (publishDatasource) {
       DatabaseMeta databaseMeta = ((ISpoonModelerSource) model.getModelSource()).getDatabaseMeta();
       this.publishDataSource(databaseMeta, isExistentDatasource);
@@ -476,6 +476,19 @@ private static final String EXTENSION_XMI = ".xmi";
 
   }
 
+  /**
+   * reports will be removed from agile
+   * @param theXmiPublishingPath
+   * @param thePrptPublishingPath
+   * @param publishDatasource
+   * @param isExistentDatasource
+   * @param publishXmi
+   * @param xmi
+   * @param prpt
+   * @throws Exception
+   * 
+   */
+  @Deprecated
   public void publishPrptToServer(String theXmiPublishingPath, String thePrptPublishingPath, boolean publishDatasource,
       boolean isExistentDatasource, boolean publishXmi, String xmi, String prpt) throws Exception {
 
@@ -521,7 +534,7 @@ private static final String EXTENSION_XMI = ".xmi";
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      Log.error(e.getMessage(),e);
     }
     return false;
   }
@@ -826,7 +839,7 @@ private static final String EXTENSION_XMI = ".xmi";
       fileTree = (RepositoryFileTreeDto) mapper.readValue(json, new TypeReference<RepositoryFileTreeDto>() {
       });
     } catch (Exception e) {
-      e.printStackTrace();
+     Log.error(e.getMessage(),e);
     }
     return fileTree;
   }

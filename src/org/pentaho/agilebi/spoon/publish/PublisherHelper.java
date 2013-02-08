@@ -29,9 +29,9 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.jfree.util.Log;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
@@ -47,10 +47,27 @@ public class PublisherHelper {
 
   private static final String MONDRIAN_XML = ".mondrian.xml";
 
-private static String cachedPath;
+  private static String cachedPath;
 
   private static BiServerConnection cachedServer;
   
+  /**
+   * 
+   * @param workspace
+   * @param publishingFile
+   * @param treeDepth
+   * @param databaseMeta
+   * @param fullPathtoFile
+   * @param checkDatasources
+   * @param setShowModel
+   * @param showFolders
+   * @param showCurrentFolder
+   * @param serverPathTemplate
+   * @param extension
+   * @param databaseName
+   * @return
+   * @throws ModelerException
+   */
   public static String publishAnalysis(ModelerWorkspace workspace, String publishingFile, int treeDepth,
       DatabaseMeta databaseMeta, String fullPathtoFile, boolean checkDatasources, boolean setShowModel,
       boolean showFolders, boolean showCurrentFolder, String serverPathTemplate, String extension, String databaseName)
@@ -132,18 +149,21 @@ private static String cachedPath;
             
             publisher
               .publishToServer(
-                workspace.getModelName() + MONDRIAN_XML, databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
+                workspace.getModelName() + MONDRIAN_XML, databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), true, tempF.getAbsolutePath());
 
-          } finally {
-
+          } catch(Exception ex) {
+            Log.error(ex.getMessage(),ex);
+            throw new ModelerException(ex);
           }
         }
       } catch (XulException e) {
-        e.printStackTrace();
+        Log.error(e.getMessage(),e);
         SpoonFactory.getInstance().messageBox("Could not create dialog: " + e.getLocalizedMessage(), "Dialog Error", //$NON-NLS-1$ //$NON-NLS-2$
             false, Const.ERROR);
       }
     } catch (Exception e) {
+      SpoonFactory.getInstance().messageBox("Error During Publish: " + e.getLocalizedMessage(), "PUBLISH ERROR", //$NON-NLS-1$ //$NON-NLS-2$
+          false, Const.ERROR);
       throw new ModelerException(e);
     }
     return fullPathtoFile;
@@ -248,7 +268,7 @@ private static String cachedPath;
          
           publisher
             .publishToServer(
-              workspace.getModelName() + MONDRIAN_XML, databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), tempF.getAbsolutePath());
+              workspace.getModelName() + MONDRIAN_XML, databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), false, tempF.getAbsolutePath());
 
         }
       } catch (XulException e) {
@@ -262,6 +282,24 @@ private static String cachedPath;
     return filename;
   }
 
+  /**
+   * Reports will be removed in future release
+   * @param report
+   * @param workspace
+   * @param modelName
+   * @param prpt
+   * @param treeDepth
+   * @param databaseMeta
+   * @param xmiFile
+   * @param checkDatasources
+   * @param showServerSelection
+   * @param showFolders
+   * @param showCurrentFolder
+   * @param serverPathTemplate
+   * @param databaseName
+   * @throws ModelerException
+   */
+  @Deprecated
   public static void publishPrpt(MasterReport report, ModelerWorkspace workspace, String modelName, String prpt,
       int treeDepth, DatabaseMeta databaseMeta, String xmiFile, boolean checkDatasources, boolean showServerSelection,
       boolean showFolders, boolean showCurrentFolder, String serverPathTemplate, String databaseName)
