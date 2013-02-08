@@ -19,9 +19,12 @@ PentahoSystem which is initialized after Spring
   <bean id="ISolutionEngine" class="org.pentaho.platform.engine.services.solution.SolutionEngine" scope="prototype" />
   <!-- Uncomment the following line to use a filesystem-based repository. Note: does not support ACLs.  -->
 
-  <bean id="IUnifiedRepository" class="org.pentaho.platform.repository2.unified.fs.FileSystemBackedUnifiedRepository" scope="singleton" />
+  <!--<bean id="IUnifiedRepository" class="org.pentaho.platform.repository2.unified.fs.FileSystemBackedUnifiedRepository" scope="singleton" />-->
+  <bean id="IUnifiedRepository" class="org.pentaho.platform.repository2.unified.fs.FileSystemBackedUnifiedRepository" scope="singleton">
+    <constructor-arg value="/" />
+  </bean>
 
-  <bean id="ISolutionRepository" class="org.pentaho.agilebi.platform.AgileBISolutionRepository" scope="singleton" />
+    <bean id="ISolutionRepository" class="org.pentaho.agilebi.platform.AgileBISolutionRepository" scope="singleton" />
 
   <bean id="IDBDatasourceService" class="org.pentaho.agilebi.platform.AgileBIDatasourceService"/>
 

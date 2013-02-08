@@ -19,10 +19,7 @@ package org.pentaho.agilebi.spoon.visualizations.analyzer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URLEncoder;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -83,7 +80,9 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	
   private String getStateJavascript;
   private String setStateJavascript;
-  private String reportName;
+
+  // protected to make this available for unit testing
+  protected String reportName;
 	
   @Override
   public String getId() {
@@ -143,16 +142,23 @@ public class AnalyzerVisualization extends AbstractVisualization {
   
 	public String generateOpenUrl(String filename) {
 	  // path, filename
-	  String pathAndFilename[] = getPathAndFilename(filename);
-	  String str = replaceField(openUrl, "path", pathAndFilename[0], true); //$NON-NLS-1$
-	  str = replaceField(str, "filename", pathAndFilename[1], true); //$NON-NLS-1$
+    String str = replaceField(openUrl, "path", convertPathToRepoUrlFormat(filename), true);
+    Date now = new Date();
+    String ts = Long.toString(now.getTime());
+    str = replaceField(str, "timestamp", ts, false);
 	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
 	  return str;
 	}
-	
+
+  public static String convertPathToRepoUrlFormat(String absolutePath) {
+    return absolutePath.replaceAll("/", ":").replaceAll("\\\\", ":");
+  }
+
 	private String replaceField(String str, String fieldName, String value, boolean urlEncode) {
 	  if (urlEncode) {
 	    value = URLEncoder.encode(value);
+      // change + to %20 to support repository requirements
+      value = value.replaceAll("\\+", "%20");
 	  }
 	  return str.replaceAll("\\$\\{"+fieldName+"\\}", value); //$NON-NLS-1$ //$NON-NLS-2$
 	}
@@ -169,18 +175,23 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	}
 	
 	public String generateRefreshDataJavascript(String fileLocation, String modelId) { 
-    String str = replaceField(refreshDataJavascript, "modelLocation", fileLocation, true);
-    str = replaceField(str, "modelId", modelId, true);
+    String str = replaceField(refreshDataJavascript, "modelLocation", fileLocation, true); //$NON-NLS-1$
+    str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
 	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
     return str;
 	}
 	
 	public String generateRefreshModelJavascript(String fileLocation, String modelId) {
-	  String str = replaceField(refreshModelJavascript, "modelLocation", fileLocation, true); //$NON-NLS-1$
-	  str = str.replaceAll("tmpview", reportName); //$NON-NLS-1$
-	  str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
+	  String str = refreshModelJavascript.replaceAll("tmpview", reportName); //$NON-NLS-1$
 	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
-    str = replaceField(str, "basedir", new File("").getAbsolutePath(), true); //$NON-NLS-1$ //$NON-NLS-2$
+    String folder = convertPathToRepoUrlFormat(new File("").getAbsolutePath());
+    str = replaceField(str, "basedir", folder, true); //$NON-NLS-1$
+
+    str = replaceField(str, "path", folder + ":" + reportName + ".xanalyzer", true); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    Date now = new Date();
+    String ts = Long.toString(now.getTime());
+    str = replaceField(str, "timestamp", ts, false); //$NON-NLS-1$
+
     return str;
 	}
 	
