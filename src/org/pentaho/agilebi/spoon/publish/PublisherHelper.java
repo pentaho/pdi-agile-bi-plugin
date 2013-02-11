@@ -18,8 +18,10 @@ package org.pentaho.agilebi.spoon.publish;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
@@ -37,6 +39,7 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.Spoon;
+import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.modules.parser.bundle.writer.BundleWriter;
 import org.pentaho.reporting.engine.classic.extensions.datasources.pmd.PmdDataFactory;
@@ -44,6 +47,10 @@ import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulException;
 
 public class PublisherHelper {
+
+  private static final String ANALYZER_EXT = ".xanalyzer";
+
+  private static final String XMI_EXT = ".xmi";
 
   private static final String MONDRIAN_XML = ".mondrian.xml";
 
@@ -124,25 +131,17 @@ public class PublisherHelper {
             }
             repositoryPath = serverPathTemplate.replace("{path}", selectedSolution); //$NON-NLS-1$
           }
-          if (publishingFile.endsWith(".xmi")) { //$NON-NLS-1$
+          if (publishingFile.endsWith(XMI_EXT)) { //$NON-NLS-1$
             selectedPath = repositoryPath;
           }
 
-          //filename = publishDialog.getFilename();
+          String filename = publishDialog.getFilename();
 
           try {
-            File tempDir = new File("tmp");
-            if (tempDir.exists() == false) {
-              tempDir.mkdir();
-            }
-            File tempF = new File(tempDir, publishDialog.getFilename());
-            if (tempF.exists() == false) {
-              tempF.createNewFile();
-            }
-
-            tempF.deleteOnExit();
-            InputStream schema = new FileInputStream(new File(fullPathtoFile));
-            IOUtils.copy(schema, new FileOutputStream(tempF));
+             //need to store the XMI file first
+            String tempXmiFilename =workspace.getSourceName()+XMI_EXT;
+            createTempFile(workspace.getFileName(), tempXmiFilename );
+            File tempF = createTempFile(fullPathtoFile,filename);        
 
             replaceAttributeValue("report", "catalog", workspace.getModelName(), tempF.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -247,22 +246,14 @@ public class PublisherHelper {
             if(selectedSolution != null)
               repositoryPath = serverPathTemplate.replace("{path}", selectedSolution); //$NON-NLS-1$
           }
-          if(publishingFile.endsWith(".xmi")) { //$NON-NLS-1$
+          if(publishingFile.endsWith(XMI_EXT)) { //$NON-NLS-1$
             selectedPath = repositoryPath;
           }
 
           filename = publishDialog.getFilename();
+          String tempFilename = publishDialog.getFilename()+extension;
 
-          File tempDir = new File("tmp");
-          if(tempDir.exists() == false){
-            tempDir.mkdir();
-          }
-          File tempF = new File(tempDir, publishDialog.getFilename()+extension);
-          if(tempF.exists() == false){
-            tempF.createNewFile();
-          }
-          tempF.deleteOnExit();
-          IOUtils.copy(new FileInputStream(new File(publishingFile)), new FileOutputStream(tempF));
+          File tempF = createTempFile(publishingFile, tempFilename);
          
           replaceAttributeValue("report", "catalog", workspace.getModelName(), tempF.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
          
@@ -280,6 +271,29 @@ public class PublisherHelper {
       throw new ModelerException(e);
     }
     return filename;
+  }
+
+  /**
+   * Copy the source file to a local input File stream
+   * @param publishingFile (full path to location of file)
+   * @param tempFilename (this is just the filename and extension)
+   * @return
+   * @throws IOException
+   * @throws FileNotFoundException
+   */
+  private static File createTempFile(String publishingFile, String tempFilename) throws IOException,
+      FileNotFoundException {
+    File tempDir = new File("tmp");
+    if(tempDir.exists() == false){
+      tempDir.mkdir();
+    }
+    File tempF = new File(tempDir,tempFilename);
+    if(tempF.exists() == false){
+      tempF.createNewFile();
+    }
+    tempF.deleteOnExit();
+    IOUtils.copy(new FileInputStream(new File(publishingFile)), new FileOutputStream(tempF));
+    return tempF;
   }
 
   /**

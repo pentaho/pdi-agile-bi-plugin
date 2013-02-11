@@ -57,6 +57,7 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.MondrianModelExporter;
+import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServiceException;
 import org.pentaho.platform.repository2.unified.webservices.RepositoryFileTreeDto;
 import org.pentaho.platform.util.client.PublisherUtil;
@@ -457,23 +458,38 @@ public class ModelServerPublish {
       boolean publishFile,
       String publishModelFileName) throws Exception {
 
+    String publishModelXmiFileName = publishModelFileName;
     if(publishFile){
       File files[] = { new File(publishModelFileName) };
-      publishFile(selectedPath, files, false);
+      int result = publishFile(selectedPath, files, false);
+      if(result != ModelServerPublish.PUBLISH_SUCCESS){
+        throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.Failed"));
+      }
+      publishModelXmiFileName = convertFileNameToXmi(publishModelFileName,modelName);
     }
     
     if (publishDatasource) {
       DatabaseMeta databaseMeta = ((ISpoonModelerSource) model.getModelSource()).getDatabaseMeta();
-      this.publishDataSource(databaseMeta, isExistentDatasource);
+      publishDataSource(databaseMeta, isExistentDatasource); 
     }
     boolean overwriteInRepository = false;
+    
     int result = publishOlapSchemaToServer(schemaName, jndiName, modelName, selectedPath, overwriteInRepository,
         showFeedback, isExistentDatasource, publishModelFileName);
     //only publish if schema is success
     if (result == ModelServerPublish.PUBLISH_SUCCESS) {
-      publishMetaDatafile(publishModelFileName, modelName +EXTENSION_XMI);
+      publishMetaDatafile(publishModelXmiFileName, modelName +EXTENSION_XMI);
     }
 
+  }
+
+  private String convertFileNameToXmi(String publishModelFileName, String modelName) {
+    int index = publishModelFileName.lastIndexOf(RepositoryFile.SEPARATOR);
+    if(index < 0){
+      index = publishModelFileName.lastIndexOf("\\");
+    }
+    String filePath = publishModelFileName.substring(0,index+1);
+    return filePath + modelName + EXTENSION_XMI;
   }
 
   /**
