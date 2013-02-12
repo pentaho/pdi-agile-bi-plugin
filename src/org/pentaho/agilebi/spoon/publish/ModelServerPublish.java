@@ -80,6 +80,8 @@ import com.sun.jersey.multipart.FormDataMultiPart;
  */
 public class ModelServerPublish {
 
+  private static final String REST_NAME_PARM = "?name=";
+
   private static final String MONDRIAN_POST_ANALYSIS_URL = "plugin/data-access/api/mondrian/postAnalysis";
 
   private static final String EXTENSION_XMI = ".xmi";
@@ -88,7 +90,7 @@ public class ModelServerPublish {
 
   private static final String PLUGIN_DATA_ACCESS_API_CONNECTION_UPDATE = "plugin/data-access/api/connection/update";
 
-  private static final String DATA_ACCESS_API_CONNECTION_GET = "plugin/data-access/api/connection/getresponse/";
+  private static final String DATA_ACCESS_API_CONNECTION_GET = "plugin/data-access/api/connection/getresponse";
 
   private static final String DATA_ACCESS_API_CONNECTION_LIST = "plugin/data-access/api/connection/list";
 
@@ -172,7 +174,7 @@ public class ModelServerPublish {
   public DatabaseConnection getRemoteConnection(String connectionName, boolean force) {
     if (remoteConnection == null || force) {
       // get information about the remote connection
-      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET + connectionName;
+      String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_GET +REST_NAME_PARM+ connectionName;
       WebResource resource = client.resource(storeDomainUrl);
       ClientResponse response;
       try {
@@ -186,6 +188,7 @@ public class ModelServerPublish {
          Log.error(response.getEntity(String.class));
        }
       } catch (Exception ex) {
+        Log.error(ex.getMessage());
         remoteConnection = null;
       }
     }
