@@ -542,31 +542,34 @@ public class ModelServerPublish {
   }
 
   /**
-   * find a matching file/path combination
+   * find a matching file/path combination by going back to server fileTree and matching name
    * @param path
    * @param name
-   * @return
+   * @return true if file exists on path
    */
   public boolean checkForExistingFile(String path, String name) {
+    boolean ans = false;
+    if (path == null || name == null) {
+      Log.error("path ["+path+"] and name ["+name+"] cannot be null");
+      return false;
+    }    
     try {
-      if (path == null || name == null) {
-        return false;
-      }
-      // add filter {path} to limit search results in future TODO
-      RepositoryFileTreeDto tree = fetchRepositoryFileTree(-1, null, null);
-      if (tree != null && tree.getFile() != null) {
-        if (!tree.getFile().isFolder()) {
-          if (tree.getFile().getName().equals(name) && tree.getFile().getPath().equals(path)) {
-            return true;
-          }
+      RepositoryFileTreeDto tree = fetchRepositoryFileTree(path, -1, null , false);
+      if (tree != null && tree.getFile() != null && !tree.getChildren().isEmpty()) {
+        for(RepositoryFileTreeDto file :tree.getChildren()){
+          if (!file.getFile().isFolder()) {
+            if (file.getFile().getName().equals(name)) {             
+              ans = true;
+              break;
+            }
+          }        
         }
-
       }
 
     } catch (Exception e) {
       Log.error(e.getMessage(),e);
     }
-    return false;
+    return ans;
   }
 
   public boolean checkDataSource(boolean autoMode) throws KettleDatabaseException, ConnectionServiceException {
@@ -828,7 +831,7 @@ public class ModelServerPublish {
   public void createSolutionTree(final XulDialogPublishModel model, final int folderTreeDepth) throws PublishException {
     try {
 
-      RepositoryFileTreeDto tree = fetchRepositoryFileTree(folderTreeDepth, null, null);
+      RepositoryFileTreeDto tree = fetchRepositoryFileTree(null,folderTreeDepth, null, null);
       if (tree != null && tree.getFile() != null) {
         SolutionObject root = new SolutionObject();
         root.add(new SolutionObject(tree, folderTreeDepth));
@@ -848,9 +851,10 @@ public class ModelServerPublish {
    * @param filter
    * @param showHidden
    */
-  private RepositoryFileTreeDto fetchRepositoryFileTree(Integer depth, String filter, Boolean showHidden) {
+  private RepositoryFileTreeDto fetchRepositoryFileTree(String path, Integer depth, String filter, Boolean showHidden) {
     RepositoryFileTreeDto fileTree = new RepositoryFileTreeDto();
-    String url = this.biServerConnection.getUrl() + "api/repo/files/children?"; //$NON-NLS-1$
+    String url = this.biServerConnection.getUrl() + "api/repo/files/"; //$NON-NLS-1$
+    String repoPath = ":";
     if (depth == null) {
       depth = -1;
     }
@@ -860,7 +864,16 @@ public class ModelServerPublish {
     if (showHidden == null) {
       showHidden = Boolean.FALSE;
     }
-    url = url + "depth=" + depth + "&filter=" + filter + "&showHidden=" + showHidden; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$  
+    if(path == null){
+      repoPath = ":";
+    } else {
+      repoPath = path;
+    }
+   
+    if(path != null && path.contains(RepositoryFile.SEPARATOR)){
+        repoPath = path.replace(RepositoryFile.SEPARATOR,":");
+    } 
+    url = url + repoPath + "/children?depth=" + depth + "&filter=" + filter + "&showHidden=" + showHidden; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$  
     WebResource resource = client.resource(url);
     try {
       String json = resource.accept(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE)
