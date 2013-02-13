@@ -404,7 +404,11 @@ public class ModelServerPublish {
     		  .type(MediaType.MULTIPART_FORM_DATA_TYPE)
     		  .post(ClientResponse.class, part);
      if(resp != null && resp.getStatus() == 200){
-       response = ModelServerPublish.PUBLISH_SUCCESS;
+       if(resp.getEntity(String.class).equals(String.valueOf(ModelServerPublish.PUBLISH_CATALOG_EXISTS))){
+           response = ModelServerPublish.PUBLISH_CATALOG_EXISTS;
+       } else {
+         response = ModelServerPublish.PUBLISH_SUCCESS;
+       }
      } else {
        Log.info(resp);
      }
