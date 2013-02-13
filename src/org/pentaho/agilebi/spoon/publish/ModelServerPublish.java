@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -154,15 +155,17 @@ public class ModelServerPublish {
    */
   public List<DatabaseConnection> listRemoteConnections() throws ConnectionServiceException {
     DatabaseConnection[] connectionArray = null;
+    List<DatabaseConnection> response = new ArrayList<DatabaseConnection>();
     String storeDomainUrl = biServerConnection.getUrl() + DATA_ACCESS_API_CONNECTION_LIST;
     WebResource resource = client.resource(storeDomainUrl);
 
     try {
       connectionArray = resource.type(MediaType.APPLICATION_JSON).get(DatabaseConnection[].class);
+      response = Arrays.asList(connectionArray);
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return Arrays.asList(connectionArray);
+    return response;
   }
 
   /**
@@ -228,13 +231,17 @@ public class ModelServerPublish {
     String driverClass = databaseMeta.getDriverClass();
     boolean dbMatch = dbName.equalsIgnoreCase(connection.getDatabaseName());
     
-    boolean userMatch = (userName == null && connection.getUsername() == null)
+    boolean userMatch = (userName == null && connection != null && connection.getUsername() == null)
         || userName.equals(connection.getUsername());
     DatabaseDialectService dds = new DatabaseDialectService();
+       
+    boolean driverMatch = false;
     IDatabaseDialect dialect = dds.getDialect(connection);
-    String remoteDriverClass = dialect.getDriverClass(connection);
-    boolean driverMatch = (driverClass == null && remoteDriverClass == null)
-     || driverClass.equals(remoteDriverClass);
+    if(dialect != null){      
+      String remoteDriverClass = dialect.getDriverClass(connection);
+      driverMatch =  (driverClass == null && remoteDriverClass == null)
+          || driverClass.equals(remoteDriverClass);
+    }
     // return 'same' or 'different'
     if (dbMatch && userMatch && driverMatch) {
       result += REMOTE_CONNECTION_SAME;
