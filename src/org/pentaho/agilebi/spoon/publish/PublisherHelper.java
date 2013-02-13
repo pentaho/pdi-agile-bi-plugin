@@ -226,7 +226,7 @@ public class PublisherHelper {
           e.printStackTrace();
         }
         if (publishDialog.isAccepted()) {
-          // now try to publish
+          // now try to publisher.setModelerHelperInstance()
           String selectedPath = publishDialog.getPath();
           cachedPath = selectedPath;
           // we always publish to {solution}/resources/metadata
