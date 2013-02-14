@@ -23,17 +23,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.dom4j.DocumentHelper;
@@ -77,6 +73,7 @@ import com.sun.jersey.multipart.FormDataMultiPart;
 /**
  * A utility class for publishing models to a BI server. Also helps synchronize database connections.
  * @author jamesdixon
+ * modified tyler band to support REST service calls to publish xmi, xanalyzer, xml, and kbd files
  *
  */
 public class ModelServerPublish {
@@ -163,7 +160,7 @@ public class ModelServerPublish {
       connectionArray = resource.type(MediaType.APPLICATION_JSON).get(DatabaseConnection[].class);
       response = Arrays.asList(connectionArray);
     } catch (Exception e) {
-      e.printStackTrace();
+      Log.error(e.getMessage(),e);
     }
     return response;
   }
@@ -236,11 +233,13 @@ public class ModelServerPublish {
     DatabaseDialectService dds = new DatabaseDialectService();
        
     boolean driverMatch = false;
+    if(dds != null){
     IDatabaseDialect dialect = dds.getDialect(connection);
-    if(dialect != null){      
-      String remoteDriverClass = dialect.getDriverClass(connection);
-      driverMatch =  (driverClass == null && remoteDriverClass == null)
-          || driverClass.equals(remoteDriverClass);
+      if(dialect != null){      
+        String remoteDriverClass = dialect.getDriverClass(connection);
+        driverMatch =  (driverClass == null && remoteDriverClass == null)
+            || driverClass.equals(remoteDriverClass);
+      }
     }
     // return 'same' or 'different'
     if (dbMatch && userMatch && driverMatch) {
@@ -369,12 +368,6 @@ public class ModelServerPublish {
     return true;
   }
 
-  private String convertToJSONObject(DatabaseConnection connection) {
-    //need to convert this to JSON
-    JSONObject obj = new JSONObject(connection);
-    return obj.toString();
-  }
-
   /**
    * Jersey call to use the put service to load a mondrain file into the Jcr repsoitory
    * @param mondrianFile
@@ -499,6 +492,7 @@ public class ModelServerPublish {
 
   private String convertFileNameToXmi(String publishModelFileName, String modelName) {
     int index = publishModelFileName.lastIndexOf(RepositoryFile.SEPARATOR);
+    //windows fix
     if(index < 0){
       index = publishModelFileName.lastIndexOf("\\");
     }
@@ -507,7 +501,7 @@ public class ModelServerPublish {
   }
 
   /**
-   * reports will be removed from agile
+   * reports will be removed from agile-bi in future release
    * @param theXmiPublishingPath
    * @param thePrptPublishingPath
    * @param publishDatasource
@@ -660,11 +654,8 @@ public class ModelServerPublish {
             BaseMessages.getString(this.getClass(), "Publish.Overwrite.Title"),
             BaseMessages.getString(this.getClass(), "Publish.Overwrite.Message", fileName),
             BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.CatalogExists"));
-        //.messageBox(
-        //    BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.CatalogExists"), //$NON-NLS-1$
-        //    BaseMessages.getString(this.getClass(), "ModelServerPublish.MessageBox.Title", serverName), false, Const.ERROR); //$NON-NLS-1$
-        return ans;
-        // break;
+         return ans;
+        
       }
       case ModelServerPublish.PUBLISH_DATASOURCE_PROBLEM: {
         SpoonFactory
@@ -773,7 +764,7 @@ public class ModelServerPublish {
   }
 
   /**
-   * convert the putlish name to an inputstream to pass to Jersey
+   * convert the publish name to an inputstream to pass to Jersey
    * @param publishModelFileName
    * @param domainId
    * @throws FileNotFoundException
@@ -828,14 +819,14 @@ public class ModelServerPublish {
    * @param folderTreeDepth
    * @throws PublishException
    */
-  public void createSolutionTree(final XulDialogPublishModel model, final int folderTreeDepth) throws PublishException {
+  public void createSolutionTree(final XulDialogPublishModel dialogModel, final int folderTreeDepth) throws PublishException {
     try {
 
       RepositoryFileTreeDto tree = fetchRepositoryFileTree(null,folderTreeDepth, null, null);
       if (tree != null && tree.getFile() != null) {
         SolutionObject root = new SolutionObject();
         root.add(new SolutionObject(tree, folderTreeDepth));
-        model.setSolutions(root);
+        dialogModel.setSolutions(root);
       }
 
     } catch (Exception e) {
@@ -873,7 +864,8 @@ public class ModelServerPublish {
     if(path != null && path.contains(RepositoryFile.SEPARATOR)){
         repoPath = path.replace(RepositoryFile.SEPARATOR,":");
     } 
-    url = url + repoPath + "/children?depth=" + depth + "&filter=" + filter + "&showHidden=" + showHidden; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$  
+    url = url + repoPath + RepositoryFile.SEPARATOR +"children?depth=" + depth +
+        "&filter=" + filter + "&showHidden=" + showHidden; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$  
     WebResource resource = client.resource(url);
     try {
       String json = resource.accept(MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE)

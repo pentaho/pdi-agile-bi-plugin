@@ -49,6 +49,7 @@ import java.util.List;
  * A dialog for publishing to a BI server
  * @author jamesdixon
  * @modified tyler band - removed publish password from browse dialog
+ * added binding to hide/show folder for different saves.
  *
  */
 public class XulDialogPublish extends AbstractSwtXulDialogController implements BindingExceptionHandler, PublishOverwriteDelegate{
@@ -63,8 +64,10 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   
   private XulTextbox folderTextbox;
   
+  @SuppressWarnings("unused")
   private XulTree filesBox;
   
+  @SuppressWarnings("unused")
   private XulButton okButton;
     
   private XulCheckbox publishDatasourceCheck, publishModelCheck;
@@ -77,14 +80,13 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   
   private boolean publishDataSource = false;
   
+  @SuppressWarnings("unused")
   private boolean checkDatasources = false;
   
   private boolean accepted = false;
   
   private boolean datasourceExists = false;
-  
-  private CmisObject currentFolder;
-  
+ 
   private String pathTemplate = "{path}{file}"; //$NON-NLS-1$ 
   
   private XulDialog biserverDialog;
@@ -96,10 +98,12 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   private XulDialog folderSelectionDialog;
   private XulTree folderTree;
   private XulButton folderSelectionDialogAccept;
+  @SuppressWarnings("unused")
   private boolean fileMode;
    
   // Connection form members
   private BiServerConnectionForm biserverForm = new BiServerConnectionForm();
+  @SuppressWarnings("hiding")
   private XulTextbox password, userid, url, name;
   private boolean doNotPublishDatasource; // override for the user checkbox
   
@@ -134,6 +138,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
    * buttons status.
    */
   public void init() {
+    //this allows the publisher to reach back into this class to use Xul dialog message box
     ModelServerPublish.overwriteDelegate = this;
     biServerConfig = BiServerConfig.getInstance();
 
@@ -187,7 +192,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     
     bf.createBinding(biserverForm, "valid", document.getElementById("biserverEditDialog_accept"), "!disabled");
     
-    BindingConvertor btnConvertor = new BindingConvertor<BiServerConnection, Boolean>(){
+    BindingConvertor<BiServerConnection, Boolean> btnConvertor = new BindingConvertor<BiServerConnection, Boolean>(){
 
       @Override
       public Boolean sourceToTarget(BiServerConnection arg0) {
@@ -430,8 +435,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     return datasourceExists;
   }
   
-  public void setSelectedServer(BiServerConnection selectedServer){
-    currentFolder = null;
+  public void setSelectedServer(BiServerConnection selectedServer){   
     publishModel.setSelectedConnection(selectedServer);
   }
 
@@ -459,7 +463,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
       confirm.setTitle(BaseMessages.getString(getClass(), "Spoon.Perspectives.AgileBi.Publish.DeleteServer.Title"));
       confirm.setMessage(BaseMessages.getString(getClass(), "Spoon.Perspectives.AgileBi.Publish.DeleteServer.Message"));
-      confirm.addDialogCallback(new XulDialogCallback(){
+      confirm.addDialogCallback(new XulDialogCallback<Object>(){
 
         public void onClose(XulComponent sender, Status returnCode,
             Object retVal) {
@@ -601,12 +605,12 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   }
   
 
-  public boolean handleOverwriteNotification(String name) {
+  public boolean handleOverwriteNotification(String objName) {
     try {
       XulConfirmBox confirm = (XulConfirmBox) document.createElement("confirmbox");
       confirm.setModalParent(this.getDialog().getRootObject());
       confirm.setTitle(BaseMessages.getString(getClass(), "Publish.Overwrite.Title"));
-      confirm.setMessage(BaseMessages.getString(getClass(), "Publish.Overwrite.Message", name));
+      confirm.setMessage(BaseMessages.getString(getClass(), "Publish.Overwrite.Message", objName));
       
       if(confirm.open() == SWT.YES){
         return true;
@@ -621,12 +625,9 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
 
   public void hideFileGroupBoxFolder() {      
      publishModel.setGroupBoxFolderVisible(false);
-     //folderGroupBox.setVisible(false);//replaced with binding    
   }
   public void showFileGroupBoxFolder() {
     publishModel.setGroupBoxFolderVisible(true);
-    //folderGroupBox.setVisible(true);
  }
-  
 }
 

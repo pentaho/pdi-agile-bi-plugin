@@ -124,8 +124,8 @@ public class PublisherHelper {
           String repositoryPath = null;
           if (serverPathTemplate != null) {
             String selectedSolution = null;
-            if (selectedPath.indexOf("/") != -1) { //$NON-NLS-1$
-              selectedSolution = selectedPath.substring(0, selectedPath.indexOf("/")); //$NON-NLS-1$   
+            if (selectedPath.indexOf(RepositoryFile.SEPARATOR) != -1) { //$NON-NLS-1$
+              selectedSolution = selectedPath.substring(0, selectedPath.indexOf(RepositoryFile.SEPARATOR)); //$NON-NLS-1$   
             } else {
               selectedSolution = selectedPath;
             }
