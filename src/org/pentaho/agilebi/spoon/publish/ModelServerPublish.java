@@ -470,7 +470,11 @@ public class ModelServerPublish {
       File files[] = { new File(publishModelFileName) };
       int result = publishFile(selectedPath, files, false);
       if(result != ModelServerPublish.PUBLISH_SUCCESS){
-        throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.Failed"));
+        if(PublisherUtil.FILE_EXISTS == result){
+          throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.UserCancel"));
+        } else {
+          throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.Failed"));
+        }
       }
       publishModelXmiFileName = convertFileNameToXmi(publishModelFileName,modelName);
     }
@@ -778,16 +782,17 @@ public class ModelServerPublish {
 
   private int handleModelOverwrite(String jndiName, String modelName, boolean showFeedback,
       org.dom4j.Document schemaDoc, int result) throws Exception {
+    int response = result;
     if (showFeedback) {
       if (showFeedback(result)) {
         //Handle Overwrite the byte stream has already be read - need to re-read
         byte schemaBytes2[] = schemaDoc.asXML().getBytes();
         InputStream schema2 = new ByteArrayInputStream(schemaBytes2);
-        result = publishMondrainSchema(schema2, modelName, jndiName, true);
-        showFeedback(result);
+        response = publishMondrainSchema(schema2, modelName, jndiName, true);
+        showFeedback(response);
       }
     }
-    return result;
+    return response;
   }
 
   /**

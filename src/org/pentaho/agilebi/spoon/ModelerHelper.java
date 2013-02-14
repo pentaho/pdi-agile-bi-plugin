@@ -109,7 +109,7 @@ public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenu
     }
   }
   
-  public static ModelerHelper getInstance() {
+  public static synchronized ModelerHelper getInstance() {
     if( instance == null ) {
       instance = new ModelerHelper();
       Spoon spoon = ((Spoon)SpoonFactory.getInstance());

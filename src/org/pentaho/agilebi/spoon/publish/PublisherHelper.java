@@ -119,7 +119,7 @@ public class PublisherHelper {
             cachedPath = selectedPath;
           } else {
             selectedPath = cachedPath;
-          }
+          }        
           // we always publish to {solution}/resources/metadata
           BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
           publisher.setBiServerConnection(biServerConnection);

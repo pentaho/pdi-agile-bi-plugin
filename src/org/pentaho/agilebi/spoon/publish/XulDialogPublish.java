@@ -16,34 +16,37 @@
  */
 package org.pentaho.agilebi.spoon.publish;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.pentaho.agilebi.spoon.publish.ModelServerPublish;
 import org.pentaho.agilebi.spoon.AbstractSwtXulDialogController;
-import org.pentaho.commons.util.repository.type.CmisObject;
-import org.pentaho.commons.util.repository.type.PropertiesBase;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.platform.api.repository.ISolutionRepository;
-import org.pentaho.platform.util.client.BiPlatformRepositoryClient;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
-import org.pentaho.ui.xul.binding.*;
+import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.Binding.Type;
-import org.pentaho.ui.xul.components.*;
+import org.pentaho.ui.xul.binding.BindingConvertor;
+import org.pentaho.ui.xul.binding.BindingException;
+import org.pentaho.ui.xul.binding.BindingExceptionHandler;
+import org.pentaho.ui.xul.binding.BindingFactory;
+import org.pentaho.ui.xul.components.WaitBoxRunnable;
+import org.pentaho.ui.xul.components.XulButton;
+import org.pentaho.ui.xul.components.XulCheckbox;
+import org.pentaho.ui.xul.components.XulConfirmBox;
+import org.pentaho.ui.xul.components.XulMessageBox;
+import org.pentaho.ui.xul.components.XulTextbox;
+import org.pentaho.ui.xul.components.XulWaitBox;
 import org.pentaho.ui.xul.containers.XulDialog;
 import org.pentaho.ui.xul.containers.XulGroupbox;
 import org.pentaho.ui.xul.containers.XulListbox;
 import org.pentaho.ui.xul.containers.XulTree;
 import org.pentaho.ui.xul.swt.SwtBindingFactory;
 import org.pentaho.ui.xul.util.XulDialogCallback;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A dialog for publishing to a BI server
@@ -154,11 +157,10 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
     publishDatasourceCheck = (XulCheckbox) document.getElementById("publishDatasource"); //$NON-NLS-1$
     publishModelCheck = (XulCheckbox) document.getElementById("publishModel"); //$NON-NLS-1$
     biserverDialog = (XulDialog) document.getElementById("biserverEditDialog");
+    folderTextbox.setDisabled(true);
     folderGroupBox = (XulGroupbox) document.getElementById("folderGroupBox");
-
     bf.setBindingType(Type.BI_DIRECTIONAL);
     
-   
 //    bf.createBinding(this, "selectedFolder", folderMenuList, "selectedItem");    //$NON-NLS-1$ //$NON-NLS-2$
     bf.createBinding(publishModel, "filename", "filename", "value");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
     
@@ -384,9 +386,8 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       if(publishModel.isGroupBoxFolderVisible()){
         publisher.createSolutionTree(this.publishModel, folderTreeDepth);
         selectedFolder = this.publishModel.getSolutions();
-        publishModel.setSelectedFolder(selectedFolder);
       }
-     
+      publishModel.setSelectedFolder(selectedFolder);
     } catch (Exception e) {
       logger.error("Error connecting", e);
       e.printStackTrace();

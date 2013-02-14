@@ -33,9 +33,7 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
 
   private int folderTreeDepth = -1;
 
-  //private BiPlatformRepositoryClientNavigationService navigationService;
-
-  private boolean publishXmi = true;
+   private boolean publishXmi = true;
 
   private BiPlatformRepositoryClient client;
 
