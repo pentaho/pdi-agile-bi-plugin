@@ -384,8 +384,9 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
       if(publishModel.isGroupBoxFolderVisible()){
         publisher.createSolutionTree(this.publishModel, folderTreeDepth);
         selectedFolder = this.publishModel.getSolutions();
+        publishModel.setSelectedFolder(selectedFolder);
       }
-      publishModel.setSelectedFolder(selectedFolder);
+     
     } catch (Exception e) {
       logger.error("Error connecting", e);
       e.printStackTrace();

@@ -114,8 +114,12 @@ public class PublisherHelper {
         }
         if (publishDialog.isAccepted()) {
           // now try to publish
-          String selectedPath = publishDialog.getPath();
-          cachedPath = selectedPath;
+          String selectedPath = publishDialog.getPath();          
+          if(selectedPath != null){
+            cachedPath = selectedPath;
+          } else {
+            selectedPath = cachedPath;
+          }
           // we always publish to {solution}/resources/metadata
           BiServerConnection biServerConnection = publishDialog.getBiServerConnection();
           publisher.setBiServerConnection(biServerConnection);
