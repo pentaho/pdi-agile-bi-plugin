@@ -134,7 +134,7 @@ public class XulDialogPublishModel extends XulEventSourceAdapter {
   public boolean isValid() {
     boolean valid = true;
     if(groupBoxFolderVisible){
-      valid = StringUtils.isNotEmpty(this.getFilename()) && this.path != null;
+      valid = StringUtils.isNotEmpty(this.getFilename()) && StringUtils.isNotEmpty(this.path);
     }
     valid = valid && this.selectedConnection != null;
     return valid; 

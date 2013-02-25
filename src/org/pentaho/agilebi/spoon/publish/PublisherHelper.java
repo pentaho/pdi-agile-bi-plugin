@@ -54,7 +54,7 @@ public class PublisherHelper {
 
   private static final String MONDRIAN_XML = ".mondrian.xml";
 
-  private static String cachedPath;
+  private static String cachedPath = null;
 
   private static BiServerConnection cachedServer;
   
