@@ -489,7 +489,7 @@ public class ModelServerPublish {
         showFeedback, isExistentDatasource, publishModelFileName);
     //only publish if schema is success
     if (result == ModelServerPublish.PUBLISH_SUCCESS) {
-      publishMetaDatafile(publishModelXmiFileName, modelName);
+      publishMetaDatafile(publishModelXmiFileName, modelName+EXTENSION_XMI);
     }
 
   }
