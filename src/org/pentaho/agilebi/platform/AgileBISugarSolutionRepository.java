@@ -2,6 +2,7 @@ package org.pentaho.agilebi.platform;
 
 import org.pentaho.platform.api.repository2.unified.*;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
+import org.pentaho.platform.util.VersionHelper;
 
 import java.io.File;
 import java.io.Serializable;
@@ -197,5 +198,10 @@ public class AgileBISugarSolutionRepository implements IUnifiedRepository {
 
   public List<Character> getReservedChars() {
     return null;  //To change body of implemented methods use File | Settings | File Templates.
+  }
+
+  @Override
+  public String getProductID() {
+    return VersionHelper.getVersionInfo(this.getClass()).getProductID();
   }
 }
