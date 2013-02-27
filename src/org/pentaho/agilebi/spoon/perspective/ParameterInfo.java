@@ -16,6 +16,9 @@
  */
 package org.pentaho.agilebi.spoon.perspective;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ParameterInfo {
 
 	private String key;
@@ -27,8 +30,18 @@ public class ParameterInfo {
 	private String description;
 	
 	private int type;
-	
-	public int getType() {
+
+  private Map<String, String> attributes = new HashMap<String, String>();
+
+  public Map<String, String> getAttributes() {
+    return attributes;
+  }
+
+  public void setAttributes(Map<String, String> attributes) {
+    this.attributes = attributes;
+  }
+
+  public int getType() {
 		return type;
 	}
 
