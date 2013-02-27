@@ -471,7 +471,7 @@ public class ModelServerPublish {
       int result = publishFile(selectedPath, files, false);
       if(result != ModelServerPublish.PUBLISH_SUCCESS){
         if(PublisherUtil.FILE_EXISTS == result){
-          throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.UserCancel"));
+          return;//user has replied no do not overwrite
         } else {
           throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.Failed"));
         }

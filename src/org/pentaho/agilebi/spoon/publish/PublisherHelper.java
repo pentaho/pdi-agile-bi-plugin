@@ -142,30 +142,33 @@ public class PublisherHelper {
           String filename = publishDialog.getFilename();
 
           try {
-             //need to store the XMI file first
-            String tempXmiFilename =workspace.getSourceName()+XMI_EXT;
-            createTempFile(workspace.getFileName(), tempXmiFilename );
-            File tempF = createTempFile(fullPathtoFile,filename);        
+             //need to create and store the XMI file in /tmp first
+            String tempXmiFilename =workspace.getModel().getName()+XMI_EXT;
+            File tempXmi = createTempFile(workspace.getFileName(), tempXmiFilename );
+            File tempF =   createTempFile(fullPathtoFile,filename);        
 
+            replaceAttributeValue("report", "catalog", workspace.getModelName(), tempXmi.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$           
             replaceAttributeValue("report", "catalog", workspace.getModelName(), tempF.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
-
+            
             
             publisher
               .publishToServer(
                 workspace.getModelName() + MONDRIAN_XML, databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), true, tempF.getAbsolutePath());
-
+            
           } catch(Exception ex) {
-            Log.error(ex.getMessage(),ex);
+            Log.error(ex.getLocalizedMessage(),ex);
             throw new ModelerException(ex);
           }
         }
       } catch (XulException e) {
-        Log.error(e.getMessage(),e);
+        Log.error(e.getLocalizedMessage(),e);
         SpoonFactory.getInstance().messageBox("Could not create dialog: " + e.getLocalizedMessage(), "Dialog Error", //$NON-NLS-1$ //$NON-NLS-2$
             false, Const.ERROR);
       }
     } catch (Exception e) {
-      SpoonFactory.getInstance().messageBox("Error During Publish: " + e.getLocalizedMessage(), "PUBLISH ERROR", //$NON-NLS-1$ //$NON-NLS-2$
+      Log.error(e.getLocalizedMessage(),e);          
+      SpoonFactory.getInstance().messageBox(BaseMessages.getString(PublisherHelper.class, "PublisherHelper.PublishError") , 
+          BaseMessages.getString(PublisherHelper.class, "PublisherHelper.PublishErrorTitle"), 
           false, Const.ERROR);
       throw new ModelerException(e);
     }
@@ -204,7 +207,7 @@ public class PublisherHelper {
 
       if (StringUtils.isEmpty(publishingFile)) {
         SpoonFactory.getInstance().messageBox(
-            BaseMessages.getString(ModelerWorkspace.class, "ModelServerPublish.Publish.UnsavedModel"), //$NON-NLS-1$
+            BaseMessages.getString(ModelerWorkspace.class, "ModelServerPublish.Publish.UnsavedModel"), 
             "Dialog Error", false, Const.ERROR); //$NON-NLS-1$
         throw new ModelerException(BaseMessages.getString(ModelerWorkspace.class,
             "ModelServerPublish.Publish.UnsavedModel"));
@@ -255,7 +258,7 @@ public class PublisherHelper {
           }
 
           filename = publishDialog.getFilename();
-          String tempFilename = publishDialog.getFilename()+extension;
+          String tempFilename = filename + extension;
 
           File tempF = createTempFile(publishingFile, tempFilename);
          
@@ -266,12 +269,17 @@ public class PublisherHelper {
               workspace.getModelName() + MONDRIAN_XML, databaseName, workspace.getModelName(), repositoryPath, selectedPath, publishDatasource, true, publishDialog.isExistentDatasource(), false, tempF.getAbsolutePath());
 
         }
+             
       } catch (XulException e) {
-        e.printStackTrace();
+       Log.error(e.getLocalizedMessage(),e);
         SpoonFactory.getInstance().messageBox("Could not create dialog: " + e.getLocalizedMessage(), "Dialog Error", //$NON-NLS-1$ //$NON-NLS-2$
             false, Const.ERROR);
       }
     } catch (Exception e) {
+      Log.error(e.getLocalizedMessage(),e);          
+      SpoonFactory.getInstance().messageBox(BaseMessages.getString(PublisherHelper.class, "PublisherHelper.PublishError") , 
+          BaseMessages.getString(PublisherHelper.class, "PublisherHelper.PublishErrorTitle"), 
+          false, Const.ERROR);
       throw new ModelerException(e);
     }
     return filename;
