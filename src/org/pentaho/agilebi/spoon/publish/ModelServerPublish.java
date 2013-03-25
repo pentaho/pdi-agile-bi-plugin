@@ -396,11 +396,13 @@ public class ModelServerPublish {
       ClientResponse resp = resource
     		  .type(MediaType.MULTIPART_FORM_DATA_TYPE)
     		  .post(ClientResponse.class, part);
-     if(resp != null && resp.getStatus() == 200){
-       if(resp.getEntity(String.class).equals(String.valueOf(ModelServerPublish.PUBLISH_CATALOG_EXISTS))){
+     String entity = null;
+     if (resp != null && resp.getStatus() == 200){
+       entity = resp.getEntity(String.class);
+       if(entity.equals(String.valueOf(ModelServerPublish.PUBLISH_CATALOG_EXISTS))){
            response = ModelServerPublish.PUBLISH_CATALOG_EXISTS;
        } else {
-         response = ModelServerPublish.PUBLISH_SUCCESS;
+           response = Integer.parseInt(entity);
        }
      } else {
        Log.info(resp);
@@ -762,6 +764,10 @@ public class ModelServerPublish {
     InputStream schema = new ByteArrayInputStream(schemaBytes);
 
     int result = publishMondrainSchema(schema, modelName, jndiName, overwriteInRepository);
+    if (result != ModelServerPublish.PUBLISH_SUCCESS && result != ModelServerPublish.PUBLISH_CATALOG_EXISTS) {
+      showFeedback(result);
+      return result;
+    }
     result = handleModelOverwrite(jndiName, modelName, showFeedback, schemaDoc, result);
 
     return result;
