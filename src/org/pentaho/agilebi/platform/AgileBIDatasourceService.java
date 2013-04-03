@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -118,6 +119,10 @@ public class AgileBIDatasourceService implements IDBDatasourceService {
     public <T> T unwrap(Class<T> iface) {
       return null;
     } 
+
+    public Logger getParentLogger() {
+      return null;
+    }
     
   }
   

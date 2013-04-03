@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Logger;
 import java.util.Map;
 import java.util.Set;
 
@@ -249,6 +250,10 @@ public class InstaviewDatasourceService implements IDBDatasourceService {
 	    public <T> T unwrap(Class<T> iface) {
 	      return null;
 	    } 
+       
+            public Logger getParentLogger() {
+              return null;
+            }
 	    
 	  }
   
