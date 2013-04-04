@@ -54,8 +54,12 @@ import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.MondrianModelExporter;
+import org.pentaho.platform.api.engine.IAuthorizationPolicy;
+import org.pentaho.platform.api.engine.PentahoAccessControlException;
 import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 import org.pentaho.platform.dataaccess.datasource.wizard.service.ConnectionServiceException;
+import org.pentaho.platform.engine.core.system.PentahoSystem;
+import org.pentaho.platform.plugin.services.importer.PlatformImportException;
 import org.pentaho.platform.repository2.unified.webservices.RepositoryFileTreeDto;
 import org.pentaho.platform.util.client.PublisherUtil;
 
@@ -92,7 +96,7 @@ public class ModelServerPublish {
 
   private static final String DATA_ACCESS_API_CONNECTION_LIST = "plugin/data-access/api/connection/list";
 
-  private static final String REPO_FILES_IMPORT = "api/repo/files/import";
+  private static final String REPO_FILES_PUBLISH = "api/repo/publish/publishfile";
 
   public static final int PUBLISH_UNKNOWN_PROBLEM = -1;
 
@@ -252,52 +256,48 @@ public class ModelServerPublish {
   }
 
   /**
-   * Uses /repos/files/import service (can include acls and response html log info)
+   * Uses /repo/files/publish service to create the file
    * @param repositoryPath
    * @param files
    * @param showFeedback
    * @return
    */
-  public int publishFile(String repositoryPath, File[] files, boolean showFeedback) {
+  public int publishFile(String repositoryPath, File[] files, boolean showFeedback)
+      throws PentahoAccessControlException {
+    
     boolean overwrite = false;
-    for (File f : files) {
-      if (checkForExistingFile(repositoryPath, f.getName())) {
-        overwrite = overwriteDelegate.handleOverwriteNotification(f.getName());
-        if (overwrite == false) {
-          return PublisherUtil.FILE_EXISTS;
-        }
-      }
-    }
+    int result = ModelServerPublish.PUBLISH_FAILED;
 
-    String DEFAULT_PUBLISH_URL = biServerConnection.getUrl() + REPO_FILES_IMPORT; //$NON-NLS-1$
-
-    int result = ModelServerPublish.PUBLISH_SUCCESS;
-    WebResource resource = client.resource(DEFAULT_PUBLISH_URL);
     try {
       for (File fileIS : files) {
-        InputStream in = new FileInputStream(fileIS);
-       
-        FormDataMultiPart part = new FormDataMultiPart();
-        part.field("importDir", repositoryPath, MediaType.MULTIPART_FORM_DATA_TYPE)
-        		.field("fileUpload", in, MediaType.MULTIPART_FORM_DATA_TYPE)
-        		.field("overwriteFile",String.valueOf(overwrite),MediaType.MULTIPART_FORM_DATA_TYPE);
-
-        // If the import service needs the file name do the following.
-        part.getField("fileUpload").setContentDisposition(
-            FormDataContentDisposition.name("fileUpload")
-            .fileName(fileIS.getName()).build());
-
-        //Response response 
-        Builder builder = resource
-        		.type(MediaType.MULTIPART_FORM_DATA)
-        		.accept(MediaType.TEXT_HTML_TYPE);
-        ClientResponse response = builder.post(ClientResponse.class, part);
-        System.out.println(response);
-        if(response != null && response.getStatus() == 200){
-          Log.info(response.getEntity(String.class));        	
-        } else {
-          result = ModelServerPublish.PUBLISH_FAILED;
+        while (true) {
+          ClientResponse response = attemptPublish(fileIS, repositoryPath, overwrite);
+          if (response != null) {
+            String responseCodeStr = response.getEntity(String.class);
+            Log.info("Response was " + responseCodeStr);
+            if (response.getStatus() == 200) {
+              result = ModelServerPublish.PUBLISH_SUCCESS;
+              break;
+            } else {
+              int responseCode = Integer.parseInt(responseCodeStr);
+              if (responseCode == PlatformImportException.PUBLISH_USERNAME_PASSWORD_FAIL) {
+                result = ModelServerPublish.PUBLISH_INVALID_USER_OR_PASSWORD;
+                showFeedback = true;
+                break;
+              } else if (responseCode == PlatformImportException.PUBLISH_CONTENT_EXISTS_ERROR && !overwrite) {
+                  overwrite = overwriteDelegate.handleOverwriteNotification(fileIS.getName());
+                  if (overwrite == false) {
+                    result = PublisherUtil.FILE_EXISTS;
+                    break;
+                  } 
+              } else {
+                result = ModelServerPublish.PUBLISH_FAILED;
+                break;
+              }
+            }
+          }
         }
+        overwrite = false;
       }
     } catch (Exception ex) {
       Log.error(ex.getMessage(),ex);
@@ -308,7 +308,27 @@ public class ModelServerPublish {
     }
     return result;
   }
-
+  
+  private ClientResponse attemptPublish(File fileIS, String repositoryPath, boolean overwrite) throws FileNotFoundException {
+      InputStream in = new FileInputStream(fileIS);
+      String DEFAULT_PUBLISH_URL = biServerConnection.getUrl() + REPO_FILES_PUBLISH; //$NON-NLS-1$
+      WebResource resource = client.resource(DEFAULT_PUBLISH_URL);
+      
+      FormDataMultiPart part = new FormDataMultiPart();
+      part.field("importPath", repositoryPath + "/" + fileIS.getName(), MediaType.MULTIPART_FORM_DATA_TYPE)
+          .field("fileUpload", in, MediaType.MULTIPART_FORM_DATA_TYPE)
+          .field("overwriteFile", String.valueOf(overwrite), MediaType.MULTIPART_FORM_DATA_TYPE);
+  
+      part.getField("fileUpload").setContentDisposition(
+          FormDataContentDisposition.name("fileUpload")
+          .fileName(fileIS.getName()).build());
+  
+      Builder builder = resource
+          .type(MediaType.MULTIPART_FORM_DATA)
+          .accept(MediaType.TEXT_PLAIN);
+      return builder.post(ClientResponse.class, part);
+  }
+  
   /**
    * Publishes a datasource to the current BI server
    * @param databaseMeta
@@ -472,7 +492,7 @@ public class ModelServerPublish {
       File files[] = { new File(publishModelFileName) };
       int result = publishFile(selectedPath, files, false);
       if(result != ModelServerPublish.PUBLISH_SUCCESS){
-        if(PublisherUtil.FILE_EXISTS == result){
+        if(result ==  ModelServerPublish.PUBLISH_FILE_EXISTS || result == ModelServerPublish.PUBLISH_INVALID_USER_OR_PASSWORD) {
           return;//user has replied no do not overwrite
         } else {
           throw new Exception(BaseMessages.getString(this.getClass(), "ModelServerPublish.Publish.Failed"));
@@ -889,5 +909,5 @@ public class ModelServerPublish {
     }
     return fileTree;
   }
-
+ 
 }
