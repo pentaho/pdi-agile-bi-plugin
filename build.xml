@@ -409,7 +409,7 @@
 		<delete file="${dist.dir}/${pdiwithagilebi}.tgz"/>
 		<untar compression="gzip" dest="${bin.dir}/kettle-dist">
 			<fileset dir="${kettle.dist.dir}">
-				<include name="pdi-ce-${dependency.kettle.revision}.tar.gz"/>
+				<include name="pdi-ce-${dependency.kettle.revision}.zip"/>
 			</fileset>
 		</untar>
 
