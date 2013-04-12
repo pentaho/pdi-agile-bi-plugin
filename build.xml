@@ -407,11 +407,11 @@
 		<delete dir="${bin.dir}/kettle-dist"/>
 		<delete file="${dist.dir}/${pdiwithagilebi}.zip"/>
 		<delete file="${dist.dir}/${pdiwithagilebi}.tgz"/>
-		<untar compression="gzip" dest="${bin.dir}/kettle-dist">
+		<unzip dest="${bin.dir}/kettle-dist">
 			<fileset dir="${kettle.dist.dir}">
 				<include name="pdi-ce-${dependency.kettle.revision}.zip"/>
 			</fileset>
-		</untar>
+		</unzip>
 
 		<!-- copy in the start-up items 	
 	    <copy todir="${bin.dir}/kettle-dist/data-integration">
