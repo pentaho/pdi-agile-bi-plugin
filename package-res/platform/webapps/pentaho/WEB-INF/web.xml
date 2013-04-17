@@ -200,6 +200,11 @@
   </filter-mapping>
   <!-- insert additional filter-mappings -->
 
+  <!-- sets System properties used by the Spring context -->
+  <listener>
+    <listener-class>org.pentaho.platform.web.http.context.SpringEnvironmentSetupListener</listener-class>
+  </listener>
+
   <!--   enables session and request scoped object creation in Spring -->
   <listener>
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
