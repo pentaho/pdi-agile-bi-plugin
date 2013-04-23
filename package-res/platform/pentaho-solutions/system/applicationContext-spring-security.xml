@@ -35,7 +35,6 @@
             <pen:attr key="providerName" value="${security.provider}"/>
           </pen:attributes>
         </pen:bean>
-        <!-- <ref bean="superAuthenticationProvider" /> -->
         <ref local="anonymousAuthenticationProvider" />
       </list>
     </property>

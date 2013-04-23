@@ -41,4 +41,6 @@ http://www.pentaho.com/schema/pentaho-system http://www.pentaho.com/schema/penta
   <import resource="applicationContext-pentaho-security-memory.xml" />
   <import resource="pentahoObjects.spring.xml" />
 
+  <import resource="defaultUser.spring.xml"/>  
+
 </beans>
