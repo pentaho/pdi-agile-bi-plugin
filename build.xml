@@ -435,19 +435,16 @@
 				<include name="MonetDBAgileMartPlugin-*.zip"/>
 			</fileset>
 		</unzip>
-		<zip destfile="${dist.dir}/${pdiwithagilebi}.zip">
-			<zipfileset dir="${bin.dir}/kettle-dist" />
-		</zip>
-	    <tar destfile="${dist.dir}/${pdiwithagilebi}.tgz" longfile="gnu" compression="gzip">
-	      <tarfileset dir="${bin.dir}/kettle-dist" mode="755" excludes="docs/api/** docs/api-core/** **/Thumbs.db">
+	    <zip destfile="${dist.dir}/${pdiwithagilebi}.zip">
+	      <zipfileset dir="${bin.dir}/kettle-dist" filemode="755" excludes="docs/api/** docs/api-core/** **/Thumbs.db">
 	        <include name="**/*.sh" />
 	      	<include name="**/JavaApplicationStub" />
-	      </tarfileset>
-	      <tarfileset dir="${bin.dir}/kettle-dist" excludes="docs/api/** docs/api-core/** **/Thumbs.db">
+	      </zipfileset>
+	      <zipfileset dir="${bin.dir}/kettle-dist" excludes="docs/api/** docs/api-core/** **/Thumbs.db">
 	        <exclude name="**/*.sh" />
 	      	<exclude name="**/JavaApplicationStub" />
-	      </tarfileset>
-	    </tar>
+	      </zipfileset>
+	    </zip>
 		
 	</target>
 	
