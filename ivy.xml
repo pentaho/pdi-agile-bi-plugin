@@ -111,9 +111,8 @@
                 conf="default->default"/>
 
 
-      <dependency org="org.slf4j" name="slf4j-api" rev="1.6.1" conf="default->default" />
-      <dependency org="org.slf4j" name="slf4j-jcl" rev="1.6.1" conf="default->default" />
-      <dependency org="org.slf4j" name="jcl-over-slf4j" rev="1.6.1" conf="default->default" />
+      <dependency org="org.slf4j" name="slf4j-api" rev="1.7.3" conf="default->default" />
+      <dependency org="org.slf4j" name="slf4j-jcl" rev="1.7.3" conf="default->default" />
 
     <dependency org="org.json" name="json" rev="${dependency.json.revision}" changing="true" conf="default->default"/>
     <!-- Miscellaneous BISERVER CE dependencies -->
@@ -163,7 +162,8 @@
     <exclude org="xerces" module="xerces" conf="default->default"/>
     <exclude org="xml-apis" module="xml-apis" conf="default->default"/>
     <exclude org="org.olap4j" module="olap4j" conf="default->default"/>
-
+    <exclude org="org.slf4j" module="slf4j-log4j12" />
+	<exclude org="org.slf4j" module="jcl-over-slf4j" />
 
   </dependencies>
 </ivy-module>

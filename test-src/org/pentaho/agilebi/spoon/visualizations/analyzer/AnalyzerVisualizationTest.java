@@ -8,6 +8,8 @@
 
 package org.pentaho.agilebi.spoon.visualizations.analyzer;
 
+import java.io.File;
+
 import org.junit.Test;
 import org.pentaho.di.core.lifecycle.pdi.AgileBILifecycleListener;
 
@@ -42,13 +44,14 @@ public class AnalyzerVisualizationTest {
     String file = "/Users/joe/.kettle/instaview/projects/TestProject/View 1.xanalyzer";
 
     // path should be URL encoded...
-    String expected = "%3AUsers%3Ajoe%3A.kettle%3Ainstaview%3Aprojects%3ATestProject%3AView+1.xanalyzer";
+    String expected = "%3AUsers%3Ajoe%3A.kettle%3Ainstaview%3Aprojects%3ATestProject%3AView%201.xanalyzer";
     expectedPrefix = expectedPrefix.replace("${path}", expected);
 
     String url = viz.generateOpenUrl(file);
 
     // ignore the timestamp value since it is random
-    assertTrue(url.startsWith(expectedPrefix));
+    int index = url.indexOf(expected);
+    assertEquals(expected, url.substring(index, index + expected.length()));
 
   }
 
@@ -63,8 +66,10 @@ public class AnalyzerVisualizationTest {
     viz.reportName = "Untitled Report";
     AgileBILifecycleListener.consolePort = 10000;
 
-    String expectedPrefix = "cv.rptEditor.clearCache(); handle_puc_save('%3AUsers%3Arfellows%3Acode%3Asvn%3Aagile-bi%3Atrunk', 'Untitled Report.xanalyzer', true);\n" +
-        "document.location.href='http://localhost:10000/pentaho/api/repos/%3AUsers%3Arfellows%3Acode%3Asvn%3Aagile-bi%3Atrunk%3AUntitled+Report.xanalyzer/editor?ts=";
+    String myPath = AnalyzerVisualization.convertPathToRepoUrlFormat(new File("").getAbsolutePath());
+    myPath = AnalyzerVisualization.encodeString(myPath);
+    String expectedPrefix = "cv.rptEditor.clearCache(); handle_puc_save('" + myPath + "', 'Untitled Report.xanalyzer', true);\n" +
+        "document.location.href='http://localhost:10000/pentaho/api/repos/" + myPath + "%3AUntitled%20Report.xanalyzer/editor?ts=";
 
     // the params to this method are not used, so the inputs here don't matter
     String script = viz.generateRefreshModelJavascript("", "");

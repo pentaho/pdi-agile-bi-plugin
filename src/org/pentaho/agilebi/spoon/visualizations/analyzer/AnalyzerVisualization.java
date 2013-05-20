@@ -153,12 +153,16 @@ public class AnalyzerVisualization extends AbstractVisualization {
   public static String convertPathToRepoUrlFormat(String absolutePath) {
     return absolutePath.replaceAll("/", ":").replaceAll("\\\\", ":");
   }
+  
+  public static String encodeString(String value) {
+    value = URLEncoder.encode(value);
+    // change + to %20 to support repository requirements
+    return value.replaceAll("\\+", "%20");
+  }
 
 	private String replaceField(String str, String fieldName, String value, boolean urlEncode) {
 	  if (urlEncode) {
-	    value = URLEncoder.encode(value);
-      // change + to %20 to support repository requirements
-      value = value.replaceAll("\\+", "%20");
+	    value = encodeString(value);
 	  }
 	  return str.replaceAll("\\$\\{"+fieldName+"\\}", value); //$NON-NLS-1$ //$NON-NLS-2$
 	}
