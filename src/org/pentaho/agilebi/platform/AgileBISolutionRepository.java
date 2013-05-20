@@ -45,8 +45,6 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
   private static final long serialVersionUID = -1174699308144524442L;
   
   public int publish(String baseUrl, String path, String fileName, byte[] data, boolean overwrite) throws PentahoAccessControlException {
-    
-
     try {
       path = URLDecoder.decode(path, "UTF-8");
     } catch (UnsupportedEncodingException e) {
@@ -118,58 +116,47 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
     }
 
     public String getExtension() {
-      if (true) throw new UnsupportedOperationException();
-      return null;
+      throw new UnsupportedOperationException();
     }
 
     public String getFileName() {
-      if (true) throw new UnsupportedOperationException();
-      return null;
+      throw new UnsupportedOperationException();
     }
 
     public String getFullPath() {
-      if (true) throw new UnsupportedOperationException();
-      return null;
+      throw new UnsupportedOperationException();
     }
 
     public long getLastModified() {
-      if (true) throw new UnsupportedOperationException();
-      return 0;
+      throw new UnsupportedOperationException();
     }
 
     public String getSolution() {
-      if (true) throw new UnsupportedOperationException();
-      return null;
+      throw new UnsupportedOperationException();
     }
 
     public String getSolutionPath() {
-      if (true) throw new UnsupportedOperationException();
-      return null;
+      throw new UnsupportedOperationException();
     }
 
     public boolean isDirectory() {
-      if (true) throw new UnsupportedOperationException();
-      return false;
+      throw new UnsupportedOperationException();
     }
 
     public boolean isRoot() {
-      if (true) throw new UnsupportedOperationException();
-      return false;
+      throw new UnsupportedOperationException();
     }
 
     public ISolutionFile[] listFiles() {
-      if (true) throw new UnsupportedOperationException();
-      return null;
+      throw new UnsupportedOperationException();
     }
 
     public ISolutionFile[] listFiles(IFileFilter filter) {
-      if (true) throw new UnsupportedOperationException();
-      return null;
+      throw new UnsupportedOperationException();
     }
 
     public ISolutionFile retrieveParent() {
-      if (true) throw new UnsupportedOperationException();
-      return null;
+      throw new UnsupportedOperationException();
     }
     
   }
@@ -194,103 +181,84 @@ public class AgileBISolutionRepository extends SolutionRepositoryBase {
 
   public IActionSequence getActionSequence(String solutionName, String actionPath, String actionName, int loggingLevel,
       int actionOperation) {
-    if (true) throw new UnsupportedOperationException();
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   public String[] getAllActionSequences(int actionOperation) {
-    if (true) throw new UnsupportedOperationException();
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   public ClassLoader getClassLoader(String path) {
-    if (true) throw new UnsupportedOperationException();
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   public Map<IPermissionRecipient, IPermissionMask> getEffectivePermissions(ISolutionFile file) {
-    if (true) throw new UnsupportedOperationException();
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   public Map<IPermissionRecipient, IPermissionMask> getPermissions(ISolutionFile file) {
-    if (true) throw new UnsupportedOperationException();
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   public String getRepositoryName() {
-    if (true) throw new UnsupportedOperationException();
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   public long getSolutionFileLastModified(String path, int actionOperation) {
-    if (true) throw new UnsupportedOperationException();
-    return 0;
+    throw new UnsupportedOperationException();
   }
 
   public Document getSolutionStructure(int actionOperation) {
-    if (true) throw new UnsupportedOperationException();
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   public Document getSolutionTree(int actionOperation) {
-    if (true) throw new UnsupportedOperationException();
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   public Document getSolutionTree(int actionOperation, ISolutionFilter filter) {
-    if (true) throw new UnsupportedOperationException();
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   public Document getSolutions(String solutionName, String pathName, int actionOperation, boolean visibleOnly) {
-    if (true) throw new UnsupportedOperationException();
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   public boolean hasAccess(ISolutionFile file, int actionOperation) {
-    if (true) throw new UnsupportedOperationException();
-    return false;
+    throw new UnsupportedOperationException();
   }
 
   public int publish(String baseUrl, String path, String fileName, File f, boolean overwrite)
       throws PentahoAccessControlException {
-    if (true) throw new UnsupportedOperationException();
-    return 0;
+    throw new UnsupportedOperationException();
   }
 
   public void reloadSolutionRepository(IPentahoSession session, int loggingLevel) {
-    if (true) throw new UnsupportedOperationException();
-    
+    throw new UnsupportedOperationException();
   }
 
   public long resourceSize(String solutionPath, int actionOperation) {
-    if (true) throw new UnsupportedOperationException();
-    return 0;
+    throw new UnsupportedOperationException();
   }
 
   public void setPermissions(ISolutionFile file, Map<IPermissionRecipient, IPermissionMask> acl)
       throws PentahoAccessControlException {
-    if (true) throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
   public void share(ISolutionFile file, List<IPermissionRecipient> shareRecipients) {
-    if (true) throw new UnsupportedOperationException();
-    
+    throw new UnsupportedOperationException();
   }
 
   public boolean solutionSynchronizationSupported() {
-    if (true) throw new UnsupportedOperationException();
-    return false;
+    throw new UnsupportedOperationException();
   }
 
   public boolean supportsAccessControls() {
-    if (true) throw new UnsupportedOperationException();
-    return false;
+    throw new UnsupportedOperationException();
   }
 
   public boolean synchronizeSolutionWithSolutionSource(IPentahoSession session) throws UnsupportedOperationException {
-    if (true) throw new UnsupportedOperationException();
-    return false;
+    throw new UnsupportedOperationException();
   }  
 }

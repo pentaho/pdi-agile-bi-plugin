@@ -329,7 +329,7 @@ public class PrptViewerTag extends SwtElement{
           viewer.getZoomModel().addListDataListener(new ListDataListener(){
 
             public void contentsChanged(ListDataEvent arg0) {
-              combo.select(new ArrayList(zoomMap.keySet()).indexOf(viewer.getZoom()));
+              combo.select(new ArrayList<Double>(zoomMap.keySet()).indexOf(viewer.getZoom()));
               Double prevZoom = curZoom;
               PrptViewerTag.this.changeSupport.firePropertyChange("zoom", prevZoom, getZoom());
               curZoom = getZoom();

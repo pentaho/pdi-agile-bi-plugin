@@ -1,9 +1,16 @@
 package org.pentaho.agilebi.spoon.modeler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
-import org.pentaho.agilebi.modeler.*;
-import org.pentaho.agilebi.modeler.geo.GeoContext;
+import org.pentaho.agilebi.modeler.IModelerSource;
+import org.pentaho.agilebi.modeler.ModelerController;
+import org.pentaho.agilebi.modeler.ModelerException;
+import org.pentaho.agilebi.modeler.ModelerMessagesHolder;
+import org.pentaho.agilebi.modeler.ModelerMode;
+import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
 import org.pentaho.agilebi.modeler.util.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.modeler.util.TableModelerSource;
@@ -33,16 +40,12 @@ import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.binding.Binding;
-import org.pentaho.ui.xul.binding.BindingConvertor;
 import org.pentaho.ui.xul.components.XulLabel;
 import org.pentaho.ui.xul.components.XulMenuList;
 import org.pentaho.ui.xul.containers.XulEditpanel;
 import org.pentaho.ui.xul.containers.XulVbox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * User: nbaker

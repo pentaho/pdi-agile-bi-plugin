@@ -54,7 +54,6 @@ public class VisualizationManager {
 		loadVisualizations(pluginsLocation);
 	}
 
-	@SuppressWarnings("unchecked")
   private void loadVisualizations(File aDir) {
 		File[] theFiles = aDir.listFiles();
 		if(theFiles == null){
@@ -74,10 +73,8 @@ public class VisualizationManager {
 		}
 		
 		// sort the list based on order and alpha
-		Collections.sort(visualizations, new Comparator() {
-      public int compare(Object o1, Object o2) {
-        IVisualization v1 = (IVisualization)o1;
-        IVisualization v2 = (IVisualization)o2;
+		Collections.sort(visualizations, new Comparator<IVisualization>() {
+      public int compare(IVisualization v1, IVisualization v2) {
         if (v1.getOrder() > v2.getOrder()) {
           return -1;
         } else if (v1.getOrder() < v2.getOrder()) {
@@ -90,7 +87,6 @@ public class VisualizationManager {
 		});
 	}
 	
-	@SuppressWarnings("unchecked")
   protected void loadVisualizationFile(File file) {
     try {
       FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(new String[]{file.getPath()}, false);

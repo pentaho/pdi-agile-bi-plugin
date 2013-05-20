@@ -12,18 +12,17 @@
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * Copyright (c) 2009 Pentaho Corporation..  All rights reserved.
+ * Copyright (c) 2010 Pentaho Corporation..  All rights reserved.
  */
-package org.pentaho.agilebi.debug;
 
-import org.pentaho.di.ui.spoon.Spoon;
+package org.pentaho.agilebi.spoon.publish;
 
-public class SpoonLauncher {
-  public static void main(String[] args){
-    try{
-      Spoon.main(new String[]{});
-    } catch(Exception e){
-      e.printStackTrace();
-    }
-  }
+public interface IBiServerConfigUtil {
+
+  /**
+   * Tests a connection to the provided BI server connection object
+   * @param serverConnection
+   */
+  void testServerConnection(BiServerConnection biServerConnection);
+
 }

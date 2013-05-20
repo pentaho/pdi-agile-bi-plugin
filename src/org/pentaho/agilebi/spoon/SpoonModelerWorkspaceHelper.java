@@ -1,5 +1,12 @@
 package org.pentaho.agilebi.spoon;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Properties;
+
 import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.modeler.BaseModelerWorkspaceHelper;
 import org.pentaho.agilebi.modeler.IModelerWorkspaceHelper;
@@ -13,18 +20,8 @@ import org.pentaho.agilebi.modeler.nodes.MainModelNode;
 import org.pentaho.agilebi.modeler.nodes.RelationalModelNode;
 import org.pentaho.agilebi.modeler.strategy.AutoModelStrategy;
 import org.pentaho.agilebi.modeler.strategy.SimpleAutoModelStrategy;
-import org.pentaho.agilebi.modeler.strategy.StarSchemaAutoModelStrategy;
 import org.pentaho.agilebi.modeler.util.ModelerWorkspaceHelper;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.Reader;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * User: nbaker

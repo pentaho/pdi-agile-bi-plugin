@@ -16,12 +16,14 @@
  */
 package org.pentaho.agilebi.spoon.visualizations.prpt;
 
-import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
-import org.pentaho.metadata.model.concept.types.LocalizedString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
+
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.modeler.util.ISpoonModelerSource;
 import org.pentaho.agilebi.spoon.ModelerHelper;
 import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.spoon.publish.PublisherHelper;
@@ -39,6 +41,7 @@ import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.platform.api.repository.ISolutionRepository;
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
@@ -53,12 +56,8 @@ import org.pentaho.ui.xul.components.XulMenuList;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.containers.XulEditpanel;
 import org.pentaho.ui.xul.impl.AbstractXulEventHandler;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.TreeMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PRPTVisualizationController extends AbstractXulEventHandler implements PropertyPanelController{
 
@@ -129,7 +128,7 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
 
       @Override
       public Integer sourceToTarget(Double value) {
-        return new ArrayList(zoomMap.keySet()).indexOf(viewer.getZoom());
+        return new ArrayList<Double>(zoomMap.keySet()).indexOf(viewer.getZoom());
       }
 
       @Override
@@ -188,9 +187,9 @@ public class PRPTVisualizationController extends AbstractXulEventHandler impleme
     List<IPhysicalModel> theModels = theDomain.getPhysicalModels();
     if (theModels != null && theModels.size() > 0) {
       IPhysicalModel theModel = theModels.get(0);
-      List theTables = theModel.getPhysicalTables();
+      List<? extends IPhysicalTable> theTables = theModel.getPhysicalTables();
       if (theTables != null && theTables.size() > 0) {
-        IPhysicalTable theTable = (IPhysicalTable) theTables.get(0);
+        IPhysicalTable theTable = theTables.get(0);
         theName = theTable.getName(LocalizedString.DEFAULT_LOCALE);
       }
     }

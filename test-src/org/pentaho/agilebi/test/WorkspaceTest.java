@@ -17,14 +17,31 @@
 package org.pentaho.agilebi.test;
 
 import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.pentaho.agilebi.modeler.*;
-import org.pentaho.agilebi.modeler.nodes.*;
+import org.pentaho.agilebi.modeler.ModelerController;
+import org.pentaho.agilebi.modeler.ModelerException;
+import org.pentaho.agilebi.modeler.ModelerMessagesHolder;
+import org.pentaho.agilebi.modeler.ModelerPerspective;
+import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.modeler.nodes.AvailableField;
+import org.pentaho.agilebi.modeler.nodes.DimensionMetaData;
+import org.pentaho.agilebi.modeler.nodes.DimensionMetaDataCollection;
+import org.pentaho.agilebi.modeler.nodes.HierarchyMetaData;
+import org.pentaho.agilebi.modeler.nodes.LevelMetaData;
 import org.pentaho.agilebi.modeler.util.SpoonModelerMessages;
 import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
-import org.pentaho.metadata.model.*;
+import org.pentaho.metadata.model.Domain;
+import org.pentaho.metadata.model.IPhysicalColumn;
+import org.pentaho.metadata.model.LogicalColumn;
+import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.model.LogicalTable;
+import org.pentaho.metadata.model.SqlDataSource;
+import org.pentaho.metadata.model.SqlPhysicalColumn;
+import org.pentaho.metadata.model.SqlPhysicalModel;
+import org.pentaho.metadata.model.SqlPhysicalTable;
 import org.pentaho.metadata.model.concept.types.AggregationType;
 import org.pentaho.metadata.model.concept.types.DataType;
 import org.pentaho.metadata.model.concept.types.LocalizedString;

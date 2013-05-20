@@ -16,18 +16,28 @@
  */
 package org.pentaho.agilebi.spoon;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.metadata.model.*;
-import org.pentaho.metadata.registry.*;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.junit.Assert.*;
+import org.pentaho.metadata.model.Domain;
+import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.model.SqlDataSource;
+import org.pentaho.metadata.model.SqlPhysicalModel;
+import org.pentaho.metadata.model.SqlPhysicalTable;
+import org.pentaho.metadata.registry.IMetadataRegistry;
+import org.pentaho.metadata.registry.Link;
+import org.pentaho.metadata.registry.SimpleRegistry;
+import org.pentaho.metadata.registry.Type;
+import org.pentaho.metadata.registry.Verb;
 
 public class KettleModelerSourceTest {
 

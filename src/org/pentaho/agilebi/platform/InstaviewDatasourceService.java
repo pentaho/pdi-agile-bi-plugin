@@ -19,14 +19,13 @@ package org.pentaho.agilebi.platform;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.logging.Logger;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -36,7 +35,6 @@ import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.pool.KeyedObjectPoolFactory;
 import org.apache.commons.pool.impl.GenericKeyedObjectPoolFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
-import org.pentaho.agilebi.spoon.perspective.AgileBiInstaPerspective;
 import org.pentaho.di.core.database.Database;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;

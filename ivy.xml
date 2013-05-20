@@ -158,6 +158,7 @@
     <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false"/>
 
     <dependency org="pentaho" name="pentaho-platform-core-test" rev="${dependency.bi-platform.revision}" changing="true" conf="test->default" transitive="false" />
+    <dependency org="org.mockito" name="mockito-all" rev="1.8.5" conf="test->default"/>
 
     <exclude org="xerces" module="xerces" conf="default->default"/>
     <exclude org="xml-apis" module="xml-apis" conf="default->default"/>

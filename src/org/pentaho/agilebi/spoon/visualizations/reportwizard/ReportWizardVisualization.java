@@ -16,14 +16,13 @@
  */
 package org.pentaho.agilebi.spoon.visualizations.reportwizard;
 
+import java.util.Locale;
+
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
-import org.pentaho.agilebi.spoon.XulUI;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.i18n.BaseMessages;
 import org.w3c.dom.Node;
-
-import java.util.Locale;
 
 public class ReportWizardVisualization implements IVisualization {
 

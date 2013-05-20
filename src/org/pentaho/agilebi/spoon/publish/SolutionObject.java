@@ -18,11 +18,12 @@ package org.pentaho.agilebi.spoon.publish;
 
 import java.util.List;
 
-import org.pentaho.platform.api.repository2.unified.RepositoryFileTree;
 import org.pentaho.platform.repository2.unified.webservices.RepositoryFileTreeDto;
 import org.pentaho.ui.xul.util.AbstractModelNode;
 
 public class SolutionObject extends AbstractModelNode<SolutionObject> {
+
+  private static final long serialVersionUID = -2910390314706330209L;
 
   private String name;
 

@@ -16,19 +16,26 @@
  */
 package org.pentaho.agilebi.spoon.perspective;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.eclipse.swt.widgets.Composite;
-import org.pentaho.agilebi.spoon.PDIMessages;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.spoon.PDIMessages;
 import org.pentaho.di.core.EngineMetaInterface;
-import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveListener;
-import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
-import org.pentaho.ui.xul.*;
+import org.pentaho.ui.xul.XulComponent;
+import org.pentaho.ui.xul.XulDomContainer;
+import org.pentaho.ui.xul.XulException;
+import org.pentaho.ui.xul.XulOverlay;
+import org.pentaho.ui.xul.XulRunner;
 import org.pentaho.ui.xul.binding.BindingConvertor;
 import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
@@ -44,9 +51,8 @@ import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
 import org.pentaho.ui.xul.swt.tags.SwtTab;
 import org.pentaho.ui.xul.util.XulDialogCallback;
-
-import java.io.InputStream;
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractPerspective extends AbstractXulEventHandler implements SpoonPerspective, FileListener{
 

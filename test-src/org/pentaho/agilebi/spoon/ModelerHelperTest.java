@@ -16,38 +16,31 @@
  */
 package org.pentaho.agilebi.spoon;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.pentaho.agilebi.modeler.IModelerSource;
 import org.pentaho.di.cluster.SlaveServer;
-import org.pentaho.di.core.*;
+import org.pentaho.di.core.KettleEnvironment;
+import org.pentaho.di.core.ProvidesDatabaseConnectionInformation;
+import org.pentaho.di.core.Result;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleXMLException;
-import org.pentaho.di.core.gui.SpoonFactory;
-import org.pentaho.di.core.gui.SpoonInterface;
-import org.pentaho.di.core.logging.LogChannelInterface;
-import org.pentaho.di.core.variables.VariableSpace;
-import org.pentaho.di.job.Job;
 import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.job.entry.JobEntryBase;
 import org.pentaho.di.job.entry.JobEntryCopy;
 import org.pentaho.di.job.entry.JobEntryInterface;
-import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.Repository;
-import org.pentaho.di.resource.ResourceDefinition;
-import org.pentaho.di.resource.ResourceNamingInterface;
-import org.pentaho.di.resource.ResourceReference;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.metadata.registry.Type;
 import org.w3c.dom.Node;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class ModelerHelperTest {
 

@@ -18,12 +18,12 @@ package org.pentaho.agilebi.spoon.publish;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
-import org.pentaho.agilebi.spoon.publish.ModelServerPublish;
 import org.pentaho.agilebi.spoon.AbstractSwtXulDialogController;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
+import org.pentaho.platform.engine.core.system.PentahoSystem;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
@@ -58,6 +58,8 @@ import org.slf4j.LoggerFactory;
 public class XulDialogPublish extends AbstractSwtXulDialogController implements BindingExceptionHandler, PublishOverwriteDelegate{
 
   private static Logger logger = LoggerFactory.getLogger(XulDialogPublish.class);
+  
+  private final IBiServerConfigUtil biServerConfigUtil = PentahoSystem.get(IBiServerConfigUtil.class);
   
   private int folderTreeDepth = 99;
   
@@ -106,7 +108,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
    
   // Connection form members
   private BiServerConnectionForm biserverForm = new BiServerConnectionForm();
-  @SuppressWarnings("hiding")
+  
   private XulTextbox password, userid, url, name;
   private boolean doNotPublishDatasource; // override for the user checkbox
   
@@ -498,7 +500,7 @@ public class XulDialogPublish extends AbstractSwtXulDialogController implements 
   }
   
   public void testServerConnection(){
-    BiServerConfigUtil.testServerConnection(this.biserverForm.getConnectionCopy());
+    biServerConfigUtil.testServerConnection(this.biserverForm.getConnectionCopy());
   }
   
   public void biserverCancel(){
