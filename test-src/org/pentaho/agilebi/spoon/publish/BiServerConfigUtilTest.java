@@ -1,5 +1,13 @@
 package org.pentaho.agilebi.spoon.publish;
 
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 
 import org.junit.Before;
@@ -10,9 +18,6 @@ import org.pentaho.di.core.Const;
 import org.pentaho.di.core.gui.SpoonInterface;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.platform.api.engine.PentahoAccessControlException;
-
-import static org.mockito.Mockito.*;
-import static junit.framework.Assert.*;
 
 public class BiServerConfigUtilTest {
   
