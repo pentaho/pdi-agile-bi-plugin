@@ -31,7 +31,6 @@ import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.lifecycle.pdi.AgileBILifecycleListener;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.trans.TransMeta;
-import org.pentaho.di.ui.core.PropsUI;
 import org.pentaho.di.ui.core.dialog.ErrorDialog;
 import org.pentaho.di.ui.core.dialog.ShowMessageDialog;
 import org.pentaho.di.ui.spoon.BreadcrumbManager;
@@ -46,6 +45,7 @@ import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.components.XulBrowser;
 import org.pentaho.ui.xul.impl.XulEventHandler;
+import org.pentaho.ui.xul.swt.tags.SwtBrowser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -54,42 +54,35 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
 
   private static final Class<?> PKG = AgileBiInstaPerspective.class;
 	public static final String PERSPECTIVE_ID = "030-agilebiInsta"; //$NON-NLS-1$
-
+	
   private Logger logger = LoggerFactory.getLogger(AgileBiInstaPerspective.class);
-  private static final AgileBiInstaPerspective INSTANCE = new AgileBiInstaPerspective();
   
   private AgileBiInstaPerspectiveController perspectiveController = new AgileBiInstaPerspectiveController();
   
-  private XulBrowser browser;
+  private static final AgileBiInstaPerspective INSTANCE = new AgileBiInstaPerspective();
   
-  private boolean showTips;
-  private boolean showRepositoryDialog;
+  private XulBrowser browser;
   
   private SpoonPerspective lastPerspective;
   
+  private final Display display;
+  
+  public static AgileBiInstaPerspective getInstance(){
+    return INSTANCE;
+  }
+  
   public void onStart() {
+    final String locationTemplate = "http://localhost:${port}/pentaho/api/repos/instaview/resources/web/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
 
-	String location = "http://localhost:${port}/pentaho/api/repos/instaview/resources/web/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
-
-    // turn off tooltips and the repositories dialog
-	Spoon spoon = Spoon.getInstance();
-	if( spoon.getStartupPerspective() != null && spoon.getStartupPerspective().equals(PERSPECTIVE_ID)) {
-		PropsUI props = spoon.getProperties();
-		showTips = props.showTips();
-		showRepositoryDialog = props.showRepositoriesDialogAtStartup();
-		props.setShowTips(false);
-		props.setRepositoriesDialogAtStartupShown(false);
-	}
-
-	int port = AgileBILifecycleListener.consolePort;
-	if( port == 0 ) {
-		// TODO - JD - this is bogus, and only needed because the startup sequence is all messed up
-		port = 10000;
-	}
-	location = replaceField(location, "port", ""+port, false); //$NON-NLS-1$ //$NON-NLS-2$
-	browser.setSrc(location);
-	
-	perspectiveController.setBrowser(browser);
+    display.asyncExec(new Runnable() {
+      
+      @Override
+      public void run() {
+        browser
+            .setSrc(replaceField(locationTemplate, "port", Integer.toString(AgileBILifecycleListener.consolePort), false)); //$NON-NLS-1$ //$NON-NLS-2$
+        perspectiveController.setBrowser(browser);
+      }
+    });
   }
   
   public AgileBiInstaPerspective(){
@@ -103,9 +96,19 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
 
     // Register perspective listeners after all loading is complete so we
     // get them all
-    Display.getCurrent().asyncExec(new Runnable() {
+    display = Display.getCurrent();
+
+    try {
+    	browser = (XulBrowser) container.getDocumentRoot().getElementById("web_browser"); //$NON-NLS-1$
+    } catch (Exception e) {
+        e.printStackTrace();//logger.error(e);
+    }    
+    
+    display.asyncExec(new Runnable() {
       @Override
       public void run() {
+        ((SwtBrowser) browser).getBrowser().setText("<html><body>Loading</body></html>");
+        
         // Add listeners to all perspectives so we can switch back to the last active one
         // in the event there are unsaved changes and the user elects to not return to Instaview
         for(final SpoonPerspective sp : SpoonPerspectiveManager.getInstance().getPerspectives()) {
@@ -124,12 +127,6 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
         }
       }
     });
-
-    try {
-    	browser = (XulBrowser) container.getDocumentRoot().getElementById("web_browser"); //$NON-NLS-1$
-    } catch (Exception e) {
-        e.printStackTrace();//logger.error(e);
-    }    
   }
   
 	private String replaceField(String str, String fieldName, String value, boolean urlEncode) {
@@ -138,10 +135,6 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
 		  }
 		  return str.replaceAll("\\$\\{"+fieldName+"\\}", value); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-  
-  public static AgileBiInstaPerspective getInstance(){
-    return INSTANCE;
-  }
   
   public void setModel(ModelerWorkspace aModel) {
   	model = aModel;
@@ -434,14 +427,6 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
   }
   
   public void shutdown() {
-		// reset tooltips and the repositories dialog
-		Spoon spoon = Spoon.getInstance();
-		if( spoon.getStartupPerspective() != null && spoon.getStartupPerspective().equals(PERSPECTIVE_ID)) {
-			PropsUI props = spoon.getProperties();
-			props.setShowTips(showTips);
-			props.setRepositoriesDialogAtStartupShown(showRepositoryDialog);
-			spoon.saveSettings();
-		}
   }
   
 }

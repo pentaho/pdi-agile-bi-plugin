@@ -21,6 +21,7 @@ import java.net.Socket;
 import org.apache.commons.lang.ObjectUtils.Null;
 import org.apache.commons.vfs.VFS;
 import org.apache.commons.vfs.impl.DefaultFileSystemManager;
+import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
 import org.pentaho.agilebi.platform.JettyServer;
 import org.pentaho.agilebi.spoon.KettleModelerSource;
@@ -37,93 +38,112 @@ import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.core.lifecycle.LifeEventHandler;
 import org.pentaho.di.core.lifecycle.LifecycleException;
 import org.pentaho.di.core.lifecycle.LifecycleListener;
+import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.plugins.PluginClassTypeMapping;
+import org.pentaho.di.ui.core.PropsUI;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.platform.api.engine.IPluginManager;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
 
-@LifecyclePlugin(id="AgileBiPlugin")
-@PluginClassTypeMapping(classTypes = { GUIOption.class }, implementationClass = {Null.class})
-public class AgileBILifecycleListener implements LifecycleListener, GUIOption{
-	public static int consolePort;
+@LifecyclePlugin(id = "AgileBiPlugin")
+@PluginClassTypeMapping(classTypes = { GUIOption.class }, implementationClass = { Null.class })
+public class AgileBILifecycleListener implements LifecycleListener {
+  public static int consolePort;
+
   private JettyServer server = null;
 
-  public void onStart(LifeEventHandler arg0) throws LifecycleException {
-    try {
+  private boolean showTips;
 
-      // because we're outside of the default classpath,
-      // META-INF/providers.xml is not loaded, so instead,
-      // we register our VFS provider programmatically
-      ((DefaultFileSystemManager)VFS.getManager()).addProvider("mtm", new MetadataToMondrianVfs());
+  private boolean showRepositoryDialog;
 
-      int port = 9999;
-      boolean portFound = false;
-      int tries = 100;
-      while(portFound == false && tries > 0){
-        port++;
-        tries--;
-        Socket sock = null;
+  public void onStart(final LifeEventHandler arg0) throws LifecycleException {
+    // turn off tooltips and the repositories dialog
+    Spoon spoon = Spoon.getInstance();
+    if (spoon.getStartupPerspective() != null
+        && spoon.getStartupPerspective().equals(AgileBiInstaPerspective.PERSPECTIVE_ID)) {
+      PropsUI props = spoon.getProperties();
+      showTips = props.showTips();
+      showRepositoryDialog = props.showRepositoriesDialogAtStartup();
+      props.setShowTips(false);
+      props.setRepositoriesDialogAtStartupShown(false);
+    }
+
+    new Thread(new Runnable() {
+
+      @Override
+      public void run() {
         try {
-          sock = new Socket("localhost", port);
-        } catch (Exception e) {
-          portFound = true;
-        } finally {
-          if(sock != null){
-            sock.close();
+          LogChannel.GENERAL.logBasic("Starting agile-bi");
+          // because we're outside of the default classpath,
+          // META-INF/providers.xml is not loaded, so instead,
+          // we register our VFS provider programmatically
+          ((DefaultFileSystemManager) VFS.getManager()).addProvider("mtm", new MetadataToMondrianVfs());
+
+          int port = 9999;
+          boolean portFound = false;
+          int tries = 100;
+          while (portFound == false && tries > 0) {
+            port++;
+            tries--;
+            Socket sock = null;
+            try {
+              sock = new Socket("localhost", port);
+            } catch (Exception e) {
+              portFound = true;
+            } finally {
+              if (sock != null) {
+                sock.close();
+              }
+            }
           }
+          if (!portFound) {
+            throw new IllegalStateException("Could not find an open port to start the Agile-BI server on");
+          }
+
+          AgileBILifecycleListener.consolePort = port;
+          server = new JettyServer("localhost", port); //$NON-NLS-1$
+          server.startServer();
+
+          // Only initialize the Instaview perspective if the Instaview plugin is registered
+          if (AgileBiSpoonInstaPlugin.isInstaviewRegistered(PentahoSystem.get(IPluginManager.class))) {
+            AgileBiInstaPerspective.getInstance().onStart();
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
         }
-      }
-      if(!portFound){
-        throw new IllegalStateException("Could not find an open port to start the Agile-BI server on");
-      }
 
-      AgileBILifecycleListener.consolePort = port;
-      server = new JettyServer("localhost", port); //$NON-NLS-1$
-      server.startServer();
-  
-      // Only initialize the Instaview perspective if the Instaview plugin is registered
-      if (AgileBiSpoonInstaPlugin.isInstaviewRegistered(PentahoSystem.get(IPluginManager.class))) {
-        AgileBiInstaPerspective.getInstance().onStart();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+        Display.getDefault().asyncExec(new Runnable() {
 
-    ModelerSourceFactory.registerSourceType(OutputStepModelerSource.OUTPUTSTEP_SOURCE_TYPE, OutputStepModelerSource.class);
-    ModelerSourceFactory.registerSourceType(KettleModelerSource.SOURCE_TYPE, KettleModelerSource.class);
-    if( SpoonFactory.getInstance() != null ) { // condition if for unit testing
-	    ((Spoon) SpoonFactory.getInstance()).addFileListener(AgileBiModelerPerspective.getInstance());
-	
-	    for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {
-	      ((Spoon) SpoonFactory.getInstance()).addFileListener(viz);
-	    }
-    }
+          @Override
+          public void run() {
+            ModelerSourceFactory.registerSourceType(OutputStepModelerSource.OUTPUTSTEP_SOURCE_TYPE,
+                OutputStepModelerSource.class);
+            ModelerSourceFactory.registerSourceType(KettleModelerSource.SOURCE_TYPE, KettleModelerSource.class);
+            if (SpoonFactory.getInstance() != null) { // condition if for unit testing
+              ((Spoon) SpoonFactory.getInstance()).addFileListener(AgileBiModelerPerspective.getInstance());
+
+              for (IVisualization viz : VisualizationManager.getInstance().getVisualizations()) {
+                ((Spoon) SpoonFactory.getInstance()).addFileListener(viz);
+              }
+            }
+          }
+        });
+      }
+    }).start();
   }
 
   public void onExit(LifeEventHandler arg0) throws LifecycleException {
-	    server.stopServer();
-		AgileBiInstaPerspective.getInstance().shutdown();
+    server.stopServer();
+    AgileBiInstaPerspective.getInstance().shutdown();
+
+    // reset tooltips and the repositories dialog
+    Spoon spoon = Spoon.getInstance();
+    if (spoon.getStartupPerspective() != null
+        && spoon.getStartupPerspective().equals(AgileBiInstaPerspective.PERSPECTIVE_ID)) {
+      PropsUI props = spoon.getProperties();
+      props.setShowTips(showTips);
+      props.setRepositoriesDialogAtStartupShown(showRepositoryDialog);
+      spoon.saveSettings();
+    }
   }
-
-  public String getLabelText() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  public Object getLastValue() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  public DisplayType getType() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  public void setValue(Object value) {
-    // TODO Auto-generated method stub
-
-  }
-
-
 }

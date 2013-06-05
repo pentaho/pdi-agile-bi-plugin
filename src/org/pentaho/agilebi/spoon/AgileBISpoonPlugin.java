@@ -16,15 +16,19 @@
  */
 package org.pentaho.agilebi.spoon;
 
+import java.util.Enumeration;
+import java.util.ResourceBundle;
+
 import org.pentaho.agilebi.spoon.perspective.AgileBiInstaPerspective;
 import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
 import org.pentaho.di.i18n.BaseMessages;
-import org.pentaho.di.ui.spoon.*;
+import org.pentaho.di.ui.spoon.SpoonLifecycleListener;
+import org.pentaho.di.ui.spoon.SpoonPerspective;
+import org.pentaho.di.ui.spoon.SpoonPlugin;
+import org.pentaho.di.ui.spoon.SpoonPluginCategories;
+import org.pentaho.di.ui.spoon.SpoonPluginInterface;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.XulException;
-
-import java.util.Enumeration;
-import java.util.ResourceBundle;
 
 @SpoonPlugin(id = "AgileBi", image = "")
 @SpoonPluginCategories({"spoon", "trans-graph", "job-graph", "database_dialog"})
