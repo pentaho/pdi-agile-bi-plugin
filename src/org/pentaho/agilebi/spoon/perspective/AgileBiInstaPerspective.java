@@ -16,6 +16,7 @@
  */
 package org.pentaho.agilebi.spoon.perspective;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.Collections;
@@ -45,7 +46,6 @@ import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
 import org.pentaho.ui.xul.components.XulBrowser;
 import org.pentaho.ui.xul.impl.XulEventHandler;
-import org.pentaho.ui.xul.swt.tags.SwtBrowser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -85,11 +85,11 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     });
   }
   
-  public AgileBiInstaPerspective(){
+  public AgileBiInstaPerspective() {
     super("org/pentaho/agilebi/spoon/perspective/insta_browser.xul"); //$NON-NLS-1$
-    
+
     addPerspectiveListener(this);
-    
+
     final AgileBiInstaPerspective thisPerspective = this;
     // Set the last perspective so we're never without one
     lastPerspective = this;
@@ -99,19 +99,20 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     display = Display.getCurrent();
 
     try {
-    	browser = (XulBrowser) container.getDocumentRoot().getElementById("web_browser"); //$NON-NLS-1$
+      browser = (XulBrowser) container.getDocumentRoot().getElementById("web_browser"); //$NON-NLS-1$
     } catch (Exception e) {
-        e.printStackTrace();//logger.error(e);
-    }    
-    
+      e.printStackTrace();//logger.error(e);
+    }
+
     display.asyncExec(new Runnable() {
       @Override
       public void run() {
-        ((SwtBrowser) browser).getBrowser().setText("<html><body>Loading</body></html>");
-        
+        browser.setSrc(new File(new File("").getAbsolutePath() + "/plugins/spoon/agile-bi/ui/instaview_load.html")
+            .toURI().toString());
+
         // Add listeners to all perspectives so we can switch back to the last active one
         // in the event there are unsaved changes and the user elects to not return to Instaview
-        for(final SpoonPerspective sp : SpoonPerspectiveManager.getInstance().getPerspectives()) {
+        for (final SpoonPerspective sp : SpoonPerspectiveManager.getInstance().getPerspectives()) {
           sp.addPerspectiveListener(new SpoonPerspectiveListener() {
             @Override
             public void onActivation() {
