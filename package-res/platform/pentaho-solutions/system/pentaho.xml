@@ -177,5 +177,5 @@
    		<max-folder-limit>3000000</max-folder-limit>
    </file-upload-defaults>
    <web-resources>js/themes.js</web-resources>
-  <default-theme>onyx</default-theme>
+  <default-theme>crystal</default-theme>
 </pentaho-system>

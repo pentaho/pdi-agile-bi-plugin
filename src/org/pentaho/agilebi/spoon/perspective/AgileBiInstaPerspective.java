@@ -72,7 +72,8 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
   }
   
   public void onStart() {
-    final String locationTemplate = "http://localhost:${port}/pentaho/api/repos/instaview/resources/web/main.html?theme=onyx&embedded=true"; //$NON-NLS-1$
+    // NO longer specify the theme on the URL, take the server default (specified in pentaho.xml).
+    final String locationTemplate = "http://localhost:${port}/pentaho/api/repos/instaview/resources/web/main.html?embedded=true"; //$NON-NLS-1$
 
     display.asyncExec(new Runnable() {
       
