@@ -297,11 +297,6 @@
   </servlet>
 
   <servlet>
-    <servlet-name>RepositoryFilePublisher</servlet-name>
-    <servlet-class>org.pentaho.platform.web.servlet.RepositoryFilePublisher</servlet-class>
-  </servlet>
-
-  <servlet>
     <servlet-name>GenericServlet</servlet-name>
     <servlet-class>org.pentaho.platform.web.servlet.GenericServlet</servlet-class>
     <init-param>
@@ -437,11 +432,6 @@
   </servlet>
 
   <servlet>
-    <servlet-name>MondrianCatalogPublisher</servlet-name>
-    <servlet-class>org.pentaho.platform.web.servlet.MondrianCatalogPublisher</servlet-class>
-  </servlet>
-
-  <servlet>
     <servlet-name>RepositoryTree</servlet-name>
     <jsp-file>/jsp/RepositoryTree.jsp</jsp-file>
   </servlet>
@@ -461,7 +451,7 @@
     <jsp-file>/jsp/PUCLogin.jsp</jsp-file>
     <init-param>
       <param-name>send401List</param-name>
-      <param-value>MondrianCatalogPublisher,SchedulerAdminService, PublishService,ResetRepositoryService,ServiceActionService,gwtrpc,ws/gwt,mantle/images/spacer.gif</param-value>
+      <param-value>SchedulerAdminService, PublishService,ResetRepositoryService,ServiceActionService,gwtrpc,ws/gwt,mantle/images/spacer.gif</param-value>
       <description>List of things to throw a 401 to when seen in the login</description>
     </init-param>
   </servlet>
@@ -662,11 +652,6 @@
   </servlet-mapping>
 
   <servlet-mapping>
-    <servlet-name>RepositoryFilePublisher</servlet-name>
-    <url-pattern>/RepositoryFilePublisher</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
     <servlet-name>Pivot</servlet-name>
     <url-pattern>/Pivot</url-pattern>
   </servlet-mapping>
@@ -768,11 +753,6 @@
   <servlet-mapping>
     <servlet-name>CacheExpirationService</servlet-name>
     <url-pattern>/CacheExpirationService</url-pattern>
-  </servlet-mapping>
-
-  <servlet-mapping>
-    <servlet-name>MondrianCatalogPublisher</servlet-name>
-    <url-pattern>/MondrianCatalogPublisher</url-pattern>
   </servlet-mapping>
 
   <!-- [BEGIN SAMPLE SERVLET MAPPINGS] -->
