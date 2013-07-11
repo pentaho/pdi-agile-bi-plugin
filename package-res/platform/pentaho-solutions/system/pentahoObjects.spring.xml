@@ -27,14 +27,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   <bean id="IUnifiedRepository" class="org.pentaho.platform.repository2.unified.fs.FileSystemBackedUnifiedRepository" scope="singleton">
     <constructor-arg value="/" />
   </bean>
-
-    <bean id="ISolutionRepository" class="org.pentaho.agilebi.platform.AgileBISolutionRepository" scope="singleton" />
-
   <bean id="IDBDatasourceService" class="org.pentaho.agilebi.platform.AgileBIDatasourceService"/>
-
-  <!-- Uncomment the following line to use a filesystem/db-based repository with meta information stored in a db  -->
-  <!--  <bean id="ISolutionRepository" class="org.pentaho.platform.repository.solution.dbbased.DbBasedSolutionRepository" scope="session" /> -->
-  <!-- <bean id="ISolutionRepositoryService" class="org.pentaho.platform.repository.solution.SolutionRepositoryServiceImpl" scope="session" /> -->
 
   <!-- runtime repositories are not used in the current implmentation of the BI platform -->
   <!-- <bean id="IRuntimeRepository" class="org.pentaho.platform.repository.runtime.RuntimeRepository" scope="session" /> -->

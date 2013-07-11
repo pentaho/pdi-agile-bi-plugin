@@ -16,10 +16,10 @@
  */
 package org.pentaho.agilebi.spoon.publish;
 
-import org.pentaho.platform.api.repository.ISolutionRepository;
+import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 
 /**
- * A bean defining a BI server connectpion
+ * A bean defining a BI server connection
  * @author jamesdixon
  * @modified tyler band - removed publishPassword
  *
@@ -73,8 +73,8 @@ public class BiServerConnection {
     if(url == null){
       return;
     }
-    if( this.url.charAt( this.url.length()-1) != ISolutionRepository.SEPARATOR ) {
-      this.url = this.url + ISolutionRepository.SEPARATOR;
+    if( this.url.charAt( this.url.length()-1) != RepositoryFile.SEPARATOR.charAt(0) ) {
+      this.url = this.url + RepositoryFile.SEPARATOR;
     }
 
   }

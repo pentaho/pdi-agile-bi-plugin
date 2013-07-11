@@ -42,7 +42,7 @@ import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
-import org.pentaho.platform.api.repository.ISolutionRepository;
+import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.binding.Binding;
 import org.pentaho.ui.xul.binding.Binding.Type;
@@ -392,8 +392,8 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
     boolean showServerSelection = true;
     boolean showFolders = true;
     boolean showCurrentFolder = true;
-    String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
-    "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
+    String serverPathTemplate = "{path}" + RepositoryFile.SEPARATOR + //$NON-NLS-1$
+    "resources" + RepositoryFile.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
     String databaseName = PublisherHelper.getBiServerCompatibleDatabaseName(workspace.getDatabaseName());
     String extension = ".xanalyzer"; //$NON-NLS-1$
     String filename = new File(publishingFile).getName();

@@ -36,7 +36,7 @@ import org.pentaho.di.ui.spoon.delegates.SpoonDBDelegate;
 import org.pentaho.metadata.model.IPhysicalModel;
 import org.pentaho.metadata.model.IPhysicalTable;
 import org.pentaho.metadata.model.concept.types.LocalizedString;
-import org.pentaho.platform.api.repository.ISolutionRepository;
+import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.binding.Binding;
@@ -238,8 +238,8 @@ public class SpoonModelerController extends ModelerController {
     boolean showServerSelection = true;
     boolean showFolders = false; 
     boolean showCurrentFolder = false;
-    String serverPathTemplate = "{path}" + ISolutionRepository.SEPARATOR + //$NON-NLS-1$
-      "resources" + ISolutionRepository.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
+    String serverPathTemplate = "{path}" + RepositoryFile.SEPARATOR + //$NON-NLS-1$
+      "resources" + RepositoryFile.SEPARATOR + "metadata"; //$NON-NLS-1$ //$NON-NLS-2$
     String databaseName = PublisherHelper.getBiServerCompatibleDatabaseName(workspace.getDatabaseName());
     String extension = ".xmi"; //$NON-NLS-1$
     String filename = workspace.getModelName();
