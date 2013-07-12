@@ -69,7 +69,7 @@ import org.slf4j.LoggerFactory;
 
 public class ModelerHelper extends AbstractXulEventHandler implements ISpoonMenuController {
 
-  private static final String MODELER_NAME = "Modeler"; 
+  private static final String MODELER_NAME = "Model Editor"; 
   private static final String TEMP_MODELS_FOLDER = "models";
 
   private static ModelerHelper instance = null;

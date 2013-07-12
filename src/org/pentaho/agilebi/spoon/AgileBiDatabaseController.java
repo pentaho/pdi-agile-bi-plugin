@@ -36,7 +36,7 @@ import org.pentaho.xul.swt.tab.TabItem;
 
 public class AgileBiDatabaseController extends AbstractXulEventHandler {
 
-	private static final String MODELER_NAME = "Modeler"; //$NON-NLS-1$
+	private static final String MODELER_NAME = "Model Editor"; //$NON-NLS-1$
 
 	private XulDatabaseExplorerController dbExplorerController;
 
