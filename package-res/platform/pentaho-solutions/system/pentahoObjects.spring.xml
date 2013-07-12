@@ -55,8 +55,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   <bean id="IConditionalExecution" class="org.pentaho.platform.plugin.condition.javascript.ConditionalExecution"
         scope="prototype"/>
   <bean id="IMessageFormatter" class="org.pentaho.platform.engine.services.MessageFormatter" scope="singleton" />
-  <bean id="INavigationComponent" class="org.pentaho.platform.uifoundation.component.xml.NavigationComponent"
-        scope="prototype"/>
+
   <!-- <bean id="IVersionCheckDataProvider" class="org.pentaho.platform.plugin.services.versionchecker.PentahoVersionCheckDataProvider" scope="prototype" />-->
   <!--
     IDatasourceService - options are: 
