@@ -47,7 +47,7 @@ import org.pentaho.platform.engine.core.system.PentahoSystem;
 
 @LifecyclePlugin(id = "AgileBiPlugin")
 @PluginClassTypeMapping(classTypes = { GUIOption.class }, implementationClass = { Null.class })
-public class AgileBILifecycleListener implements LifecycleListener {
+public class AgileBILifecycleListener implements LifecycleListener, GUIOption<Object> {
   public static int consolePort;
 
   private JettyServer server = null;
@@ -145,5 +145,24 @@ public class AgileBILifecycleListener implements LifecycleListener {
       props.setRepositoriesDialogAtStartupShown(showRepositoryDialog);
       spoon.saveSettings();
     }
+  }
+
+  @Override
+  public String getLabelText() {
+    return null;
+  }
+
+  @Override
+  public Object getLastValue() {
+    return null;
+  }
+
+  @Override
+  public org.pentaho.di.core.gui.GUIOption.DisplayType getType() {
+    return null;
+  }
+
+  @Override
+  public void setValue(Object arg0) {
   }
 }
