@@ -301,7 +301,7 @@
     <servlet-class>org.pentaho.platform.web.servlet.GenericServlet</servlet-class>
     <init-param>
       <param-name>showDeprecationMessage</param-name>
-      <param-value>true</param-value>
+      <param-value>false</param-value>
     </init-param>
   </servlet>
 
