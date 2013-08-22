@@ -320,11 +320,13 @@
 			</fileset>
 		</delete>
 	    
-	    <!-- remove all the JPivot files -->
-	    <delete dir="${approot.stage.dir}/platform/webapps/pentaho/jpivot" />
+	  <!-- remove all the JPivot files -->
+	  <delete dir="${approot.stage.dir}/platform/webapps/pentaho/jpivot" />
 		<delete dir="approot.stage.dir}/platform/webapps/pentaho/WEB-INF/jpivot" />
+	  <delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/pentaho-jpivot-plugin" />
 	  
 		<!-- remove solution folders that aren't necessary -->
+	  <delete dir="${approot.stage.dir}/platform/pentaho-solutions/plugin-samples" />
 
 		<!--<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/data-access"/>-->
 
