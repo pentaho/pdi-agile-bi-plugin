@@ -9,11 +9,11 @@
     <property name="extension" value="xanalyzer"/>
     <property name="newUrl" value="http://localhost:${port}/pentaho/api/repos/xanalyzer/editor?catalog=${modelLocation}&amp;cube=${modelId}&amp;showFieldList=true&amp;fieldListView=cmdViewType"/>
     <property name="openUrl" value="http://localhost:${port}/pentaho/api/repos/${path}/editor?ts=${timestamp}"/>
-    <property name="saveJavascript" value="handle_puc_save('${path}', '${filename}', true, true);"/>
+    <property name="saveJavascript" value="handle_puc_save('${path}', '${filename}', true, undefined, true);"/>
     <property name="order" value="0"/>
     <property name="tabIconLocation" value="plugins/spoon/agile-bi/ui/images/visualizer.png"/>
     <property name="refreshDataJavascript" value="cv.getActiveReport().refreshReport()"/>
-    <property name="refreshModelJavascript" value="cv.rptEditor.clearCache(); handle_puc_save('${basedir}', 'tmpview.xanalyzer', true, true);
+    <property name="refreshModelJavascript" value="cv.rptEditor.clearCache(); handle_puc_save('${basedir}', 'tmpview.xanalyzer', true, undefined, true);
     document.location.href='http://localhost:${port}/pentaho/api/repos/${path}/editor?ts=${timestamp}';"/>
 
   </bean>
