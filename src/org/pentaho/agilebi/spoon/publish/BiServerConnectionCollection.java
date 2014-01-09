@@ -17,6 +17,8 @@
 
 package org.pentaho.agilebi.spoon.publish;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.pentaho.ui.xul.util.AbstractModelList;
 
 /**
@@ -24,6 +26,7 @@ import org.pentaho.ui.xul.util.AbstractModelList;
  * @author jamesdixon
  *
  */
+@XmlRootElement
 public class BiServerConnectionCollection extends AbstractModelList<BiServerConnection> {
 
   
