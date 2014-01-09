@@ -28,6 +28,8 @@ import org.pentaho.ui.xul.util.AbstractModelList;
  */
 @XmlRootElement
 public class BiServerConnectionCollection extends AbstractModelList<BiServerConnection> {
-
+  public BiServerConnectionCollection() {
+    super();
+  }
   
 }

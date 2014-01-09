@@ -42,6 +42,10 @@ public class BiServerConnection {
   
   private boolean defaultDatasourcePublish = false;
   
+  public BiServerConnection() {
+    super();
+  }
+  
   public String getDefaultFolder() {
     return defaultFolder;
   }
