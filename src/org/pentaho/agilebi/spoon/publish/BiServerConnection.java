@@ -17,6 +17,8 @@
 
 package org.pentaho.agilebi.spoon.publish;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 
 /**
@@ -25,6 +27,7 @@ import org.pentaho.platform.api.repository2.unified.RepositoryFile;
  * @modified tyler band - removed publishPassword
  *
  */
+@XmlRootElement
 public class BiServerConnection {
 
   private String url;
