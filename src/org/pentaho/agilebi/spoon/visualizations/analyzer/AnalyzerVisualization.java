@@ -132,11 +132,16 @@ public class AnalyzerVisualization extends AbstractVisualization {
   }
   
   public String generateSaveJavascript(String filename) {
+    return generateSaveJavascript(filename, true, true,false);
+  }
+
+  public String generateSaveJavascript(String filename, boolean encodePath, boolean encodeFileName,
+                                       boolean encodePort) {
     // path, filename
     String pathAndFilename[] = getPathAndFilename(filename);
-    String str = replaceField(saveJavascript, "path", pathAndFilename[0], true); //$NON-NLS-1$
-    str = replaceField(str, "filename", pathAndFilename[1], true); //$NON-NLS-1$
-    str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
+    String str = replaceField(saveJavascript, "path", pathAndFilename[0], encodePath); //$NON-NLS-1$
+    str = replaceField(str, "filename", pathAndFilename[1], encodeFileName); //$NON-NLS-1$
+    str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, encodePort); //$NON-NLS-1$
     return str;
   }
 
