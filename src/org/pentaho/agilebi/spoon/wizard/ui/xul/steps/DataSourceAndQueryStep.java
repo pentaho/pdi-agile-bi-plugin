@@ -40,6 +40,8 @@ import org.pentaho.reporting.engine.classic.wizard.ui.xul.components.AbstractWiz
 import org.pentaho.reporting.libraries.base.config.Configuration;
 import org.pentaho.reporting.libraries.base.util.DebugLog;
 import org.pentaho.reporting.libraries.base.util.StringUtils;
+import org.pentaho.reporting.libraries.formula.DefaultFormulaContext;
+import org.pentaho.reporting.libraries.formula.FormulaContext;
 import org.pentaho.reporting.libraries.resourceloader.ResourceKey;
 import org.pentaho.reporting.libraries.resourceloader.ResourceManager;
 import org.pentaho.reporting.ui.datasources.pmd.PmdPreviewWorker;
@@ -144,6 +146,10 @@ public class DataSourceAndQueryStep extends AbstractWizardStep
 
               public DataFactory getContextDataFactory() {
                 return df;
+              }
+
+              public FormulaContext getFormulaContext() {
+                return new DefaultFormulaContext();
               }
             });
 

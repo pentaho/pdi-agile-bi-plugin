@@ -17,6 +17,8 @@
 
 package org.pentaho.agilebi.spoon.wizard.ui.xul;
 
+import org.pentaho.reporting.engine.classic.core.DataFactoryContext;
+import org.pentaho.reporting.engine.classic.core.designtime.datafactory.DesignTimeDataFactoryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
@@ -80,5 +82,9 @@ public class DefaultWizardDesignTimeContext implements DesignTimeContext
 
   public boolean isShowExpertItems() {
     return false;
+  }
+
+  public DataFactoryContext getDataFactoryContext() {
+    return new DesignTimeDataFactoryContext();
   }
 }
