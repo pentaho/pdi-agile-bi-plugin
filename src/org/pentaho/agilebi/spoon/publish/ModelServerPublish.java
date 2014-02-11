@@ -892,7 +892,7 @@ public class ModelServerPublish {
     if(path != null && path.contains(RepositoryFile.SEPARATOR)){
         repoPath = path.replace(RepositoryFile.SEPARATOR,":");
     } 
-    url = url + repoPath + RepositoryFile.SEPARATOR +"children?depth=" + depth +
+    url = url + repoPath + RepositoryFile.SEPARATOR +"tree?depth=" + depth +
         "&filter=" + filter + "&showHidden=" + showHidden; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$  
     WebResource resource = client.resource(url);
     try {
