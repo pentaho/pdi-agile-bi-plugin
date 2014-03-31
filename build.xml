@@ -174,10 +174,6 @@
 			<include name="gwt-dev-*.jar"/>
 			<include name="gwt-user-*.jar"/>
 			<include name="slf4j-*.jar"/>
-			<!-- ehcache-core- -->
-			<include name="ehcache-core*.jar"/>
-            <include name="ehcache-*.jar"/>
-			<!-- second, remove unnecessary jars -->
 
 			<!-- batik -->
 			<include name="batik-*.jar"/>
@@ -190,8 +186,11 @@
   			<include name="jasperreports-*.jar"/>
 			<!-- chartbeans -->
   			<include name="pentaho-chartbeans-*.jar"/>	
-            <!-- hibernate -->
-            <include name="hibernate-*.jar"/>
+
+      <!-- hibernate -->
+      <include name="hibernate-*.jar"/>
+      <exclude name="hibernate-ehcache*.jar"/>
+
 			<!-- castor -->
   			<include name="castor-*.jar"/>
 			<!-- derby -->
@@ -290,7 +289,27 @@
 		</fileset>
   	</delete>
   </target>
-	
+
+  <!--
+   ehcache.xml needs to be in the classpath for geo plugin to work properly. Kettle's plugin class loading system
+   only server jars so just including it in the distribution's lib folder doesn't work. It needs to be in the jar so it
+   will be picked up.
+   -->
+  <target name="embed-ehcache-xml-in-jar">
+    <jar destfile="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar" update="true">
+      <fileset dir="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/classes">
+        <include name="ehcache.xml" />
+      </fileset>
+    </jar>
+    <jar destfile="${approot.stage.dir}/${ivy.artifact.id}-${project.revision}.jar" update="true">
+      <fileset dir="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/classes">
+        <include name="ehcache.xml" />
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="package-zip" depends="embed-ehcache-xml-in-jar, subfloor-pkg.package-zip"/>
+
 	<target name="assemble-embedded-server" depends="install-antcontrib">
 		<!-- Step 1: Unzip a platform zip into staging dir -->
 		<mkdir dir="${platform.unzip.dir}"/>
@@ -432,6 +451,7 @@
 			</fileset>
 		</unzip>
 		<!-- copy in the monetdb Agile Mart plugin -->
+<!--
 		<unzip dest="${bin.dir}/kettle-dist/data-integration/plugins/steps">
 			<fileset dir="${monetdb-plugin-assembly.dir}">
 				<include name="MonetDBAgileMartPlugin-*.zip"/>
@@ -447,7 +467,7 @@
 	      	<exclude name="**/JavaApplicationStub" />
 	      </zipfileset>
 	    </zip>
-		
+-->
 	</target>
 	
 	<target name="install-plugin">
