@@ -62,6 +62,8 @@
 				value="pdi-ce-agile-bi" 
 				description="Name of the pdi distribution with agile bi"/>
 	
+	<property name="server.assembly.filename" value="server-assembly.properties" />
+	
 	<target name="resolve"
 	          depends="resolve-default, resolve-test, ivy.check-releasable"
 	          description="Retrieves all the dependent libraries" />
@@ -367,6 +369,12 @@
 		<delete dir="${approot.stage.dir}/platform/webapps/pentaho/docs"/>
 		<delete dir="${approot.stage.dir}/platform/webapps/pentaho/mantle"/>
 		<delete dir="${approot.stage.dir}/platform/webapps/pentaho/mantleLogin"/>
+
+		<!-- Create the server-assembly.properties -->
+    <mkdir dir="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/classes"/>
+    <echo file="${approot.stage.dir}/WEB-INF/classes/${server.assembly.filename}" append="false">assembly.title=${agbi.server.product.title}&#13;&#10;</echo>
+    <echo file="${approot.stage.dir}/WEB-INF/classes/${server.assembly.filename}" append="true">assembly.productid=${agbi.server.product.id}&#13;&#10;</echo>
+    <echo file="${approot.stage.dir}/WEB-INF/classes/${server.assembly.filename}" append="true">assembly.version=${project.revision}&#13;&#10;</echo>
 
 		<!-- Step 3: Unzip the analyzer dist if available -->
 		<fail message="Pentaho Analyzer agilebi plugin zip file is not available.">
