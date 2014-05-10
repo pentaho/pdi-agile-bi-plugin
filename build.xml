@@ -373,9 +373,9 @@
 		<!-- Add the server-assembly.properties files -->
 		
     <mkdir dir="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/classes"/>
-    <echo file="${approot.stage.dir}/WEB-INF/classes/${server.assembly.filename}" append="false">assembly.title=${agbi.server.product.title}&#13;&#10;</echo>
-    <echo file="${approot.stage.dir}/WEB-INF/classes/${server.assembly.filename}" append="true">assembly.productid=${agbi.server.product.id}&#13;&#10;</echo>
-    <echo file="${approot.stage.dir}/WEB-INF/classes/${server.assembly.filename}" append="true">assembly.version=${project.revision}&#13;&#10;</echo>
+    <echo file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/classes/${server.assembly.filename}" append="false">assembly.title=${agbi.server.product.title}&#13;&#10;</echo>
+    <echo file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/classes/${server.assembly.filename}" append="true">assembly.productid=${agbi.server.product.id}&#13;&#10;</echo>
+    <echo file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/classes/${server.assembly.filename}" append="true">assembly.version=${project.revision}&#13;&#10;</echo>
 
 		<!-- Step 3: Unzip the analyzer dist if available -->
 		<fail message="Pentaho Analyzer agilebi plugin zip file is not available.">
