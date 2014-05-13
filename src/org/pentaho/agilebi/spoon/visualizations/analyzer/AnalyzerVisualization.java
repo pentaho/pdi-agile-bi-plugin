@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.regex.Matcher;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -58,6 +59,7 @@ import org.pentaho.metadata.registry.Verb;
 import org.pentaho.metadata.util.XmiParser;
 import org.pentaho.platform.api.engine.ICacheManager;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
+import org.pentaho.platform.util.RepositoryPathEncoder;
 import org.pentaho.ui.xul.XulDomContainer;
 import org.pentaho.ui.xul.swt.SwtXulLoader;
 import org.pentaho.ui.xul.swt.SwtXulRunner;
@@ -137,10 +139,15 @@ public class AnalyzerVisualization extends AbstractVisualization {
 
   public String generateSaveJavascript(String filename, boolean encodePath, boolean encodeFileName,
                                        boolean encodePort) {
-    // path, filename
+    // path, filename.
+    // be sure to escape single quotes since that is the javascript string delimiter in the function call
     String pathAndFilename[] = getPathAndFilename(filename);
-    String str = replaceField(saveJavascript, "path", pathAndFilename[0], encodePath); //$NON-NLS-1$
-    str = replaceField(str, "filename", pathAndFilename[1], encodeFileName); //$NON-NLS-1$
+    String str = replaceField(saveJavascript, "path",
+      pathAndFilename[0].replace( "'", "\\'" ), false);
+
+    str = replaceField(str, "filename",
+      pathAndFilename[1].replace( "'", "\\'" ), false);
+
     str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, encodePort); //$NON-NLS-1$
     return str;
   }
@@ -157,24 +164,24 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	}
 
   public static String convertPathToRepoUrlFormat(String absolutePath) {
-    return absolutePath.replaceAll("/", ":").replaceAll("\\\\", ":");
+    return RepositoryPathEncoder.encodeRepositoryPath( absolutePath );
   }
   
   public static String encodeString(String value) {
-    value = URLEncoder.encode(value);
-    // change + to %20 to support repository requirements
-    return value.replaceAll("\\+", "%20");
+    return RepositoryPathEncoder.encodeURIComponent( value );
   }
 
 	private String replaceField(String str, String fieldName, String value, boolean urlEncode) {
 	  if (urlEncode) {
 	    value = encodeString(value);
 	  }
-	  return str.replaceAll("\\$\\{"+fieldName+"\\}", value); //$NON-NLS-1$ //$NON-NLS-2$
+    return str.replaceAll( "\\$\\{" + fieldName + "\\}", Matcher.quoteReplacement(value) ); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	public String generateNewUrl(String fileLocation, String modelId) {
-    String str = replaceField(newUrl, "modelLocation", fileLocation, true); //$NON-NLS-1$
+    String str = replaceField(newUrl, "modelLocation",
+      fileLocation, true); //$NON-NLS-1$
+
     str = replaceField(str, "modelId", modelId, true); //$NON-NLS-1$
 	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
 
