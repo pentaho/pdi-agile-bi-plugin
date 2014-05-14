@@ -164,6 +164,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	}
 
   public static String convertPathToRepoUrlFormat(String absolutePath) {
+    absolutePath = absolutePath.replaceAll("\\\\", "/");
     return RepositoryPathEncoder.encodeRepositoryPath( absolutePath );
   }
   
