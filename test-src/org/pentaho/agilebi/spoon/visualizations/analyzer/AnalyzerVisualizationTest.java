@@ -40,8 +40,9 @@ public class AnalyzerVisualizationTest {
   @Test
   public void testConvertPathToRepoUrlFormat_backslashes() throws Exception {
     String path = "C:\\Program Files\\pentaho";
-    String expected = "C::Program Files:pentaho";
-    assertEquals(expected, AnalyzerVisualization.convertPathToRepoUrlFormat(path));
+    String expected = "C:::Program Files:pentaho";
+    String actual = AnalyzerVisualization.convertPathToRepoUrlFormat(path);
+    assertEquals(expected, actual);
   }
 
   @Test
