@@ -34,6 +34,7 @@ import org.dom4j.io.XMLWriter;
 import org.jfree.util.Log;
 import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.spoon.util.EncodingUtil;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.gui.SpoonFactory;
@@ -88,6 +89,8 @@ public class PublisherHelper {
         throw new ModelerException(BaseMessages.getString(ModelerWorkspace.class,
             "ModelServerPublish.Publish.UnsavedModel"));
       }
+
+      validateName( publishingFile, databaseName );
 
       ModelServerPublish publisher = new ModelServerPublish();
       publisher.setModel(workspace);
@@ -212,6 +215,8 @@ public class PublisherHelper {
         throw new ModelerException(BaseMessages.getString(ModelerWorkspace.class,
             "ModelServerPublish.Publish.UnsavedModel"));
       }
+
+      validateName( filename, databaseName );
 
       ModelServerPublish publisher = new ModelServerPublish();
       publisher.setModel(workspace);
@@ -339,6 +344,8 @@ public class PublisherHelper {
         return;
       }
 
+      validateName( prpt );
+
       ModelServerPublish publisher = new ModelServerPublish();
       publisher.setModel(workspace);
       Spoon spoon = ((Spoon) SpoonFactory.getInstance());
@@ -429,4 +436,21 @@ public class PublisherHelper {
     return name.replaceAll("\\s", "_");
   }
 
+  private static void validateName( String... names ) throws ModelerException{
+
+    for( String name : names ) {
+
+      if ( !EncodingUtil.isValidString( name ) ) {
+
+        SpoonFactory.getInstance().messageBox( BaseMessages.getString( ModelerWorkspace.class,
+            "ModelServerPublish.Publish.IllegalName", name, EncodingUtil.getReservedCharStr() ), "Dialog Error", false,
+          Const.ERROR
+        );
+        throw new ModelerException(
+          BaseMessages.getString( ModelerWorkspace.class, "ModelServerPublish.Publish.IllegalName",
+            name, EncodingUtil.getReservedCharStr() )
+        );
+      }
+    }
+  }
 }
