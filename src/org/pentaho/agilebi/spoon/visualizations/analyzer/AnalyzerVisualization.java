@@ -140,13 +140,13 @@ public class AnalyzerVisualization extends AbstractVisualization {
   public String generateSaveJavascript(String filename, boolean encodePath, boolean encodeFileName,
                                        boolean encodePort) {
     // path, filename.
-    // be sure to escape single quotes since that is the javascript string delimiter in the function call
+    // be sure to escape single quotes and backslashes to avoid javascript eval issues
     String pathAndFilename[] = getPathAndFilename(filename);
     String str = replaceField(saveJavascript, "path",
-      pathAndFilename[0].replace( "'", "\\'" ), false);
+      pathAndFilename[0].replace( "\\", "\\\\" ).replace( "'", "\\'" ), false);
 
     str = replaceField(str, "filename",
-      pathAndFilename[1].replace( "'", "\\'" ), false);
+      pathAndFilename[1].replace( "\\", "\\\\" ).replace( "'", "\\'" ), false);
 
     str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, encodePort); //$NON-NLS-1$
     return str;
