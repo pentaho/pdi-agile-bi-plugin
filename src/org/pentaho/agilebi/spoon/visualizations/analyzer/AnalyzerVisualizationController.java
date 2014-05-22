@@ -115,20 +115,7 @@ public class AnalyzerVisualizationController extends AbstractXulEventHandler imp
 	}
 	
 	public void openReport(String aReport) {
-	  String theLocation = this.location.substring(0, this.location.indexOf("?"));
-	  
-	  try {
-      aReport = URLEncoder.encode(aReport, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
-
-    // to make sure the report reflects any modifications to the underlying model
-    // we must clear the cache & save the report. see AGILEBI-471
-    // this is what the flush=true parameter is for.
-    // also, the rnd param is to make sure that the browser does not display a cached version of the requested report
-    long avoidBrowserCache = Calendar.getInstance().getTimeInMillis();
-	  theLocation = theLocation + "?command=open&solution=&path=&action=" + aReport + "&edit=true&showFieldList=true&flush=true&rnd=" + avoidBrowserCache;
+	  String theLocation = visualization.generateOpenUrl( aReport );
 	  this.browser.setSrc(theLocation);
 	}
 
