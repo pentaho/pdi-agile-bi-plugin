@@ -163,7 +163,7 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	  return str;
 	}
 	
-  private static String convertPathSlashes( String absolutePath ) {
+  public static String convertPathSlashes( String absolutePath ) {
     return absolutePath.replaceAll( "\\\\", "/" );
   }
 
