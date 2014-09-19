@@ -40,7 +40,7 @@ public class AnalyzerVisualizationTest {
   @Test
   public void testConvertPathToRepoUrlFormat_backslashes() throws Exception {
     String path = "C:\\Program Files\\pentaho";
-    String expected = "C:::Program Files:pentaho";
+    String expected = "C\t:Program Files:pentaho";
     String actual = AnalyzerVisualization.convertPathToRepoUrlFormat(path);
     assertEquals(expected, actual);
   }
@@ -76,10 +76,13 @@ public class AnalyzerVisualizationTest {
     viz.reportName = "Untitled Report";
     AgileBILifecycleListener.consolePort = 10000;
 
-    String myPath = AnalyzerVisualization.convertPathToRepoUrlFormat(new File("").getAbsolutePath());
-    myPath = AnalyzerVisualization.encodeString(myPath);
-    String expectedPrefix = "cv.rptEditor.clearCache(); handle_puc_save('" + myPath + "', 'Untitled Report.xanalyzer', true);\n" +
-        "document.location.href='http://localhost:10000/pentaho/api/repos/" + myPath + "%3AUntitled%20Report.xanalyzer/editor?ts=";
+    String myPath = new File( "" ).getAbsolutePath();
+    String myPathEncoded =
+        AnalyzerVisualization.encodeString( AnalyzerVisualization.convertPathToRepoUrlFormat( myPath ) );
+    String expectedPrefix =
+        "cv.rptEditor.clearCache(); handle_puc_save('" + AnalyzerVisualization.convertPathSlashes( myPath )
+            + "', 'Untitled Report.xanalyzer', true);\n"
+            + "document.location.href='http://localhost:10000/pentaho/api/repos/" + myPathEncoded + "%3AUntitled%20Report.xanalyzer/editor?ts=";
 
     // the params to this method are not used, so the inputs here don't matter
     String script = viz.generateRefreshModelJavascript("", "");
