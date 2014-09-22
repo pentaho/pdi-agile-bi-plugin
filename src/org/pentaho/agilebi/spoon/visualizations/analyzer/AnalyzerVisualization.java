@@ -162,10 +162,13 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
 	  return str;
 	}
+	
+  public static String convertPathSlashes( String absolutePath ) {
+    return absolutePath.replaceAll( "\\\\", "/" );
+  }
 
-  public static String convertPathToRepoUrlFormat(String absolutePath) {
-    absolutePath = absolutePath.replaceAll("\\\\", "/");
-    return RepositoryPathEncoder.encodeRepositoryPath( absolutePath );
+  public static String convertPathToRepoUrlFormat( String absolutePath ) {
+    return RepositoryPathEncoder.encodeRepositoryPath( convertPathSlashes( absolutePath ) );
   }
   
   public static String encodeString(String value) {
@@ -200,12 +203,14 @@ public class AnalyzerVisualization extends AbstractVisualization {
 	}
 	
 	public String generateRefreshModelJavascript(String fileLocation, String modelId) {
-	  String str = refreshModelJavascript.replaceAll("tmpview", reportName); //$NON-NLS-1$
-	  str = replaceField(str, "port", ""+AgileBILifecycleListener.consolePort, false); //$NON-NLS-1$
-    String folder = convertPathToRepoUrlFormat(new File("").getAbsolutePath());
-    str = replaceField(str, "basedir", folder, true); //$NON-NLS-1$
+    String str = refreshModelJavascript.replaceAll( "tmpview", reportName ); //$NON-NLS-1$
+    str = replaceField( str, "port", "" + AgileBILifecycleListener.consolePort, false ); //$NON-NLS-1$
 
-    str = replaceField(str, "path", folder + ":" + reportName + ".xanalyzer", true); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    // We are saving this temp file to the file system, not the repo so do not encode
+    String folder = new File( "" ).getAbsolutePath();
+    str = replaceField( str, "basedir", convertPathSlashes( folder ), false ); //$NON-NLS-1$
+
+    str = replaceField( str, "path", convertPathToRepoUrlFormat( folder + "/" + reportName + ".xanalyzer" ), true ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     Date now = new Date();
     String ts = Long.toString(now.getTime());
     str = replaceField(str, "timestamp", ts, false); //$NON-NLS-1$
