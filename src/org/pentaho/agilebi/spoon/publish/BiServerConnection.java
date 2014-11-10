@@ -19,6 +19,7 @@ package org.pentaho.agilebi.spoon.publish;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.pentaho.di.core.Const;
 import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 
 /**
@@ -31,26 +32,26 @@ import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 public class BiServerConnection {
 
   private String url;
-  
+
   private String userId;
-  
+
   private String password;
-  
+
   private String name;
 
   private String defaultFolder;
-  
+
   private boolean defaultDatasourcePublish = false;
-  
+
   public BiServerConnection() {
     super();
   }
-  
+
   public String getDefaultFolder() {
     return defaultFolder;
   }
 
-  public void setDefaultFolder(String defaultFolder) {
+  public void setDefaultFolder( String defaultFolder ) {
     this.defaultFolder = defaultFolder;
   }
 
@@ -58,7 +59,7 @@ public class BiServerConnection {
     return defaultDatasourcePublish;
   }
 
-  public void setDefaultDatasourcePublish(boolean defaultDatasourcePublish) {
+  public void setDefaultDatasourcePublish( boolean defaultDatasourcePublish ) {
     this.defaultDatasourcePublish = defaultDatasourcePublish;
   }
 
@@ -76,12 +77,12 @@ public class BiServerConnection {
    * In the form protocol:server:port/context, e.g. http://localhost:8080/pentaho
    * @param url
    */
-  public void setUrl(String url) {
+  public void setUrl( String url ) {
     this.url = url;
-    if(url == null){
+    if ( Const.isEmpty( url ) ) {
       return;
     }
-    if( this.url.charAt( this.url.length()-1) != RepositoryFile.SEPARATOR.charAt(0) ) {
+    if ( this.url.charAt( this.url.length() - 1 ) != RepositoryFile.SEPARATOR.charAt( 0 ) ) {
       this.url = this.url + RepositoryFile.SEPARATOR;
     }
 
@@ -99,7 +100,7 @@ public class BiServerConnection {
    * Sets the user id for the BI server
    * @param userId
    */
-  public void setUserId(String userId) {
+  public void setUserId( String userId ) {
     this.userId = userId;
   }
 
@@ -115,7 +116,7 @@ public class BiServerConnection {
    * Sets the password for the BI server
    * @param password
    */
-  public void setPassword(String password) {
+  public void setPassword( String password ) {
     this.password = password;
   }
 
@@ -131,8 +132,8 @@ public class BiServerConnection {
    * Sets the name for the BI server
    * @param name
    */
-  public void setName(String name) {
+  public void setName( String name ) {
     this.name = name;
   }
-  
+
 }
