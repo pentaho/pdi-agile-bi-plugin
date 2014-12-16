@@ -24,6 +24,7 @@ import org.pentaho.di.core.Const;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.model.concept.Property;
 import org.pentaho.metadata.registry.*;
 import org.pentaho.metadata.registry.util.RegistryUtil;
 
@@ -124,7 +125,7 @@ public class KettleModelerSource extends TableModelerSource {
   public Domain generateDomain() throws ModelerException {
     Domain d = ModelerSourceUtil.generateDomain(getDatabaseMeta(), getSchemaName(), getTableName());
     for(LogicalModel lModel : d.getLogicalModels()) {
-      lModel.setProperty("SUPPORTS_OLAP", Boolean.TRUE.toString());
+      lModel.setProperty("SUPPORTS_OLAP", new Property( Boolean.TRUE.toString() ));
     }
     return d;
   }
@@ -159,10 +160,10 @@ public class KettleModelerSource extends TableModelerSource {
   @Override
   public void serializeIntoDomain(Domain d) {
     LogicalModel lm = d.getLogicalModels().get(0);
-    lm.setProperty(getSourceTypePropertyName(), getSourceType());
-    lm.setProperty(getFilenamePropertyName(), Const.NVL(getFilename(), EMPTY_STRING));
-    lm.setProperty(getRepositoryNamePropertyName(), Const.NVL(getRepositoryName(), EMPTY_STRING));
-    lm.setProperty(getMetaIdPropertyName(), Const.NVL(getMetaId(), EMPTY_STRING));
+    lm.setProperty(getSourceTypePropertyName(), new Property( getSourceType() ));
+    lm.setProperty(getFilenamePropertyName(), new Property( Const.NVL(getFilename(), EMPTY_STRING) ));
+    lm.setProperty(getRepositoryNamePropertyName(), new Property( Const.NVL(getRepositoryName(), EMPTY_STRING) ));
+    lm.setProperty(getMetaIdPropertyName(), new Property( Const.NVL(getMetaId(), EMPTY_STRING) ));
   }
 
   /**

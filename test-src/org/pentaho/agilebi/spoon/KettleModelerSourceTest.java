@@ -34,6 +34,7 @@ import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.model.SqlDataSource;
 import org.pentaho.metadata.model.SqlPhysicalModel;
 import org.pentaho.metadata.model.SqlPhysicalTable;
+import org.pentaho.metadata.model.concept.Property;
 import org.pentaho.metadata.registry.IMetadataRegistry;
 import org.pentaho.metadata.registry.Link;
 import org.pentaho.metadata.registry.SimpleRegistry;
@@ -161,11 +162,11 @@ public class KettleModelerSourceTest {
     domain.addLogicalModel(lm);
 
     // Set the properties KettleModelerSource will look for when extracting values
-    lm.setProperty(source.getFilenamePropertyName(), fileName);
-    lm.setProperty(source.getRepositoryNamePropertyName(), repositoryName);
-    lm.setProperty(source.getMetaIdPropertyName(), metaId);
-    table.setProperty("target_table", tableName);
-    table.setProperty("target_schema", schemaName);
+    lm.setProperty(source.getFilenamePropertyName(), new Property( fileName ));
+    lm.setProperty(source.getRepositoryNamePropertyName(), new Property( repositoryName ));
+    lm.setProperty(source.getMetaIdPropertyName(), new Property( metaId ));
+    table.setProperty("target_table", new Property( tableName ));
+    table.setProperty("target_schema", new Property( schemaName ));
 
     source.initialize(domain);
 
