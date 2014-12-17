@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.pentaho.reporting.engine.classic.core.AbstractReportDefinition;
 import org.pentaho.reporting.engine.classic.core.designtime.DesignTimeContext;
+import org.pentaho.reporting.engine.classic.core.metadata.MaturityLevel;
 import org.pentaho.reporting.engine.classic.core.wizard.DataSchemaModel;
 import org.pentaho.reporting.engine.classic.wizard.ui.xul.WizardEditorModel;
 import org.pentaho.reporting.libraries.designtime.swing.settings.DefaultLocaleSettings;
@@ -86,5 +87,9 @@ public class DefaultWizardDesignTimeContext implements DesignTimeContext
 
   public DataFactoryContext getDataFactoryContext() {
     return new DesignTimeDataFactoryContext();
+  }
+
+  public MaturityLevel getMaturityLevel() {
+    return MaturityLevel.Production;
   }
 }
