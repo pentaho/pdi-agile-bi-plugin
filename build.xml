@@ -353,6 +353,7 @@
 
         <delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/BIRT"/>
 		    <delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/reporting"/>
+		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/pentaho-cdf-dd"/>
 
 		<!-- Remove kettle plugins -->
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/kettle/plugins"/>
