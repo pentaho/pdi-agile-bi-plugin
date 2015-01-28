@@ -27,11 +27,15 @@ import org.pentaho.agilebi.modeler.ModelerException;
 import org.pentaho.agilebi.modeler.ModelerMessagesHolder;
 import org.pentaho.agilebi.modeler.ModelerPerspective;
 import org.pentaho.agilebi.modeler.ModelerWorkspace;
+import org.pentaho.agilebi.modeler.geo.GeoContext;
 import org.pentaho.agilebi.modeler.nodes.AvailableField;
 import org.pentaho.agilebi.modeler.nodes.DimensionMetaData;
 import org.pentaho.agilebi.modeler.nodes.DimensionMetaDataCollection;
 import org.pentaho.agilebi.modeler.nodes.HierarchyMetaData;
 import org.pentaho.agilebi.modeler.nodes.LevelMetaData;
+import org.pentaho.agilebi.modeler.nodes.MainModelNode;
+import org.pentaho.agilebi.modeler.nodes.RelationalModelNode;
+import org.pentaho.agilebi.modeler.strategy.SimpleAutoModelStrategy;
 import org.pentaho.agilebi.modeler.util.SpoonModelerMessages;
 import org.pentaho.agilebi.spoon.SpoonModelerWorkspaceHelper;
 import org.pentaho.metadata.model.Domain;
@@ -259,5 +263,30 @@ public class WorkspaceTest {
     Assert.assertEquals( 2, work.getAvailableTables().getChildren().size() );
 
   }
+  @Test
+  public void testGeoContext() throws ModelerException {
+    GeoContext geoRoles = new GeoContext();
+    SpoonModelerWorkspaceHelper helper = new SpoonModelerWorkspaceHelper( geoRoles );
+    ModelerWorkspace work = new ModelerWorkspace( helper );
+    SimpleAutoModelStrategy autoModelStrategy = doNothingAutoModelStrategy();
+    helper.setAutoModelStrategy( autoModelStrategy );
+    helper.autoModelFlat( work );
+    Assert.assertSame( geoRoles, autoModelStrategy.getGeoContext() );
+    Assert.assertSame( geoRoles, work.getGeoContext() );
+  }
+
+  private SimpleAutoModelStrategy doNothingAutoModelStrategy() {
+    return new SimpleAutoModelStrategy( null ) {
+      @Override public void autoModelOlap( final ModelerWorkspace workspace, final MainModelNode mainModel )
+          throws ModelerException {
+      }
+
+      @Override
+      public void autoModelRelational( final ModelerWorkspace workspace, final RelationalModelNode relationalModelNode )
+          throws ModelerException {
+      }
+    };
+  }
+
 
 }

@@ -45,15 +45,19 @@ import org.pentaho.metadata.model.concept.types.LocalizedString;
  */
 public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper implements IModelerWorkspaceHelper {
 
-  ModelerWorkspaceHelper helper;
+  final ModelerWorkspaceHelper helper;
 
-  GeoContext geoContext;
+  final GeoContext geoContext;
   private static final String GEO_CONFIG_FILE_LOCATION = "plugins/spoon/agile-bi/geoRoles.properties"; //$NON-NLS-1$
 
   public SpoonModelerWorkspaceHelper() {
+    this( initGeoContext() );
+  }
+
+  public SpoonModelerWorkspaceHelper( GeoContext geoContext ) {
     super( LocalizedString.DEFAULT_LOCALE );
     helper = new ModelerWorkspaceHelper( LocalizedString.DEFAULT_LOCALE );
-    this.geoContext = initGeoContext();
+    this.geoContext = geoContext;
     helper.setAutoModelStrategy( new SimpleAutoModelStrategy( LocalizedString.DEFAULT_LOCALE, this.geoContext ) );
   }
 
@@ -63,9 +67,6 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    * @param workspace
    */
   public void autoModelFlat( ModelerWorkspace workspace ) throws ModelerException {
-    if ( this.geoContext == null ) {
-      this.geoContext = initGeoContext();
-    }
     workspace.setGeoContext( this.geoContext );
     final AutoModelStrategy strategy = getAutoModelStrategy();
     strategy.autoModelOlap( workspace, workspace.getModel() );
@@ -79,10 +80,6 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
    * @param workspace
    */
   public void autoModelFlatInBackground( ModelerWorkspace workspace ) throws ModelerException {
-
-    if ( this.geoContext == null ) {
-      this.geoContext = initGeoContext();
-    }
     workspace.setGeoContext( this.geoContext );
     final ModelerWorkspace ws = workspace;
     final AutoModelStrategy strategy = getAutoModelStrategy();
@@ -196,7 +193,7 @@ public class SpoonModelerWorkspaceHelper extends BaseModelerWorkspaceHelper impl
     AutoModelStrategy strategy = super.getAutoModelStrategy();
 
     if ( strategy instanceof SimpleAutoModelStrategy ) {
-      ( (SimpleAutoModelStrategy) strategy ).setGeoContext( initGeoContext() );
+      ( (SimpleAutoModelStrategy) strategy ).setGeoContext( geoContext );
     }
     return strategy;
   }
