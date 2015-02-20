@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="file://E:/workspaces/sprint_workspace/pentaho-xul/test/resource/documents/xul.css" type="text/css"?>
  <dialog width="400" height="440" id="publish" title="${Spoon.Perspectives.AgileBi.Publish.Title}" 
   	buttons="accept,cancel"
   	ondialogaccept="dialog.okClick()"
