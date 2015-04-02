@@ -28,4 +28,23 @@ public class BiServerConnectionTest {
     connection.setUrl( "" );
     assertEquals( "", connection.getUrl() );
   }
+
+  @Test
+  public void testUrlNoSlashInKettleVar() throws Exception {
+    BiServerConnection connection = new BiServerConnection();
+    connection.setUrl( "${some.var}" );
+    assertEquals( "${some.var}", connection.getUrl() );
+    connection.setUrl( "%%win.var%%" );
+    assertEquals( "%%win.var%%", connection.getUrl() );
+  }
+
+  @Test
+  public void testUrlEnsuresTrailingSlash() throws Exception {
+    BiServerConnection connection = new BiServerConnection();
+    connection.setUrl( "http://some.server/webapp" );
+    assertEquals( "http://some.server/webapp/", connection.getUrl() );
+    connection.setUrl( "http://some.server/pho/" );
+    assertEquals( "http://some.server/pho/", connection.getUrl() );
+  }
+
 }
