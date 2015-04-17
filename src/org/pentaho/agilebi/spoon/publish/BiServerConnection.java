@@ -20,6 +20,7 @@ package org.pentaho.agilebi.spoon.publish;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.pentaho.di.core.Const;
+import org.pentaho.di.core.util.StringUtil;
 import org.pentaho.platform.api.repository2.unified.RepositoryFile;
 
 /**
@@ -82,7 +83,8 @@ public class BiServerConnection {
     if ( Const.isEmpty( url ) ) {
       return;
     }
-    if ( this.url.charAt( this.url.length() - 1 ) != RepositoryFile.SEPARATOR.charAt( 0 ) ) {
+    if ( ( this.url.charAt( this.url.length() - 1 ) != RepositoryFile.SEPARATOR.charAt( 0 ) )
+        && !StringUtil.isVariable( this.url ) ) {
       this.url = this.url + RepositoryFile.SEPARATOR;
     }
 
