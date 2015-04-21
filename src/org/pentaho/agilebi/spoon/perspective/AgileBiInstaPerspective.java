@@ -51,7 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
-public class AgileBiInstaPerspective extends AbstractPerspective implements SpoonPerspectiveListener, SpoonPerspective {
+public class AgileBiInstaPerspective extends AbstractPerspective implements SpoonPerspectiveListener {
 
   private static final Class<?> PKG = AgileBiInstaPerspective.class;
 	public static final String PERSPECTIVE_ID = "030-agilebiInsta"; //$NON-NLS-1$
@@ -153,6 +153,10 @@ public class AgileBiInstaPerspective extends AbstractPerspective implements Spoo
     return loader.getResourceAsStream("org/pentaho/agilebi/spoon/perspective/insta.png"); //$NON-NLS-1$
   }
 
+  public String getPerspectiveIconPath() {
+    return "org/pentaho/agilebi/spoon/perspective/insta.svg";
+  }  
+  
   public String getId() {
     return PERSPECTIVE_ID; 
   }
