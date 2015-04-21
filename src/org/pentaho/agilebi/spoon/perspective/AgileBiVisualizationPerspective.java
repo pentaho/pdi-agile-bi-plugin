@@ -84,6 +84,10 @@ public class AgileBiVisualizationPerspective extends AbstractPerspective {
     return loader.getResourceAsStream("org/pentaho/agilebi/spoon/perspective/analyzer.png");
   }
 
+  public String getPerspectiveIconPath() {
+    return "org/pentaho/agilebi/spoon/perspective/analyzer.svg";
+  }
+  
   public String getId() {
     return PERSPECTIVE_ID;
   }

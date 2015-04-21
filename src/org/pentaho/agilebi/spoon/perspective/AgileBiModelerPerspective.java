@@ -17,16 +17,29 @@
 
 package org.pentaho.agilebi.spoon.perspective;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.io.IOUtils;
-import org.pentaho.metadata.model.concept.types.LocalizedString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.dom4j.DocumentHelper;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
-import org.pentaho.agilebi.modeler.*;
+import org.pentaho.agilebi.modeler.IncompatibleModelerException;
+import org.pentaho.agilebi.modeler.ModelerException;
+import org.pentaho.agilebi.modeler.ModelerMessagesHolder;
+import org.pentaho.agilebi.modeler.ModelerPerspective;
+import org.pentaho.agilebi.modeler.ModelerWorkspace;
 import org.pentaho.agilebi.modeler.util.ModelerWorkspaceUtil;
 import org.pentaho.agilebi.spoon.ModelerEngineMeta;
 import org.pentaho.agilebi.spoon.SpoonModelerMessages;
@@ -38,9 +51,9 @@ import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
-import org.pentaho.di.ui.spoon.SpoonPerspective;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveManager;
 import org.pentaho.metadata.model.LogicalModel;
+import org.pentaho.metadata.model.concept.types.LocalizedString;
 import org.pentaho.metadata.util.MondrianModelExporter;
 import org.pentaho.ui.xul.XulException;
 import org.pentaho.ui.xul.XulOverlay;
@@ -49,25 +62,22 @@ import org.pentaho.ui.xul.binding.BindingFactory;
 import org.pentaho.ui.xul.binding.DefaultBinding;
 import org.pentaho.ui.xul.binding.DefaultBindingFactory;
 import org.pentaho.ui.xul.components.XulConfirmBox;
-import org.pentaho.ui.xul.components.XulMenuitem;
 import org.pentaho.ui.xul.components.XulMessageBox;
 import org.pentaho.ui.xul.components.XulTab;
 import org.pentaho.ui.xul.components.XulTabpanel;
 import org.pentaho.ui.xul.impl.XulEventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
-import java.io.*;
-import java.util.*;
 
-
-public class AgileBiModelerPerspective extends AbstractPerspective implements SpoonPerspective, FileListener{
+public class AgileBiModelerPerspective extends AbstractPerspective implements FileListener {
 
 	public static final String PERSPECTIVE_ID = "010-agilebi"; //$NON-NLS-1$
 
   private Logger logger = LoggerFactory.getLogger(AgileBiModelerPerspective.class);
   private static final AgileBiModelerPerspective INSTANCE = new AgileBiModelerPerspective();
   protected List<ModelerWorkspace> models = new ArrayList<ModelerWorkspace>();
-  private XulMenuitem modelPropItem;
   
   private AgileBiModelerPerspectiveController perspectiveController = new AgileBiModelerPerspectiveController();
 
@@ -97,6 +107,10 @@ public class AgileBiModelerPerspective extends AbstractPerspective implements Sp
     return loader.getResourceAsStream("org/pentaho/agilebi/spoon/perspective/blueprint.png");
   }
 
+  public String getPerspectiveIconPath() {
+    return "org/pentaho/agilebi/spoon/perspective/blueprint.svg";
+  }
+  
   public String getId() {
     return PERSPECTIVE_ID;
   }
