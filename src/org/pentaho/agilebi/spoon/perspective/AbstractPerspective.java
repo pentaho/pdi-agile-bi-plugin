@@ -30,7 +30,7 @@ import org.pentaho.agilebi.spoon.PDIMessages;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.ui.spoon.FileListener;
 import org.pentaho.di.ui.spoon.Spoon;
-import org.pentaho.di.ui.spoon.SpoonPerspective;
+import org.pentaho.di.ui.spoon.SpoonPerspectiveImageProvider;
 import org.pentaho.di.ui.spoon.SpoonPerspectiveListener;
 import org.pentaho.ui.xul.XulComponent;
 import org.pentaho.ui.xul.XulDomContainer;
@@ -55,7 +55,7 @@ import org.pentaho.ui.xul.util.XulDialogCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractPerspective extends AbstractXulEventHandler implements SpoonPerspective, FileListener{
+public abstract class AbstractPerspective extends AbstractXulEventHandler implements SpoonPerspectiveImageProvider, FileListener {
 
   protected XulDomContainer container;
   protected XulRunner runner;
@@ -143,6 +143,8 @@ public abstract class AbstractPerspective extends AbstractXulEventHandler implem
 
   public abstract InputStream getPerspectiveIcon();
 
+  public abstract String getPerspectiveIconPath();
+  
   public void setActive(boolean active) {
     for(SpoonPerspectiveListener l : listeners){
       if(active){
