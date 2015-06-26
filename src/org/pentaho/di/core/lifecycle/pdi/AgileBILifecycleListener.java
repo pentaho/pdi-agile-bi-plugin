@@ -63,9 +63,9 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption<Ob
     if (spoon.getStartupPerspective() != null
         && spoon.getStartupPerspective().equals(AgileBiInstaPerspective.PERSPECTIVE_ID)) {
       PropsUI props = spoon.getProperties();
-      showTips = props.showTips();
+      showTips = props.showToolTips();
       showRepositoryDialog = props.showRepositoriesDialogAtStartup();
-      props.setShowTips(false);
+      props.setShowToolTips(false);
       props.setRepositoriesDialogAtStartupShown(false);
     }
 
@@ -142,7 +142,7 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption<Ob
     if (spoon.getStartupPerspective() != null
         && spoon.getStartupPerspective().equals(AgileBiInstaPerspective.PERSPECTIVE_ID)) {
       PropsUI props = spoon.getProperties();
-      props.setShowTips(showTips);
+      props.setShowToolTips(showTips);
       props.setRepositoriesDialogAtStartupShown(showRepositoryDialog);
       spoon.saveSettings();
     }
