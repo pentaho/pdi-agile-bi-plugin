@@ -41,12 +41,12 @@
                 changing="true"/>
                 
     <!--    exclude jetty's version of servlet api. it's checksum fails-->
-    <dependency org="org.mortbay.jetty" name="jetty-plus" rev="6.1.21" transitive="false" conf="default->default"/>
-    <dependency org="org.mortbay.jetty" name="jetty" rev="6.1.21" conf="default->default">
-      <exclude org="org.mortbay.jetty" name="servlet-api-2.5"/>
+	<dependency org="org.eclipse.jetty" name="jetty-plus" rev="8.1.15.v20140411" transitive="false" conf="default->default"/>
+    <dependency org="org.eclipse.jetty" name="jetty-server" rev="8.1.15.v20140411"  conf="default->default">
+    	<exclude org="org.eclipse.jetty.orbit" name="javax.servlet-3.0.0.v201112011016"/>
     </dependency>
-    <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="default->default"/>
-
+    <dependency org="org.eclipse.jetty" name="jetty-webapp" rev="8.1.15.v20140411" transitive="false" conf="default->default"/>
+    <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="8.1.15.v20140411" transitive="false" conf="default->default"/>
     <!-- pentaho-xul-framework must match JARs required by kettle-ui-swt -->
     <!-- this manual sync should go away once this project is propertly ivy-ized -->
 
@@ -164,6 +164,8 @@
     <exclude org="org.olap4j" module="olap4j" conf="default->default"/>
     <exclude org="org.slf4j" module="slf4j-log4j12" />
 	<exclude org="org.slf4j" module="jcl-over-slf4j" />
-
+    <exclude org="org.eclipse.jetty.orbit" module="javax.servlet"/>
+    <exclude org="javax.servlet" module="javax.servlet-api"/>
+    
   </dependencies>
 </ivy-module>
