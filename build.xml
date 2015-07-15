@@ -340,6 +340,9 @@
 				<include name="*.jar"/>
 			</fileset>
 		</delete>
+		
+		<!-- remove karaf -->
+		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/karaf" />
 	    
 	  <!-- remove all the JPivot files -->
 	  <delete dir="${approot.stage.dir}/platform/webapps/pentaho/jpivot" />
