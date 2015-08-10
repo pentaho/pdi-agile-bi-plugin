@@ -26,12 +26,12 @@ import java.security.cert.Certificate;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.vfs.FileContent;
-import org.apache.commons.vfs.FileContentInfo;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.RandomAccessContent;
-import org.apache.commons.vfs.util.RandomAccessMode;
+import org.apache.commons.vfs2.FileContent;
+import org.apache.commons.vfs2.FileContentInfo;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.RandomAccessContent;
+import org.apache.commons.vfs2.util.RandomAccessMode;
 import org.pentaho.metadata.model.Domain;
 import org.pentaho.metadata.model.LogicalModel;
 import org.pentaho.metadata.util.MondrianModelExporter;

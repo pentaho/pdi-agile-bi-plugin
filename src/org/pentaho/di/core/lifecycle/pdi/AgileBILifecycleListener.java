@@ -20,8 +20,8 @@ package org.pentaho.di.core.lifecycle.pdi;
 import java.net.Socket;
 
 import org.apache.commons.lang.ObjectUtils.Null;
-import org.apache.commons.vfs.VFS;
-import org.apache.commons.vfs.impl.DefaultFileSystemManager;
+import org.apache.commons.vfs2.VFS;
+import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
 import org.pentaho.agilebi.platform.JettyServer;
