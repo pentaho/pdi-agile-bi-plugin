@@ -21,10 +21,10 @@ import java.io.InputStream;
 
 import junit.framework.Assert;
 
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.VFS;
-import org.apache.commons.vfs.impl.DefaultFileSystemManager;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.VFS;
+import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.junit.Test;
 import org.pentaho.agilebi.vfs.MetadataToMondrianVfs;
 

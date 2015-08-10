@@ -21,16 +21,16 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.commons.vfs.FileContent;
-import org.apache.commons.vfs.FileName;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSelector;
-import org.apache.commons.vfs.FileSystem;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.FileType;
-import org.apache.commons.vfs.NameScope;
-import org.apache.commons.vfs.operations.FileOperations;
-import org.apache.commons.vfs.provider.AbstractFileName;
+import org.apache.commons.vfs2.FileContent;
+import org.apache.commons.vfs2.FileName;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSelector;
+import org.apache.commons.vfs2.FileSystem;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileType;
+import org.apache.commons.vfs2.NameScope;
+import org.apache.commons.vfs2.operations.FileOperations;
+import org.apache.commons.vfs2.provider.AbstractFileName;
 
 public class MetadataToMondrianVfsFileObject implements FileObject {
 
@@ -40,8 +40,8 @@ public class MetadataToMondrianVfsFileObject implements FileObject {
       super("mtm", absPath, type);//$NON-NLS-1$
     }
 
-    @Override
-    protected void appendRootUri(final StringBuffer arg0, final boolean arg1) {
+    @Override protected void appendRootUri( StringBuilder stringBuilder, boolean b ) {
+
     }
 
     @Override
