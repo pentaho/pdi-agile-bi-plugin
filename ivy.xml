@@ -164,6 +164,8 @@
 	<exclude org="org.slf4j" module="jcl-over-slf4j" />
     <exclude org="org.eclipse.jetty.orbit" module="javax.servlet"/>
     <exclude org="javax.servlet" module="javax.servlet-api"/>
+    <!-- excluding globally because commons-vfs2 is required by: mondrian, pentaho-platform-extensions, kettle-core, pentaho-vfs-browser, pentaho-platform-repository, pentaho-reporting-engine-classic-extensions-mondrian -->
+    <exclude org="org.apache.commons" module="commons-vfs2"/>
     
   </dependencies>
 </ivy-module>
