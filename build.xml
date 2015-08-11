@@ -288,6 +288,7 @@
       		<include name="geronimo-stax-api*.jar"/>
       		<include name="stax-*.jar"/>
 			<include name="jtidy*.jar"/>
+      <include name="commons-vfs*.jar"/>
 		</fileset>
   	</delete>
   </target>
