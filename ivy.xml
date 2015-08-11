@@ -20,7 +20,6 @@
 
   <dependencies defaultconf="default->default">
 
-    <dependency org="org.apache.commons" name="commons-vfs2" rev="2.0" transitive="false"/>
     <dependency org="commons-httpclient" name="commons-httpclient" rev="3.1" conf="default->default" transitive="false"/>
     <dependency org="commons-io" name="commons-io" rev="2.1" conf="default->default" transitive="false"/>
     <dependency org="commons-lang" name="commons-lang" rev="2.4" conf="default->default" transitive="false"/>
