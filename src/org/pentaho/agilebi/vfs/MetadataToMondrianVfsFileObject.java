@@ -19,6 +19,7 @@ package org.pentaho.agilebi.vfs;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.vfs2.FileContent;
@@ -33,6 +34,14 @@ import org.apache.commons.vfs2.operations.FileOperations;
 import org.apache.commons.vfs2.provider.AbstractFileName;
 
 public class MetadataToMondrianVfsFileObject implements FileObject {
+
+  @Override public int compareTo( FileObject o ) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override public Iterator<FileObject> iterator() {
+    throw new UnsupportedOperationException();
+  }
 
   public class MetadataToMondrianVfsFileName extends AbstractFileName {
 
@@ -122,6 +131,10 @@ public class MetadataToMondrianVfsFileObject implements FileObject {
     return null;
   }
 
+  @Override public String getPublicURIString() {
+    throw new UnsupportedOperationException();
+  }
+
   public FileSystem getFileSystem() {
     // not needed for our usage
     return null;
@@ -139,6 +152,18 @@ public class MetadataToMondrianVfsFileObject implements FileObject {
   public FileObject resolveFile(final String arg0, final NameScope arg1) throws FileSystemException {
     // not needed for our usage
     return null;
+  }
+
+  @Override public boolean setExecutable( boolean b, boolean b1 ) throws FileSystemException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override public boolean setReadable( boolean b, boolean b1 ) throws FileSystemException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override public boolean setWritable( boolean b, boolean b1 ) throws FileSystemException {
+    throw new UnsupportedOperationException();
   }
 
   public FileObject resolveFile(final String arg0) throws FileSystemException {
@@ -163,6 +188,10 @@ public class MetadataToMondrianVfsFileObject implements FileObject {
   public int delete(final FileSelector arg0) throws FileSystemException {
     // not needed for our usage
     return 0;
+  }
+
+  @Override public int deleteAll() throws FileSystemException {
+    throw new UnsupportedOperationException();
   }
 
   public void createFolder() throws FileSystemException {
@@ -212,6 +241,18 @@ public class MetadataToMondrianVfsFileObject implements FileObject {
 
   public boolean isContentOpen() {
     return (content != null) && content.isOpen();
+  }
+
+  @Override public boolean isExecutable() throws FileSystemException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override public boolean isFile() throws FileSystemException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override public boolean isFolder() throws FileSystemException {
+    throw new UnsupportedOperationException();
   }
 
   public FileOperations getFileOperations() throws FileSystemException {

@@ -17,11 +17,7 @@
 
 package org.pentaho.agilebi.vfs;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.security.cert.Certificate;
 import java.util.Locale;
 import java.util.Map;
@@ -171,6 +167,22 @@ public class MetadataToMondrianVfsFileContent implements FileContent {
   public boolean isOpen() {
     // not needed for our usage
     return isOpen;
+  }
+
+  @Override public long write( FileContent fileContent ) throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override public long write( FileObject fileObject ) throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override public long write( OutputStream outputStream ) throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override public long write( OutputStream outputStream, int i ) throws IOException {
+    throw new UnsupportedOperationException();
   }
 
 }
