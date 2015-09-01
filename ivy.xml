@@ -139,10 +139,9 @@
     <!-- dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
 -->
     <dependency org="annogen" name="annogen" rev="0.1.0" conf="default->default"/>
-    <dependency org="backport-util-concurrent" name="backport-util-concurrent" rev="3.1" conf="default->default"/>
     <dependency org="org.apache.ws.commons.neethi" name="neethi" rev="2.0.1" transitive="false" conf="default->default"/>
     <dependency org="org.apache.ws.commons.schema" name="XmlSchema" rev="1.4.2" transitive="false" conf="default->default"/>
-    <dependency org="org.apache.axis2" name="axis2-java2wsdl" rev="1.4.1" transitive="false"/>
+    <dependency org="org.apache.axis2" name="axis2-java2wsdl" rev="1.5" transitive="false"/>
 
 	<!-- jersey -->
     <dependency org="com.sun.jersey.contribs" name="jersey-multipart" rev="1.16"/>
