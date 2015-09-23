@@ -192,6 +192,10 @@ public class AnalyzerVisualization extends AbstractVisualization {
     // the rnd param is to make sure that the browser does not display a cached version of the requested report
     long avoidBrowserCache = Calendar.getInstance().getTimeInMillis();
     str += "&rnd=" + avoidBrowserCache;
+
+    // restrict inline modeling functionality using query string parameter
+    str += "&hasInlineModelingPermission=false";
+
     return str;
 	}
 	
