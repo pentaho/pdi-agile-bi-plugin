@@ -361,6 +361,9 @@
 
 		<!-- Remove kettle plugins -->
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/kettle/plugins"/>
+
+		<!-- Remove PDI platform plugin -->
+		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/pentaho-pdi-platform-plugin"/>
 		
 		<!-- CDF is needed for the new analyzer visualizations -->
         <!--<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/pentaho-cdf"/>-->
