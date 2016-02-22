@@ -291,6 +291,8 @@
       <include name="commons-vfs*.jar"/>
 		</fileset>
   	</delete>
+	<copy file="res/version.xml" todir="${stage.dir}/${ivy.artifact.id}" />
+	<replace file="${stage.dir}/${ivy.artifact.id}/version.xml" token="@TRUNK@" value="${project.revision}" />
   </target>
 
   <!--
