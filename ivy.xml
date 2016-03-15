@@ -11,6 +11,7 @@
     <conf name="codegen-win" visibility="private" extends="codegen"/>
     <conf name="codegen-linux" visibility="private" extends="codegen"/>
     <conf name="runtime"/>
+    <conf name="upstream"/>
   </configurations>
 
   <publications>
@@ -134,6 +135,10 @@
     <dependency org="pentaho" name="pentaho-mql-editor" rev="${dependency.pentaho-mql-editor.revision}" conf="default->default" changing="true" transitive="false">
         <artifact name="pentaho-mql-editor" />
         <artifact name="pentaho-mql-editor" type="source" ext="jar" m:classifier="sources" />
+    </dependency>
+    
+    <dependency org="pentaho" name="paz-agilebi-plugin" rev="${dependency.analyzer-plugin.revision}" conf="upstream->default" changing="true" transitive="false">
+      <artifact name="paz-agilebi-plugin" type="zip" />
     </dependency>
 
     <!-- dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>

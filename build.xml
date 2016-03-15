@@ -314,8 +314,13 @@
   </target>
 
   <target name="package-zip" depends="embed-ehcache-xml-in-jar, subfloor-pkg.package-zip"/>
+	
+	<target name="resolve-upstream" depends="install-ivy">
+		<ivy:resolve file="${ivyfile}" conf="upstream" />
+		<ivy:retrieve conf="upstream" pattern="${analyzer.dist.dir}/[module]-[revision]([classifier]).[ext]" />
+	</target>
 
-	<target name="assemble-embedded-server" depends="install-antcontrib">
+	<target name="assemble-embedded-server" depends="install-antcontrib, resolve-upstream">
 		<!-- Step 1: Unzip a platform zip into staging dir -->
 		<mkdir dir="${platform.unzip.dir}"/>
 		<unzip dest="${platform.unzip.dir}">
