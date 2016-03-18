@@ -36,9 +36,9 @@
                 changing="true"/>
     <dependency org="pentaho-kettle" name="kettle-ui-swt" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
                 changing="true"/>
-    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" transitive="true" conf="default->default"
+    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" transitive="true" conf="default->default" 
                 changing="true"/>
-
+                
     <!--    exclude jetty's version of servlet api. it's checksum fails-->
 	<dependency org="org.eclipse.jetty" name="jetty-plus" rev="8.1.15.v20140411" transitive="false" conf="default->default"/>
     <dependency org="org.eclipse.jetty" name="jetty-server" rev="8.1.15.v20140411"  conf="default->default">
@@ -93,7 +93,7 @@
     <dependency org="pentaho" name="pentaho-platform-api" rev="${dependency.bi-platform.revision}"
                 changing="true"
                 conf="default->default"/>
-
+                
     <dependency org="pentaho" name="pentaho-platform-extensions" rev="${dependency.bi-platform.revision}"
                 changing="true"
                 conf="default->default"/>
@@ -129,14 +129,14 @@
     <dependency org="pentaho" name="pentaho-metadata" rev="${dependency.pentaho-metadata.revision}" changing="true"
                 conf="default->default" transitive="false" force="true">
       <artifact name="pentaho-metadata"/>
-      <artifact name="pentaho-metadata" ext="jar" m:classifier="sources"/>
+      <artifact name="pentaho-metadata" type="source" ext="jar" m:classifier="sources"/>
     </dependency>
 
     <dependency org="pentaho" name="pentaho-mql-editor" rev="${dependency.pentaho-mql-editor.revision}" conf="default->default" changing="true" transitive="false">
         <artifact name="pentaho-mql-editor" />
         <artifact name="pentaho-mql-editor" type="source" ext="jar" m:classifier="sources" />
     </dependency>
-
+    
     <dependency org="pentaho" name="paz-agilebi-plugin" rev="${dependency.analyzer-plugin.revision}" conf="upstream->default" changing="true" transitive="false">
       <artifact name="paz-agilebi-plugin" type="zip" />
     </dependency>
@@ -168,6 +168,6 @@
 	<exclude org="org.slf4j" module="jcl-over-slf4j" />
     <exclude org="org.eclipse.jetty.orbit" module="javax.servlet"/>
     <exclude org="javax.servlet" module="javax.servlet-api"/>
-
+    
   </dependencies>
 </ivy-module>
