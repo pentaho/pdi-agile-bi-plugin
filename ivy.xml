@@ -137,8 +137,8 @@
         <artifact name="pentaho-mql-editor" type="source" ext="jar" m:classifier="sources" />
     </dependency>
     
-    <dependency org="pentaho" name="paz-agilebi-plugin" rev="${dependency.analyzer-plugin.revision}" conf="upstream->default" changing="true" transitive="false">
-      <artifact name="paz-agilebi-plugin" type="zip" />
+    <dependency org="pentaho" name="paz-plugin-ce" rev="${dependency.analyzer-plugin.revision}" conf="upstream->default" changing="true" transitive="false">
+      <artifact name="paz-plugin-ce" type="zip" />
     </dependency>
 
     <!-- dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
