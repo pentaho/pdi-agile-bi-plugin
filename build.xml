@@ -393,23 +393,23 @@
     <echo file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/classes/${server.assembly.filename}" append="true">assembly.version=${project.revision}&#13;&#10;</echo>
 
 		<!-- Step 3: Unzip the analyzer dist if available -->
-		<fail message="Pentaho Analyzer agilebi plugin zip file is not available.">
-          <condition>
+		<fail message="Pentaho Analyzer CE plugin zip file not found in directory ${analyzer.dist.dir}">
+       <condition>
 	        <not>
 	          <resourcecount count="1">
-	            <fileset id="agilebiplugin" dir="${analyzer.dist.dir}" includes="paz-agilebi-plugin-*.zip" />
+	            <fileset id="agilebiplugin" dir="${analyzer.dist.dir}" includes="paz-plugin-ce-*.zip" />
 	          </resourcecount>
 	        </not>
-	      </condition>
-        </fail>
+	     </condition>
+    </fail>
 
 		<if>
 	      <available file="${analyzer.dist.dir}" />
 	      <then>
 			<unzip dest="${approot.stage.dir}/platform/pentaho-solutions/system">
 				<fileset dir="${analyzer.dist.dir}">
-			        <include name="paz-agilebi-plugin-*.zip"/>
-		    	</fileset>
+			        <include name="paz-plugin-ce-*.zip"/>
+		    </fileset>
 			</unzip>
       	  </then>
 	     </if>
