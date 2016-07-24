@@ -149,13 +149,25 @@
     <dependency org="org.apache.axis2" name="axis2-java2wsdl" rev="1.5" transitive="false"/>
 
 	<!-- jersey -->
-    <dependency org="com.sun.jersey.contribs" name="jersey-multipart" rev="1.16"/>
-    <dependency org="com.sun.jersey.contribs" name="jersey-apache-client" rev="1.14" transitive="false"/>
-    <dependency org="com.sun.jersey" name="jersey-bundle" rev="1.16" transitive="false"/>
+    <dependency org="com.sun.jersey.contribs" name="jersey-multipart" rev="1.19.1" transitive="false"/>
+    <dependency org="org.jvnet.mimepull"      name="mimepull"         rev="1.9.3" transitive="false"/>
+    <dependency org="com.sun.jersey.contribs" name="jersey-apache-client" rev="1.19.1" transitive="false"/>
+    <dependency org="com.sun.jersey" name="jersey-bundle" rev="1.19.1" transitive="false"/>
     <!-- jersey -->
-    <dependency org="com.sun.jersey" name="jersey-core" rev="1.16" transitive="false"/>
-    <dependency org="com.sun.jersey" name="jersey-json" rev="1.16" transitive="true"/>
-    <dependency org="com.sun.jersey" name="jersey-client" rev="1.16" transitive="true"/>
+    <dependency org="com.sun.jersey" name="jersey-core" rev="1.19.1" transitive="false"/>
+    <dependency org="com.sun.jersey" name="jersey-json" rev="1.19.1" transitive="false"/>
+    <!--here jersey-json transitive dependencies started-->
+      <dependency org="org.codehaus.jackson" name="jackson-xc" rev="1.9.2" transitive="false"/>
+      <dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.9.2" transitive="false"/>
+      <dependency org="org.codehaus.jackson" name="jackson-core-asl" rev="1.9.2" transitive="false"/>
+      <dependency org="org.codehaus.jackson" name="jackson-jaxrs" rev="1.9.2" transitive="false"/>
+      <dependency org="org.codehaus.jettison" name="jettison" rev="1.1" transitive="false"/>
+      <dependency org="com.sun.xml.bind" name="jaxb-impl" rev="2.2.3-1" transitive="false"/>
+      <dependency org="javax.xml.bind" name="jaxb-api" rev="2.2.2" transitive="false"/>
+      <dependency org="javax.xml.stream" name="stax-api" rev="1.0-2" transitive="false"/>
+      <dependency org="javax.activation" name="activation" rev="1.1" transitive="false"/>
+      <!--here jersey-json transitive dependencies finished-->
+    <dependency org="com.sun.jersey" name="jersey-client" rev="1.19.1" transitive="true"/>
     <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false"/>
 
     <dependency org="pentaho" name="pentaho-platform-core-test" rev="${dependency.bi-platform.revision}" changing="true" conf="test->default" transitive="false" />
