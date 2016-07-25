@@ -12,12 +12,13 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 * See the GNU Lesser General Public License for more details.
 *
-* Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+* Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
 */
 
 package org.pentaho.agilebi.vfs;
 
 import java.io.*;
+import java.net.URL;
 import java.security.cert.Certificate;
 import java.util.Locale;
 import java.util.Map;
@@ -102,8 +103,14 @@ public class MetadataToMondrianVfsFileContent implements FileContent {
     try {
       // read in stream, generate mondrian model, write out stream.
       XmiParser parser = new XmiParser();
-      FileInputStream fis = new FileInputStream(new File(fileObject.getFileRef()));
-      Domain domain = parser.parseXmi(fis);
+      InputStream inStream;
+      File file = new File( fileObject.getFileRef() );
+      if ( file.exists() ) {
+        inStream = new FileInputStream( file );
+      } else {
+        inStream = new URL( fileObject.getFileRef() ).openStream();
+      }
+      Domain domain = parser.parseXmi(inStream);
       String locale = Locale.getDefault().toString();
       if (domain.getLocales().size() > 0) {
         locale = domain.getLocales().get(0).getCode();
