@@ -12,14 +12,16 @@
 * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 * See the GNU Lesser General Public License for more details.
 *
-* Copyright (c) 2002-2013 Pentaho Corporation..  All rights reserved.
+* Copyright (c) 2002-2016 Pentaho Corporation..  All rights reserved.
 */
 
 package org.pentaho.agilebi.platform;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -57,9 +59,15 @@ public class AgileBIDatasourceService implements IDBDatasourceService {
   public DataSource getDataSource(String dsName) throws DBDatasourceServiceException {
     Domain domain = null;
     try {
+      InputStream inStream;
       XmiParser parser = new XmiParser();
-      FileInputStream fis = new FileInputStream(new File(dsName));
-      domain = parser.parseXmi(fis);
+      File file = new File( dsName );
+      if ( file.exists() ) {
+        inStream = new FileInputStream( file );
+      } else {
+        inStream = new URL( dsName ).openStream();
+      }
+      domain = parser.parseXmi(inStream);
     } catch (Exception e) {
       throw new DBDatasourceServiceException(e);
     }
