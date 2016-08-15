@@ -28,6 +28,7 @@
     <dependency org="jaxen" name="jaxen" rev="1.1.1" conf="default->default" transitive="false" />
 
     <dependency org="org.eclipse" name="jface" rev="3.3.0-I20070606-0010" transitive="false" conf="default->default" />
+    <dependency org="org.eclipse.core" name="commands" rev="3.3.0-I20070605-0010" force="true" transitive="false" conf="default->default" />
 
 
     <dependency org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
@@ -36,9 +37,9 @@
                 changing="true"/>
     <dependency org="pentaho-kettle" name="kettle-ui-swt" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
                 changing="true"/>
-    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" transitive="true" conf="default->default" 
+    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" transitive="true" conf="default->default"
                 changing="true"/>
-                
+
     <!--    exclude jetty's version of servlet api. it's checksum fails-->
 	<dependency org="org.eclipse.jetty" name="jetty-plus" rev="8.1.15.v20140411" transitive="false" conf="default->default"/>
     <dependency org="org.eclipse.jetty" name="jetty-server" rev="8.1.15.v20140411"  conf="default->default">
@@ -93,7 +94,7 @@
     <dependency org="pentaho" name="pentaho-platform-api" rev="${dependency.bi-platform.revision}"
                 changing="true"
                 conf="default->default"/>
-                
+
     <dependency org="pentaho" name="pentaho-platform-extensions" rev="${dependency.bi-platform.revision}"
                 changing="true"
                 conf="default->default"/>
@@ -136,7 +137,7 @@
         <artifact name="pentaho-mql-editor" />
         <artifact name="pentaho-mql-editor" type="source" ext="jar" m:classifier="sources" />
     </dependency>
-    
+
     <dependency org="pentaho" name="paz-plugin-ce" rev="${dependency.analyzer-plugin.revision}" conf="upstream->default" changing="true" transitive="false">
       <artifact name="paz-plugin-ce" type="zip" />
     </dependency>
@@ -180,6 +181,6 @@
 	<exclude org="org.slf4j" module="jcl-over-slf4j" />
     <exclude org="org.eclipse.jetty.orbit" module="javax.servlet"/>
     <exclude org="javax.servlet" module="javax.servlet-api"/>
-    
+
   </dependencies>
 </ivy-module>

@@ -17,11 +17,7 @@
 
 package org.pentaho.di.core.lifecycle.pdi;
 
-import java.net.Socket;
-
 import org.apache.commons.lang.ObjectUtils.Null;
-import org.apache.commons.vfs2.VFS;
-import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
 import org.eclipse.swt.widgets.Display;
 import org.pentaho.agilebi.modeler.util.ModelerSourceFactory;
 import org.pentaho.agilebi.platform.JettyServer;
@@ -32,19 +28,19 @@ import org.pentaho.agilebi.spoon.perspective.AgileBiModelerPerspective;
 import org.pentaho.agilebi.spoon.perspective.AgileBiSpoonInstaPlugin;
 import org.pentaho.agilebi.spoon.visualizations.IVisualization;
 import org.pentaho.agilebi.spoon.visualizations.VisualizationManager;
-import org.pentaho.agilebi.vfs.MetadataToMondrianVfs;
 import org.pentaho.di.core.annotations.LifecyclePlugin;
 import org.pentaho.di.core.gui.GUIOption;
 import org.pentaho.di.core.gui.SpoonFactory;
 import org.pentaho.di.core.lifecycle.LifeEventHandler;
 import org.pentaho.di.core.lifecycle.LifecycleException;
 import org.pentaho.di.core.lifecycle.LifecycleListener;
-import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.plugins.PluginClassTypeMapping;
 import org.pentaho.di.ui.core.PropsUI;
 import org.pentaho.di.ui.spoon.Spoon;
 import org.pentaho.platform.api.engine.IPluginManager;
 import org.pentaho.platform.engine.core.system.PentahoSystem;
+
+import java.net.Socket;
 
 @LifecyclePlugin(id = "AgileBiPlugin")
 @PluginClassTypeMapping(classTypes = { GUIOption.class }, implementationClass = { Null.class })
@@ -74,12 +70,6 @@ public class AgileBILifecycleListener implements LifecycleListener, GUIOption<Ob
       @Override
       public void run() {
         try {
-          LogChannel.GENERAL.logBasic("Starting agile-bi");
-          // because we're outside of the default classpath,
-          // META-INF/providers.xml is not loaded, so instead,
-          // we register our VFS provider programmatically
-          ((DefaultFileSystemManager) VFS.getManager()).addProvider("mtm", new MetadataToMondrianVfs());
-
           int port = 9999;
           boolean portFound = false;
           int tries = 100;
