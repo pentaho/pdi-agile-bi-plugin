@@ -81,7 +81,8 @@
                 conf="default->default" changing="true" transitive="false"/>
 
     <dependency org="pentaho" name="pentaho-connections" rev="${dependency.pentaho-connections.revision}" changing="true" transitive="false"/>
-    <dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
+    <dependency org="pentaho" name="pentaho-modeler-xul" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
+    <dependency org="pentaho" name="pentaho-modeler-gwt" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
 
     <dependency org="pentaho" name="mondrian" rev="${dependency.mondrian.revision}"
                 conf="default->default" changing="true" transitive="false"/>
