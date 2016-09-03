@@ -27,7 +27,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   <bean id="IUnifiedRepository" class="org.pentaho.platform.repository2.unified.fs.FileSystemBackedUnifiedRepository" scope="singleton">
     <constructor-arg value="/" />
   </bean>
-  <bean id="IDBDatasourceService" class="org.pentaho.agilebi.platform.AgileBIDatasourceService"/>
+  <bean id="IDBDatasourceService" class="org.pentaho.platform.pdi.XmiToDatabaseMetaDatasourceService"/>
 
   <!-- runtime repositories are not used in the current implmentation of the BI platform -->
   <!-- <bean id="IRuntimeRepository" class="org.pentaho.platform.repository.runtime.RuntimeRepository" scope="session" /> -->
