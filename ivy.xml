@@ -113,7 +113,8 @@
 
     <dependency org="pentaho" name="pentaho-pdi-platform" rev="${dependency.bi-platform.revision}"
                 changing="true"
-                conf="default->default"/>
+                conf="default->default"
+                transitive="false"/>
 
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.3" conf="default->default" />
