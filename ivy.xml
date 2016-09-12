@@ -52,6 +52,7 @@
 
     <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default"
                 changing="true" transitive="true"/>
+    <dependency org="org.eclipse" name="swt" force="true" rev="3.3.0-v3346" />
     <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul"
                 rev="${dependency.pentaho-reporting.revision}"
                 conf="default->default" changing="true" transitive="false"/>
