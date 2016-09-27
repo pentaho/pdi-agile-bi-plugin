@@ -138,6 +138,7 @@
 			
 			<!-- swt jars -->
 			<include name="x86-*.jar"/>
+			<include name="org.eclipse.swt.*.jar"/>
 			<include name="runtime-*.jar"/>
 			<include name="common-*.jar"/>
 			<include name="jface-*.jar"/>
