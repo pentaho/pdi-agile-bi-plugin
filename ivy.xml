@@ -52,7 +52,7 @@
 
     <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default"
                 changing="true" transitive="true"/>
-    <dependency org="org.eclipse" name="swt" force="true" rev="3.3.0-v3346" />
+    <dependency org="org.eclipse.swt" name="org.eclipse.swt.gtk.linux.x86_64" force="true" transitive="false" rev="4.6" />
     <dependency org="pentaho-report-designer" name="pentaho-reporting-engine-wizard-xul"
                 rev="${dependency.pentaho-reporting.revision}"
                 conf="default->default" changing="true" transitive="false"/>
@@ -190,6 +190,8 @@
 	<exclude org="org.slf4j" module="jcl-over-slf4j" />
     <exclude org="org.eclipse.jetty.orbit" module="javax.servlet"/>
     <exclude org="javax.servlet" module="javax.servlet-api"/>
+    <exclude org="org.eclipse" module="swt"/>
+    <exclude org="org.eclipse.core" module="commands"/>
 
   </dependencies>
 </ivy-module>
