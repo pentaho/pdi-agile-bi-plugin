@@ -7,18 +7,18 @@
 	+-->
 
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns:pen="http://www.pentaho.com/schema/pentaho-system"     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       xmlns:pen="http://www.pentaho.com/schema/pentaho-system"     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
        http://www.pentaho.com/schema/pentaho-system http://www.pentaho.com/schema/pentaho-system.xsd" default-lazy-init="true">
 
   <bean id="authenticationProvider"
-        class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
+        class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
     <property name="userDetailsService">
-      <pen:bean class="org.springframework.security.userdetails.UserDetailsService"/>
+      <pen:bean class="org.springframework.security.core.userdetails.UserDetailsService"/>
     </property>
     <property name="passwordEncoder">
       <ref bean="memoryPasswordEncoder" />
     </property>
-    <pen:publish as-type="org.springframework.security.providers.AuthenticationProvider">
+    <pen:publish as-type="org.springframework.security.authentication.AuthenticationProvider">
       <pen:attributes>
         <pen:attr key="providerName" value="memory"/>
       </pen:attributes>
@@ -27,10 +27,8 @@ xmlns:pen="http://www.pentaho.com/schema/pentaho-system"     xsi:schemaLocation=
 
   <bean id="memoryUserDetailsService"
         class="org.pentaho.platform.plugin.services.security.userrole.memory.DefaultInMemoryUserDetailsService">
-    <constructor-arg ref="tenantedUserNameUtils"/>	
-		<property name="userMap">
-      <ref local="userMapFactoryBean" />
-    </property>
+    <constructor-arg ref="tenantedUserNameUtils"/>
+    <constructor-arg ref="users"/>
     <pen:publish as-type="INTERFACES">
       <pen:attributes>
         <pen:attr key="providerName" value="memory"/>
@@ -38,33 +36,25 @@ xmlns:pen="http://www.pentaho.com/schema/pentaho-system"     xsi:schemaLocation=
     </pen:publish>
   </bean>
 
-  <bean id="userMap" class="java.lang.String">
-    <constructor-arg type="java.lang.String">
-      <!-- case matters -->
-      <value>
-        <![CDATA[
-          admin=password,Administrator,Authenticated
-          suzy=password,Power User,Authenticated
-          pat=password,Business Analyst,Authenticated
-          tiffany=password,Report Author,Authenticated
-        ]]>
-      </value>
-    </constructor-arg>
-  </bean>
-
-  <bean id="userMapFactoryBean"
-        class="org.pentaho.platform.plugin.services.security.userrole.memory.UserMapFactoryBean">
-    <property name="userMap">
-      <ref local="userMap" />
+  <bean id="users" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="properties">
+      <props>
+        <prop key="admin">password,Administrator,Authenticated</prop>
+        <prop key="suzy">password,Power User,Authenticated</prop>
+        <prop key="pat">password,Business Analyst,Authenticated</prop>
+        <prop key="tiffany">password,Report Author,Authenticated</prop>
+        <prop key="joe">password,Report Author,Administrator,Authenticated</prop>
+      </props>
     </property>
   </bean>
 
+
   <bean id="memoryPasswordEncoder"
-        class="org.springframework.security.providers.encoding.PlaintextPasswordEncoder" />
+        class="org.springframework.security.authentication.encoding.PlaintextPasswordEncoder" />
 
   <!-- 
    This bean is responsible for converting deriving a role's tenant and user name from a user id and visa-versa.
   -->
   <bean id="tenantedUserNameUtils" class="org.pentaho.platform.security.userroledao.DefaultTenantedPrincipleNameResolver"/>
-  
+
 </beans>
