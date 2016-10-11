@@ -45,9 +45,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   <bean id="contentrepo" class="org.pentaho.platform.repository2.unified.fileio.RepositoryContentOutputHandler"
         scope="session"/>
   <bean id="vfs-ftp" class="org.pentaho.platform.plugin.outputs.ApacheVFSOutputHandler" scope="session" />
-  <bean id="IAclPublisher" class="org.pentaho.platform.engine.security.acls.AclPublisher" scope="singleton" />
+ <!-- <bean id="IAclPublisher" class="org.pentaho.platform.engine.security.acls.AclPublisher" scope="singleton" />
 
-  <bean id="IAclVoter" class="org.pentaho.platform.engine.security.acls.voter.PentahoAllowAnonymousAclVoter" scope="singleton" />
+  <bean id="IAclVoter" class="org.pentaho.platform.engine.security.acls.voter.PentahoAllowAnonymousAclVoter" scope="singleton" />-->
   <bean id="IBiServerConfigUtil" class="org.pentaho.agilebi.spoon.publish.BiServerConfigUtil" scope="singleton" />
 
   <bean id="ICacheManager" class="org.pentaho.platform.plugin.services.cache.CacheManager" scope="singleton"/>
@@ -121,7 +121,7 @@ not directly from the PentahoObjectFactory. -->
     </pen:publish>
   </pen:bean>
 
-  <pen:bean id="UserDetailsService" class="org.springframework.security.userdetails.UserDetailsService">
+  <pen:bean id="UserDetailsService" class="org.springframework.security.core.userdetails.UserDetailsService">
     <pen:attributes>
       <pen:attr key="providerName" value="${security.provider}"/>
     </pen:attributes>
