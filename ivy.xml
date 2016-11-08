@@ -147,8 +147,16 @@
         <artifact name="pentaho-mql-editor" type="source" ext="jar" m:classifier="sources" />
     </dependency>
 
+    <dependency org="pentaho-kettle" name="pdi-ce" rev="${dependency.kettle.revision}" conf="upstream->default" changing="true" transitive="false">
+      <artifact name="pdi-ce" type="zip" />
+    </dependency>
+
     <dependency org="pentaho" name="paz-plugin-ce" rev="${dependency.analyzer-plugin.revision}" conf="upstream->default" changing="true" transitive="false">
       <artifact name="paz-plugin-ce" type="zip" />
+    </dependency>
+
+    <dependency org="pentaho" name="pentaho-geo-ce" rev="${pentaho-geo-plugin.version}" conf="upstream->default" changing="true" transitive="false">
+      <artifact name="pentaho-geo-ce" type="zip" />
     </dependency>
 
     <!-- dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
