@@ -1,21 +1,21 @@
 <!--===========================================================================
   This is the build file for the Pentaho Agile BI Project
-  
+
   This build file will use the subfloor.xml file as the default build
   process and should only override the tasks that need to differ from
   the common build file.
-  
+
   See subfloor.xml for more details
 ============================================================================-->
-<project name="Agile BI" basedir="." default="dist" 
+<project name="Agile BI" basedir="." default="dist"
 	xmlns:ivy="antlib:org.apache.ivy.ant" >
-	
+
 	<description>
 	  This build file is used to create the Agile BI project
 		and works with the subfloor.xml file.
 	</description>
 
-	<!-- Import the common_build.xml file which contains all the default tasks -->	
+	<!-- Import the common_build.xml file which contains all the default tasks -->
 	<import file="build-res/subfloor-pkg.xml"/>
 
   <property name="platform.dist.dir"
@@ -37,31 +37,31 @@
 	<property name="platform.unzip.dir"
 	            value="${bin.dir}/platform-unzip"
 	            description="Location of platform assembly zip" />
-	
+
 	<property name="report-designer.unzip.dir"
 				value="${bin.dir}/report-designer-unzip"
 				description="Location of expanded report designer assembly zip" />
-		
+
 	<property name="insta.unzip.dir"
 				value="${bin.dir}/insta-unzip"
 				description="Location of expanded report designer assembly zip" />
-	
+
 	<property name="kettle.dist.dir"
 				value="../kettle"
     			description="Location of kettle spoon zip" />
-	
+
 	<property name="analyzer.dist.dir"
 				value="."
 				description="Location of Analyzer Agile BI plugin" />
-	
+
     <property name="geo.dist.dir"
                 value="."
                 description="Location of the Geo Agile BI plugin" />
-    
+
 	<property name="pdiwithagilebi"
-				value="pdi-ce-agile-bi" 
+				value="pdi-ce-agile-bi"
 				description="Name of the pdi distribution with agile bi"/>
-	
+
   <property name="server.assembly.filename" value="server-assembly.properties" />
 
   <target name="resolve"
@@ -70,7 +70,7 @@
 
 	<target name="dist-noresolve" depends="jar,package" description="Builds and packages the application" />
 	<target name="dist" depends="resolve,jar,package" description="Builds and packages the application" />
-	
+
 	<target name="clean-dist">
 		<delete dir="${dist.dir}" />
 		<delete dir="${stage.dir}" />
@@ -82,17 +82,17 @@
       AS STATED ABOVE, THE ONLY TASKS THAT SHOULD EXIST IN THIS BUILD FILE ARE
       THE TASKS THAT NEED TO DIFFER FROM THE DEFAULT IMPLEMENTATION OF THE TASKS
       FOUND IN subfloor.xml.
-    --> 
-	
+    -->
+
 	  <target name="cobertura-no-install"
 	          description="Runs tests in an instrumented environment and produces Cobertura test coverage reports"
 	          depends="clean-cobertura,compile,compile-tests,cobertura.instrument-classes,cobertura.test-instrumented,cobertura.xml-report,cobertura.html-report" />
-	
-	
+
+
   <target name="assemble.init">
     <mkdir dir="${stage.dir}" />
   </target>
-	
+
 	  <target name="assemble-report-wizard">
 	  	<!-- Step 1: Unzip a PRD zip into staging dir -->
 	  			<mkdir dir="${report-designer.unzip.dir}"/>
@@ -101,7 +101,7 @@
 	  				        <include name="prd-ce-*.zip"/>
 	  			    </fileset>
 	  			</unzip>
-	  	
+
 	  	<!-- Step 2: Copy wizard templates into agile-bi plugin -->
 	    <copy todir="${approot.stage.dir}/templates" overwrite="true">
 	      <fileset dir="${report-designer.unzip.dir}/report-designer/templates"/>
@@ -116,26 +116,26 @@
 	  				        <include name="instanal-*.zip"/>
 	  			    </fileset>
 	  			</unzip>
-	  	
+
 	  	<!-- Step 2: Copy wizard templates into agile-bi plugin -->
 	    <copy todir="${approot.stage.dir}/platform/pentaho-solutions/system" overwrite="true">
 	      <fileset dir="${insta.unzip.dir}"/>
 	    </copy>
 	  </target>
 
-  <!--   
+  <!--
   <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server,assemble-report-wizard">
-  -->	
+  -->
 	  <target name="assemble" depends="assemble.init,assemble.copy-libs,assemble-embedded-server,assemble-report-wizard">
     <copy todir="${approot.stage.dir}" overwrite="true">
       <fileset dir="${package.resdir}" />
     </copy>
   	<delete>
 		<fileset dir="${approot.stage.dir}/lib">
-			
+
 			<!-- first remove duplicate jars -->
 			<include name="pentaho-metadata-*.jar"/>
-			
+
 			<!-- swt jars -->
 			<include name="x86-*.jar"/>
 			<include name="org.eclipse.swt.*.jar"/>
@@ -161,8 +161,6 @@
   			<include name="spring-core*.jar"/>
   			<!-- spring ldap -->
   			<include name="spring-ldap-*.jar"/>
-  			<!-- spring web -->
-  			<include name="spring-web-*.jar"/>
   			<!-- spring mock -->
   			<include name="spring-mock-*.jar"/>
 			<!-- mondrian -->
@@ -172,8 +170,8 @@
 			<include name="javacup-*.jar"/>
 			<include name="olap4j-*.jar"/>
 			<!-- kettle -->
-			<include name="xmlbeans-*.jar"/>		
-			
+			<include name="xmlbeans-*.jar"/>
+
 			<include name="gwt-dev-*.jar"/>
 			<include name="gwt-user-*.jar"/>
 			<include name="slf4j-*.jar"/>
@@ -188,7 +186,7 @@
 			<!-- jasperreports -->
   			<include name="jasperreports-*.jar"/>
 			<!-- chartbeans -->
-  			<include name="pentaho-chartbeans-*.jar"/>	
+  			<include name="pentaho-chartbeans-*.jar"/>
 
       <!-- hibernate -->
       <include name="hibernate-*.jar"/>
@@ -206,7 +204,7 @@
 			<!-- hsqldb driver -->
   			<include name="hsqldb-*.jar"/>
 			<!-- pentaho cwm -->
-  			<include name="pentaho-cwm-*.jar"/>			
+  			<include name="pentaho-cwm-*.jar"/>
 			<!-- quartz -->
   			<include name="quartz-*.jar"/>
 		    <!-- jpivot -->
@@ -218,12 +216,11 @@
             <include name="jersey-apache-client*.jar"/>
             <include name="jersey-client*.jar"/>
             <include name="jersey-servlet*.jar"/>
-            <include name="jersey-spring*.jar"/>
             <include name="jersey-server*.jar"/>
             <include name="jersey-core*.jar"/>
             <include name="jersey-json*.jar"/>
             <include name="jersey-bundle*.jar"/>
-            
+
             <!-- ESAPI version conflict with 2.0.1-->
             <include name="ESAPI-2.0_rc6.jar"/>
 
@@ -231,10 +228,10 @@
 			<!-- Webservices -->
 			<include name="webservices-api*.jar"/>
 			<include name="webservices-rt*.jar"/>
-			
+
 			<include name="jsr311-api*.jar"/>
 		    <!-- third - remove reporting jars that will already be in kettle -->
-			<!--          but not the reporting wizard, that should remain    -->         
+			<!--          but not the reporting wizard, that should remain    -->
 		    <include name="lib*.jar"/>
 		    <include name="pentaho-reporting-engine-*.jar"/>
 		    <exclude name="pentaho-reporting-engine-wizard-xul-*.jar"/>
@@ -282,7 +279,7 @@
 			<include name="xercesImpl-*.jar"/>
 			<include name="jmiutils-*.jar"/>
 			<include name="xml-apis-*.jar"/>
-			
+
 			<exclude name="pentaho-database-model-*.jar"/>
 
       		<include name="openide-util-*.jar"/>
@@ -316,7 +313,7 @@
   </target>
 
   <target name="package-zip" depends="embed-ehcache-xml-in-jar, subfloor-pkg.package-zip"/>
-	
+
 	<target name="resolve-upstream" depends="install-ivy">
 		<ivy:resolve file="${ivyfile}" conf="upstream" />
 		<ivy:retrieve conf="upstream" pattern="${analyzer.dist.dir}/[module]-[revision]([classifier]).[ext]" />
@@ -334,7 +331,7 @@
 
 		<mkdir dir="${approot.stage.dir}/platform/webapps"/>
 		<move file="${platform.unzip.dir}/pentaho-server/tomcat/webapps/pentaho" todir="${approot.stage.dir}/platform/webapps"/>
-		<move file="${platform.unzip.dir}/pentaho-server/pentaho-solutions" todir="${approot.stage.dir}/platform"/>		
+		<move file="${platform.unzip.dir}/pentaho-server/pentaho-solutions" todir="${approot.stage.dir}/platform"/>
 		<!-- copy overwrite="true" todir="${approot.stage.dir}/platform/webapps">
 			<fileset dir="${platform.unzip.dir}/biserver-ce/tomcat/webapps/pentaho">
 		    </fileset>
@@ -350,15 +347,15 @@
 				<include name="*.jar"/>
 			</fileset>
 		</delete>
-		
+
 		<!-- remove karaf -->
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/karaf" />
-	    
+
 	  <!-- remove all the JPivot files -->
 	  <delete dir="${approot.stage.dir}/platform/webapps/pentaho/jpivot" />
 		<delete dir="approot.stage.dir}/platform/webapps/pentaho/WEB-INF/jpivot" />
 	  <delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/pentaho-jpivot-plugin" />
-	  
+
 		<!-- remove solution folders that aren't necessary -->
 	  <delete dir="${approot.stage.dir}/platform/pentaho-solutions/plugin-samples" />
 
@@ -373,7 +370,7 @@
 
 		<!-- Remove PDI platform plugin -->
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/pentaho-pdi-platform-plugin"/>
-		
+
 		<!-- CDF is needed for the new analyzer visualizations -->
         <!--<delete dir="${approot.stage.dir}/platform/pentaho-solutions/system/pentaho-cdf"/>-->
 
@@ -381,14 +378,14 @@
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/bi-developers"/>
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/cdf"/>
 		<delete dir="${approot.stage.dir}/platform/pentaho-solutions/steel-wheels"/>
-	
+
 		<!-- remove webapp code that is not necessary -->
 		<delete dir="${approot.stage.dir}/platform/webapps/pentaho/docs"/>
 		<delete dir="${approot.stage.dir}/platform/webapps/pentaho/mantle"/>
 		<delete dir="${approot.stage.dir}/platform/webapps/pentaho/mantleLogin"/>
 
 		<!-- Add the server-assembly.properties files -->
-		
+
     <mkdir dir="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/classes"/>
     <echo file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/classes/${server.assembly.filename}" append="false">assembly.title=${agbi.server.product.title}&#13;&#10;</echo>
     <echo file="${approot.stage.dir}/platform/webapps/pentaho/WEB-INF/classes/${server.assembly.filename}" append="true">assembly.productid=${agbi.server.product.id}&#13;&#10;</echo>
@@ -439,7 +436,7 @@
         </if>
 
 	</target>
-	
+
 	  <target name="assemble.copy-libs">
 	    <copy todir="${approot.stage.dir}/lib">
 	      <fileset dir="${lib.dir}" />
@@ -460,17 +457,17 @@
 			</fileset>
 		</unzip>
 
-		<!-- copy in the start-up items 	
+		<!-- copy in the start-up items
 	    <copy todir="${bin.dir}/kettle-dist/data-integration">
 	      <fileset file="pdi-res/**"/>
 	    </copy>-->
-	
-		<!-- patchup permissions -->		
+
+		<!-- patchup permissions -->
 	      <chmod dir="${bin.dir}/kettle-dist/data-integration" perm="755" excludes="docs/api/** docs/api-core/** **/Thumbs.db" verbose="true">
 	        <include name="**/*.sh" />
 	      	<include name="**/JavaApplicationStub" />
 	      </chmod>
-		
+
 		<unzip dest="${bin.dir}/kettle-dist/data-integration/plugins/spoon">
 			<fileset dir="${dist.dir}">
 				<include name="${package.basename}.zip"/>
@@ -495,21 +492,21 @@
 	    </zip>
 -->
 	</target>
-	
+
 	<target name="install-plugin">
 		<delete dir="${kettle.dist.dir}/plugins/spoon/agile-bi"/>
 		<unzip dest="${kettle.dist.dir}/plugins/spoon">
 			<fileset file="${dist.dir}/${package.basename}.zip"/>
 			</unzip>
 	</target>
-	
+
 	<target name="publish-nojar" depends="install-antcontrib,create-pom,ivy.deliver">
  	    <antcall target="maven-publish-artifact">
 	      <param name="publish.pomFile" value="${ivy.artifact.pomfile}" />
 	      <param name="publish.file" value="${dist.dir}/${ivy.artifact.id}-${project.revision}.jar" />
 	    </antcall>
 	</target>
-	
+
 	  <target name="publish" depends="dist-source, publish-nojar">
 	  </target>
 
