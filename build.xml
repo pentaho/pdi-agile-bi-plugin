@@ -418,7 +418,7 @@
             <condition>
                 <not>
                     <resourcecount count="1">
-                        <fileset id="agilebiplugin" dir="${geo.dist.dir}" includes="geo-agilebi-plugin-*.zip" />
+                        <fileset id="agilebiplugin" dir="${geo.dist.dir}" includes="pentaho-geo-ce-*.zip" />
                     </resourcecount>
                 </not>
             </condition>
@@ -429,7 +429,7 @@
             <then>
                 <unzip dest="${approot.stage.dir}/platform/pentaho-solutions/system">
                     <fileset dir="${geo.dist.dir}">
-                        <include name="geo-agilebi-plugin-*.zip"/>
+                        <include name="pentaho-geo-ce-*.zip"/>
                     </fileset>
                 </unzip>
             </then>
