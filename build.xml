@@ -221,8 +221,7 @@
             <include name="jersey-json*.jar"/>
             <include name="jersey-bundle*.jar"/>
 
-            <!-- ESAPI version conflict with 2.0.1-->
-            <include name="ESAPI-2.0_rc6.jar"/>
+            <include name="encoder-1.2.jar"/>
 
             <include name="jackson*.jar"/>
 			<!-- Webservices -->
