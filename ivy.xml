@@ -184,7 +184,10 @@
     <dependency org="com.sun.jersey" name="jersey-client" rev="1.19.1" transitive="true"/>
     <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false"/>
 
-    <dependency org="pentaho" name="pentaho-platform-core-test" rev="${dependency.bi-platform.revision}" changing="true" conf="test->default" transitive="false" />
+    <dependency org="pentaho" name="pentaho-platform-core" rev="${dependency.bi-platform.revision}" changing="true" transitive="false" conf="test->default" >
+      <artifact name="pentaho-platform-core" ext="jar" m:classifier="tests"/>
+    </dependency>
+
     <dependency org="org.mockito" name="mockito-all" rev="1.8.5" conf="test->default"/>
 
     <exclude org="xerces" module="xerces" conf="default->default"/>
