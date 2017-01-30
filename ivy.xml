@@ -121,7 +121,7 @@
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.3" conf="default->default" />
       <dependency org="org.slf4j" name="slf4j-jcl" rev="1.7.3" conf="default->default" />
 
-    <dependency org="org.json" name="json" rev="${dependency.json.revision}" changing="true" conf="default->default"/>
+    <dependency org="org.pentaho" name="json" rev="${dependency.json.revision}" changing="true" conf="default->default"/>
     <!-- Miscellaneous BISERVER CE dependencies -->
     <dependency org="org.owasp.encoder" name="encoder"  rev="1.2"    transitive="false"/>
     <!-- test dependencies -->
