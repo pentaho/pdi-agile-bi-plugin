@@ -243,6 +243,7 @@
 			<include name="commons-dbcp-*.jar"/>
 			<include name="commons-digester-*.jar"/>
 			<include name="commons-fileupload-*.jar"/>
+			<include name="commons-httpclient-*.jar"/>
 			<include name="commons-lang-*.jar"/>
 			<include name="commons-logging-*.jar"/>
 			<include name="commons-net-*.jar"/>
