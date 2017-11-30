@@ -30,13 +30,13 @@
     <dependency org="org.eclipse.core" name="commands" rev="3.3.0-I20070605-0010" force="true" transitive="false" conf="default->default" />
 
 
-    <dependency org="pentaho-kettle" name="kettle-engine" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
+    <dependency org="pentaho-kettle" name="kettle-engine" rev="${pdi.version}" transitive="false" conf="default->default"
                 changing="true"/>
-    <dependency org="pentaho-kettle" name="kettle-core" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
+    <dependency org="pentaho-kettle" name="kettle-core" rev="${pdi.version}" transitive="false" conf="default->default"
                 changing="true"/>
-    <dependency org="pentaho-kettle" name="kettle-ui-swt" rev="${dependency.kettle.revision}" transitive="false" conf="default->default"
+    <dependency org="pentaho-kettle" name="kettle-ui-swt" rev="${pdi.version}" transitive="false" conf="default->default"
                 changing="true"/>
-    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${dependency.kettle.revision}" transitive="true" conf="default->default"
+    <dependency org="pentaho-kettle" name="kettle-dbdialog" rev="${pdi.version}" transitive="true" conf="default->default"
                 changing="true"/>
 
     <!--    exclude jetty's version of servlet api. it's checksum fails-->
@@ -49,69 +49,69 @@
     <!-- pentaho-xul-framework must match JARs required by kettle-ui-swt -->
     <!-- this manual sync should go away once this project is propertly ivy-ized -->
 
-    <dependency org="pentaho" name="pentaho-xul-swt" rev="${dependency.pentaho-xul.revision}" conf="default->default"
+    <dependency org="pentaho" name="pentaho-xul-swt" rev="${pentaho-xul.version}" conf="default->default"
                 changing="true" transitive="true"/>
     <dependency org="org.eclipse.swt" name="org.eclipse.swt.gtk.linux.x86_64" force="true" transitive="false" rev="4.6" />
     <dependency org="org.pentaho.reporting.designer" name="wizard-xul"
-                rev="${dependency.pentaho-reporting.revision}"
+                rev="${pentaho-reporting.version}"
                 conf="default->default" changing="true" transitive="false"/>
     <dependency org="org.pentaho.reporting.engine" name="wizard-core"
-                rev="${dependency.pentaho-reporting.revision}"
+                rev="${pentaho-reporting.version}"
                 conf="default->default" changing="true" transitive="false"/>
 
     <dependency org="org.pentaho.reporting.engine" name="classic-core"
-                rev="${dependency.pentaho-reporting.revision}"
+                rev="${pentaho-reporting.version}"
                 conf="default->default" changing="true" transitive="false">
 
     </dependency>
 
     <dependency org="org.pentaho.reporting.designer" name="datasource-editor-pmd"
-                rev="${dependency.pentaho-reporting.revision}"
+                rev="${pentaho-reporting.version}"
                 conf="default->default" changing="true" transitive="false"/>
 
 
-    <dependency org="org.pentaho.reporting.library" name="libswing" rev="${dependency.reporting-library.revision}"
+    <dependency org="org.pentaho.reporting.library" name="libswing" rev="${pentaho-reporting.version}"
                 conf="default->default" changing="true" transitive="false"/>
-    <dependency org="org.pentaho.reporting.library" name="libbase" rev="${dependency.reporting-library.revision}"
+    <dependency org="org.pentaho.reporting.library" name="libbase" rev="${pentaho-reporting.version}"
                 conf="default->default" changing="true" transitive="false"/>
-    <dependency org="org.pentaho.reporting.library" name="libfonts" rev="${dependency.reporting-library.revision}"
+    <dependency org="org.pentaho.reporting.library" name="libfonts" rev="${pentaho-reporting.version}"
                 conf="default->default" changing="true" transitive="false"/>
-    <dependency org="org.pentaho.reporting.library" name="libloader" rev="${dependency.reporting-library.revision}"
+    <dependency org="org.pentaho.reporting.library" name="libloader" rev="${pentaho-reporting.version}"
                 conf="default->default" changing="true" transitive="false"/>
-    <dependency org="org.pentaho.reporting.library" name="librepository" rev="${dependency.reporting-library.revision}"
+    <dependency org="org.pentaho.reporting.library" name="librepository" rev="${pentaho-reporting.version}"
                 conf="default->default" changing="true" transitive="false"/>
 
-    <dependency org="pentaho" name="pentaho-connections" rev="${dependency.pentaho-connections.revision}" changing="true" transitive="false"/>
-    <dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
+    <dependency org="pentaho" name="pentaho-connections" rev="${pentaho-connections.version}" changing="true" transitive="false"/>
+    <dependency org="pentaho" name="pentaho-modeler" rev="${pentaho-modeler.version}" changing="true" transitive="false"/>
 
-    <dependency org="pentaho" name="mondrian" rev="${dependency.mondrian.revision}"
+    <dependency org="pentaho" name="mondrian" rev="${mondrian.version}"
                 conf="default->default" changing="true" transitive="false"/>
 
     <dependency org="org.pentaho.reporting.engine" name="classic-extensions-pmd"
-                rev="${dependency.pentaho-reporting.revision}"
+                rev="${pentaho-reporting.version}"
                 conf="default->default" changing="true" transitive="false"/>
 
-    <dependency org="pentaho" name="pentaho-platform-api" rev="${dependency.bi-platform.revision}"
+    <dependency org="pentaho" name="pentaho-platform-api" rev="${platform.version}"
                 changing="true"
                 conf="default->default"/>
 
-    <dependency org="pentaho" name="pentaho-platform-extensions" rev="${dependency.bi-platform.revision}"
+    <dependency org="pentaho" name="pentaho-platform-extensions" rev="${platform.version}"
                 changing="true"
                 conf="default->default"/>
 
-    <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="${dependency.data-access-plugin.revision}"
+    <dependency org="pentaho" name="pentaho-bi-platform-data-access" rev="${pentaho-data-access.version}"
                 changing="true"
                 conf="default->default"/>
-    <dependency org="pentaho" name="pentaho-platform-core" rev="${dependency.bi-platform.revision}"
-                changing="true"
-                conf="default->default"/>
-
-    <dependency org="pentaho" name="pentaho-platform-repository" rev="${dependency.bi-platform.revision}"
+    <dependency org="pentaho" name="pentaho-platform-core" rev="${platform.version}"
                 changing="true"
                 conf="default->default"/>
 
+    <dependency org="pentaho" name="pentaho-platform-repository" rev="${platform.version}"
+                changing="true"
+                conf="default->default"/>
 
-    <dependency org="pentaho" name="pentaho-pdi-platform" rev="${dependency.bi-platform.revision}"
+
+    <dependency org="pentaho" name="pentaho-pdi-platform" rev="${platform.version}"
                 changing="true"
                 conf="default->default"
                 transitive="false"/>
@@ -120,33 +120,33 @@
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.3" conf="default->default" />
       <dependency org="org.slf4j" name="slf4j-jcl" rev="1.7.3" conf="default->default" />
 
-    <dependency org="org.pentaho" name="json" rev="${dependency.json.revision}" changing="true" conf="default->default"/>
+    <dependency org="org.pentaho" name="json" rev="${pentaho-json.version}" changing="true" conf="default->default"/>
     <!-- Miscellaneous BISERVER CE dependencies -->
     <dependency org="org.owasp.encoder" name="encoder"  rev="1.2"    transitive="false"/>
     <!-- test dependencies -->
     <dependency org="junit" name="junit" rev="4.4" conf="test->default"/>
-    <!--<dependency org="pentaho" name="pentaho-bi-platform-test-foundation" rev="${dependency.bi-platform.revision}" conf="test->default" changing="true"/>-->
+    <!--<dependency org="pentaho" name="pentaho-bi-platform-test-foundation" rev="${platform.version}" conf="test->default" changing="true"/>-->
     <dependency org="org.eclipse.core" name="commands" rev="3.3.0-I20070605-0010" force="true" transitive="false" conf="default->default" />
 
 
-    <dependency org="pentaho" name="pentaho-xul-core" rev="${dependency.pentaho-xul.revision}" conf="default->default"
+    <dependency org="pentaho" name="pentaho-xul-core" rev="${pentaho-xul.version}" conf="default->default"
                 changing="true" transitive="false">
       <artifact name="pentaho-xul-core"/>
       <artifact name="pentaho-xul-core" type="source" ext="jar" m:classifier="sources"/>
     </dependency>
 
-    <dependency org="pentaho" name="pentaho-metadata" rev="${dependency.pentaho-metadata.revision}" changing="true"
+    <dependency org="pentaho" name="pentaho-metadata" rev="${pentaho-metadata.version}" changing="true"
                 conf="default->default" transitive="false" force="true">
       <artifact name="pentaho-metadata"/>
       <artifact name="pentaho-metadata" type="source" ext="jar" m:classifier="sources"/>
     </dependency>
 
-    <dependency org="pentaho" name="pentaho-mql-editor" rev="${dependency.pentaho-mql-editor.revision}" conf="default->default" changing="true" transitive="false">
+    <dependency org="pentaho" name="pentaho-mql-editor" rev="${pentaho-mql-editor.version}" conf="default->default" changing="true" transitive="false">
         <artifact name="pentaho-mql-editor" />
         <artifact name="pentaho-mql-editor" type="source" ext="jar" m:classifier="sources" />
     </dependency>
 
-    <dependency org="pentaho" name="paz-plugin-ce" rev="${dependency.analyzer-plugin.revision}" conf="upstream->default" changing="true" transitive="false">
+    <dependency org="pentaho" name="paz-plugin-ce" rev="${analyzer-plugin.version}" conf="upstream->default" changing="true" transitive="false">
       <artifact name="paz-plugin-ce" type="zip" />
     </dependency>
 
@@ -154,7 +154,7 @@
       <artifact name="pentaho-geo-ce" type="zip" />
     </dependency>
 
-    <!-- dependency org="pentaho" name="pentaho-modeler" rev="${dependency.pentaho-modeler.revision}" changing="true" transitive="false"/>
+    <!-- dependency org="pentaho" name="pentaho-modeler" rev="${pentaho-modeler.version}" changing="true" transitive="false"/>
 -->
     <dependency org="annogen" name="annogen" rev="0.1.0" conf="default->default"/>
     <dependency org="org.apache.ws.commons.neethi" name="neethi" rev="2.0.1" transitive="false" conf="default->default"/>
@@ -183,7 +183,7 @@
     <dependency org="com.sun.jersey" name="jersey-client" rev="1.19.1" transitive="true"/>
     <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false"/>
 
-    <dependency org="pentaho" name="pentaho-platform-core" rev="${dependency.bi-platform.revision}" changing="true" transitive="false" conf="test->default" >
+    <dependency org="pentaho" name="pentaho-platform-core" rev="${platform.version}" changing="true" transitive="false" conf="test->default" >
       <artifact name="pentaho-platform-core" ext="jar" m:classifier="tests"/>
     </dependency>
 

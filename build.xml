@@ -451,7 +451,7 @@
 		<delete file="${dist.dir}/${pdiwithagilebi}.tgz"/>
 		<unzip dest="${bin.dir}/kettle-dist">
 			<fileset dir="${kettle.dist.dir}">
-				<include name="pdi-ce-${dependency.kettle.revision}.zip"/>
+				<include name="pdi-ce-${pdi.version}.zip"/>
 			</fileset>
 		</unzip>
 
