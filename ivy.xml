@@ -46,10 +46,10 @@
     </dependency>
     <dependency org="org.eclipse.jetty" name="jetty-webapp" rev="8.1.15.v20140411" transitive="false" conf="default->default"/>
     <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="8.1.15.v20140411" transitive="false" conf="default->default"/>
-    <!-- pentaho-xul-framework must match JARs required by kettle-ui-swt -->
+    <!-- commons-xul-framework must match JARs required by kettle-ui-swt -->
     <!-- this manual sync should go away once this project is propertly ivy-ized -->
 
-    <dependency org="pentaho" name="pentaho-xul-swt" rev="${pentaho-xul.version}" conf="default->default"
+    <dependency org="org.pentaho" name="commons-xul-swt" rev="${commons-xul.version}" conf="default->default"
                 changing="true" transitive="true"/>
     <dependency org="org.eclipse.swt" name="org.eclipse.swt.gtk.linux.x86_64" force="true" transitive="false" rev="4.6" />
     <dependency org="org.pentaho.reporting.designer" name="wizard-xul"
@@ -129,10 +129,10 @@
     <dependency org="org.eclipse.core" name="commands" rev="3.3.0-I20070605-0010" force="true" transitive="false" conf="default->default" />
 
 
-    <dependency org="pentaho" name="pentaho-xul-core" rev="${pentaho-xul.version}" conf="default->default"
+    <dependency org="org.pentaho" name="commons-xul-core" rev="${commons-xul.version}" conf="default->default"
                 changing="true" transitive="false">
-      <artifact name="pentaho-xul-core"/>
-      <artifact name="pentaho-xul-core" type="source" ext="jar" m:classifier="sources"/>
+      <artifact name="commons-xul-core"/>
+      <artifact name="commons-xul-core" type="source" ext="jar" m:classifier="sources"/>
     </dependency>
 
     <dependency org="pentaho" name="pentaho-metadata" rev="${pentaho-metadata.version}" changing="true"
