@@ -149,7 +149,7 @@
 			<!-- servlet api -->
 			<include name="servlet-api-*.jar"/>
 			<!-- xul jars -->
-			<include name="pentaho-xul-*.jar"/>
+			<include name="commons-xul-*.jar"/>
 			<!-- kettle jars -->
 			<include name="kettle-*.jar"/>
 			<!-- jetty jars -->
