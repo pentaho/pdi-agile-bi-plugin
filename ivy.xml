@@ -141,9 +141,9 @@
       <artifact name="pentaho-metadata" type="source" ext="jar" m:classifier="sources"/>
     </dependency>
 
-    <dependency org="pentaho" name="pentaho-mql-editor" rev="${pentaho-mql-editor.version}" conf="default->default" changing="true" transitive="false">
-        <artifact name="pentaho-mql-editor" />
-        <artifact name="pentaho-mql-editor" type="source" ext="jar" m:classifier="sources" />
+    <dependency org="org.pentaho" name="pentaho-mql-editor-impl" rev="${pentaho-mql-editor.version}" conf="default->default" changing="true" transitive="false">
+        <artifact name="pentaho-mql-editor-impl" />
+        <artifact name="pentaho-mql-editor-impl" type="source" ext="jar" m:classifier="sources" />
     </dependency>
 
     <dependency org="pentaho" name="paz-plugin-ce" rev="${analyzer-plugin.version}" conf="upstream->default" changing="true" transitive="false">
