@@ -1,1 +1,0 @@
-This file is here to support testing the AgileBiPluginResourceLoader

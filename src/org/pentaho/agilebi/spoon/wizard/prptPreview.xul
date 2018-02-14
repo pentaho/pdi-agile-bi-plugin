@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<dialog id="prpt-preview" width="550" height="700" title="Preview" buttons="accept" buttonlabelaccept="Close" ondialogaccept="controller.close()" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  xmlns:HTML="http://www.w3.org/Profiles/XHTML-transitional" 
-  xmlns:pen="http://www.pentaho.org/2008/xul">
-  <prpt id="prptViewer" flex="1"/>
-</dialog>

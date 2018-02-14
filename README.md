@@ -1,2 +1,1 @@
-# pdi-agile-bi-plugin
-Agile BI plugin for PDI
+This project has been retired and will no longer be built, shipped or packaged with any Hitachi Vantara or Pentaho products/artifacts.
